@@ -52,6 +52,7 @@ read.dna                Read DNA Sequences in a File
 read.GenBank            Read DNA Sequences from GenBank via Internet
 read.nexus              Read Tree File in Nexus Format
 read.tree               Read Tree File in Parenthetic Format
+seg.sites               Find Segregating Sites in DNA Sequences
 skyline                 Skyline Plot Estimate of Effective Population
                         Size
 skylineplot             Drawing Skyline Plot Graphs

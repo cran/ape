@@ -24,6 +24,6 @@ base.freq(x)
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{GC.content}}
+  \code{\link{GC.content}}, \code{\link{seg.sites}}
 }
 \keyword{univar}

@@ -128,6 +128,7 @@ read.tree <- function(file = "", format = "Newick", rooted = TRUE, text = NULL,
             warning("The root edge is apparently not correctly represented\nin your tree: this may be due to an extra pair of\nparentheses in your file; the returned object has been\ncorrected but your file may not be in a valid Newick\nformat")
             ind <- which(list.obj[[i]]$edge[, 1] == "-1")
             list.obj[[i]]$root.edge <- list.obj[[i]]$edge.length[ind]
+            list.obj[[i]]$edge.length <- list.obj[[i]]$edge.length[-ind]
             list.obj[[i]]$edge <- list.obj[[i]]$edge[-ind, ]
             for (j in 1:length(list.obj[[i]]$edge))
               if (as.numeric(list.obj[[i]]$edge[j]) < 0)

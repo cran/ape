@@ -49,7 +49,7 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
           stop("sequences must have the same length for interleaved or sequential format.")
         ## truncate names if necessary
         if (any(nchar(names(x)) > 10)) {
-            warning("at least one name was longer than 10 characters;\nthey will be truncated which may lead to some redundancy.")
+            warning("at least one name was longer than 10 characters;\nthey will be truncated which may lead to some redundancy.\n")
             names(x) <- substr(names(x), 1, 10)
         }
         for (i in 1:N) {

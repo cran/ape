@@ -152,6 +152,7 @@ read.nexus <- function(file, tree.names = NULL)
             warning("The root edge is apparently not correctly represented\nin your tree: this may be due to an extra pair of\nparentheses in your file; the returned object has been\ncorrected but your file may not be in a valid Newick\nformat")
             ind <- which(trees[[i]]$edge[, 1] == "-1")
             trees[[i]]$root.edge <- trees[[i]]$edge.length[ind]
+            trees[[i]]$edge.length <- trees[[i]]$edge.length[-ind]
             trees[[i]]$edge <- trees[[i]]$edge[-ind, ]
             for (j in 1:length(trees[[i]]$edge))
               if (as.numeric(trees[[i]]$edge[j]) < 0)

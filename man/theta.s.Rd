@@ -20,10 +20,11 @@ theta.s(s, n, variance = FALSE)
 \value{
   a numeric vector of length one with the estimated theta (the default),
   or of length two if the standard error is returned
-  (\code{standard.error = TRUE}).
+  (\code{variance = TRUE}).
 }
 \note{
-  The number of segregating sites needs to be computed beforehand.
+  The number of segregating sites needs to be computed beforehand, for
+  instance with the function \code{seg.sites} (see example below).
 }
 \references{
   Watterson, G. (1975) On the number of segragating sites in genetical
@@ -35,7 +36,15 @@ theta.s(s, n, variance = FALSE)
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{theta.h}}, \code{\link{theta.k}}
+  \code{\link{theta.h}}, \code{\link{theta.k}}, \code{\link{seg.sites}}
+}
+\examples{
+data(woodmouse)
+y <- seg.sites(woodmouse)
+s <- length(y)
+n <- length(woodmouse[[1]])
+theta.s(s, n)
+theta.s(s, n, variance = TRUE)
 }
 \keyword{manip}
 \keyword{univar}

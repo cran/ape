@@ -1,10 +1,30 @@
+		CHANGES IN APE VERSION 1.2-2
+
+
+NEW FEATURES
+
+    o The new function seg.sites() finds the segregating sites in a
+      sample of DNA sequences.
+
+
+BUG FIXES
+
+    o A bug introduced in read.tree() and in read.nexus() with version
+      1.2-1 was fixed.
+
+    o A few errors were corrected and a few examples were added in the
+      help pages.
+
+
+
 		CHANGES IN APE VERSION 1.2-1
 
 
 NEW FEATURES
 
     o plot.phylo() can now draw the edge of the root of a tree if it
-      has one (see the new option `root.edge', its  default is FALSE).
+      has one (see the new option `root.edge', its default is FALSE).
+
 
 BUG FIXES
 
@@ -61,7 +81,7 @@ BUG FIXES
     o Several bugs were fixed in the code of all.equal.phylo().
 
     o Several bugs were fixed in write.dna(), particularly this
-      function did not work with `format = "sequential"'.
+      function did not work with `format = "interleaved"'.
 
     o Various errors were corrected in the help pages.
 
