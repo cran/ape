@@ -3,37 +3,118 @@
 \title{Read DNA Sequences in a File}
 \usage{
 read.dna(file, format = "interleaved", skip = 0,
-         nlines = 0, comment.char = "#")
+         nlines = 0, comment.char = "#", seq.names = NULL)
 }
 \arguments{
   \item{file}{a file name specified by either a variable of mode character,
     or a double-quoted string.}
   \item{format}{a character string specifying the format of the DNA
-    sequences. Two choices are possible: \code{"interleaved"} or
-    \code{"sequential"}.}
+    sequences. Three choices are possible: \code{"interleaved"},
+    \code{"sequential"}, or \code{"fasta"}.}
   \item{skip}{the number of lines of the input file to skip before
     beginning to read data.}
   \item{nlines}{the number of lines to be read (by default the file is
     read untill its end).}
   \item{comment.char}{a single character, the remaining of the line
     after this character is ignored.}
+  \item{seq.names}{the names to give to each sequence; by default the
+    names read in the file are used.}
 }
 \description{
   This function reads DNA sequences in a file, and returns a list of DNA
   sequences with the names of the taxa read in the file as names of the
-  vectors of the list.
+  vectors of the list. In order to be consistent with other functions in
+  APE, the sequences are returned in lower case.
 }
 \value{
   A list a DNA sequences each made of a single vector of mode character
   where each element is a nucleotide.
 }
 \details{
-  This function tries to be as flexible as possible with respect to the
-  presentation of the sequences. There is no restriction on the lengths
-  of the taxa names. 
+  This function follows the interleaved and sequential formats defined
+  in PHYLIP (Felsenstein, 1993) but with the original feature than there
+  is no restriction on the lengths of the taxa names (though a data file
+  with 10-characters-long taxa names is fine as well). For these two
+  formats, the first line of the file must contain the dimensions of the
+  data (the numbers of taxa and the numbers of nucleotides); the
+  sequences are considered as aligned and thus must be of the same
+  lengths for all taxa. For the FASTA format, the conventions defined in
+  the URL below (see References) is followed; the sequences are taken as
+  non-aligned. For all formats, the nucleotides can be arranged in any
+  way with blanks and line-breaks inside (with the restriction that the
+  first ten nucleotides must be contiguous for the interleaved and
+  sequential formats, see below). The names of the sequences are read in
+  the file unless the `seq.names' option is used. Particularities for
+  each format are detailed below.
+
+  \item{Interleaved:}{the function starts to read the sequences when it
+    finds 10 contiguous characters belonging to the ambiguity code of
+    the IUPAC (namely A, C, G, T, U, M, R, W, S, Y, K, V, H, D, B, and
+    N, upper- or lowercase, so you might run into trouble if you have a
+    taxa name with 10 contiguous letters among these!). All characters
+    before the sequences are taken as the taxa names after removing the
+    leading and trailing spaces (so spaces in a taxa name are
+    allowed). It is assumed that the taxa names are not repeated in the
+    subsequent blocks of nucleotides.}
+
+  \item{Sequential:}{the same criterion than for the interleaved format
+    is used to start reading the sequences and the taxa names; the
+    sequences are then read until the number of nucleotides specified in
+    the first line of the file is reached. This is repeated for each taxa.}
+
+  \item{FASTA:}{This looks like the sequential format but the taxa names
+    (or rather a description of the sequence) are on separate lines
+    beginning with a `greater than' character ``>'' (there may be
+    leading spaces before this character). These lines are taken as taxa
+    names after removing the ``>'' and the possible leading and trailing
+    spaces. All the data in the file before the first sequence is ignored.}
+}
+\references{
+  Felsenstein, J. (1993) Phylip (Phylogeny Inference Package) version
+  3.5c. Department of Genetics, University of Washington.
+  \url{http://evolution.genetics.washington.edu/phylip/phylip.html}
+
+  \url{http://www.ncbi.nlm.nih.gov/SNP/iupac.html}
+
+  \url{http://www.ncbi.nlm.nih.gov/BLAST/fasta.html}
 }
 \seealso{
-  \code{\link{read.GenBank}}, \code{\link{write.dna}}, \code{\link{dist.dna}}
+  \code{\link{read.GenBank}}, \code{\link{write.dna}},
+  \code{\link{dist.dna}}, \code{\link{woodmouse}}
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\examples{
+### a small extract from `data(woddmouse)'
+cat("3 40",
+"No305     NTTCGAAAAACACACCCACTACTAAAANTTATCAGTCACT",
+"No304     ATTCGAAAAACACACCCACTACTAAAAATTATCAACCACT",
+"No306     ATTCGAAAAACACACCCACTACTAAAAATTATCAATCACT",
+file = "exdna.txt", sep = "\n")
+ex.dna <- read.dna("exdna.txt", format = "sequential")
+str(ex.dna)
+ex.dna
+### the same data in interleaved format...
+cat("3 40",
+"No305     NTTCGAAAAA CACACCCACT",
+"No304     ATTCGAAAAA CACACCCACT",
+"No306     ATTCGAAAAA CACACCCACT",
+"          ACTAAAANTT ATCAGTCACT",
+"          ACTAAAAATT ATCAACCACT",
+"          ACTAAAAATT ATCAATCACT",
+file = "exdna.txt", sep = "\n")
+ex.dna2 <- read.dna("exdna.txt")
+### ... and in FASTA format
+cat("> No305",
+"NTTCGAAAAACACACCCACTACTAAAANTTATCAGTCACT",
+"> No304",
+"ATTCGAAAAACACACCCACTACTAAAAATTATCAACCACT",
+"> No306",
+"ATTCGAAAAACACACCCACTACTAAAAATTATCAATCACT",
+file = "exdna.txt", sep = "\n")
+ex.dna3 <- read.dna("exdna.txt", format = "fasta")
+### These are the same!
+identical(ex.dna, ex.dna2)
+identical(ex.dna, ex.dna3)
+unlink("exdna.txt") # clean-up
+}
 \keyword{IO}

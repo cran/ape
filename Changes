@@ -1,9 +1,36 @@
+		CHANGES IN APE VERSION 1.1-2
+
+
+NEW FEATURES
+
+    o The Tamura and Nei (1993) model of DNA distance is now implemented
+      in dist.dna(): five models are now available in this function.
+
+    o A new data set is included: a set of 15 sequences of the
+      cytochrome b mitochondrial gene of the woodmouse (Apodemus
+      sylvaticus).
+
+
+BUG FIXES
+
+    o A bug in read.nexus() was fixed.
+
+    o read.dna() previously did not work correctly in most cases.
+      The function has been completely re-written and its help page
+      has been considerably extended (see ?read.dna for details).
+      Underscores (_) in taxon names are no more replaced with
+      spaces (this behaviour was undocumented).
+
+    o A bug was fixed in write.dna().
+
+
+
 		CHANGES IN APE VERSION 1.1-1
 
 
 BUG FIXES
 
-    o A bug in read.tree() introduced in APE 1.1 was fixed. 
+    o A bug in read.tree() introduced in APE 1.1 was fixed.
 
     o A bug in compar.gee() resulted in an error when trying to fit
       a model with `family = "binomial"'. This is now fixed.

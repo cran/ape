@@ -1,4 +1,4 @@
-### aperates.R  (2003-05-05)
+### nprs.R  (2003-07-11)
 ###
 ###     Nonparametric Rate Smoothing Method by Sanderson
 ###
@@ -138,12 +138,12 @@ phylogram <- function(phy, ...)
 
 ### public functions 
 
-chronogram <- function(phy, scale = 1, ...)
+chronogram <- function(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
 {
     if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
 
-    prepareTree(phy, ...)
-    opt <- optimTree(phy, ...)
+    prepareTree(phy, minEdgeLength = minEdgeLength)
+    opt <- optimTree(phy, expo = expo)
     
     newTree <- phy
     newTree$edge.length <- getDurations(opt$par, scale)
@@ -151,13 +151,13 @@ chronogram <- function(phy, scale = 1, ...)
     return(newTree)
 }
 
-ratogram <- function(phy, scale = 1, ...)
+ratogram <- function(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
 {
     if (class(phy) != "phylo")
       stop("object \"phy\" is not of class \"phylo\"")
 
-    prepareTree(phy, ...)
-    opt <- optimTree(phy, ...)
+    prepareTree(phy, minEdgeLength = minEdgeLength)
+    opt <- optimTree(phy, expo = expo)
     
     newTree <- phy
     newTree$edge.length <- getRates(opt$par, scale)
@@ -165,13 +165,13 @@ ratogram <- function(phy, scale = 1, ...)
     return(newTree)
 }
 
-NPRS.criterion <- function(phy, chrono, expo = 2, ...)
+NPRS.criterion <- function(phy, chrono, expo = 2, minEdgeLength = 1e-06)
 {
-    if (is.ultrametric(chrono) == FALSE)
+    if (!is.ultrametric(chrono))
       stop("tree \"chrono\" is not ultrametric (clock-like)")
     
-    prepareTree(chrono, ...)
+    prepareTree(chrono, minEdgeLength = minEdgeLength)
     parms <- getExternalParams() 
-    prepareTree(phy, ...)
+    prepareTree(phy, minEdgeLength = minEdgeLength)
     objFuncLogScale(parms, expo) 
-}
+} 

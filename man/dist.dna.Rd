@@ -4,6 +4,7 @@
 \alias{dist.dna.TajimaNei}
 \alias{dist.dna.Kimura}
 \alias{dist.dna.Tamura}
+\alias{dist.dna.TamuraNei}
 \title{Pairwise Distances from DNA Sequences}
 \usage{
 dist.dna(x, y = NULL, variance = FALSE, gamma = NULL,
@@ -12,6 +13,8 @@ dist.dna.JukesCantor(x, y, variance = FALSE, gamma = NULL)
 dist.dna.TajimaNei(x, y, variance = FALSE, basefreq = NULL)
 dist.dna.Kimura(x, y, variance = FALSE, gamma = NULL)
 dist.dna.Tamura(x, y, variance = FALSE, GCcontent = NULL)
+dist.dna.TamuraNei(x, y, variance = FALSE, basefreq = NULL,
+                   gamma = NULL)
 }
 \arguments{
   \item{x}{either, a vector with a single DNA sequence, or a matrix of
@@ -26,7 +29,8 @@ dist.dna.Tamura(x, y, variance = FALSE, GCcontent = NULL)
     computed.}
   \item{method}{a character string specifying the method used to compute
     the distance. Currently four choices are possible: \code{"JukesCantor"},
-    \code{"TajimaNei"}, \code{"Kimura"} (the default), and \code{"Tamura"}.}
+    \code{"TajimaNei"}, \code{"Kimura"} (the default), \code{"Tamura"},
+    and \code{"TamuraNei"}.}
   \item{basefreq}{the base frequencies to be used in the computations
     (if applicable, i.e. if \code{method = "TajimaNei"}). By default, the
     base frequencies are computed from the whole sample of sequences.}
@@ -36,7 +40,7 @@ dist.dna.Tamura(x, y, variance = FALSE, GCcontent = NULL)
 }
 \description{
   These functions compute a matrix of pairwise distances from DNA
-  sequences using a model of DNA evolution. Four models are currently
+  sequences using a model of DNA evolution. Five models are currently
   available.
 }
 \details{
@@ -98,7 +102,14 @@ dist.dna.Tamura(x, y, variance = FALSE, GCcontent = NULL)
   \item{``Tamura''}{Tamura (1992) generalized the Kimura model by relaxing
   the assumption of equal base frequencies. This is done by taking into
   account the bias in G+C content in the sequences. The substitution
-  rates are assumed to be the same for all sites along the DNA sequence.}
+  rates are assumed to be the same for all sites along the DNA
+  sequence.}
+
+  \item{``TamuraNei''}{Tamura and Nei (1993) developed a model which
+  assumes distinct rates for both kinds of transition (A <-> G versus C
+  <-> T), and transversions. The base frequencies are not assumed to be
+  equal and are estimated from the data. A gamma correction of the
+  inter-site variation in substitution rates is possible.}
 }
 \value{
   a numeric matrix with possibly the names of the individuals (as given
@@ -108,29 +119,8 @@ dist.dna.Tamura(x, y, variance = FALSE, GCcontent = NULL)
     TRUE}).
 }
 \note{
-  This is a first attempt to implement the computation of DNA
-  evolutionary distances in `ape'. Four models are currently available,
-  and this is supposed to encompass the most widely used models of DNA
-  evolution (particularly Kimura's one with the gamma correction).
-
   The models of DNA evolution available in `ape' follow somewhat those
-  available in the software MEGA (Kumar et al. 2001) with the exception
-  that the more complex model by Tamura and Nei (1993) is not available
-  in `ape'. This model assumes distinct rates for both kinds of
-  transition (A <-> G versus C <-> T), and transversions. The base
-  frequencies are not assumed to be equal and are estimated from the
-  data. A gamma correction of the inter-site variation in substitution
-  rates is also possible (Kumar et al. 2001).
-
-  The package Phylip (Felsenstein 1993) has also a model not considered
-  here. This model (called the maximum likelihood, or ML, model by
-  Felsenstein) assumes different rates of transition and transversion, and
-  the base frequencies are allowed to be unequal. This seems to be a
-  particular case of the Tamura--Nei model (Tamura Nei 1993) where both
-  kinds of transition are equiprobable.
-
-  It is planned to include more complex models of DNA evolution similar
-  to those just described in future versions of `ape'.
+  available in the software MEGA (Kumar et al. 2001).
 }
 \references{
   Felsenstein, J. (1993) Phylip (Phylogeny Inference Package) version

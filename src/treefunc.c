@@ -136,6 +136,8 @@ Tree *buildTreeFromHclust_(
  Tree **a,*t,*b;
  int i,j;
 
+ t=NULL;
+
  a=malloc(nnodes*sizeof(Tree *));
 
  for(i=0;i<nnodes;i++) a[i]=NULL;

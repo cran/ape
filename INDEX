@@ -60,6 +60,7 @@ theta.s                 Population Parameter THETA using Segregating
                         Sites in DNA Sequences
 vcv.phylo               Phylogenetic Variance-covariance or
                         Correlation Matrix
+woodmouse               Cytochrome b Sequences of Woodmice
 write.dna               Write DNA Sequences in a File
 write.nexus             Write Tree File in Nexus Format
 write.tree              Write Tree File in Parenthetic Format

@@ -1,8 +1,8 @@
-### dist.dna.R  (2002-08-28)
+### dist.dna.R  (2003-07-03)
 ###
 ###     Pairwise Distances from DNA Sequences
 ###
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -52,6 +52,11 @@ dist.dna <- function(x, y = NULL, variance = FALSE, gamma = NULL,
         if (is.null(GCcontent)) GC <- GC.content(x) else GC <- GCcontent
         expr <- parse(text = paste(foo, "(x[, i], x[, j], ", "variance = ", variance,
                                    ", GCcontent = GC)", sep = ""))
+    }
+    if (method == "TamuraNei") {
+        if (is.null(basefreq)) g <- base.freq(x) else g <- basefreq
+        expr <- parse(text = paste(foo, "(x[, i], x[, j], ", "variance = ", variance,
+                                   ", gamma = ", gamma, ", basefreq = g)", sep = ""))
     }
     for (i in 1:(n - 1)) for (j in (i + 1):n) {
         d <- eval(expr)
@@ -163,3 +168,50 @@ dist.dna.Tamura <- function(x, y, variance = FALSE, GCcontent = NULL)
     }
     else return(D)
 }
+
+dist.dna.TamuraNei <- function(x, y, variance = FALSE, basefreq = NULL, gamma = NULL)
+{
+    if (is.null(basefreq)) g <- base.freq(c(x, y)) else g <- basefreq
+    L <- length(x)
+    gR <- g[1] + g[3]
+    gY <- g[2] + g[4]
+    k1 <- 2 * g[1] * g[3] / gR
+    k2 <- 2 * g[2] * g[4] / gY
+    k3 <- 2 * (gR * gY - g[1] * g[3] * gY / gR - g[2] * g[4] * gR / gY)
+    d <- x != y
+    Nd <- sum(d)
+    pw.diff <- cbind(x[d], y[d])
+    PuPy <- ifelse(pw.diff == "a" | pw.diff == "g", "R", "Y")
+    Nv <- sum(PuPy[, 1] != PuPy[, 2])
+    Ns <- Nd - Nv
+    P <- Ns / L
+    Q <- Nv / L
+    P1 <- (sum(pw.diff[, 1] == "a" & pw.diff[, 2] == "g") + sum(pw.diff[, 1] == "g" & pw.diff[, 2] == "a")) / L
+    P2 <- P - P1
+    w1 <- 1 - P1 / k1 - Q / (2 * gR)
+    w2 <- 1 - P2 / k2 - Q / (2 * gY)
+    w3 <- 1 - Q / (2 * gR * gY)
+    if (is.null(gamma)) {
+        k4 <- 2 * ((g[1]^2 + g[3]^2) / (2 * gR^2) + (g[3]^2 + g[4]^2) / (2 * gY^2))
+        c1 <- 1 / w1
+        c2 <- 1 / w2
+        c3 <- 1 / w3
+        c4 <- k1 * c1 / (2 * gR) + k2 * c2 / (2 * gY) + k4 * c3
+        D <- -k1 * log(w1) - k2 * log(w2) - k3 * log(w3)
+    }
+    else {
+        k4 <- 2 * (g[1] * g[3] + g[2] * g[4] + gR * gY)
+        b <- -1 / gamma
+        c1 <- w1^b
+        c2 <- w2^b
+        c3 <- w3^b
+        c4 <- k1 * c1 / (2 * gR) + k2 * c2 / (2 * gY) + k3 * c3 / (2 * gR * gY)
+        D <- gamma * (k1 * w1^b + k2 * w2^b + k3 * w3^b - k4)
+    }
+    if (variance) {
+        var.D <- (c1^2 * P1 + c2^2 * P2 + c4^2 * Q - (c1 * P1 + c2 * P2 + c4 * Q)^2) / L
+        return(c(D, var.D))
+    }
+    else return(D)
+}
+

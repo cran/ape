@@ -1,4 +1,4 @@
-### write.dna.R  (2003-01-21)
+### write.dna.R  (2003-07-03)
 ###
 ###     Write DNA Sequences in a File
 ###
@@ -24,8 +24,12 @@ write.dna <- function(x, file = "", format = "interleaved", append = FALSE)
 {
     if (is.null(names(x))) names(x) <- as.character(1:length(x))
     margin <- max(nchar(names(x))) + 1
-    if (file.exists(file)) unlink(file)
+
     if (format == "interleaved") {
+        N <- length(x)
+        S <- length(x[[1]])
+        if (append) cat(N, S, "\n", file = file, append = TRUE)
+        else cat(N, S, "\n", file = file)
         for (i in 1:length(x)) {
             n <- length(x[[i]])
             ny <- ceiling(n / 10)
@@ -62,7 +66,7 @@ write.dna <- function(x, file = "", format = "interleaved", append = FALSE)
         }
         k <- max(unlist(lapply(x, length)))
         for (i in 1:length(x)) {
-            cat(names(x[[i]]), rep(" ", margin - nchar(names(x[[i]]))), x[[i]][1], "\n",
+            cat(names(x)[i], rep(" ", margin - nchar(names(x)[i])), x[[i]][1], "\n",
                 sep = "", file = file, append = TRUE)
         }
         if (k > 1) {
@@ -75,8 +79,12 @@ write.dna <- function(x, file = "", format = "interleaved", append = FALSE)
         }
     }
     if (format == "sequential") {
-        for (i in 1:length(x)) {
-            cat(names(x[[i]]), rep(" ", margin - nchar(names(x[[i]]))),
+        N <- length(x)
+        S <- length(x[[1]])
+        if (append) cat(N, S, "\n", file = file, append = TRUE)
+        else cat(N, S, "\n", file = file)
+         for (i in 1:length(x)) {
+            cat(names(x)[i], rep(" ", margin - nchar(names(x)[i])),
                 paste(x[[i]], collapse = ""), "\n",
                 sep = "", file = file, append = TRUE)
         }

@@ -3,22 +3,19 @@
 
 \title{Chronogram Computed by Nonparametric Rate Smoothing}
 \usage{
-chronogram(phy, scale = 1, \dots)
+chronogram(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
 }
 \arguments{
   \item{phy}{A phylogenetic tree (i.e. an object of class
     \code{"phylo"}), where the branch lengths are measured in substitutions.}
   
   \item{scale}{Age of the root in the inferred chronogram (default value: 0). }
-    
+      
+  \item{expo = 2}{Exponent in the objective function (default value: 2)} 
+  
   \item{minEdgeLength}{Minimum edge length in the phylogram (default
     value: 1e-06). If any branch lengths are smaller then they will be
     set to this value.}
-  
-  \item{expo = 2}{Exponent in the objective function (default value: 2)}
-    
-  \item{...}{Any of the above parameters.}
-  
 }
 \description{
 

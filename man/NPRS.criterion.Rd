@@ -3,7 +3,7 @@
 
 \title{Objective Function Employed in Nonparametric Rate Smoothing}
 \usage{
-NPRS.criterion(phy, chrono, expo = 2, \dots)
+NPRS.criterion(phy, chrono, expo = 2, minEdgeLength = 1e-06)
 }
 \arguments{
   \item{phy}{A non-clock-like phylogenetic tree (i.e. an object of class \code{"phylo"}), where
@@ -12,13 +12,10 @@ NPRS.criterion(phy, chrono, expo = 2, \dots)
   \item{chrono}{A chronogram, i.e. a clock-like tree (i.e. an object of class \code{"phylo"}), where
     the branch lengths are measured in absolute time.}
 
-  \item{expo = 2}{Exponent in the objective function (default value: 2)}
+  \item{expo}{Exponent in the objective function (default value: 2)}
     
   \item{minEdgeLength}{Minimum edge length in the phylogram (default value: 1e-06). If any branch lengths are
-    smaller then they will be set to this value. }
-      
-  \item{...}{Any of the above parameters.}
-  
+    smaller then they will be set to this value. }  
 }
 \description{
 

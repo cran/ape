@@ -1,4 +1,4 @@
-### read.nexus.R  (2003-05-24)
+### read.nexus.R  (2003-06-24)
 ###
 ###     Read Tree File in Nexus Format
 ###
@@ -117,13 +117,14 @@ read.nexus <- function(file, tree.names = NULL)
         tree <- gsub("\\[&U\\]", "", tree)
     }
     tree <- gsub("\\[&R\\]", "", tree)
+    tree <- gsub(" ", "", tree)
     tree <- unlist(strsplit(tree, "[=;]"))
     tree <- tree[grep("[\\(\\)]", tree)]
     nb.tree <- length(tree)
     STRING <- as.list(tree)
     trees <- list()
     for (i in 1:nb.tree) {
-        if (length(grep(":", STRING[[i]]) > 0)) obj <- tree.build(STRING[[i]])
+        if (length(grep(":", STRING[[i]]))) obj <- tree.build(STRING[[i]])
         else obj <- clado.build(STRING[[i]])
         if (translation) {
             for (j in 1:length(obj$tip.label)) {
