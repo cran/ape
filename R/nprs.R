@@ -32,28 +32,32 @@ setTree <-
     as.integer(length(edgeLengths)),
     as.character(tipLabels),
     as.integer(length(tipLabels)),
-    result=integer(1)
+    result=integer(1),
+    PACKAGE = "ape"
    )$result
 
 getNFreeParams <-
   function()
    .C(
     "getNFreeParams",
-    result=integer(1)
+    result=integer(1),
+    PACKAGE = "ape"
    )$result
 
 getNEdges <-
   function()
    .C(
     "getNEdges",
-    result=integer(1)
+    result=integer(1),
+    PACKAGE = "ape"
    )$result
 
 getEdgeLengths <-
   function()
    .C(
     "getEdgeLengths",
-    result=double(getNEdges())
+    result=double(getNEdges()),
+    PACKAGE = "ape"
    )$result
 
 objFuncLogScale <-
@@ -62,7 +66,8 @@ objFuncLogScale <-
     "objFuncLogScale",
     as.double(params),
     as.integer(expo),
-    result=double(1)
+    result=double(1),
+    PACKAGE = "ape"
    )$result
            
 getDurations <-
@@ -71,7 +76,8 @@ getDurations <-
     "getDurations",
     as.double(params),
     as.double(scale),
-    result=double(getNEdges())
+    result=double(getNEdges()),
+    PACKAGE = "ape"
    )$result
              
 getRates <-
@@ -80,14 +86,16 @@ getRates <-
     "getRates",
     as.double(params),
     as.double(scale),
-    result=double(getNEdges())
+    result=double(getNEdges()),
+    PACKAGE = "ape"
    )$result
 
 getExternalParams <-
   function()
    .C(
     "getExternalParams",
-    result=double(getNFreeParams())
+    result=double(getNFreeParams()),
+    PACKAGE = "ape"
    )$result
 
 ### private functions 

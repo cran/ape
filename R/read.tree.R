@@ -1,4 +1,4 @@
-### read.tree.R  (2003-29-05)
+### read.tree.R  (2003-06-06)
 ###
 ###     Read Tree File in Parenthetic Format
 ###
@@ -83,10 +83,12 @@ tree.build <- function(tp) {
     }
     ## The following lines are for the transition between R 1.7.0
     ## and R 1.8.0 (EP 2003-05-29)
-    if (as.numeric(R.Version()$minor) >= 8)
-      if (is.na(node.label[1])) node.label[1] <- ""
-    else
-      if (node.label[1] == "NA") node.label[1] <- ""
+    if (as.numeric(R.Version()$minor) >= 8) {
+        if (is.na(node.label[1])) node.label[1] <- ""
+    }
+    else {
+        if (node.label[1] == "NA") node.label[1] <- ""
+    }
     edge <- edge[-nb.edge, ]
     mode(edge) <- "character"
     root.edge <- edge.length[nb.edge]

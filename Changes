@@ -1,4 +1,16 @@
-		CHANGES IN APE VERSION 1.1
+		CHANGES IN APE VERSION 1.1-1
+
+
+BUG FIXES
+
+    o A bug in read.tree() introduced in APE 1.1 was fixed. 
+
+    o A bug in compar.gee() resulted in an error when trying to fit
+      a model with `family = "binomial"'. This is now fixed.
+
+
+
+ 		CHANGES IN APE VERSION 1.1
 
 
 NEW FEATURES

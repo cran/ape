@@ -38,7 +38,8 @@
     as.integer(length(edgeLengths)),
     as.character(tipLabels),
     as.integer(length(tipLabels)),
-    result=integer(1)
+    result=integer(1),
+    PACKAGE = "ape"
    )$result   
  }
 
@@ -46,42 +47,48 @@
   function()
    .C(
     "destroyTree",
-    result=integer(1)
+    result=integer(1),
+    PACKAGE = "ape"
    )$result
 
  getError <-
   function()
    .C(
     "getError",
-    result=integer(1)
+    result=integer(1),
+    PACKAGE = "ape"
    )$result
 
  nTips <-
   function()
    .C(
     "nTips",
-    result=integer(1)
+    result=integer(1),
+    PACKAGE = "ape"
    )$result
 
  nNodes <-
   function()
    .C(
     "nNodes",
-    result=integer(1)
+    result=integer(1),
+    PACKAGE = "ape"
    )$result
 
  nEdges <-
   function()
    .C(
     "nEdges",
-    result=integer(1)
+    result=integer(1),
+    PACKAGE = "ape"
    )$result
 
  tipLabelsForPhylo <-
   function() {
    .C(
     "tipLabelsForPhylo",
-    result=character(nTips())
+    result=character(nTips()),
+    PACKAGE = "ape"
    )$result
   }
 
@@ -89,7 +96,8 @@
   function() {
    .C(
     "edgeLengthsForPhylo",
-    result=double(nEdges())
+    result=double(nEdges()),
+    PACKAGE = "ape"
    )$result
   }
 
@@ -97,7 +105,8 @@
   function() {
    .C(
     "lowerNodesForPhylo",
-    result=integer(nEdges())
+    result=integer(nEdges()),
+    PACKAGE = "ape"
    )$result
   }
 
@@ -105,7 +114,8 @@
   function() {
    .C(
     "upperNodesForPhylo",
-    result=integer(nEdges())
+    result=integer(nEdges()),
+    PACKAGE = "ape"
    )$result
   }
 
@@ -140,7 +150,8 @@
     as.integer(length(nodeHeights)),
     as.character(tipLabels),
     as.integer(length(tipLabels)),
-    result=integer(1)
+    result=integer(1),
+    PACKAGE = "ape"
    )$result
  }
 
@@ -148,7 +159,8 @@
   function() {
    .C(
     "leftNodesForHclust",
-    result=integer(1+nEdges()-nTips())
+    result=integer(1+nEdges()-nTips()),
+    PACKAGE = "ape"
    )$result
   }
 
@@ -156,7 +168,8 @@
   function() {
    .C(
     "rightNodesForHclust",
-    result=integer(1+nEdges()-nTips())
+    result=integer(1+nEdges()-nTips()),
+    PACKAGE = "ape"
    )$result
   }
 
@@ -164,7 +177,8 @@
   function() {
    .C(
     "nodeHeightsForHclust",
-    result=double(1+nEdges()-nTips())
+    result=double(1+nEdges()-nTips()),
+    PACKAGE = "ape"
    )$result
   }
 

@@ -1,8 +1,8 @@
-### compar.gee.R  (2002-08-28)
+### compar.gee.R  (2002-06-05)
 ###
 ###     Comparative Analysis with GEEs
 ###
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -35,7 +35,8 @@ compar.gee <- function(formula, data = NULL, family = "gaussian", phy,
                                   corstr = "fixed", scale.fix = scale.fix,
                                   scale.value = scale.value))
     W <- geemod$naive.variance
-    if (family == "binomial") W <- summary(glm(formula, family = quasibinomial))$cov.scaled
+    if (family == "binomial")
+      W <- summary(glm(formula, family = quasibinomial, data = data))$cov.scaled
     N <- geemod$nobs
     nb.node <- -min(as.numeric(phy$edge))
     ## xx: vecteur donnant la distance d'un noeud ou tip à partir de la racine

@@ -27,7 +27,8 @@ getMisawaTajima <-
   function()
    .C(
     "getMisawaTajima",
-    result=integer(nTips())
+    result=integer(nTips()),
+    PACKAGE = "ape"
    )$result
 
 ########### PUBLIC ##############
