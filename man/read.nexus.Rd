@@ -22,7 +22,7 @@ read.nexus(file, tree.names = NULL)
   \code{\link[base]{read.table}}, ...). A trace of the original data is
   kept with the attribute \code{"origin"} (see below).
 
-  `read.nexus tries to represent correctly trees with a badly
+  `read.nexus' tries to represent correctly trees with a badly
   represented root edge (i.e. with an extra pair of parentheses). For
   instance, the tree "((A:1,B:1):10);" will be read like "(A:1,B:1):10;"
   but a warning message will be issued in the former case as this is

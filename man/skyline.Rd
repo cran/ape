@@ -125,7 +125,7 @@ sk1
 plot(skyline(tree.hiv))
 skylineplot(tree.hiv) # shortcut
 
-plot(sk1, reverse.time=TRUE)
+plot(sk1, show.years=TRUE, subst.rate=0.0023, present.year = 1997)
 
 #### generalized skyline plot ####
 
@@ -138,8 +138,8 @@ plot(sk2)
 
 
 # classic and generalized skyline plot together in one plot
-plot(sk1, col=c(grey(.8),1), reverse.time=TRUE)
-lines(sk2, reverse.time=TRUE)
+plot(sk1, show.years=TRUE, subst.rate=0.0023, present.year = 1997, col=c(grey(.8),1))
+lines(sk2,  show.years=TRUE, subst.rate=0.0023, present.year = 1997)
 legend(.15,500, c("classic", "generalized"), col=c(grey(.8),1),lty=1)
 
 

@@ -15,7 +15,10 @@ dist.phylo(phy)
   a numeric matrix with the names of the tips (as given by the element
   \code{tip.label} of the argument \code{phy}) as colnames and rownames.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{
+  Julien Claude \email{claude@isem.univ-montp2.fr} and
+  Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}
+}
 \seealso{
   \code{\link{read.tree}} to read tree files in Newick format
 }

@@ -38,6 +38,8 @@ klastorin               Klastorin's (1982) method for classifying
 landplants              Gene Tree of 36 Landplant rbcL Sequences
 ltt.plot                Lineages Through Time Plot
 mantel.test             Mantel Test for Similarity of Two Matrices
+mcmc.popsize            Reversible Jump MCMC to Infer Demographic
+                        History
 mst                     Minimum Spanning Tree
 node.depth              Depth of Nodes and Tips
 node.depth.edgelength   Distance from Root to Nodes and Tips

@@ -1,8 +1,8 @@
-### skylineplot.R  (2002-09-12)
+### skylineplot.R  (2004-07-4)
 ###
 ###     Various methods to plot skyline objects (= skyline plots)
 ###
-### Copyright 2002 Korbinian Strimmer <strimmer@stat.uni-muenchen.de>
+### Copyright 2002-2004 Korbinian Strimmer <strimmer@stat.uni-muenchen.de>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -22,34 +22,46 @@
 
 
 # plot skyline 
-plot.skyline <- function(x, reverse.time=FALSE, ...)
+plot.skyline <- function(x, show.years=FALSE, subst.rate, present.year, ...)
 {
   if (class(x) != "skyline")
     stop("object \"x\" is not of class \"skyline\"")
   t <- x$time
   m <- x$population.size
+  lm <- length(m)
 
-  if (reverse.time)
-    plot(c(0,t),c(m,m[[length(m)]]),type="s",
-     xlab="time (present to past)",ylab="effective population size",log="y", ...)
+  if (show.years)
+  {
+    plot((-c(0,t))/subst.rate+present.year,c(m,m[lm]),type="s",
+     xlab="time (years)",ylab="effective population size",log="y", ...)
+  
+  }
   else
-    plot(-c(0,t),c(m,m[[length(m)]]),type="s",
-     xlab="time (past to present)",ylab="effective population size",log="y", ...)
+  {
+    plot(c(0,t),c(m,m[lm]),type="s", xlim=c(t[lm],0),
+     xlab="time (past to present in units of substitutions)",ylab="effective population size",log="y", ...)
+  }
+
 }
 
-
 # plot another skyline plot on top
-lines.skyline <- function(x, reverse.time=FALSE, ...)
+lines.skyline <- function(x, show.years=FALSE, subst.rate, present.year, ...)
 {
   if (class(x) != "skyline")
     stop("object \"x\" is not of class \"skyline\"")
   t <- x$time
   m <- x$population.size
+  lm <- length(m)
 
-  if (reverse.time)
-    lines(c(0,t),c(m,m[[length(m)]]),type="s", ...)
+
+  if (show.years)
+  {
+    lines((-c(0,t))/subst.rate+present.year,c(m,m[lm]),type="s", ...)
+  }
   else
-    lines(-c(0,t),c(m,m[[length(m)]]),type="s", ...)
+  {
+    lines(c(0,t),c(m,m[lm]),type="s", ...)
+  }
 }
 
 

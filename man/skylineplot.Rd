@@ -6,8 +6,8 @@
 
 \title{Drawing Skyline Plot Graphs}
 \usage{
-\method{plot}{skyline}(x, reverse.time = FALSE, \dots)
-\method{lines}{skyline}(x, reverse.time = FALSE, \dots)
+\method{plot}{skyline}(x, show.years=FALSE, subst.rate, present.year, \dots)
+\method{lines}{skyline}(x, show.years=FALSE, subst.rate, present.year, \dots)
 skylineplot(z, \dots)
 skylineplot.deluxe(tree, \dots)
 }
@@ -21,11 +21,17 @@ skylineplot.deluxe(tree, \dots)
 
   \item{tree}{ultrametric tree (i.e. an object of class \code{"phylo"}).}
   
-  \item{\dots}{further arguments to be passed to \code{skyline()} and \code{plot()}.} 
   
-  \item{reverse.time}{Option that determines whether the time axis in the
-     skyline plot runs from the past to the present (the default) or from
-     the present to the past.} 
+  \item{show.years}{option that determines whether the time is plotted in units of
+        of substitutions (default) or in years (requires specification of substution rate
+	and year of present).}
+
+	
+ \item{subst.rate}{substitution rate (see option show.years).}	
+ \item{present.year}{present year (see option show.years).}	
+
+  \item{\dots}{further arguments to be passed on to \code{skyline()} and \code{plot()}.} 
+	 
 }
 \description{
 
@@ -45,7 +51,7 @@ skylineplot.deluxe(tree, \dots)
 
 \seealso{
 \code{\link[base]{plot}} and \code{\link[base]{lines}} for the basic plotting
-function in R, \code{\link{coalescent.intervals}}, \code{\link{skyline}}}.
+function in R, \code{\link{coalescent.intervals}}, \code{\link{skyline}}
 }
 
 \examples{
@@ -69,8 +75,9 @@ sk.opt$epsilon
 sk1 <- skyline(tree.hiv)   
 sk2 <- skyline(tree.hiv, 0.0119) 
 
-plot(sk1, col=c(grey(.8),1), reverse.time=TRUE)
-lines(sk2, reverse.time=TRUE)
+# use years rather than substitutions as unit for the time axis
+plot(sk1, show.years=TRUE, subst.rate=0.0023, present.year = 1997, col=c(grey(.8),1))
+lines(sk2,  show.years=TRUE, subst.rate=0.0023, present.year = 1997)
 legend(.15,500, c("classic", "generalized"), col=c(grey(.8),1),lty=1)
 
 

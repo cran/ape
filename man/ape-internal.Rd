@@ -43,7 +43,18 @@
 \alias{unrooted.xy}
 \alias{node.height}
 \alias{node.height.clado}
+
+
+
 \title{Internal Ape Functions}
+
+\alias{birth.step}
+\alias{death.step}
+\alias{ht.move}
+\alias{loglik.pop}
+\alias{pos.move}
+
+
 \description{
   Internal ape functions.
 }

@@ -1,3 +1,18 @@
+		CHANGES IN APE VERSION 1.2-4
+
+
+NEW FEATURES
+
+    o Four new functions (mcmc.popsize, extract.popsize, plot.popsize,
+      and lines.popsize) implementing a new approach for inferring the
+      demographic history from genealogies using a reversible jump
+      MCMC have been introduced.
+
+    o The unit of time in the skyline plot and in the new plots can
+      now be chosen to be actual years, rather than substitutions.
+
+
+
 		CHANGES IN APE VERSION 1.2-3
 
 

@@ -10,8 +10,7 @@
 data(chiroptera)
 }
 \format{
-  The data are stored in an ASCII file using the NEXUS format which is
-  read with `read.nexus()'.
+  The data are stored in RData (binary) format.
 }
 \source{
   Jones, K. E., Purvis, A., MacLarnon, A., Bininda-Emonds, O. R. P. and
