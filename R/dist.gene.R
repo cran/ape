@@ -53,6 +53,8 @@ dist.gene.percentage <- function(x, variance = FALSE)
 
 dist.gene <- function(x, method = "pairwise", variance = FALSE)
 {
-    if (method == "pairwise") dist.gene.pairwise(x, variance = variance)
-    if (method == "percentage") dist.gene.percentage(x, variance = variance)
+    if (method == "pairwise")
+      return(dist.gene.pairwise(x, variance = variance))
+    if (method == "percentage")
+      return(dist.gene.percentage(x, variance = variance))
 }

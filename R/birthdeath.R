@@ -1,8 +1,8 @@
-### birthdeath.R  (2002-10-02)
+### birthdeath.R  (2003-05-29)
 ###
 ###       Estimation of Speciation and Extinction Rates
 ###                 With Birth-Death Models
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -42,15 +42,37 @@ birthdeath <- function(phy)
         para <- out$estimate
         se <- sqrt(diag(solve(out$hessian)))
     }
-    dev <- out$minimum
+    Dev <- out$minimum
+    ## compute the 95 % profile likelihood CIs
+    ## (not very clean... but seems to work -- EP 2003-03-29)
+    CI <- matrix(NA, 2, 2)
+    foo <- function(p) dev(p, para[2]) - 3.84 - Dev
+    inc <- 1e-2
+    lo <- para[1] - inc
+    up <- para[1] + inc
+    while (foo(lo) < 0) lo <- lo - inc
+    while (foo(up) < 0) up <- up + inc
+    CI[1, 1] <- uniroot(foo, lower = lo, upper = para[1])$root
+    if (CI[1, 1] < 0) CI[1, 1] <- 0
+    CI[1, 2] <- uniroot(foo, lower = para[1], upper = up)$root
+    foo <- function(p) dev(para[1], p) - 3.84 - Dev
+    lo <- para[2] - inc
+    up <- para[2] + inc
+    while (foo(lo) < 0) lo <- lo - inc
+    while (foo(up) < 0) up <- up + inc
+    CI[2, 1] <- uniroot(foo, lower = lo, upper = para[2])$root
+    CI[2, 2] <- uniroot(foo, lower = para[2], upper = up)$root
     cat("\nEstimation of Speciation and Extinction Rates\n")
     cat("            With Birth-Death Models\n\n")
     cat("     Phylogenetic tree:", deparse(substitute(phy)), "\n")
     cat("        Number of tips:", N, "\n")
-    cat("              Deviance:", dev, "\n")
-    cat("        Log-likelihood:", -dev/2, "\n")
+    cat("              Deviance:", Dev, "\n")
+    cat("        Log-likelihood:", -Dev/2, "\n")
     cat("   Parameter estimates:\n")
     cat("      d / b =", para[1], "  StdErr =", se[1], "\n")
     cat("      b - d =", para[2], "  StdErr =", se[2], "\n")
-    cat("   (b: speciation rate, d: extinction rate)\n\n")
+    cat("   (b: speciation rate, d: extinction rate)\n")
+    cat("   Profile likelihood 95 % confidence intervals:\n")
+    cat("      d / b: [", CI[1, 1], ", ", CI[1, 2], "]", "\n", sep = "")
+    cat("      b - d: [", CI[2, 1], ", ", CI[2, 2], "]", "\n\n", sep = "")
 }

@@ -28,7 +28,7 @@ dist.dna <- function(x, y = NULL, variance = FALSE, gamma = NULL,
         nm <- names(x)
         n <- length(x)
         if (length(unique(unlist(lapply(x, length)))) != 1)
-            stop("DNA sequences in list not of the same lenght")
+            stop("DNA sequences in list not of the same length")
         x <- unlist(x)
         nL <- length(x)
         dim(x) <- c(nL / n, n)

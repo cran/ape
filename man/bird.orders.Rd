@@ -19,7 +19,8 @@ data(bird.orders)
 }
 \format{
   The data are stored as an object of class \code{"phylo"} which
-  structure is described in the help page of the function \code{\link{read.tree}}
+  structure is described in the help page of the function
+  \code{\link{read.tree}}.
 }
 \source{
   Sibley, C. G. and Ahlquist, J. E. (1990) Phylogeny and classification

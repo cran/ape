@@ -103,9 +103,7 @@ library(ape)
 
 # get tree
 data("hivtree.newick") # example tree in NH format
-cat(hivtree.newick, file = "hivtree.phy", sep = "\n") # generate file "hivtree.phy"
-tree.hiv <- read.tree("hivtree.phy") # load tree from file
-unlink("hivtree.phy") # delete the file "hivtree.phy"
+tree.hiv <- read.tree(text = hivtree.newick) # load tree
 
 # corresponding coalescent intervals
 ci <- coalescent.intervals(tree.hiv) # from tree

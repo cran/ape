@@ -40,9 +40,7 @@ An object of class \code{"coalescentIntervals"} with the following entries:
 library(ape)
 
 data("hivtree.newick") # example tree in NH format
-cat(hivtree.newick, file = "hivtree.phy", sep = "\n") # generate file "hivtree.phy"
-tree.hiv <- read.tree("hivtree.phy") # load tree
-unlink("hivtree.phy") # delete the file "hivtree.phy"
+tree.hiv <- read.tree(text = hivtree.newick) # load tree
 
 ci <- coalescent.intervals(tree.hiv) # from tree
 ci

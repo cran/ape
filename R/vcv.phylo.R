@@ -1,8 +1,8 @@
-### vcv.phylo.R  (2002-08-28)
+### vcv.phylo.R  (2003-06-03)
 ###
 ###     Phylogenetic Variance-covariance or Correlation Matrix
 ###
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -59,11 +59,13 @@ vcv.phylo <- function(phy, model = "Brownian", cor = FALSE)
         }
     }
     if (cor) {
+        M <- vcv
         for (i in 1:(nb.tip - 1))
           for (j in 2:nb.tip)
-            vcv[i, j] <- vcv[j, i] <- vcv[i, j] / sqrt(vcv[i, i] * vcv[j, j])
-        vcv[1, 1] <- vcv[nb.tip, nb.tip] <- 1
+            M[i, j] <- M[j, i] <- vcv[i, j] / sqrt(vcv[i, i] * vcv[j, j])
+        diag(M) <- 1                                                  
+        vcv <- M
     }
     rownames(vcv) <- colnames(vcv) <- phy$tip.label
-    return(vcv)
+    vcv
 }

@@ -34,6 +34,7 @@ ltt.plot(phy, ...)
 }
 \examples{
 data(bird.families)
+data(bird.orders)
 opar <- par(mfrow = c(2, 1))
 ltt.plot(bird.families)
 title("Lineages Through Time Plot of the Bird Families")
@@ -41,5 +42,16 @@ ltt.plot(bird.families, log = "y")
 title(main = "Lineages Through Time Plot of the Bird Families",
       sub = "(with logarithmic transformation of the y-axis)")
 par(opar)
+
+### to plot the tree and the LTT plot together
+tmp <- bird.families
+tmp$tip.label <- rep("", length(bird.families$tip.label))
+tmp2 <- bird.orders
+tmp2$tip.label <- rep("", length(bird.orders$tip.label))
+layout(matrix(1:4, 2, 2))
+plot(tmp)
+ltt.plot(bird.families, main = "Bird families")
+plot(tmp2)
+ltt.plot(bird.orders, main = "Bird orders")
 }
 \keyword{hplot}

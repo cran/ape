@@ -1,8 +1,8 @@
-### plot.phylo.R  (2003-02-04)
+### plot.phylo.R  (2003-05-24)
 ###
 ###     Plot Phylogenies
 ###
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -23,7 +23,7 @@
 plot.phylo <- function(x, show.node.label = FALSE, edge.color = NULL,
                        edge.width = NULL, font = 3, adj = 0, srt = 0,
                        no.margin = FALSE, label.offset = NULL,
-                       x.lim = NULL, ...)
+                       underscore = FALSE, x.lim = NULL, ...)
 {
     phy <- x
     rm(x)
@@ -127,6 +127,7 @@ plot.phylo <- function(x, show.node.label = FALSE, edge.color = NULL,
          xlab="", ylab="", xaxt="n", yaxt="n", bty="n", ...)
     segments(x0v, y0v, x0v, y1v) # draws vertical lines
     segments(x0h, y0h, x1h, y0h, col = edge.color, lwd = edge.width) # draws horizontal lines
+    if (!underscore) phy$tip.label <- gsub("_", " ", phy$tip.label)
     text(xx[as.character(1:nb.tip)] + label.offset, 1:nb.tip, phy$tip.label,
          adj = adj, font = font, srt = srt)
     if (show.node.label) text(xx[as.character(-(1:nb.node))] + label.offset,

@@ -1,0 +1,76 @@
+\name{chronogram}
+\alias{chronogram}
+
+\title{Chronogram Computed by Nonparametric Rate Smoothing}
+\usage{
+chronogram(phy, scale = 1, \dots)
+}
+\arguments{
+  \item{phy}{A phylogenetic tree (i.e. an object of class
+    \code{"phylo"}), where the branch lengths are measured in substitutions.}
+  
+  \item{scale}{Age of the root in the inferred chronogram (default value: 0). }
+    
+  \item{minEdgeLength}{Minimum edge length in the phylogram (default
+    value: 1e-06). If any branch lengths are smaller then they will be
+    set to this value.}
+  
+  \item{expo = 2}{Exponent in the objective function (default value: 2)}
+    
+  \item{...}{Any of the above parameters.}
+  
+}
+\description{
+
+ \code{chronogram} computes a chronogram from a phylogram by applying the NPRS
+ (nonparametric rate smoothing) algorithm described in Sanderson (1997).
+}
+
+\details{
+  Please refer to Sanderson (1997) for mathematical details
+}
+
+\value{
+\code{chronogram} returns an object of class \code{"phylo"}. The branch lengths of this
+tree will be clock-like and scaled so that the root node has age 1 (or the value
+set by the option \code{scale}}
+
+}
+
+\author{Gangolf Jobb (\url{http://www.treefinder.de}) and
+Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})
+}
+
+\seealso{
+\code{\link{ratogram}}, \code{\link{NPRS.criterion}}.
+}
+
+
+\references{
+  Sanderson, M. J. (1997) A nonparametric approach to estimating
+    divergence times in the absence of rate constancy. \emph{Molecular
+    Biology and Evolution}, \bold{14}, 1218--1231.
+}
+
+\examples{
+library(ape)
+
+# get tree
+data("landplants.newick") # example tree in NH format
+tree.landplants <- read.tree(text = landplants.newick)
+
+# plot tree
+tree.landplants
+plot(tree.landplants, label.offset = 0.001)
+
+# estimate chronogram
+chrono.plants <- chronogram(tree.landplants)
+
+# plot and write to file
+plot(chrono.plants, label.offset = 0.001)
+write.tree(chrono.plants, file = "chronogram.phy")
+
+# value of NPRS function for our estimated chronogram
+NPRS.criterion(tree.landplants, chrono.plants)
+}
+\keyword{manip}

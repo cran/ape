@@ -1,4 +1,4 @@
-### read.tree.R  (2003-01-04)
+### read.tree.R  (2003-29-05)
 ###
 ###     Read Tree File in Parenthetic Format
 ###
@@ -81,7 +81,12 @@ tree.build <- function(tp) {
             if (skeleton[i - 1] == ")") go.down()   # go down one level
         }
     }
-    if(node.label[1] == "NA") node.label[1] <- ""
+    ## The following lines are for the transition between R 1.7.0
+    ## and R 1.8.0 (EP 2003-05-29)
+    if (as.numeric(R.Version()$minor) >= 8)
+      if (is.na(node.label[1])) node.label[1] <- ""
+    else
+      if (node.label[1] == "NA") node.label[1] <- ""
     edge <- edge[-nb.edge, ]
     mode(edge) <- "character"
     root.edge <- edge.length[nb.edge]
@@ -94,20 +99,22 @@ tree.build <- function(tp) {
     if (all(obj$node.label == "")) obj$node.label <- NULL
     if (is.na(obj$root.edge)) obj$root.edge <- NULL
     class(obj) <- "phylo"
-    return(obj)
+    obj
 }
 
 read.tree <- function(file = "", format = "Newick", rooted = TRUE, text = NULL,
                       tree.names = NULL, skip = 0, comment.char = "#", ...)
 {
     if (!is.null(text)) {
-        if (!is.character(text)) stop("argument \"text\" must be of mode character")
+        if (!is.character(text))
+          stop("argument `text' must be of mode character")
         tree <- text
     }
     else {
         tree <- scan(file = file, what = character(), sep = "\n", quiet = TRUE,
                      skip = skip, comment.char = comment.char, ...)
     }
+    tree <- gsub("[ \t]", "", tree)
     tsp <- unlist(strsplit(tree, NULL))
     ind <- which(tsp == ";")
     nb.tree <- length(ind)
@@ -126,5 +133,5 @@ read.tree <- function(file = "", format = "Newick", rooted = TRUE, text = NULL,
         else names(list.obj) <- tree.names
         class(list.obj) <- c("phylo", "multi.tree")
     }
-    return(list.obj)
+    list.obj
 }

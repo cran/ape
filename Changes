@@ -1,3 +1,55 @@
+		CHANGES IN APE VERSION 1.1
+
+
+NEW FEATURES
+
+    o The Klastorin (1982) method as suggested by Misawa and Tajima
+      (2000, Mol. Biol. Evol. 17:1879-1884) for classifying genes
+      on the basis of phylogenetic trees has been implemented (see
+      the function klastorin()). 
+
+    o Functions have been added to convert APE's "phylo" objects in
+      "hclust" cluster objects and vice versa (see the help page of
+      as.phylo for details).
+
+    o Three new functions, ratogram(), chronogram() and NPRS.criterion(),
+      are introduced for the estimation of absolute evolutionary rates
+      (ratogram) and dated clock-like trees (chronogram) from
+      phylogenetic trees using the non-parametric rate smoothing approach
+      by MJ Sanderson (1997, Mol. Biol. Evol. 14:1218-1231).
+
+    o A summary method is now provided printing a summary information on a
+      phylogenetic tree with, for instance, `summary(tree)'.
+
+    o The behaviour of read.tree() was changed so that all spaces and
+      tabulations in tree files are now ignored. Consequently, spaces in tip
+      labels are no more allowed. Another side effect is that read.nexus()
+      now does not replace the underscores (_) in tip labels with spaces
+      (this behaviour was undocumented).
+      
+    o The function plot.phylo() has a new option (`underscore') which
+      specifies whether the underscores in tip labels should be written on
+      the plot as such or replaced with spaces (the default).
+
+    o The function birthdeath() now computes 95 % confidence intervals of
+      the estimated parameters using profile likelihood.
+      
+    o Three new data sets are included: a gene tree estimated from 36
+      landplant rbcL sequences, a gene tree estimated from 32 opsin
+      sequences, and a gene tree for 50 BRCA1 mammalian sequences.
+
+
+BUG FIXES
+      
+    o A bug was fixed in dist.gene() where nothing was returned.
+
+    o A bug in plot.mst() was fixed.
+
+    o A bug in vcv.phylo() resulted in false correlations when the
+      option `cor = TRUE' was used (now fixed).
+
+
+
 		CHANGES IN APE VERSION 1.0
 
 

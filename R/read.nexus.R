@@ -1,4 +1,4 @@
-### read.nexus.R  (2003-16-08)
+### read.nexus.R  (2003-05-24)
 ###
 ###     Read Tree File in Nexus Format
 ###
@@ -106,7 +106,6 @@ read.nexus <- function(file, tree.names = NULL)
         x <- unlist(strsplit(x, "[,; \t]"))
         x <- x[x != ""]
         TRANS <- matrix(x, ncol = 2, byrow = TRUE)
-        TRANS[, 2] <- gsub("_", " ", TRANS[, 2])
         TRANS[, 2] <- gsub("['\"]", "", TRANS[, 2])
     }
     if (translation) start <- semico[semico > i2][1] + 1
@@ -114,7 +113,7 @@ read.nexus <- function(file, tree.names = NULL)
     end <- endblock[endblock > i1][1] - 1
     tree <- paste(X[start:end], sep = "", collapse = "")
     if (length(grep("\\[&U\\]", tree)) > 0) {
-        warning("at least one tree was unrooted\n(the current version of ape does not distinguish\nroot and unroote trees)")
+        warning("at least one tree was unrooted\n(the current version of ape does not distinguish\nrooted and unrooted trees)")
         tree <- gsub("\\[&U\\]", "", tree)
     }
     tree <- gsub("\\[&R\\]", "", tree)

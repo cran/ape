@@ -16,13 +16,16 @@ birthdeath(phy)
   Nee et al. (1994) used a re-parametrization of the birth-death model
   studied by Kendall (1948) so that the likelihood has to be maximized
   over \emph{d/b} and \emph{b - d}, where \emph{b} is the birth rate,
-  and \emph{d} the death rate. This is the approach used by the present function.
+  and \emph{d} the death rate. This is the approach used by the present
+  function.
 
-  By contrast to Nee et al. (1994), this function computes the
-  standard-errors of the estimated parameters using a normal
-  approximations of the maximum likelihood estimates, though this is
-  likely to be inaccurate because of asymmetries of the likelihood
-  function (Nee et al. 1995).
+  This function computes the standard-errors of the estimated parameters
+  using a normal approximations of the maximum likelihood estimates:
+  this is likely to be inaccurate because of asymmetries of the
+  likelihood function (Nee et al. 1995). In addition, 95 % confidence
+  intervals of both parameters are computed using profile likelihood:
+  they are particularly useful if the estimate of \emph{d/b} is at the
+  boundary of the parameter space (i.e. 0, which is often the case).
 
   Note that the function does not check that the tree is effectively
   ultrametric, so if it is not, the returned result may not be meaningful.

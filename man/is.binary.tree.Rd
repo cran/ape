@@ -8,7 +8,9 @@ is.binary.tree(tree)
   \item{tree}{phylogenetic tree (i.e. an object of class \code{"phylo"}).}
 }
 \description{
- This function tests whether a phylogenetic tree is binary.
+ This function tests whether a phylogenetic tree is binary, i.e. whether every node
+ (including the root node) has exactly two descendant nodes.  In this case the number
+ of edges in the tree equals 2 n - 2 where n is the number of taxa (tips) in the tree.
 }
 \value{
   \code{is.binary.tree} returns \code{TRUE} if \code{tree}
@@ -22,10 +24,10 @@ is.binary.tree(tree)
 
 \examples{
 library(ape)
-data("hivtree.newick") # example tree
-cat(hivtree.newick, file = "hivtree.phy", sep = "\n") # generate file "hivtree.phy"
 
-tree.hiv <- read.tree("hivtree.phy")
+data("hivtree.newick") # example tree in NH format
+tree.hiv <- read.tree(text = hivtree.newick) # load tree
+
 is.binary.tree(tree.hiv)
 
 plot(tree.hiv)

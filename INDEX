@@ -1,7 +1,6 @@
-GC.content              Content in GC from DNA Sequences
 add.scale.bar           Add a Scale Bar to a Phylogeny Plot
 all.equal.phylo         Global Comparison of two Phylogenies
-ape-internal            Internal Ape Functions
+as.phylo                Conversion between "phylo" and "hclust" trees
 balance                 Balance of a Dichotomous Phylogenetic Tree
 base.freq               Base frequencies from DNA Sequences
 bind.tree               Binds Trees
@@ -13,6 +12,8 @@ birthdeath              Estimation of Speciation and Extinction Rates
                         With Birth-Death Models
 branching.times         Branching Times of a Phylogenetic Tree
 cherry                  Number of Cherries and Null Models of Trees
+chronogram              Chronogram Computed by Nonparametric Rate
+                        Smoothing
 coalescent.intervals    Coalescent Intervals
 collapsed.intervals     Collapsed Coalescent Intervals
 compar.gee              Comparative Analysis with GEEs
@@ -25,30 +26,41 @@ diversi.time            Analysis of Diversification with Survival
                         Models
 drop.tip                Remove Tips in a Phylogenetic Tree
 gamma.stat              Gamma-Statistic of Pybus and Harvey
+GC.content              Content in GC from DNA Sequences
 heterozygosity          Heterozygosity at a Locus Using Gene
                         Frequencies
 hivtree                 Phylogenetic Tree of 193 HIV-1 Sequences
 is.binary.tree          Test for Binary Tree
 is.ultrametric          Test if a Tree is Ultrametric
+klastorin               Klastorin's (1982) method for classifying
+                        genes as suggested by Misawa and Tajima (2000)
+landplants              Gene Tree of 36 Landplant rbcL Sequences
 ltt.plot                Lineages Through Time Plot
 mantel.test             Mantel Test for Similarity of Two Matrices
 mst                     Minimum Spanning Tree
+NPRS.criterion          Objective Function Employed in Nonparametric
+                        Rate Smoothing
+opsin                   Gene Tree of 32 opsin Sequences
 pic                     Phylogenetically Independent Contrasts
 plot.phylo              Plot Phylogenies
-read.GenBank            Read DNA Sequences from GenBank via Internet
+ratogram                Ratogram Computed by Nonparametric Rate
+                        Smoothing
 read.dna                Read DNA Sequences in a File
+read.GenBank            Read DNA Sequences from GenBank via Internet
 read.nexus              Read Tree File in Nexus Format
 read.tree               Read Tree File in Parenthetic Format
 skyline                 Skyline Plot Estimate of Effective Population
                         Size
 skylineplot             Drawing Skyline Plot Graphs
+summary.phylo           Print Summary of a Phylogeny
 theta.h                 Population Parameter THETA using Homozygosity
 theta.k                 Population Parameter THETA using Expected
                         Number of Alleles
 theta.s                 Population Parameter THETA using Segregating
                         Sites in DNA Sequences
-vcv.phylo               Phylogenetic Variance-covariance or Correlation
-                        Matrix
+vcv.phylo               Phylogenetic Variance-covariance or
+                        Correlation Matrix
 write.dna               Write DNA Sequences in a File
 write.nexus             Write Tree File in Nexus Format
 write.tree              Write Tree File in Parenthetic Format
+xenarthra               Molecular Phylogeny of Living Xenarthrans

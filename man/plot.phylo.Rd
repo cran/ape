@@ -5,7 +5,7 @@
 \method{plot}{phylo}(x, show.node.label = FALSE, edge.color = NULL,
                      edge.width = NULL, font = 3, adj = 0, srt = 0,
                      no.margin = FALSE, label.offset = NULL,
-                     x.lim = NULL, ...)
+                     underscore = FALSE, x.lim = NULL, ...)
 }
 \arguments{
   \item{x}{an object of class \code{"phylo"}.}
@@ -36,6 +36,9 @@
     the tips of the phylogeny and their corresponding labels. If
     \code{NULL}, this is computed with respect to various parameters
     such as the string lengths of the labels.}
+  \item{underscore}{a logical specifying whether the underscores in tip
+    labels should be written as spaces (the default) or left as are (if
+    \code{TRUE}.}
   \item{x.lim}{a numeric giving the limit of the x-axis. If \code{NULL},
     this is computed with respect to various parameters such as the
     string lengths of the labels and the branch lengths.}
@@ -51,12 +54,12 @@
   The new default behaviour is to use the current margins rather
   than to set them to zero. If \code{no.margin = TRUE}, the margins are
   set to zero and are not restored after plotting the tree, so that the
-  user can access the coordinate system of the plot.
+  user can access the coordinates system of the plot.
 
   If the arguments \code{label.offset} and \code{x.lim} are not
   specified by the user, they are determined roughly by the
   function. This may not always give a nice result: the user may check
-  these values with (invisibly) returned list (see ``Value:'').
+  these values with the (invisibly) returned list (see ``Value:'').
 }
 \value{
   The function returns invisibly a list with the following components
@@ -79,11 +82,33 @@
 }
 \examples{
 ### An extract from Sibley and Ahlquist (1990)
-cat("(((Strix aluco:4.2,Asio otus:4.2):3.1,",
-   "Athene noctua:7.3):6.3,Tyto alba:13.5);",
+cat("(((Strix_aluco:4.2,Asio_otus:4.2):3.1,",
+   "Athene_noctua:7.3):6.3,Tyto_alba:13.5);",
    file = "ex.tre", sep = "\n")
 tree.owls <- read.tree("ex.tre")
 plot(tree.owls)
 unlink("ex.tre") # delete the file "ex.tre"
+
+data(xenarthra)
+op <- par()
+\dontrun{par(ask = TRUE)}
+plot(xenarthra)
+### remove the margins and put the tip labels closer
+### to the tips
+plot(xenarthra, no.margin = TRUE, label.offset = .005)
+### use a smaller font size
+par(cex = 0.8)
+plot(xenarthra, no.margin = TRUE, label.offset = .005)
+par(op)
+
+data(bird.orders)
+### using random colours and thichness
+plot(bird.orders,
+     edge.color = sample(colors(), length(bird.orders$edge)/2),
+     edge.width = sample(1:10, length(bird.orders$edge)/2, replace = TRUE))
+### rainbow colouring...
+plot(bird.orders,
+     edge.color = sample(c("red", "yellow", "blue", "green", "orange", "purple"), length(bird.orders$edge)/2, replace = TRUE),
+     edge.width = sample(1:10, length(bird.orders$edge)/2, replace = TRUE))
 }
 \keyword{hplot}

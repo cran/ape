@@ -62,11 +62,6 @@ read.tree(file = "", format = "Newick", rooted = TRUE, text = NULL,
   If several trees are read in the file, the returned object is of class
   \code{c("phylo", "multi.tree")}, and is a list of objects of class \code{"phylo"}.
 }
-\note{
-  The present implementation tries to follow as much as possible the
-  Newick standard. An original feature of the present implementation is
-  that spaces are allowed in tip and node labels.
-}
 \references{
   \url{http://evolution.genetics.washington.edu/phylip/newick_doc.html}
 
@@ -80,15 +75,15 @@ read.tree(file = "", format = "Newick", rooted = TRUE, text = NULL,
 }
 \examples{
 ### An extract from Sibley and Ahlquist (1990)
-cat("(((Strix aluco:4.2,Asio otus:4.2):3.1,",
-   "Athene noctua:7.3):6.3,Tyto alba:13.5);",
+cat("(((Strix_aluco:4.2,Asio_otus:4.2):3.1,",
+   "Athene_noctua:7.3):6.3,Tyto_alba:13.5);",
    file = "ex.tre", sep = "\n")
 tree.owls <- read.tree("ex.tre")
 str(tree.owls)
 tree.owls
 unlink("ex.tre") # delete the file "ex.tre"
 ### Only the first three species using the option `text'
-TREE <- "((Strix aluco:4.2,Asio otus:4.2):3.1,Athene noctua:7.3);"
+TREE <- "((Strix_aluco:4.2,Asio_otus:4.2):3.1,Athene_noctua:7.3);"
 TREE
 tree.owls.bis <- read.tree(text = TREE)
 str(tree.owls.bis)

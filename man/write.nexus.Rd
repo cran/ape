@@ -24,7 +24,7 @@ write.nexus(phy, file = "", translate = TRUE, original.data = TRUE)
   \code{"origin"} of \code{phy} is read and its data (except the trees)
   are written in \code{file}.
 
-  Currently, only a single tree can be wriiten in \code{file}.
+  Currently, only a single tree can be written in \code{file}.
 }
 \value{
   None (invisible `NULL').
