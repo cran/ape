@@ -8,6 +8,7 @@
 \alias{perm.rowscols}
 \alias{mant.zstat}
 \alias{lower.triang}
+\alias{clado.build}
 \title{Internal Ape Functions}
 \description{
   Internal ape functions.

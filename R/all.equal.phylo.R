@@ -77,7 +77,7 @@ all.equal.phylo <- function(target, current, ...)
                 ## compare topologies
                 nb.br.tip2root1 <- sort(nb.br.tip2root(phy1, nb.tip1))
                 nb.br.tip2root2 <- sort(nb.br.tip2root(phy2, nb.tip2))
-                equal.nb.br.tip2root <- all.equal(nb.br.tip2root1, nb.br.tip2root2, ...)
+                equal.nb.br.tip2root <- all.equal(nb.br.tip2root1, nb.br.tip2root2, ...) # not sure about the dotdotdot here (EP 7-12-2002)
                 if (identical(equal.nb.br.tip2root, TRUE)) {
                     cat("Topologies are the same.\n")
                     cat("The labeled trees are the same.\n")

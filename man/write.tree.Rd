@@ -34,7 +34,8 @@ write.tree(phy, file = "", append = FALSE, format = "Newick")
 
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{read.tree}}
+  \code{\link{read.tree}}, \code{\link{read.nexus}},
+  \code{\link{write.nexus}}
 }
 \keyword{manip}
 \keyword{IO}

@@ -36,7 +36,8 @@ vcv.phylo <- function(phy, model = "Brownian", cor = FALSE)
         base <- phy$edge[ind, 1]
         xx[i] <- xx[base] + phy$edge.length[ind]
     }
-    ## seq.nod (liste de vecteurs): séquence des noeuds allant de chaque tip vers la racine
+    ## seq.nod (liste de vecteurs): séquence des
+    ## noeuds allant de chaque tip vers la racine
     seq.nod <- list()
     for (i in as.character(1:nb.tip)) {
         vec <- i

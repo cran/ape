@@ -1,8 +1,8 @@
-### write.tree.R  (2002-09-26)
+### write.tree.R  (2003-01-17)
 ###
 ###     Write Tree File in Parenthetic Format
 ###
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -34,20 +34,24 @@ write.tree <- function(phy, file = "", append = FALSE, format = "Newick")
         }
         cp(")")
         if (!is.null(phy$node.label)) cp(phy$node.label[-i])
-        cp(":")
-        cp(as.character(phy$edge.length[which(phy$edge[, 2] == i)]))
+        if (!is.null(phy$edge.length)) {
+            cp(":")
+            cp(as.character(phy$edge.length[which(phy$edge[, 2] == i)]))
+        }
     }
     add.terminal <- function(i)
     {
         cp(phy$tip.label[phy$edge[i, 2]])
-        cp(":")
-        cp(as.character(phy$edge.length[i]))
+        if (!is.null(phy$edge.length)) {
+            cp(":")
+            cp(as.character(phy$edge.length[i]))
+        }
     }
     if (class(phy) != "phylo")
       stop(paste("object \"", deparse(substitute(phy)),
                  "\" is not of class \"phylo\""), sep = "")
-    nb.node <- -min(as.numeric(phy$edge))
     mode(phy$edge) <- "numeric"
+    nb.node <- -min(phy$edge)
     STRING <- "("
     br <- which(phy$edge[, 1] == -1)
     for (j in br) {
@@ -67,5 +71,6 @@ write.tree <- function(phy, file = "", append = FALSE, format = "Newick")
         cp(as.character(phy$root.edge))
         cp(";")
     }
-    cat(STRING, "\n", file = file, append = append, sep = "")
+    if (file == "") return(STRING)
+    else cat(STRING, "\n", file = file, append = append, sep = "")
 }

@@ -15,7 +15,7 @@ is.binary.tree(tree)
    is a fully binary phylogenetic tree, otherwise it returns \code{FALSE}.
 }
 \seealso{
-\code{\link{read.tree}}
+\code{\link{read.tree}}, \code{\link{is.ultrametric}}
 }
 
 \author{Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})}

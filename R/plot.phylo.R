@@ -1,4 +1,4 @@
-### plot.phylo.R  (2002-09-26)
+### plot.phylo.R  (2003-02-04)
 ###
 ###     Plot Phylogenies
 ###
@@ -20,7 +20,10 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-plot.phylo <- function(x, ...)
+plot.phylo <- function(x, show.node.label = FALSE, edge.color = NULL,
+                       edge.width = NULL, font = 3, adj = 0, srt = 0,
+                       no.margin = FALSE, label.offset = NULL,
+                       x.lim = NULL, ...)
 {
     phy <- x
     rm(x)
@@ -83,7 +86,7 @@ plot.phylo <- function(x, ...)
             base <- phy$edge[ind, 1]
             xx[i] <- xx[base] + phy$edge.length[ind]
         }
-    
+
         ## un trait vertical à chaque noeud...
         x0v <- xx[1:nb.node]
         y0v <- y1v <- numeric(nb.node)
@@ -106,14 +109,30 @@ plot.phylo <- function(x, ...)
         }
     }
     
-    op <- par(mai = rep(0, 4))
-    x.lim <- max(xx[as.character(1:nb.tip)] +
-                 nchar(phy$tip.label) * 0.018 * max(xx) * par("cex"))
-
+    if (no.margin) op <- par(mai = rep(0, 4))
+    if (is.null(x.lim)) x.lim <- max(xx[as.character(1:nb.tip)] +
+                                     nchar(phy$tip.label) * 0.018 * max(xx) * par("cex"))
+    if (is.null(label.offset)) label.offset <- 0.1
+    if (is.null(edge.color)) edge.color <- rep("black", length(phy$edge.length))
+    else {
+        names(edge.color) <- phy$edge[, 2]
+        edge.color <- edge.color[as.character(c(1:nb.tip, -(nb.node:2)))]
+    }
+    if (is.null(edge.width)) edge.width <- rep(1, length(phy$edge.length))
+    else {
+        names(edge.width) <- phy$edge[, 2]
+        edge.width <- edge.width[as.character(c(1:nb.tip, -(nb.node:2)))]
+    }
     plot(0, type="n", xlim=c(0, x.lim), ylim=c(1, nb.tip),
          xlab="", ylab="", xaxt="n", yaxt="n", bty="n", ...)
     segments(x0v, y0v, x0v, y1v) # draws vertical lines
-    segments(x0h, y0h, x1h, y0h) # draws horizontal lines
-    text(xx[as.character(1:nb.tip)] + 0.1, 1:nb.tip, phy$tip.label, adj = 0, font = 3)
-    par(op)
+    segments(x0h, y0h, x1h, y0h, col = edge.color, lwd = edge.width) # draws horizontal lines
+    text(xx[as.character(1:nb.tip)] + label.offset, 1:nb.tip, phy$tip.label,
+         adj = adj, font = font, srt = srt)
+    if (show.node.label) text(xx[as.character(-(1:nb.node))] + label.offset,
+                              yy[as.character(-(1:nb.node))], phy$node.label,
+                              adj = adj, font = font, srt = srt)
+    invisible(list(show.node.label = show.node.label, edge.color = edge.color,
+                   edge.width = edge.width, font = font, adj = adj, srt = srt,
+                   no.margin = no.margin, label.offset = label.offset, x.lim = x.lim))
 }

@@ -1,0 +1,45 @@
+\name{write.nexus}
+\alias{write.nexus}
+\title{Write Tree File in Nexus Format}
+\usage{
+write.nexus(phy, file = "", translate = TRUE, original.data = TRUE)
+}
+\arguments{
+  \item{phy}{an object of class \code{"phylo"}.}
+  \item{file}{a file name specified by either a variable of mode character,
+    or a double-quoted string; if \code{file = ""}(the default) then the
+    tree is written on the standard output connection.}
+  \item{translate}{a logical, if \code{TRUE} (the default) a translation
+    of the tip labels is done which are replaced in the parenthetic
+    representation with tokens.}
+  \item{original.data}{a logical, if \code{TRUE} (the default) the
+    data in the original NEXUS file are eventually written in
+    \code{"file"} (see below).}
+}
+\description{
+  This function writes a tree in a file with the NEXUS format.
+}
+\details{
+  If \code{original.data = TRUE}, the file as specified by the attribute
+  \code{"origin"} of \code{phy} is read and its data (except the trees)
+  are written in \code{file}.
+
+  Currently, only a single tree can be wriiten in \code{file}.
+}
+\value{
+  None (invisible `NULL').
+}
+\references{
+  Maddison, D. R., Swofford, D. L. and Maddison, W. P. (1997) NEXUS: an
+  extensible file format for systemaric information. \emph{Systematic
+    Biology}, \bold{46}, 590--621.
+}
+
+\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\seealso{
+  \code{\link{read.nexus}}, \code{\link{read.tree}},
+  \code{\link{write.tree}}
+
+}
+\keyword{manip}
+\keyword{IO}

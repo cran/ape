@@ -1,4 +1,4 @@
-### mst.R  (2002-08-28)
+### mst.R  (2003-02-20)
 ###
 ###     Minimum Spanning Tree
 ###
@@ -103,6 +103,8 @@ nsca <- function(A)
 
     eig.res <- eigen(diag(1 / sqrt(Dr)) %*% A %*% diag(1 / sqrt(Dc)))
     r <- diag(1 / Dr) %*% (eig.res$vectors)[, 2:4]
-    dimnames(r)[[1]] <- dimnames(A)[[1]]
+    ## The next line has been changed by EP (20-02-2003)
+    ## dimnames(r)[[1]] <- dimnames(A)[[1]]
+    rownames(r) <- rownames(A)
     r
 }

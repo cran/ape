@@ -168,6 +168,7 @@ dist.dna.Tamura(x, y, variance = FALSE, GCcontent = NULL)
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
+  \code{\link{read.GenBank}}, \code{\link{read.dna}}, \code{\link{write.dna}},
   \code{\link{dist.gene}}, \code{\link{dist.phylo}}
 }
 \keyword{manip}

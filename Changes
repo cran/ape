@@ -1,3 +1,53 @@
+		CHANGES IN APE VERSION 1.0
+
+
+NEW FEATURES
+      
+    o Two new functions, read.dna() and write.dna(), read/write in a file
+      DNA sequences in interleaved or in sequential format.
+      
+    o Two new functions, read.nexus() and write.nexus(), read/write trees
+      in a NEXUS file.
+
+    o The new function bind.tree() allows to bind two trees together,
+      possibly handling root edges to give internal branches.
+
+    o The new function drop.tip() removes the tips in a phylogenetic tree,
+      and trims (or not) the corresponding internal branches.
+
+    o The new function is.ultrametric() tests if a tree is ultrametric.
+
+    o The function plot.phylo() has more functionalities such as drawing the
+      branches with different colours and/or different widths, showing the
+      node labels, controling the position and font of the labels, rotating
+      the labels, and controling the space around the plot.
+
+    o The function read.tree() can now read trees with no branch length,
+      such as "(a,b),c);". Consequently, the element `edge.length' in
+      objects of class "phylo" is now optional.
+
+    o The function write.tree() has a new default behaviour: if the default
+      for the option `file' is used (i.e. file = ""), then a variable of
+      mode character containing the tree in Newick format is returned which
+      can thus be assigned (e.g., tree <- write.tree(phy)).
+
+    o The function read.tree() has a new argument `text' which allows
+      to read the tree in a variable of mode character.
+
+    o A new data set is included: the phylogenetic relationships among
+      the orders of birds from Sibley and Ahlquist (1990).
+
+
+
+		CHANGES IN APE VERSION 0.2-1
+
+
+BUG FIXES
+
+    o Several bugs were fixed in the help pages.
+
+
+
 		CHANGES IN APE VERSION 0.2
 
 

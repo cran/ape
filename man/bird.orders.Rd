@@ -1,22 +1,21 @@
-\name{bird.families}
-\alias{bird.families}
-\title{Phylogeny of the Families of Birds From Sibley and Ahlquist}
+\name{bird.orders}
+\alias{bird.orders}
+\title{Phylogeny of the Orders of Birds From Sibley and Ahlquist}
 \description{
-  This data set describes the phylogenetic relationships of the families
+  This data set describes the phylogenetic relationships of the orders
   of birds as reported by Sibley and Ahlquist (1990). Sibley and
   Ahlquist inferred this phylogeny from an extensive number of DNA/DNA
   hybridization experiments. The ``tapestry'' reported by these two
   authors (more than 1000 species out of the ca. 9000 extant bird
   species) generated a lot of debates.
 
-  The present tree is based on the relationships among families. A few
-  families were not included in the figures in Sibley and Ahlquist, and
-  thus are not included here as well. The branch lengths were calculated
-  from the values of \eqn{\Delta T_{50}H}{Delta T50H} as found in Sibley
-  and Ahlquist (1990, figs. 354, 355, 356, and 369).
+  The present tree is based on the relationships among orders. The
+  branch lengths were calculated from the values of \eqn{\Delta
+    T_{50}H}{Delta T50H} as found in Sibley and Ahlquist (1990,
+  fig. 353).
 }
 \usage{
-data(bird.families)
+data(bird.orders)
 }
 \format{
   The data are stored as an object of class \code{"phylo"} which
@@ -27,10 +26,10 @@ data(bird.families)
   of birds: a study in molecular evolution. New Haven: Yale University Press.
 }
 \seealso{
-  \code{\link{read.tree}}, \code{\link{bird.orders}}
+  \code{\link{read.tree}}, \code{\link{bird.families}}
 }
 \examples{
-data(bird.families)
-plot(bird.families)
+data(bird.orders)
+plot(bird.orders)
 }
 \keyword{datasets}

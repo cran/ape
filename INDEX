@@ -4,7 +4,10 @@ all.equal.phylo         Global Comparison of two Phylogenies
 ape-internal            Internal Ape Functions
 balance                 Balance of a Dichotomous Phylogenetic Tree
 base.freq               Base frequencies from DNA Sequences
+bind.tree               Binds Trees
 bird.families           Phylogeny of the Families of Birds From Sibley
+                        and Ahlquist
+bird.orders             Phylogeny of the Orders of Birds From Sibley
                         and Ahlquist
 birthdeath              Estimation of Speciation and Extinction Rates
                         With Birth-Death Models
@@ -20,17 +23,21 @@ dist.phylo              Pairwise Distances from a Phylogenetic Tree
 diversi.gof             Tests of Constant Diversification Rates
 diversi.time            Analysis of Diversification with Survival
                         Models
+drop.tip                Remove Tips in a Phylogenetic Tree
 gamma.stat              Gamma-Statistic of Pybus and Harvey
 heterozygosity          Heterozygosity at a Locus Using Gene
                         Frequencies
 hivtree                 Phylogenetic Tree of 193 HIV-1 Sequences
 is.binary.tree          Test for Binary Tree
+is.ultrametric          Test if a Tree is Ultrametric
 ltt.plot                Lineages Through Time Plot
 mantel.test             Mantel Test for Similarity of Two Matrices
 mst                     Minimum Spanning Tree
 pic                     Phylogenetically Independent Contrasts
 plot.phylo              Plot Phylogenies
 read.GenBank            Read DNA Sequences from GenBank via Internet
+read.dna                Read DNA Sequences in a File
+read.nexus              Read Tree File in Nexus Format
 read.tree               Read Tree File in Parenthetic Format
 skyline                 Skyline Plot Estimate of Effective Population
                         Size
@@ -42,4 +49,6 @@ theta.s                 Population Parameter THETA using Segregating
                         Sites in DNA Sequences
 vcv.phylo               Phylogenetic Variance-covariance or Correlation
                         Matrix
+write.dna               Write DNA Sequences in a File
+write.nexus             Write Tree File in Nexus Format
 write.tree              Write Tree File in Parenthetic Format

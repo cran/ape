@@ -1,8 +1,8 @@
-### branching.times.R  (2002-08-28)
+### is.ultrametric.R  (2003-01-20)
 ###
-###     Branching Times of a Phylogenetic Tree
+###     Test if a Tree is Ultrametric
 ###
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -20,16 +20,17 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-branching.times <- function(phy)
+is.ultrametric <- function(phy, tol = .Machine$double.eps^0.5)
 {
     if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
     tmp <- as.numeric(phy$edge)
     nb.tip <- max(tmp)
     nb.node <- -min(tmp)
 
-    ## xx: vecteur donnant la distance d'un noeud ou tip à partir de la racine
     xx <- as.numeric(rep(NA, nb.tip + nb.node))
     names(xx) <- as.character(c(-(1:nb.node), 1:nb.tip))
+
+    ## xx: vecteur donnant la distance d'un noeud ou tip à partir de la racine
     xx["-1"] <- 0
     for (i in 2:length(xx)) {
         nod <- names(xx[i])
@@ -37,8 +38,10 @@ branching.times <- function(phy)
         base <- phy$edge[ind, 1]
         xx[i] <- xx[base] + phy$edge.length[ind]
     }
-    depth <- max(xx)
-    branching.times <- depth - xx[1:nb.node]
-    if (!is.null(phy$node.label)) names(branching.times) <- phy$node.label
-    return(branching.times)
+
+    if (identical(all.equal(var(xx[(nb.node + 1):length(xx)]), 0,
+                            tolerance = tol), TRUE))
+      return(TRUE)
+    else
+      return(FALSE)
 }

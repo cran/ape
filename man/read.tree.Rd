@@ -2,7 +2,7 @@
 \alias{read.tree}
 \title{Read Tree File in Parenthetic Format}
 \usage{
-read.tree(file = "", format = "Newick", rooted = TRUE,
+read.tree(file = "", format = "Newick", rooted = TRUE, text = NULL,
           tree.names = NULL, skip = 0, comment.char = "#", ...)
 }
 \arguments{
@@ -14,6 +14,11 @@ read.tree(file = "", format = "Newick", rooted = TRUE,
   \item{rooted}{a logical indicating whether the tree is rooted or not;
     defaults to \code{TRUE}. This is currently not implemented, meaning
     that all trees are read as rooted.}
+  \item{text}{alternatively, the name of a variable of mode character
+    which contains the tree(s) in parenthetic format. By default, this
+    is ignored (set to \code{NULL}, meaning that the tree is read in a
+    file); if \code{text} is not \code{NULL}, then the argument
+    \code{file} is ignored.}
   \item{tree.names}{if there are several trees to be read, a vector of
     mode character that gives names to the individual trees; if
     \code{NULL} (the default), the trees are named \code{"tree1"},
@@ -44,13 +49,13 @@ read.tree(file = "", format = "Newick", rooted = TRUE,
     positive numbers. For each row, the first column gives the
     ancestor. This representation allows an easy manipulation of the
     tree, particularly if it is rooted.}
-  \item{edge.length}{a numeric vector giving the lengths of the
+  \item{edge.length}{(optional) a numeric vector giving the lengths of the
     branches given by \code{edge}.}
   \item{tip.label}{a vector of mode character giving the names of the
     tips; the order of the names in this vector corresponds to the
     (positive) number in \code{edge}.}
-  \item{node.label}{(optional) a vector of mode character giving the names of the
-    nodes (set to \code{NULL} if not available in the file).}
+  \item{node.label}{(optional) a vector of mode character giving the
+    names of the nodes (set to \code{NULL} if not available in the file).}
   \item{root.edge}{(optional) a numeric value giving the length of the
     branch at the root is it exists (\code{NULL} otherwise).}
 
@@ -82,6 +87,12 @@ tree.owls <- read.tree("ex.tre")
 str(tree.owls)
 tree.owls
 unlink("ex.tre") # delete the file "ex.tre"
+### Only the first three species using the option `text'
+TREE <- "((Strix aluco:4.2,Asio otus:4.2):3.1,Athene noctua:7.3);"
+TREE
+tree.owls.bis <- read.tree(text = TREE)
+str(tree.owls.bis)
+tree.owls.bis
 }
 \keyword{manip}
 \keyword{IO}

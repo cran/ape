@@ -22,7 +22,7 @@ read.GenBank(access.nb, seq.names = access.nb)
   where the sequences are downloaded.
 }
 \seealso{
-  \code{\link{dist.dna}}
+  \code{\link{read.dna}}, \code{\link{write.dna}}, \code{\link{dist.dna}}
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \examples{
