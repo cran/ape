@@ -1,8 +1,8 @@
-### read.dna.R  (2003-07-02)
+### read.dna.R  (2004-08-31)
 ###
 ###     Read DNA Sequences in a File
 ###
-### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -113,8 +113,7 @@ read.dna <- function(file, format = "interleaved", skip = 0,
                                                               collapse = "")),
                                                    NULL))
     }
-    if (is.null(seq.names)) names(obj) <- taxa
-    else names(obj) <- seq.names
+    names(obj) <- if (is.null(seq.names)) taxa else seq.names
     obj <- lapply(obj, tolower)
     obj
 }

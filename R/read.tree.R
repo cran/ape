@@ -1,8 +1,8 @@
-### read.tree.R  (2004-02-02)
+### read.tree.R  (2004-08-31)
 ###
 ###     Read Tree File in Parenthetic Format
 ###
-### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -119,8 +119,7 @@ read.tree <- function(file = "", format = "Newick", rooted = TRUE, text = NULL,
     for (i in 1:nb.tree) STRING[[i]] <- paste(tsp[x[i]:y[i]], sep = "", collapse = "")
     list.obj <- list()
     for (i in 1:nb.tree) {
-        if (length(grep(":", STRING[[i]]))) list.obj[[i]] <- tree.build(STRING[[i]])
-        else list.obj[[i]] <- clado.build(STRING[[i]])
+        list.obj[[i]] <- if (length(grep(":", STRING[[i]]))) tree.build(STRING[[i]]) else clado.build(STRING[[i]])
         ## Check here that the root edge is not incorrectly represented
         ## in the object of class "phylo" by simply checking that there
         ## is a bifurcation at the root (node "-1")

@@ -1,8 +1,8 @@
-### plot.phylo.R  (2004-02-04)
+### plot.phylo.R  (2004-08-31)
 ###
 ###     Plot Phylogenies
 ###
-### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -24,7 +24,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                        node.pos = NULL, show.node.label = FALSE,
                        edge.color = NULL, edge.width = NULL, font = 3,
                        adj = 0, srt = 0, no.margin = FALSE, root.edge = FALSE,
-                       label.offset = NULL, underscore = FALSE, x.lim = NULL, ...)
+                       label.offset = 0, underscore = FALSE, x.lim = NULL, ...)
 {
     phy <- x
     rm(x)
@@ -40,12 +40,9 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     if (type %in% c("phylogram", "cladogram")) {
         if (is.null(node.pos)) {
             if (type == "phylogram") node.pos <- 1
-            if (type == "cladogram") {
-                if (!use.edge.length) node.pos <- 2 else node.pos <- 1
-            }
+            if (type == "cladogram") node.pos <- if (!use.edge.length) 2 else 1
         }
-        if (node.pos == 1) yy <- node.height(phy$edge)
-        if (node.pos == 2) yy <- node.height.clado(phy$edge)
+        yy <- if (node.pos == 1) node.height(phy$edge) else node.height.clado(phy$edge)
         if (!use.edge.length) {
             xx <- node.depth(phy$edge) - 1
             xx <- max(xx) - xx
@@ -54,8 +51,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
         }
         if (root.edge) xx <- xx + phy$root.edge
     } else { # if type == "unrooted"
-        if (use.edge.length) XY <- unrooted.xy(nb.tip, nb.node, phy$edge, phy$edge.length) else
-        XY <- unrooted.xy(nb.tip, nb.node, phy$edge, rep(1, dim(phy$edge)[1]))
+        XY <- if (use.edge.length) unrooted.xy(nb.tip, nb.node, phy$edge, phy$edge.length) else unrooted.xy(nb.tip, nb.node, phy$edge, rep(1, dim(phy$edge)[1]))
         ## rescale so that we have only positive values
         xx <- XY[, 1] - min(XY[, 1])
         yy <- XY[, 2] - min(XY[, 2])
@@ -72,7 +68,6 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
             y.lim <- max(yy)
         }
     }
-    if (is.null(label.offset)) label.offset <- 0.1
     if (is.null(edge.color)) edge.color <- rep("black", dim(phy$edge)[1]) else {
         names(edge.color) <- phy$edge[, 2]
         edge.color <- edge.color[as.character(c(1:nb.tip, -(nb.node:2)))]
@@ -319,7 +314,7 @@ unrooted.xy <- function(nb.tip, nb.node, edge, edge.length)
     names(xx) <- as.character(c(-(1:nb.node), 1:nb.tip))
     yy <- xx
     nb.sp <- node.depth(edge)[1:nb.node]
-    angle <- as.numeric(rep(NA, (nb.node))) # the angle allocated to each node wrt their nb of tips
+    angle <- as.numeric(rep(NA, nb.node)) # the angle allocated to each node wrt their nb of tips
     names(angle) <- names(nb.sp)
     axis <- angle # the axis of each branch
     ## start with the root...

@@ -10,7 +10,7 @@ rtree(n, br = TRUE)
     lengths (default is \code{TRUE}).}
 }
 \description{
-  This function generates a tree by splitting randomly the tips until
+  This function generates a tree by splitting randomly the edges until
   the specified number of tips is obtained.
 }
 \details{

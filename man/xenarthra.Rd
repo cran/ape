@@ -29,12 +29,11 @@ data(xenarthra)
 op <- par()
 \dontrun{par(ask = TRUE)}
 plot(xenarthra)
-### remove the margins and put the tip labels closer
-### to the tips
-plot(xenarthra, no.margin = TRUE, label.offset = .005)
-### use a smaller font size
+### remove the margins...
+plot(xenarthra, no.margin = TRUE)
+### ... and use a smaller font size
 par(cex = 0.8)
-plot(xenarthra, no.margin = TRUE, label.offset = .005)
+plot(xenarthra, no.margin = TRUE)
 par(op)
 }
 \keyword{datasets}

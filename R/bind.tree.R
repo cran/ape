@@ -1,8 +1,8 @@
-### bind.tree.R  (2003-02-02)
+### bind.tree.R  (2004-08-31)
 ###
 ###     Bind Trees
 ###
-### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -64,12 +64,10 @@ bind.tree <- function(x, y, node = -1, branch = NULL, position = NULL)
                 edge.length = c(x$edge.length, y$edge.length),
                 tip.label = c(x$tip.label, y$tip.label))
     if (!is.null(x$node.label)) {
-        if (!is.null(y$node.label)) obj$node.label <- c(x$node.label, y$node.label)
-        else obj$node.label <- c(x$node.label, rep(NA, -min(as.numeric(y$edge))))
+        obj$node.label <- if (!is.null(y$node.label)) c(x$node.label, y$node.label) else c(x$node.label, rep(NA, -min(as.numeric(y$edge))))
     }
     else if (!is.null(y$node.label)) obj$node.label <- c(rep(NA, -min(as.numeric(x$edge))), y$node.label)
     if (!is.null(x$root.edge)) obj$root.edge <- x$root.edge
     class(obj) <- "phylo"
-    obj <- tree.build(write.tree(obj))
-    obj
+    tree.build(write.tree(obj))
 }

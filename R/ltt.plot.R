@@ -1,8 +1,8 @@
-### ltt.plot.R  (2004-05-22)
+### ltt.plot.R  (2004-08-31)
 ###
 ###     Lineages Through Time Plot
 ###
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -81,8 +81,8 @@ mltt.plot <- function(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
     plot(0, 0, type = "n", xlim = xl, ylim = yl, xaxs = "r", yaxs = "r",
          xlab = xlab, ylab = ylab)
 
-    if (!dlty) lty <- rep(1, n) else lty <- 1:n
-    if (!dcol) col <- rep(1, n) else col <- topo.colors(n)
+    lty <- if (!dlty) rep(1, n) else 1:n
+    col <- if (!dcol) rep(1, n) else topo.colors(n)
 
     for (i in 1:n) lines(TREES[[i]], col = col[i], lty = lty[i], type = "S")
 

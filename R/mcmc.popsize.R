@@ -1,4 +1,4 @@
-### mcmc.popsize.R  (2004-07-4)
+### mcmc.popsize.R  (2004-09-16)
 ###
 ###     Run reversible jump MCMC to sample demographic histories 
 ###
@@ -513,10 +513,9 @@ h.mix<-(((data.time[i+1]-pos[left.pos])/(pos[right.pos]-pos[left.pos]))*(h[right
   a<-(h.jumps[-1]-h.jumps[-length(h.jumps)])/(jumps[-1]-jumps[-length(jumps)])
   c<-h.jumps[-1]-jumps[-1]*a
   area<-(1/a)*log(a*jumps[-1]+c)-(1/a)*log(a*jumps[-length(jumps)]+c)
-  area[is.na(a)]<-0
-  stepfunction<-(jumps[-1]-jumps[-length(jumps)])/h.jumps[-1]
-  area[a==0]<-stepfunction[a==0]
- 
+  stepfunction<-(jumps[-1]-jumps[-length(jumps)])*h.jumps[-1]
+  area[is.na(area)]<-stepfunction[is.na(area)]
+
   rightside<-sum(area*b1[-1])
   
   

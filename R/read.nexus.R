@@ -1,8 +1,8 @@
-### read.nexus.R  (2004-02-02)
+### read.nexus.R  (2004-08-31)
 ###
 ###     Read Tree File in Nexus Format
 ###
-### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -84,8 +84,7 @@ clado.build <- function(tp) {
     obj <- list(edge = edge,
                 tip.label = tip.label,
                 node.label = node.label)
-    if (all(obj$node.label == "NA")) obj$node.label <- NULL
-    else obj$node.label <- gsub("^NA", "", obj$node.label)
+    obj$node.label <- if (all(obj$node.label == "NA")) NULL else gsub("^NA", "", obj$node.label)
     class(obj) <- "phylo"
     return(obj)
 }
@@ -121,7 +120,7 @@ read.nexus <- function(file, tree.names = NULL)
         TRANS <- matrix(x, ncol = 2, byrow = TRUE)
         TRANS[, 2] <- gsub("['\"]", "", TRANS[, 2])
     }
-    if (translation) start <- semico[semico > i2][1] + 1 else start <- semico[semico > i1][1]
+    start <- if (translation)  semico[semico > i2][1] + 1 else semico[semico > i1][1]
     end <- endblock[endblock > i1][1] - 1
     tree <- paste(X[start:end], sep = "", collapse = "")
     tree <- gsub(" ", "", tree)
@@ -131,7 +130,7 @@ read.nexus <- function(file, tree.names = NULL)
     STRING <- as.list(tree)
     trees <- list()
     for (i in 1:nb.tree) {
-        if (length(grep(":", STRING[[i]]))) obj <- tree.build(STRING[[i]]) else obj <- clado.build(STRING[[i]])
+        obj <- if (length(grep(":", STRING[[i]]))) tree.build(STRING[[i]]) else clado.build(STRING[[i]])
         if (translation) {
             for (j in 1:length(obj$tip.label)) {
                 ind <- which(obj$tip.label[j] == TRANS[, 1])
@@ -163,8 +162,7 @@ read.nexus <- function(file, tree.names = NULL)
         }
     }
     if (nb.tree == 1) trees <- trees[[1]] else {
-        if (is.null(tree.names)) names(trees) <- paste("tree", 1:nb.tree, sep = "")
-        else names(trees) <- tree.names
+        names(trees) <- if (is.null(tree.names)) paste("tree", 1:nb.tree, sep = "") else tree.names
         class(trees) <- c("phylo", "multi.tree")
     }
     if (length(grep("[\\/]", file)) == 1) attr(trees, "origin") <- file

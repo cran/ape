@@ -1,8 +1,8 @@
-### dist.dna.R  (2004-05-21)
+### dist.dna.R  (2004-08-31)
 ###
 ###     Pairwise Distances from DNA Sequences
 ###
-### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -44,23 +44,23 @@ dist.dna <- function(x, y = NULL, variance = FALSE, gamma = NULL,
                                    ", gamma = ", gamma, ")", sep = ""))
     }
     if (method == "TajimaNei") {
-        if (is.null(basefreq)) g <- base.freq(x) else g <- basefreq
+        g <- if (is.null(basefreq)) base.freq(x) else basefreq
         expr <- parse(text = paste(foo, "(x[, i], x[, j], ", "variance = ", variance,
                                    ", basefreq = g)", sep = ""))
     }
     if (method == "Tamura") {
-        if (is.null(GCcontent)) GC <- GC.content(x) else GC <- GCcontent
+        GC <- if (is.null(GCcontent)) GC.content(x) else GCcontent
         expr <- parse(text = paste(foo, "(x[, i], x[, j], ", "variance = ", variance,
                                    ", GCcontent = GC)", sep = ""))
     }
     if (method == "TamuraNei") {
-        if (is.null(basefreq)) g <- base.freq(x) else g <- basefreq
+        g <- if (is.null(basefreq)) base.freq(x) else basefreq
         expr <- parse(text = paste(foo, "(x[, i], x[, j], ", "variance = ", variance,
                                    ", gamma = ", gamma, ", basefreq = g)", sep = ""))
     }
     for (i in 1:(n - 1)) for (j in (i + 1):n) {
         ## if both sequences are identical, do not call the function...
-        if (all(x[, i] == x[, j])) d <- c(0, 0) else d <- eval(expr)
+        d <- if (all(x[, i] == x[, j])) c(0, 0) else eval(expr)
         D[i, j] <- D[j, i] <- d[1]
         if (variance) var.D[i, j] <- var.D[j, i] <- d[2]
     }
@@ -80,11 +80,9 @@ dist.dna.JukesCantor <- function(x, y, variance = FALSE, gamma = NULL)
     L <- length(x)
     Nd <- sum(x != y)
     p <- Nd / L
-    if (is.null(gamma)) D <- -0.75 * log(1 - 4 * p / 3)
-    else D <- 0.75 * gamma * ((1 - 4 * p / 3)^(1 / gamma) - 1)
+    D <-if (is.null(gamma)) -0.75 * log(1 - 4 * p / 3) else 0.75 * gamma * ((1 - 4 * p / 3)^(1 / gamma) - 1)
     if (variance) {
-        if (is.null(gamma)) var.D <- p * (1 - p) / ((1 - 4 * p / 3)^2 * L)
-        else var.D <- p * (1 - p) / ((1 - 4 * p / 3)^(-2 / (gamma + 1)) * L)
+        var.D <- if (is.null(gamma)) p * (1 - p) / ((1 - 4 * p / 3)^2 * L) else p * (1 - p) / ((1 - 4 * p / 3)^(-2 / (gamma + 1)) * L)
         return(c(D, var.D))
     }
     else return(D)
@@ -96,7 +94,7 @@ dist.dna.TajimaNei <- function(x, y, variance = FALSE, basefreq = NULL)
     if (Nd == 0) {
         if (variance) return(c(0, 0)) else return(0)
     } else {
-        if (is.null(basefreq)) g <- base.freq(c(x, y)) else g <- basefreq
+        g <- if (is.null(basefreq)) base.freq(c(x, y)) else basefreq
         L <- length(x)
         p <- Nd / L
         X <- table(x, y) / L
@@ -159,7 +157,7 @@ dist.dna.Tamura <- function(x, y, variance = FALSE, GCcontent = NULL)
     if (Nd == 0) {
         if (variance) return(c(0, 0)) else return(0)
     } else {
-        if (is.null(GCcontent)) GC <- GC.content(c(x, y)) else GC <- GCcontent
+        GC <- if (is.null(GCcontent)) GC.content(c(x, y)) else GCcontent
         L <- length(x)
         pw.diff <- cbind(x[d], y[d])
         PuPy <- ifelse(pw.diff == "a" | pw.diff == "g", "R", "Y")
@@ -189,7 +187,7 @@ dist.dna.TamuraNei <- function(x, y, variance = FALSE, basefreq = NULL, gamma = 
     if (Nd == 0) {
         if (variance) return(c(0, 0)) else return(0)
     } else {
-        if (is.null(basefreq)) g <- base.freq(c(x, y)) else g <- basefreq
+        g <- if (is.null(basefreq)) base.freq(c(x, y)) else basefreq
         L <- length(x)
         gR <- g[1] + g[3]
         gY <- g[2] + g[4]

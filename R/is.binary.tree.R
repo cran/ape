@@ -23,9 +23,6 @@
 is.binary.tree <- function(tree)
 {
     if (class(tree) != "phylo") stop("object \"tree\" is not of class \"phylo\"")
-    
-    if (length(tree$tip.label)*2-2 == length(tree$edge.length))
-      return(TRUE)
-    else
-      return(FALSE)
+    if (length(tree$tip.label)*2-2 == length(tree$edge.length)) return(TRUE)
+    else return(FALSE)
 }

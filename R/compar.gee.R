@@ -27,7 +27,7 @@ compar.gee <- function(formula, data = NULL, family = "gaussian", phy,
     if (is.null(data)) data <- parent.frame()
     else {
         if(!any(is.na(match(rownames(data), phy$tip.label))))
-            data <- data[phy$tip.label, ]
+          data <- data[phy$tip.label, ]
     }
     R <- vcv.phylo(phy, cor = TRUE)
     id <- rep(1, dim(R)[1])

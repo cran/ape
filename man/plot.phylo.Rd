@@ -6,7 +6,7 @@
              node.pos = NULL, show.node.label = FALSE,
              edge.color = NULL, edge.width = NULL, font = 3,
              adj = 0, srt = 0, no.margin = FALSE, root.edge = FALSE,
-             label.offset = NULL, underscore = FALSE, x.lim = NULL, ...)
+             label.offset = 0, underscore = FALSE, x.lim = NULL, ...)
 }
 \arguments{
   \item{x}{an object of class \code{"phylo"}.}
@@ -48,9 +48,7 @@
     (defaults to FALSE); this has no effect if `use.edge.length = FALSE'
     or if `type = "unrooted"'.}
   \item{label.offset}{a numeric giving the space between the nodes and
-    the tips of the phylogeny and their corresponding labels. If
-    \code{NULL}, this is computed with respect to various parameters
-    such as the string lengths of the labels.}
+    the tips of the phylogeny and their corresponding labels.}
   \item{underscore}{a logical specifying whether the underscores in tip
     labels should be written as spaces (the default) or left as are (if
     \code{TRUE}).}
@@ -83,10 +81,10 @@
   if \code{type = "cladogram"} and \code{use.edge.length = TRUE} then
   `node.pos = 1'.
 
-  If the arguments \code{label.offset} and \code{x.lim} are not
-  specified by the user, they are determined roughly by the
-  function. This may not always give a nice result: the user may check
-  these values with the (invisibly) returned list (see ``Value:'').
+  If the argument \code{x.lim} is not specified by the user, it is
+  determined roughly by the function. This may not always give a nice
+  result: the user may check these values with the (invisibly) returned
+  list (see ``Value:'').
 }
 \note{
   The placement of the tip labels in unrooted trees are not very
@@ -138,13 +136,12 @@ data(xenarthra)
 op <- par()
 \dontrun{par(ask = TRUE)}
 plot(xenarthra)
-### remove the margins and put the tip labels closer
-### to the tips
-plot(xenarthra, no.margin = TRUE, label.offset = .005)
-### use a smaller font size
+### remove the margins...
+plot(xenarthra, no.margin = TRUE)
+### ... and use a smaller font size
 par(cex = 0.8)
-plot(xenarthra, no.margin = TRUE, label.offset = .005)
-plot(xenarthra, type = "c", no.margin = TRUE, label.offset = .005, use.edge.length = FALSE)
+plot(xenarthra, no.margin = TRUE)
+plot(xenarthra, type = "c", no.margin = TRUE, use.edge.length = FALSE)
 par(op)
 
 data(bird.orders)

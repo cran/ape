@@ -1,8 +1,8 @@
-### pic.R  (2004-05-21)
+### pic.R  (2004-08-31)
 ###
 ###     Phylogenetically Independent Contrasts
 ###
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -55,10 +55,7 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
             pair <- phy$edge[pair.ind, 2]
             a <- pair[1]
             b <- pair[2]
-            if (scaled)
-                contr[nod] <- (phenotype[a] - phenotype[b])/sqrt(bl[i] + bl[j])
-            else
-                contr[nod] <- phenotype[a] - phenotype[b]
+            contr[nod] <- if (scaled) (phenotype[a] - phenotype[b])/sqrt(bl[i] + bl[j]) else phenotype[a] - phenotype[b]
             if (var.contrasts) var.con[nod] <- bl[i] + bl[j]
             unused[pair] <- FALSE
             phenotype[nod] <- (phenotype[a] * bl[j] + phenotype[b] * bl[i]) / (bl[i] + bl[j])

@@ -28,7 +28,7 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
     N <- length(x)
     if (is.null(names(x))) names(x) <- as.character(1:N)
     if (is.null(indent)) {
-        if (format %in% c("interleaved", "sequential")) indent <- 10 else indent <- 0
+        indent <- if (format %in% c("interleaved", "sequential")) 10 else  0
     }
     if (indent == "") indent <- 0
     if (is.numeric(indent)) indent <- paste(rep(" ", indent), collapse = "")
@@ -41,7 +41,7 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
         }
         if (nbcol < 0) format <- "sequential"
     }
-    if (append) zz <- file(file, "a") else zz <- file(file, "w")
+    zz <- if (append) file(file, "a") else file(file, "w")
     if (format %in% c("interleaved", "sequential")) {
         S <- unique(unlist(lapply(x, length)))
         ## check that all sequences have the same length

@@ -29,8 +29,8 @@ zoom <- function(phy, focus, type = "phylogram", use.edge.length = TRUE)
     phy$tip.label[focus] <- "o"
     par(col = "blue")
     plot.phylo(phy, type = type, use.edge.length = use.edge.length,
-               label.offset = 0, no.margin = TRUE)
+               no.margin = TRUE)
     par(col = "black")
     plot.phylo(ext, type = type, use.edge.length = use.edge.length,
-               label.offset = 0, no.margin = TRUE)
+               no.margin = TRUE)
 }

@@ -1,3 +1,28 @@
+		CHANGES IN APE VERSION 1.2-6
+
+
+NEW FEATURES
+
+    o Six new functions (Moran.I, correlogram.formula, discrete.dist,
+      correlogram.phylo, dist.taxo, plot.correlogram) have been added
+      to implement comparative methods with an autocorrelation approach.
+
+    o A new data set describing some life history traits of Carnivores
+      has been included.
+
+
+BUG FIXES
+
+    o A fix was made on mcmc.popsize() to conform to R 2.0.0.
+
+
+OTHER CHANGES
+
+    o When plotting a tree with plot.phylo(), the new default of the
+      option `label.offset' is now 0, so the labels are always visible.
+
+
+
 		CHANGES IN APE VERSION 1.2-5
 
 
@@ -58,7 +83,7 @@ OTHER CHANGES
     o The function dist.phylo() has been re-written using a different
       algorithm: it is now about four times faster.
 
-    o The code of branching.times() has been improved: it now about
+    o The code of branching.times() has been improved: it is now about
       twice faster.
 
 

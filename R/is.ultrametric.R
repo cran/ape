@@ -40,8 +40,6 @@ is.ultrametric <- function(phy, tol = .Machine$double.eps^0.5)
     }
 
     if (identical(all.equal(var(xx[(nb.node + 1):length(xx)]), 0,
-                            tolerance = tol), TRUE))
-      return(TRUE)
-    else
-      return(FALSE)
+                            tolerance = tol), TRUE)) return(TRUE)
+    else return(FALSE)
 }

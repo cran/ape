@@ -13,6 +13,7 @@ bird.orders             Phylogeny of the Orders of Birds From Sibley
 birthdeath              Estimation of Speciation and Extinction Rates
                         With Birth-Death Models
 branching.times         Branching Times of a Phylogenetic Tree
+carnivora               Carnivora body sizes and life history traits
 cherry                  Number of Cherries and Null Models of Trees
 chiroptera              Bat Phylogeny
 chronogram              Chronogram Computed by Nonparametric Rate
@@ -21,9 +22,13 @@ coalescent.intervals    Coalescent Intervals
 collapsed.intervals     Collapsed Coalescent Intervals
 compar.gee              Comparative Analysis with GEEs
 compar.lynch            Lynch's Comparative Method
+Correlogram             Compute a correlogram
+discrete.dist           Taxonomic Level from a Pairwise Distances
+                        Matrix
 dist.dna                Pairwise Distances from DNA Sequences
 dist.gene               Pairwise Distances from Genetic Data
 dist.phylo              Pairwise Distances from a Phylogenetic Tree
+dist.taxo               Pairwise Distances from a Taxonomic Level
 diversi.gof             Tests of Constant Diversification Rates
 diversi.time            Analysis of Diversification with Survival
                         Models
@@ -42,6 +47,7 @@ ltt.plot                Lineages Through Time Plot
 mantel.test             Mantel Test for Similarity of Two Matrices
 mcmc.popsize            Reversible Jump MCMC to Infer Demographic
                         History
+Moran.I                 Moran's I Autocorrelation Index
 mst                     Minimum Spanning Tree
 node.depth              Depth of Nodes and Tips
 node.depth.edgelength   Distance from Root to Nodes and Tips
@@ -49,6 +55,7 @@ NPRS.criterion          Objective Function Employed in Nonparametric
                         Rate Smoothing
 opsin                   Gene Tree of 32 opsin Sequences
 pic                     Phylogenetically Independent Contrasts
+plot.correlogram        Plot a Correlogram
 plot.phylo              Plot Phylogenies
 ratogram                Ratogram Computed by Nonparametric Rate
                         Smoothing
