@@ -2,7 +2,7 @@
 \alias{all.equal.phylo}
 \title{Global Comparison of two Phylogenies}
 \usage{
-all.equal.phylo(target, current, ...)
+\method{all.equal}{phylo}(target, current, \dots)
 }
 \arguments{
   \item{target}{an object of class \code{"phylo"}.}
@@ -16,7 +16,7 @@ all.equal.phylo(target, current, ...)
   This function is meant to be an adaptation of the generic function
   \code{all.equal} for the comparison of phylogenetic trees.
 
-  A single phylogenetic may have several representations in the Newick
+  A single phylogenetic tree may have several representations in the Newick
   format and in the \code{"phylo"} class of objects used in `ape'. One
   aim of the present function is to be able to identify whether two
   objects of class \code{"phylo"} represent the same phylogeny.

@@ -1,6 +1,6 @@
 \name{theta.h}
 \alias{theta.h}
-\title{Population Parameter THETA using Homozigosity}
+\title{Population Parameter THETA using Homozygosity}
 \usage{
 theta.h(x, standard.error = FALSE)
 }
@@ -17,7 +17,7 @@ theta.h(x, standard.error = FALSE)
 \value{
   a numeric vector of length one with the estimated theta (the default),
   or of length two if the standard error is returned
-  \code{standard.error = TRUE}.
+  (\code{standard.error = TRUE}).
 }
 \details{
   The argument \code{x} can be either a factor or a vector. If it is a

@@ -2,23 +2,23 @@
 \alias{plot.phylo}
 \title{Plot Phylogenies}
 \usage{
-plot.phylo(x, ...)
+\method{plot}{phylo}(x, \dots)
 }
 \arguments{
   \item{x}{an object of class \code{"phylo"}.}
   \item{...}{further arguments to be passed to \code{plot()}.}
 }
 \description{
-  This plots a phylogenetic tree on the current graphical device.
+  This function plots a phylogenetic tree on the current graphical device.
 }
 \note{
-  For the moment, trees are drawn only horizontally with tip label in
+  For the moment, trees are drawn only horizontally with tip labels in
   italics. Many other functionalities will be added soon.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link[base]{plot}} for the basic plotting function in R,
-  \code{\link{read.tree}}
+  \code{\link{read.tree}}, \code{\link{add.scale.bar}},
+  \code{\link[base]{plot}} for the basic plotting function in R
 }
 \examples{
 ### An extract from Sibley and Ahlquist (1990)

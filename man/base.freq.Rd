@@ -19,7 +19,8 @@ base.freq(x)
   computations.
 }
 \value{
-  A table of relative frequencies with the names "a", "c", "g", and "t".
+  A table of relative frequencies with the names \code{"a"}, \code{"c"},
+  \code{"g"}, and \code{"t"}.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{

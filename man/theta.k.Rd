@@ -11,7 +11,7 @@ theta.k(x, n = NULL, k = NULL)
 }
 \description{
   This function computes the population parameter THETA using the
-  the expected number of alleles.
+  expected number of alleles.
 }
 \value{
   a numeric vector of length one with the estimated theta.
@@ -28,7 +28,7 @@ theta.k(x, n = NULL, k = NULL)
   the numbers of each allele in the population. If it is a non-numeric
   vector, it is a coerced as a factor.
 
-  Both argument \code{n} and \code{k} must be single numeric values.
+  Both arguments \code{n} and \code{k} must be single numeric values.
 }
 \note{
   For the moment, no standard-error or confidence interval is computed.

@@ -4,31 +4,33 @@
 \title{Minimum Spanning Tree}
 \usage{
 mst(X)
-plot.mst(x, graph = "circle", x1 = NULL, x2 = NULL, ...)
+\method{plot}{mst}(x, graph = "circle", x1 = NULL, x2 = NULL, \dots)
 }
 \arguments{
   \item{X}{either a matrix that can be interpreted as a distance matrix,
     or an object of class \code{"dist"}.}
-  \item{x}{an object of class "mst" (e.g. returned by \code{mst()}).}
+  \item{x}{an object of class \code{"mst"} (e.g. returned by \code{mst()}).}
   \item{graph}{a character string indicating the type of graph to plot
-    the minimum spanning tree; two choices are possible: "circle" where
+    the minimum spanning tree; two choices are possible: \code{"circle"} where
     the observations are plotted regularly spaced on a circle, and
-    "nsca" where the two first axes of a non-symmetric correspondence
+    \code{"nsca"} where the two first axes of a non-symmetric correspondence
     analysis are used to plot the observations (see Details below). If
     both arguments \code{x1} and \code{x2} are given, the argument
     \code{graph} is ignored.}
   \item{x1}{a numeric vector giving the coordinates of the observations
-    on the x-axis. Both \code{x1} and \code{x2} must be specified to be used.}
+    on the \emph{x}-axis. Both \code{x1} and \code{x2} must be specified
+    to be used.}
   \item{x2}{a numeric vector giving the coordinates of the observations
-    on the y-axis. Both \code{x1} and \code{x2} must be specified to be used.}
+    on the \emph{y}-axis. Both \code{x1} and \code{x2} must be specified
+    to be used.}
   \item{...}{further arguments to be passed to \code{plot()}.}
 }
 \description{
   The function \code{mst} finds the minimum spanning tree between a set of
   observations using a matrix of pairwise distances.
 
-  The generic function \code{plot} plots the minimum spanning tree
-  showing the links where the observations are identified by their numbers.
+  The \code{plot} method plots the minimum spanning tree showing the
+  links where the observations are identified by their numbers.
 }
 \details{
   These functions provide two ways to plot the minimum spanning tree which
@@ -43,11 +45,11 @@ plot.mst(x, graph = "circle", x1 = NULL, x2 = NULL, ...)
   distances were computed from an original matrix of continous variables.
 }
 \value{
-  an object of class "mst" which is a square numeric matrix of size
+  an object of class \code{"mst"} which is a square numeric matrix of size
   equal to the number of observations with either \code{1} if a link
   between the corresponding observations was found, or \code{0}
   otherwise. The names of the rows  and columns of the distance matrix,
-  if available, are given as rownames and colnames.
+  if available, are given as rownames and colnames to the returned object.
 }
 \author{
   Yvonnick Noel \email{noel@univ-lille3.fr},

@@ -4,6 +4,7 @@
 \title{Heterozygosity at a Locus Using Gene Frequencies}
 \usage{
 heterozygosity(x, variance = FALSE)
+H(x, variance = FALSE)
 }
 \arguments{
   \item{x}{a vector or a factor.}

@@ -12,8 +12,8 @@ diversi.time(x, census = NULL, censoring.codes = c(1, 0), Tc = NULL)
     branching times. This argument can be of any mode (numeric, character,
     logical), or can even be a factor.}
   \item{censoring.codes}{a vector of length two giving the codes used
-    for `census': by default 1 (accurately known times) and 0 (censored
-    times). The mode must be the same than the one of `census'.}
+    for \code{census}: by default 1 (accurately known times) and 0 (censored
+    times). The mode must be the same than the one of \code{census}.}
   \item{Tc}{a single numeric value specifying the break-point time to
     fit Model C. If none is provided, then it is set arbitrarily to the
     mean of the analysed branching times.}
@@ -51,6 +51,7 @@ diversi.time(x, census = NULL, censoring.codes = c(1, 0), Tc = NULL)
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{branching.times}}, \code{\link{diversi.gof}}, \code{\link{ltt.plot}}
+  \code{\link{branching.times}}, \code{\link{diversi.gof}}
+  \code{\link{ltt.plot}}, \code{\link{birthdeath}}
 }
 \keyword{models}

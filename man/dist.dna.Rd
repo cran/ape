@@ -15,7 +15,7 @@ dist.dna.Tamura(x, y, variance = FALSE, GCcontent = NULL)
 }
 \arguments{
   \item{x}{either, a vector with a single DNA sequence, or a matrix of
-    DNA sequences, or a list of DNA sequences (the latrer can be taken
+    DNA sequences, or a list of DNA sequences (the latter can be taken
     from, e.g., \code{read.GenBank}).}
   \item{y}{a vector with a single DNA sequence.}
   \item{gamma}{a value for the gamma parameter which is possibly used to
@@ -25,8 +25,8 @@ dist.dna.Tamura(x, y, variance = FALSE, GCcontent = NULL)
     of the distances; defaults to \code{FALSE} so the variances are not
     computed.}
   \item{method}{a character string specifying the method used to compute
-    the distance. Currently four choices are possible: "JukesCantor",
-    "TajimaNei", "Kimura" (the default), and "Tamura".}
+    the distance. Currently four choices are possible: \code{"JukesCantor"},
+    \code{"TajimaNei"}, \code{"Kimura"} (the default), and \code{"Tamura"}.}
   \item{basefreq}{the base frequencies to be used in the computations
     (if applicable, i.e. if \code{method = "TajimaNei"}). By default, the
     base frequencies are computed from the whole sample of sequences.}
@@ -47,18 +47,18 @@ dist.dna.Tamura(x, y, variance = FALSE, GCcontent = NULL)
   as arguments.
 
   The function \code{dist.dna} actually calls one of the other function
-  depending on the argument \code{method} (by default "Kimura")
+  depending on the argument \code{method} (by default \code{"Kimura"})
   eventually passing the relevant arguments. For instance, specifying a
   value for the option \code{basefreq} has no effect if the option
   \code{method} is set to "Kimura" or "JukesCantor" (the base
-  frequencies are assumed to be equal to 0.25 un both models).
+  frequencies are assumed to be equal to 0.25 in both models).
 
   The molecular evolutionary models available through the option
   \code{method} have been extensively described in the literature. A
-  brief description is given; more details can be found in the
+  brief description is given below; more details can be found in the
   References.
 
-  \item{"JukesCantor"}{This model was developed by Jukes and Cantor
+  \item{``JukesCantor''}{This model was developed by Jukes and Cantor
   (1969). It assumes that all substitutions (i.e. a change of a base by
   another one) have the same probability. This probability is the same
   for all sites along the DNA sequence. This last assumption can be
@@ -67,7 +67,7 @@ dist.dna.Tamura(x, y, variance = FALSE, GCcontent = NULL)
   user. By default, no gamma correction is applied. Another assumption
   is that the base frequencies are balanced and thus equal to 0.25.}
 
-  \item{"TajimaNei"}{Tajima and Nei (1984) developed an extension of the
+  \item{``TajimaNei''}{Tajima and Nei (1984) developed an extension of the
   Jukes--Cantor model which relaxes the assumption of balanced base
   frequencies. The latter are estimated from the data. In the present
   function, the base frequencies are either given by the user, or
@@ -81,7 +81,7 @@ dist.dna.Tamura(x, y, variance = FALSE, GCcontent = NULL)
   and no base frequencies are given, then they are computed from both
   vectors given as argument.}
 
-  \item{"Kimura"}{The distance derived by Kimura (1980), sometimes
+  \item{``Kimura''}{The distance derived by Kimura (1980), sometimes
   referred to as ``Kimura's 2-parameters distance'', has the same underlying
   assumptions than the Jukes--Cantor distance except that two kinds of
   substitutions are considered: transitions (A <-> G, C <-> T), and
@@ -95,15 +95,17 @@ dist.dna.Tamura(x, y, variance = FALSE, GCcontent = NULL)
   a gamma distribution. Like for the Jukes--Cantor model, the gamma parameter
   must be given by the user. By default, no gamma correction is applied.}
 
-  \item{"Tamura"}{Tamura (1992) generalized the Kimura model by relaxing
+  \item{``Tamura''}{Tamura (1992) generalized the Kimura model by relaxing
   the assumption of equal base frequencies. This is done by taking into
   account the bias in G+C content in the sequences. The substitution
   rates are assumed to be the same for all sites along the DNA sequence.}
 }
 \value{
   a numeric matrix with possibly the names of the individuals (as given
-  by the rownames of the argument `x') as colnames and rownames (if
-  \code{variance = FALSE}, the default).
+  by the rownames of the argument \code{x}) as colnames and rownames (if
+  \code{variance = FALSE}, the default), or a list of two matrices names
+  \code{distances} and \code{variance}, respectively (if \code{variance =
+    TRUE}).
 }
 \note{
   This is a first attempt to implement the computation of DNA
@@ -122,7 +124,7 @@ dist.dna.Tamura(x, y, variance = FALSE, GCcontent = NULL)
 
   The package Phylip (Felsenstein 1993) has also a model not considered
   here. This model (called the maximum likelihood, or ML, model by
-  Felsenstein) assumes different rates of transition and transition, and
+  Felsenstein) assumes different rates of transition and transversion, and
   the base frequencies are allowed to be unequal. This seems to be a
   particular case of the Tamura--Nei model (Tamura Nei 1993) where both
   kinds of transition are equiprobable.

@@ -10,17 +10,16 @@ theta.s(s, n, variance = FALSE)
   \item{n}{a numeric giving the length of the sequences (i.e. the number
     of sites under study).}
   \item{variance}{a logical indicating whether the variance of the 
-    estimated heterozygosity should be returned (\code{TRUE}), the
-    default being \code{FALSE}.}
+    estimated THETA should be returned (\code{TRUE}), thedefault being \code{FALSE}.}
 }
 \description{
   This function computes the population parameter THETA using the
-  the number of segregating sites \code{s} in a sample of \code{n} DNA sequences.
+  number of segregating sites \code{s} in a sample of \code{n} DNA sequences.
 }
 \value{
   a numeric vector of length one with the estimated theta (the default),
   or of length two if the standard error is returned
-  \code{standard.error = TRUE}.
+  (\code{standard.error = TRUE}).
 }
 \note{
   The number of segregating sites needs to be computed beforehand.

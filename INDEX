@@ -1,10 +1,17 @@
 GC.content              Content in GC from DNA Sequences
+add.scale.bar           Add a Scale Bar to a Phylogeny Plot
 all.equal.phylo         Global Comparison of two Phylogenies
 ape-internal            Internal Ape Functions
 balance                 Balance of a Dichotomous Phylogenetic Tree
 base.freq               Base frequencies from DNA Sequences
+bird.families           Phylogeny of the Families of Birds From Sibley
+                        and Ahlquist
+birthdeath              Estimation of Speciation and Extinction Rates
+                        With Birth-Death Models
 branching.times         Branching Times of a Phylogenetic Tree
 cherry                  Number of Cherries and Null Models of Trees
+coalescent.intervals    Coalescent Intervals
+collapsed.intervals     Collapsed Coalescent Intervals
 compar.gee              Comparative Analysis with GEEs
 compar.lynch            Lynch's Comparative Method
 dist.dna                Pairwise Distances from DNA Sequences
@@ -16,6 +23,8 @@ diversi.time            Analysis of Diversification with Survival
 gamma.stat              Gamma-Statistic of Pybus and Harvey
 heterozygosity          Heterozygosity at a Locus Using Gene
                         Frequencies
+hivtree                 Phylogenetic Tree of 193 HIV-1 Sequences
+is.binary.tree          Test for Binary Tree
 ltt.plot                Lineages Through Time Plot
 mantel.test             Mantel Test for Similarity of Two Matrices
 mst                     Minimum Spanning Tree
@@ -23,12 +32,14 @@ pic                     Phylogenetically Independent Contrasts
 plot.phylo              Plot Phylogenies
 read.GenBank            Read DNA Sequences from GenBank via Internet
 read.tree               Read Tree File in Parenthetic Format
-skyline.plot            Skyline Plot of Estimated Effective Population
+skyline                 Skyline Plot Estimate of Effective Population
                         Size
-theta.h                 Population Parameter THETA using Homozigosity
+skylineplot             Drawing Skyline Plot Graphs
+theta.h                 Population Parameter THETA using Homozygosity
 theta.k                 Population Parameter THETA using Expected
                         Number of Alleles
 theta.s                 Population Parameter THETA using Segregating
                         Sites in DNA Sequences
 vcv.phylo               Phylogenetic Variance-covariance or Correlation
                         Matrix
+write.tree              Write Tree File in Parenthetic Format

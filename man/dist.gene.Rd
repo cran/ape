@@ -25,26 +25,23 @@ dist.gene.percentage(x, variance = FALSE)
   of data (alleles, haplotypes, DNA sequences, and so on). The rows of
   the data matrix represent the individuals, and the columns the loci.
 
-  In the case of the pairwise method, the distance d between two
+  In the case of the pairwise method, the distance \eqn{d} between two
   individuals is the number of loci for which they differ, and the
-  associated variance is d(L - d)/L, where L is the number of loci.
+  associated variance is \eqn{d(L - d)/L}, where \eqn{L} is the number
+  of loci.
 
-  In the case of the percentage method, this distance is divided by L,
-  and the associated variance is d(1 - d)/L.
-
-  Since \code{"pairwise"} is the default for \code{method} in
-  \code{dist.gene}, \code{dist.gene(x)} and \code{dist.gene.pairwise(x)}
-  return the same result.
+  In the case of the percentage method, this distance is divided by \eqn{L},
+  and the associated variance is \eqn{d(1 - d)/L}.
 
   For more elaborate distances with DNA sequences, see the function
   \code{dist.dna}.
 }
 \value{
   either a numeric matrix with possibly the names of the individuals (as
-  given by the rownames of the argument `x') as colnames and rownames
+  given by the rownames of the argument \code{x}) as colnames and rownames
   (if \code{variance = FALSE}, the default), or a list of two matrices names
   \code{distances} and \code{variance}, respectively (if \code{variance =
-    TRUE}.
+    TRUE}).
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{

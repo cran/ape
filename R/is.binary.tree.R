@@ -1,8 +1,8 @@
-### skyline.plot.R  (2002-08-28)
+### is.binary.tree.R  (2002-09-12)
 ###
-###     Skyline Plot of Estimated Effective Population Size
+###     Tests whether a given phylogenetic tree is binary
 ###
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2002 Korbinian Strimmer <strimmer@stat.uni-muenchen.de>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -20,16 +20,12 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-skyline.plot <- function(phy, ...)
+is.binary.tree <- function(tree)
 {
-    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
-    bt <- sort(branching.times(phy))
-    g <- numeric(length(bt))
-    g[1] <- bt[1]
-    for (i in 2:length(bt)) g[i] <- bt[i] - bt[i - 1]
-    g <- rev(g) # internode intervals are now from past to present
-    M <- numeric(length(bt))
-    for (i in 1:length(bt)) M[i] <- i * (i + 1) * g[i] / 2
-    plot(-c(rev(bt), 0), c(M[1], M), xlab = "Time", ylab = expression(italic(M[i])),
-         log = "y", xaxs = "r", yaxs = "r", type = "S", ...)
+    if (class(tree) != "phylo") stop("object \"tree\" is not of class \"phylo\"")
+    
+    if (length(tree$tip.label)*2-2 == length(tree$edge.length))
+      return(TRUE)
+    else
+      return(FALSE)
 }

@@ -12,8 +12,8 @@ dist.phylo(phy)
   tips from a phylogenetic tree using the branch lengths of the latter.
 }
 \value{
-  a numeric matrix with the names of the tips (as given by the tip.label
-  of the argument `phy') as colnames and rownames.
+  a numeric matrix with the names of the tips (as given by the element
+  \code{tip.label} of the argument \code{phy}) as colnames and rownames.
 }
 \author{Julien Claude \email{claude@isem.univ-montp2.fr}}
 \seealso{

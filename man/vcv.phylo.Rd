@@ -8,7 +8,7 @@ vcv.phylo(phy, model = "Brownian", cor = FALSE)
   \item{phy}{an object of class \code{"phylo"}.}
   \item{model}{a character giving the model used to compute the
     variances and covariances of the phynotype; by default
-    \code{"Brownian"}. Currently only Brownian is available.}
+    \code{"Brownian"}. Currently only the Brownian model is available.}
   \item{cor}{a logical indicating whether the correlation matrix should
     be returned (\code{TRUE}); by default the variance-covariance matrix
     is returned (\code{FALSE}).}
@@ -19,8 +19,8 @@ vcv.phylo(phy, model = "Brownian", cor = FALSE)
   (currently only the model of Brownian motion is available).
 }
 \value{
-  a numeric matrix with the names of the tips (as given by the tip.label
-  of the argument `phy') as colnames and rownames.
+  a numeric matrix with the names of the tips (as given by the \code{tip.label}
+  of the argument \code{phy}) as colnames and rownames.
 }
 \references{
   Garland, T. Jr. and Ives, A. R. (2000) Using the past to predict the

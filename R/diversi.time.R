@@ -1,4 +1,4 @@
-### diversi.time.R  (2002-08-28)
+### diversi.time.R  (2002-09-20)
 ###
 ###     Analysis of Diversification with Survival Models
 ###
@@ -70,23 +70,26 @@ diversi.time <- function(x, census = NULL, censoring.codes = c(1, 0), Tc = NULL)
     cat("\nAnalysis of Diversification with Survival Models\n\n")
     cat("Data:", deparse(substitute(x)), "\n")
     cat("Number of branching times:", n, "\n")
-    cat("          accurately know:", k, "\n")
+    cat("         accurately known:", k, "\n")
     cat("                 censored:", u, "\n\n")
     cat("Model A: constant diversification\n")
-    cat("    log-likelihood =", round(loglik.A, 3), "   AIC =", round(loglik.A + 2, 3), "\n")
+    cat("    log-likelihood =", round(loglik.A, 3),
+        "   AIC =", round(-2 * loglik.A + 2, 3), "\n")
     cat("    delta =", round(delta, 3), "   StdErr =", round(sqrt(var.delta), 3), "\n\n")
     cat("Model B: diversification follows a Weibull law\n")
-    cat("    log-likelihood =", round(loglik.B, 3), "   AIC =", round(loglik.B + 4, 3), "\n")
+    cat("    log-likelihood =", round(loglik.B, 3),
+        "   AIC =", round(-2 * loglik.B + 4, 3), "\n")
     cat("    alpha =", round(alpha, 3), "   StdErr =", round(sqrt(var.alpha), 3), "\n")
     cat("    beta =", round(beta, 3), "   StdErr =", round(sqrt(var.beta), 3), "\n\n")
     cat("Model C: diversification changes with a breakpoint at time =", Tc, "\n")
-    cat("    log-likelihood =", round(loglik.C, 3), "   AIC =", round(loglik.C + 4, 3), "\n")
+    cat("    log-likelihood =", round(loglik.C, 3),
+        "   AIC =", round(-2 * loglik.C + 4, 3), "\n")
     cat("    delta1 =", round(delta1, 3), "   StdErr =", round(sqrt(var.delta1), 3), "\n")
     cat("    delta2 =", round(delta2, 3), "   StdErr =", round(sqrt(var.delta2), 3), "\n\n")
     cat("Likelihood ratio tests:\n")
-    c1 <- 2 * (loglik.A - loglik.B)
+    c1 <- 2 * (loglik.B - loglik.A)
     p1 <- round(1 - pchisq(c1, 1), 3)
-    c2 <- 2 * (loglik.A - loglik.C)
+    c2 <- 2 * (loglik.C - loglik.A)
     p2 <- round(1 - pchisq(c2, 1), 3)
     cat("    Model A vs. Model B: chi^2 =", round(c1, 2), "   df = 1,    P =", p1, "\n")
     cat("    Model A vs. Model C: chi^2 =", round(c2, 2), "   df = 1,    P =", p2, "\n")

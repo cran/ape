@@ -8,9 +8,9 @@ pic(x, phy, scaled = TRUE, var.contrasts = FALSE)
   \item{x}{a numeric vector.}
   \item{phy}{an object of class \code{"phylo"}.}
   \item{scaled}{logical, indicates whether the contrasts should be
-    scaled with their expected variance (default to TRUE).}
+    scaled with their expected variance (default to \code{TRUE}).}
   \item{var.contrasts}{logical, indicates whether the expected
-    variance of the contrasts should be returned (default to FALSE).}
+    variance of the contrasts should be returned (default to \code{FALSE}).}
 }
 \description{
   Compute the phylogenetically independent contrasts using the method
@@ -23,9 +23,9 @@ pic(x, phy, scaled = TRUE, var.contrasts = FALSE)
 }
 \value{
   either a vector of phylogenetically independent contrasts (if
-  var.contrasts = FALSE), or a two-column matrix with the
+  \code{var.contrasts = FALSE}), or a two-column matrix with the
   phylogenetically independent contrasts in the first column and their
-  expected variance in the second column (if var.contrasts = TRUE).
+  expected variance in the second column (if \code{var.contrasts = TRUE}).
 }
 \references{
   Felsenstein, J. (1985) Phylogenies and the comparative method.

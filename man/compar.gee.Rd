@@ -12,14 +12,14 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
     \code{formula} are to be found; by default, the variables are looked
     for in the global environment.}
   \item{family}{a character string specifying the distribution assumed
-    for the response; by default a Gaussian distribution is assumed (see
-    \code{?family} for details on specifying the distribution, and on
-    changing the link function).}
+    for the response; by default a Gaussian distribution (with link
+    identity) is assumed (see \code{?family} for details on specifying
+    the distribution, and on changing the link function).}
   \item{phy}{an object of class \code{"phylo"}.}
   \item{scale.fix}{logical, indicates whether the scale parameter should
     be fixed (TRUE) or estimated (FALSE, the default).}
   \item{scale.value}{if \code{scale.fix = TRUE}, gives the value for the
-    scale (default: scale.value = 1).}
+    scale (default: \code{scale.value = 1}).}
 }
 \description{
   This function performs the comparative analysis using generalized
@@ -59,7 +59,7 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
   \code{\link{read.tree}}, \code{\link{pic}}, \code{\link{compar.lynch}}
 }
 \examples{
-### The example in Phylip 3.5c (originally from Lynch 1990)
+### The example in Phylip 3.5c (originally from Lynch 1991)
 ### (the same analysis than in help(pic)...)
 cat("((((Homo:0.21,Pongo:0.21):0.28,",
    "Macaca:0.49):0.13,Ateles:0.62):0.38,Galago:1.00);",

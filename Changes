@@ -1,0 +1,48 @@
+		CHANGES IN APE VERSION 0.2
+
+
+NEW FEATURES
+
+    o The function write.tree() writes phylogenetic trees (objects of class
+      "phylo") in an ASCII file using the Newick parenthetic format.
+
+    o The function birthdeath() fits a birth-death model to branching times
+      by maximum likelihood, and estimates the corresponding speciation and
+      extinction rates.
+
+    o The function scale.bar() adds a scale bar to a plot of a phylogenetic
+      tree.
+
+    o The function is.binary.tree() tests whether a phylogeny is binary.
+
+    o Two generic functions, coalescent.intervals() and collapsed.intervals(),
+      as well as some methods are introduced.
+
+    o Several functions, including some generics and methods, for computing
+      skyline plot estimates (classic and generalized) of effective
+      population size through time are introduced and replace the function
+      skyline.plot() in version 0.1.
+
+    o Two data sets are now included: the phylogenetic relationships among
+      the families of birds from Sibley and Ahlquist (1990), and an
+      estimated clock-like phylogeny of HIV sequences sampled in the
+      Democratic Republic of Congo.
+
+
+DEPRECATED & DEFUNCT
+
+    o The function skyline.plot() in ape 0.1 has been deprecated and
+      replaced by more elaborate functions (see above).
+
+
+BUG FIXES
+
+    o Two important bugs were fixed in plot.phylo(): phylogenies with
+      multichotomies not at the root or not with only terminal branches,
+      and phylogenies with a single node (i.e. only terminal branches)
+      did not plot. These trees should be plotted correctly now.
+
+    o Several bugs were fixed in diversi.time() in the computation of
+      AICs and LRTs.
+
+    o Various errors were corrected in the help pages.

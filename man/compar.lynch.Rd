@@ -18,11 +18,11 @@ compar.lynch(x, G, eps = 1e-4)
   method described in Lynch (1991).  
 }
 \details{
-  Parameter estimates are computed following the EM
+  The parameter estimates are computed following the EM
   (expectation-maximization) algorithm. This algorithm usually leads to
-  convergence but may lead to some local optima of the likelihood
+  convergence but may lead to local optima of the likelihood
   function. It is recommended to run several times the function in order
-  to detect those potential local optima. The `optimal' value for
+  to detect these potential local optima. The `optimal' value for
   \code{eps} depends actually on the range of the data and may be
   changed by the user in order to check the stability of the parameter
   estimates. Convergence occurs when the differences between two
@@ -30,13 +30,13 @@ compar.lynch(x, G, eps = 1e-4)
   both residual and additive values less than or equal to \code{eps}.
 } 
 \note{
-  The present function does perform the estimation of ancestral
+  The present function does not perform the estimation of ancestral
   phentoypes as proposed by Lynch (1991). This will be implemented in
-  the future.
+  a future version.
 }
 \value{
   A list with the following components:
-  \item{vare}{estimated residual variance covariance matrix.}
+  \item{vare}{estimated residual variance-covariance matrix.}
   \item{vara}{estimated additive effect variance covariance matrix.}
   \item{u}{estimates of the phylogeny-wide means.}
   \item{A}{addtitive value estimates.}

@@ -26,6 +26,9 @@ read.GenBank(access.nb, seq.names = access.nb)
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \examples{
+### This won't work if your computer is not connected
+### to internet!!!
+###
 ### Get the 8 sequences of tanagers (Ramphocelus)
 ### as used in Paradis (1997)
 ref <- c("U15717", "U15718", "U15719", "U15720",
@@ -34,7 +37,7 @@ Rampho <- read.GenBank(ref)
 ### print the first sequence
 ### (can be done with `Rampho$U15717' as well)
 Rampho[[1]]
-### print the first sequence in a "cleaner" way
+### print the first sequence in a cleaner way
 cat(Rampho[[1]], "\n", sep = "")
 }
 \keyword{IO}

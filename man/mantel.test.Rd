@@ -32,7 +32,7 @@ mantel.test(m1, m2, nperm = 1000, graph = FALSE, ...)
   the permutation distribution along with the observed Z-statistic as a
   vertical line.
 
-  The \code{...} argument allows to the user give further options to
+  The \code{...} argument allows the user to give further options to
   the \code{plot} function: the title main be changed with \code{main=},
   the axis labels with \code{xlab =}, and \code{ylab =}, and so on.
 }

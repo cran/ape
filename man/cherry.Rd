@@ -44,7 +44,4 @@ cherry(phy)
 \seealso{
   \code{\link{gamma.stat}}
 }
-\examples{
-### more to come...
-}
 \keyword{univar}

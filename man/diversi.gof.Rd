@@ -8,8 +8,9 @@ diversi.gof(x, null = "exponential", z = NULL)
   \item{x}{a numeric vector with the branching times.}
   \item{null}{a character string specifying the null distribution for
     the branching times. Only two choices are possible: either
-    "exponential", or "user".}
-  \item{z}{if \code{null = "used"}, .}
+    \code{"exponential"}, or \code{"user"}.}
+  \item{z}{used if \code{null = "user"}; gives the expected distribution
+    under the model.}
 }
 \description{
   This function computes two tests of the distribution of branching
@@ -49,6 +50,7 @@ diversi.gof(x, null = "exponential", z = NULL)
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{branching.times}}, \code{\link{diversi.time}}, \code{\link{ltt.plot}}
+  \code{\link{branching.times}}, \code{\link{diversi.time}}
+  \code{\link{ltt.plot}}, \code{\link{birthdeath}}
 }
 \keyword{univar}

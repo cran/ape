@@ -10,13 +10,12 @@ ltt.plot(phy, ...)
     \code{Details:} on how to transform the axes).}
 }
 \description{
-  This plots, on the current graphical device, the minimum numbers of
-  lineages through time from a phylogenetic tree.
+  This function plots, on the current graphical device, the minimum
+  numbers of lineages through time from a phylogenetic tree.
 }
 \details{
-  The axes can be log-transformed by adding one of the following
-  options: \code{log = "x"}, \code{log = "y"}, \code{log = "xy"}, to
-  transform the x-axis, the y-axis, or both, respectively.
+  The \eqn{y}-axis can be log-transformed by adding the following
+  option: \code{log = "y"}.
 }
 \references{
   Harvey, P. H., May, R. M. and Nee, S. (1994) Phylogenies without
@@ -29,7 +28,18 @@ ltt.plot(phy, ...)
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link[base]{plot}} for the basic plotting function in R,
-  \code{\link{skyline.plot}}, \code{\link{branching.times}}
+  \code{\link{skyline}}, \code{\link{branching.times}},
+  \code{\link{birthdeath}}, \code{\link[base]{plot}} for the basic
+  plotting function in R
+}
+\examples{
+data(bird.families)
+opar <- par(mfrow = c(2, 1))
+ltt.plot(bird.families)
+title("Lineages Through Time Plot of the Bird Families")
+ltt.plot(bird.families, log = "y")
+title(main = "Lineages Through Time Plot of the Bird Families",
+      sub = "(with logarithmic transformation of the y-axis)")
+par(opar)
 }
 \keyword{hplot}
