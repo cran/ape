@@ -51,6 +51,7 @@ diversi.gof(x, null = "exponential", z = NULL)
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{branching.times}}, \code{\link{diversi.time}}
-  \code{\link{ltt.plot}}, \code{\link{birthdeath}}
+  \code{\link{ltt.plot}}, \code{\link{birthdeath}}, \code{\link{yule}},
+  \code{\link{yule.cov}}
 }
 \keyword{univar}

@@ -49,6 +49,6 @@ birthdeath(phy)
 \seealso{
   \code{\link{branching.times}}, \code{\link{diversi.gof}},
   \code{\link{diversi.time}}, \code{\link{ltt.plot}},
-  \code{\link{yule}}, \code{\link{bd.ext}}
+  \code{\link{yule}}, \code{\link{bd.ext}}, \code{\link{yule.cov}}
 }
 \keyword{models}

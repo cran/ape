@@ -17,7 +17,7 @@ read.nexus(file, tree.names = NULL)
 }
 \details{
   The present implementation tries to follow as much as possible the
-  NEXUS standard. Only the block "TREES" is read; the other data can be
+  NEXUS standard. Only the block ``TREES'' is read; the other data can be
   read with other functions (e.g., \code{\link{read.dna}},
   \code{\link[base]{read.table}}, ...). A trace of the original data is
   kept with the attribute \code{"origin"} (see below).
@@ -62,7 +62,7 @@ read.nexus(file, tree.names = NULL)
 }
 \references{
   Maddison, D. R., Swofford, D. L. and Maddison, W. P. (1997) NEXUS: an
-  extensible file format for systemaric information. \emph{Systematic
+  extensible file format for systematic information. \emph{Systematic
     Biology}, \bold{46}, 590--621.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}

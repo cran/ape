@@ -22,3 +22,4 @@
   This function is used in \code{\link{correlogram.phylo}}.
 }
 \keyword{regression}
+\keyword{manip}

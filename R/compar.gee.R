@@ -1,8 +1,8 @@
-### compar.gee.R  (2002-06-05)
+### compar.gee.R  (2004-10-12)
 ###
 ###     Comparative Analysis with GEEs
 ###
-### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -23,10 +23,11 @@
 compar.gee <- function(formula, data = NULL, family = "gaussian", phy,
                        scale.fix = FALSE, scale.value = 1)
 {
-    if (is.null(data)) data <- parent.frame()
-    else {
+    if (is.null(data)) data <- parent.frame() else {
         if(!any(is.na(match(rownames(data), phy$tip.label))))
           data <- data[phy$tip.label, ]
+        else warning("the rownames of the data.frame and the names of the tip labels
+did not match: the former were ignored in the analysis.")
     }
     R <- vcv.phylo(phy, cor = TRUE)
     id <- rep(1, dim(R)[1])
@@ -59,8 +60,9 @@ compar.gee <- function(formula, data = NULL, family = "gaussian", phy,
                 W = W,
                 dfP = dfP)
     class(obj) <- "compar.gee"
-    return(obj)
+    obj
 }
+
 print.compar.gee <- function(x, ...)
 {
     nas <- is.na(x$coef)

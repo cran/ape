@@ -52,7 +52,7 @@ diversi.time(x, census = NULL, censoring.codes = c(1, 0), Tc = NULL)
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{branching.times}}, \code{\link{diversi.gof}}
-  \code{\link{ltt.plot}}, \code{\link{birthdeath}}, ,
-  \code{\link{bd.ext}}
+  \code{\link{ltt.plot}}, \code{\link{birthdeath}},
+  \code{\link{bd.ext}}, \code{\link{yule}}, \code{\link{yule.cov}}
 }
 \keyword{models}

@@ -1,3 +1,63 @@
+		CHANGES IN APE VERSION 1.3
+
+
+NEW FEATURES
+
+    o The new function phymltest() calls the software PHYML and fits
+      28 models of DNA sequence evolution. There are a print method to
+      display likelihood and AIC values, a summary method to compute
+      the hierarchical likelihood ratio tests, and a plot method to
+      display graphically the AIC values of each model.
+
+    o The new function yule.cov() fits the Yule model with covariates,
+      a model where the speciation rate is affected by several species
+      traits through a generalized linear model. The parameters are
+      estimated by maximum likelihood.
+
+    o Three new functions, corBrownian(), corGrafen(), and
+      corMartins(), compute the expected correlation structures among
+      species given a phylogeny under different models of evolution.
+      These can be used for GLS comparative phylogenetic methods (see
+      the examples). There are coef() and corMatrix() methods and an
+      Initialize.corPhyl() function associated.
+
+    o The new function compar.cheverud() implements Cheverud et al.'s
+      (1985; Evolution 39:1335) phylogenetic comparative method.
+
+    o The new function varcomp() estimates variance components; it has
+      a plot method.
+
+    o Two new functions, panel.superpose.correlogram() and
+      plot.correlogramList(), allow to plot several phylogenetic
+      correlograms.     
+
+    o The new function node.leafnumber() computes the number of leaves
+      of a subtree defined by a particular node.
+
+    o The new function node.sons() gets all tags of son nodes from a
+      given parent node.
+
+    o The new function compute.brlen() computes the branch lengths of
+      a tree according to a specified method.
+
+    o plot.phylo() has three new options: "cex" controls the size of
+      the (tip and node) labels (thus it is no more needed to change
+      the global graphical parameter), "direction" which allows to
+      plot the tree rightwards, leftwards, upwards, or downwards, and
+      "y.lim" which sets the upper limit on the y-axis.
+
+
+BUG FIXES
+
+    o Some functions which try to match tip labels and names of
+      additional data (e.g. vector) are likely to fail if there are
+      typing or syntax errors. If both series of names do not perfectly
+      match, they are ignored and a warning message is now issued.
+      These functions are bd.ext, compar.gee, pic. Their help pages
+      have been clarified on this point.
+
+
+
 		CHANGES IN APE VERSION 1.2-7
 
 

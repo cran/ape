@@ -31,15 +31,18 @@ zoom(phy, focus, type = "phylogram", use.edge.length = TRUE)
   left-hand side in a narrower sub-window (about a quarter of the
   device) without any tip labels; the sub-tree consisting of the tips
   in `focus' is extracted and plotted on the right-hand side. The tips
-  in `focus' are marked on the left-hand side tree with a blue "o".
+  in `focus' are marked on the left-hand side tree with a blue ``*''.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{plot.phylo}}, \code{\link{drop.tip}},
-  \code{\link[base]{layout}}
+  \code{\link[graphics]{layout}}
 }
 \examples{
+\dontrun{
 data(chiroptera)
 zoom(chiroptera, 1:20)
+zoom(chiroptera, grep("Plecotus", chiroptera$tip.label))
+}
 }
 \keyword{hplot}

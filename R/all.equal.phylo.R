@@ -1,8 +1,8 @@
-### all.equal.phylo.R  (2002-08-28)
+### all.equal.phylo.R  (2004-10-17)
 ###
 ###     Global Comparison of two Phylogenies
 ###
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -41,8 +41,6 @@ all.equal.phylo <- function(target, current, ...)
         }
         return(unlist(lapply(seq.nod, length)) - 1)
     }
-    if (class(phy1) != "phylo") stop("object \"target\" is not of class \"phylo\"")
-    if (class(phy2) != "phylo") stop("object \"current\" is not of class \"phylo\"")
     ## first, do a global comparison of both phylogenies
     if (identical(all.equal.list(phy1, phy2, ...), TRUE)) return(TRUE)
     else {

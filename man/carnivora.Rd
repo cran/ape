@@ -24,14 +24,14 @@
     [,12] \tab BW          \tab numeric \tab Birth weigth (g) \cr
     [,13] \tab WA          \tab numeric \tab Weaning age (days) \cr
     [,14] \tab AI          \tab numeric \tab Age of independance (days) \cr
-    [,15] \tab LY          \tab numeric \tab Longevity (mo) \cr
+    [,15] \tab LY          \tab numeric \tab Longevity (months) \cr
     [,16] \tab AM          \tab numeric \tab Age of sexual maturity (days) \cr
-    [,17] \tab IB          \tab numeric \tab Inter-birth interval (mo) \cr
+    [,17] \tab IB          \tab numeric \tab Inter-birth interval (months) \cr
   }
 }
 \source{
   Gittleman, J. L. (1986) Carnivore life history patterns: allometric,
-  phylogenetic and ecological associations. \emph{Ammerican Naturalist},
+  phylogenetic and ecological associations. \emph{American Naturalist},
   \bold{127}: 744--771.
 }
 \examples{

@@ -1,4 +1,4 @@
-### mcmc.popsize.R  (2004-09-16)
+### mcmc.popsize.R  (2004-10-13)
 ###
 ###     Run reversible jump MCMC to sample demographic histories 
 ###
@@ -30,16 +30,21 @@
 
 # run rjMCMC chain
 mcmc.popsize <- 
-  function(tree,
-    nstep, thinning=1, burn.in=0,
-    prior.lambda=0.5, max.nodes=30,
-    progress.bar=TRUE)
+  function(tree, nstep,
+    thinning=1, burn.in=0, progress.bar=TRUE,
+    method.prior.changepoints=c("hierarchical", "fixed.lambda"),
+    max.nodes=30,
+    lambda=0.5,    # "fixed.lambda" method.prior.changepoints
+    gamma.shape=0.5, gamma.scale=2,  # gamma distribution from which lambda is drawn (for "hierarchical" method)
+    method.prior.heights=c("skyline", "constant", "custom"), 
+    prior.height.mean,
+    prior.height.var
+    )
 { 
-  #mjumps="all"
-  #gamma.shape=1.5
-  #gamma.rate=0.1
-  
-  
+  method.prior.changepoints <- match.arg(method.prior.changepoints)
+  method.prior.heights <- match.arg(method.prior.heights)
+
+ 
   #Calculate skylineplot, coalescent intervals and estimated population sizes
   
   if(attr(tree, "class")=="phylo")
@@ -52,32 +57,88 @@ mcmc.popsize <-
   stop("tree must be an object of class phylo or coalescentIntervals")
    
       
-   #consider possibility of more than one linkage     
+   #consider possibility of more than one lineage     
    ci$lineages<-ci$lineages[sk1$interval.length>0]
    ci$interval.length<-ci$interval.length[sk1$interval.length>0]
    data<-sk1$time<-sk1$time[sk1$interval.length>0]
    sk1$population.size<-sk1$population.size[sk1$interval.length>0]
    sk1$interval.length<-sk1$interval.length[sk1$interval.length>0]
   
+
+  
+  # constant prior for heights
+
+  if (method.prior.heights=="constant"){
+
+    prior.height.mean<-function(position){
+      return(mean(sk1$population.size))
+    } 
+
+    prior.height.var<-function(position){
+      return((mean(sk1$population.size))^2)
+   }
+
+  }
+  
+
+
+  # skyline plot prior for heights
+  
+  if (method.prior.heights=="skyline"){
     
+    TIME<-sk1$time
+    numb.interv<-10
+    prior.change.times<-abs((0:numb.interv)*max(TIME)/numb.interv)
+    prior.height.mean.all<-prior.height.var.all<-vector(length=numb.interv)
+    for(p.int in 1:(numb.interv))
+    {
+      left<-p.int
+      right<-p.int+1
+      sample.pop<-sk1$population.size[sk1$time>=prior.change.times[left]&sk1$time<=prior.change.times[right]]
+      while(length(sample.pop)<10){
+        if(left>1){left<-left-1}
+        if(right<length(prior.change.times)){right<-right+1}
+        sample.pop<-sk1$population.size[sk1$time>=prior.change.times[left]&sk1$time<=prior.change.times[right]]
+      }
+      prior.height.mean.all[p.int]<-sum(sample.pop)/length(sample.pop)
+      prior.height.var.all[p.int]<-sum((sample.pop-prior.height.mean.all[p.int])^2)/(length(sample.pop)-1)
+      
+    }
+
+
+    prior.height.mean<-function(position)
+    {
+      j<-sum(prior.change.times<=position)
+      if(j>=length(prior.height.mean.all)){j<-length(prior.height.mean.all)}
+      prior.mean<-prior.height.mean.all[j]
+      prior.mean
+    }
+   
+    prior.height.var<-function(position)
+    {
+      j<-sum(prior.change.times<=position)
+      if(j>=length(prior.height.var.all)){j<-length(prior.height.var.all)}
+      prior.var<-prior.height.var.all[j]
+      prior.var
+    }  
+
+  }
+
+  if(method.prior.heights=="custom"){
+    if(missing(prior.height.mean)||missing(prior.height.var)){
+         stop("custom priors not specified")}
+  }
+
+
   #set prior
   prior<-vector(length=4)
   prior[4]<-max.nodes    
     
   
   # set initial position of markov chain and likelihood
-  #if(mjumps=="all")
-  #{
-     # constant pop size
-     pos<-c(0,max(data))
-     h<-c(rep(mean(sk1$population.size), 2))
-  #}
-  #else
-  #{
-  #   pos<-c(0:(mjumps+1))/(mjumps+1)*max(data)
-  #   h<-c(rep(mean(sk1$population.size), (mjumps+2)))
-  #}
-  
+  pos<-c(0,max(data))
+  h<-c(rep(mean(sk1$population.size), 2))
+   
   b.lin<-choose(ci$lineages, 2)
   loglik<<-loglik.pop
   
@@ -91,9 +152,9 @@ mcmc.popsize <-
 
   
   # calculate jump probabilities for given lambda of the prior
-  #if(prior.lambda!=0)
-  #{
-    prior[1]<-prior.lambda
+  if(method.prior.changepoints=="fixed.lambda")
+  {
+    prior[1]<-lambda
     jump.prob <- matrix(ncol=4,nrow=prior[4]+1)
     p <- dpois(0:prior[4],prior[1])/ppois(prior[4]+1,prior[1])
     bk <- c(p[-1]/p[-length(p)],0)
@@ -109,7 +170,7 @@ mcmc.popsize <-
     jump.prob[1,1] <- 1-bk[1]-dk[1]
     jump.prob[-1,1] <- jump.prob[-1,2] <-
     (1-jump.prob[-1,3]-jump.prob[-1,4])/2
-  #}
+  }
 
 
   # calculate starting loglik
@@ -141,52 +202,36 @@ mcmc.popsize <-
     }
     
   # calculate jump probabilities without given lamda
-  #if(prior.lambda==FALSE){
-  #  prior[1]<-rgamma(1,gamma.shape,gamma.rate)
-  #  jump.prob <- matrix(ncol=4,nrow=prior[4]+1)
-  #  p <- dpois(0:prior[4],prior[1])/ppois(prior[4]+1,prior[1])
-  #  bk <- c(p[-1]/p[-length(p)],0)
-  #  bk[bk > 1] <- 1
-  #  dk <- c(0,p[-length(p)]/p[-1])
-  #  dk[dk > 1] <- 1
-  #  mx <- max(bk+dk)
-  #  bk <- bk/mx*0.9
-  #  dk <- dk/mx*0.9
-  #  jump.prob[,3] <- bk
-  #  jump.prob[,4] <- dk
-  #  jump.prob[1,2] <- 0
-  #  jump.prob[1,1] <- 1-bk[1]-dk[1]
-  #  jump.prob[-1,1] <- jump.prob[-1,2] <-
-  #  (1-jump.prob[-1,3]-jump.prob[-1,4])/2
-  #}
+  if(method.prior.changepoints=="hierarchical"){
+    prior[1]<-rgamma(1,shape=gamma.shape,scale=gamma.scale)
+    jump.prob <- matrix(ncol=4,nrow=prior[4]+1)
+    p <- dpois(0:prior[4],prior[1])/ppois(prior[4]+1,prior[1])
+    bk <- c(p[-1]/p[-length(p)],0)
+    bk[bk > 1] <- 1
+    dk <- c(0,p[-length(p)]/p[-1])
+    dk[dk > 1] <- 1
+    mx <- max(bk+dk)
+    bk <- bk/mx*0.9
+    dk <- dk/mx*0.9
+    jump.prob[,3] <- bk
+    jump.prob[,4] <- dk
+    jump.prob[1,2] <- 0
+    jump.prob[1,1] <- 1-bk[1]-dk[1]
+    jump.prob[-1,1] <- jump.prob[-1,2] <-
+    (1-jump.prob[-1,3]-jump.prob[-1,4])/2
+  }
     
     
     # determine what type of jump to make
-
-    #if(mjumps=="all")
-    #{
-      wh <- sample(1:4,1,prob=jump.prob[length(h)-1,])
-    #}
-    #else if(mjumps==0)
-    #{
-    #  wh <- 1
-    #}
-    #else
-    #{
-    #  wh <- sample(c(1,2),1)
-    #}
+    wh <- sample(1:4,1,prob=jump.prob[length(h)-1,])
     
     
     if (i %% thinning == 0& i>burn.in) {save.steptype[[count.i]] <- wh}
 
     if(wh==1) {
-      step <- ht.move(data,pos,h,curloglik,prior, b.lin, sk1, ci)
- #        if (i %% thinning == 0) {save.pos[[count.i]]<-pos}
+      step <- ht.move(data,pos,h,curloglik,prior, b.lin, sk1, ci, prior.height.mean, prior.height.var)
       h <- step[[1]]
- #        if (i %% thinning == 0) {save.h[[count.i]]<-h}
       curloglik <- step[[2]]
- #        if (i %% thinning == 0) {save.loglik[[count.i]]<-step[[2]]}
- #        if (i %% thinning == 0) {save.accept[[count.i]]<-step[[3]]}
       if(i%%thinning==0 & i>burn.in){
          save.pos[[count.i]]<-pos
          save.h[[count.i]]<-h
@@ -197,11 +242,7 @@ mcmc.popsize <-
     else if(wh==2) {
       step <- pos.move(data,pos,h,curloglik, b.lin,sk1,ci)
       pos <- step[[1]]
-#         if (i %% thinning == 0) {save.pos[[count.i]]<-pos}
-#         if (i %% thinning == 0) {save.h[[count.i]]<-h}
       curloglik <- step[[2]]
-#         if (i %% thinning == 0) {save.loglik[[count.i]]<-step[[2]]}
-#         if (i %% thinning == 0) {save.accept[[count.i]]<-step[[3]]}
       if(i%%thinning==0 & i>burn.in){
           save.pos[[count.i]]<-pos
           save.h[[count.i]]<-h
@@ -210,14 +251,10 @@ mcmc.popsize <-
           }
     }
     else if(wh==3) {
-      step <- birth.step(data,pos,h,curloglik,prior,jump.prob, b.lin, sk1, ci)
+      step <- birth.step(data,pos,h,curloglik,prior,jump.prob, b.lin, sk1, ci, prior.height.mean, prior.height.var)
       pos <- step[[1]]
-#         if (i %% thinning == 0) {save.pos[[count.i]]<-pos}
       h <- step[[2]]
-#         if (i %% thinning == 0) {save.h[[count.i]]<-h}
       curloglik <- step[[3]]
-#         if (i %% thinning == 0) {save.loglik[[count.i]]<-step[[3]]}
-#         if (i %% thinning == 0) {save.accept[[count.i]]<-step[[4]]}
       if(i%%thinning==0 & i>burn.in){
          save.pos[[count.i]]<-pos
          save.h[[count.i]]<-h
@@ -226,14 +263,10 @@ mcmc.popsize <-
          }
     }
     else {
-      step <- death.step(data,pos,h,curloglik,prior,jump.prob, b.lin, sk1, ci)
+      step <- death.step(data,pos,h,curloglik,prior,jump.prob, b.lin, sk1, ci, prior.height.mean, prior.height.var)
       pos <- step[[1]]
-#         if (i %% thinning == 0) {save.pos[[count.i]]<-pos}
       h <- step[[2]]
-#         if (i %% thinning == 0) {save.h[[count.i]]<-h}
       curloglik <- step[[3]]
-#         if (i %% thinning == 0) {save.loglik[[count.i]]<-step[[3]]}
-#         if (i %% thinning == 0) {save.accept[[count.i]]<-step[[4]]}
       if(i%%thinning==0 & i>burn.in){
          save.pos[[count.i]]<-pos
          save.h[[count.i]]<-h
@@ -256,30 +289,16 @@ mcmc.popsize <-
 
 
 ht.move <-
-function(data,pos,h,curloglik,prior, b.lin,sk1,ci)
+function(data,pos,h,curloglik,prior, b.lin,sk1,ci, prior.height.mean, prior.height.var)
 {
 #  print("ht.move") 
   j <- sample(1:length(h),1)
-    
-  #calculate prior for gamma distribution
-    ii<-1
-    sample.pop<-0
-    if(length(sk1$population.size)>=20){
-      while(length(sample.pop)<20){
-        j.left<-(j-ii)
-        if(j.left<1){j.left<-1}
-        j.right<-(j+ii)
-        if(j.right>length(h)){j.right<-length(h)}
-        sample.pop<-sk1$population.size[pos[j.left]<sk1$time&sk1$time<pos[j.right]]
-        ii<-ii+1
-      }
-    }
-    else {sample.pop<-sk1$population.size}
-      
-    pop.mean<-sum(sample.pop)/length(sample.pop)
-    pop.sd<-sum((sample.pop-pop.mean)^2)/(length(sample.pop)-1)
-    prior[3]<-pop.mean/pop.sd
-    prior[2]<-(pop.mean^2)/pop.sd
+  
+  prior.mean<-prior.height.mean(pos[j])
+  prior.var<-prior.height.var(pos[j])
+ 
+  prior[3]<-prior.mean/prior.var
+  prior[2]<-(prior.mean^2)/prior.var
  
   newh <- h
   newh[j] <- h[j]*exp(runif(1,-0.5,0.5))
@@ -323,36 +342,22 @@ function(data,pos,h,curloglik, b.lin,sk1,ci)
 
 
 birth.step <-
-function(data,pos,h,curloglik,prior,jump.prob, b.lin, sk1, ci)
+function(data,pos,h,curloglik,prior,jump.prob, b.lin, sk1, ci, prior.height.mean, prior.height.var)
 { 
 #  print("birth")
   newpos <- runif(1,0,pos[length(pos)])
   j <- sum(pos < newpos)
+
   left <- pos[j]
   right <- pos[j+1]
   
+  prior.mean<-prior.height.mean(pos[j])
+  prior.var<-prior.height.var(pos[j])
+ 
+  prior[3]<-prior.mean/prior.var
+  prior[2]<-(prior.mean^2)/prior.var
   
-  #calculate prior for gamma distribution
-  ii<-0
-  sample.pop<-0
-  if(length(sk1$population.size)>=20){
-    while(length(sample.pop)<20){
-      j.left<-(j-ii)
-        if(j.left<1){j.left<-1}
-      j.right<-(j+1+ii)
-        if(j.right>length(h)){j.right<-length(h)}
-      sample.pop<-sk1$population.size[pos[j.left]<sk1$time&sk1$time<pos[j.right]]
-      ii<-ii+1
-      }
-    }
-  else {sample.pop<-sk1$population.size}
-  
-  pop.mean<-sum(sample.pop)/length(sample.pop)     
-  pop.sd<-sum((sample.pop-pop.mean)^2)/(length(sample.pop)-1)
-  prior[3]<-pop.mean/pop.sd
-  prior[2]<-(pop.mean^2)/pop.sd
-  
-     
+ 
   u <- runif(1,-0.5,0.5)
   oldh<-(((newpos-left)/(right-left))*(h[j+1]-h[j])+h[j])
   newheight<-oldh*(1+u)
@@ -365,7 +370,7 @@ function(data,pos,h,curloglik,prior,jump.prob, b.lin, sk1, ci)
   prior.logratio <- log(prior[1]) - log(k+1) +  log((2*k+3)*(2*k+2)) - 2*log(L) +
     log(newpos-left) + log(right-newpos) - log(right-left) +
        prior[2]*log(prior[3]) - lgamma(prior[2]) +
-        (prior[2]-1) * log(newheight) + # <<< - to + ;warum minus nach plus? es heißt minus beta mal...
+        (prior[2]-1) * log(newheight) + 
           prior[3]*(newheight)
          
    proposal.ratio <- jump.prob[k+2,4]*L/jump.prob[k+1,3]/(k+1)
@@ -394,7 +399,7 @@ function(data,pos,h,curloglik,prior,jump.prob, b.lin, sk1, ci)
 
 
 death.step <-
-function(data,pos,h,curloglik,prior,jump.prob, b.lin,sk1,ci)
+function(data,pos,h,curloglik,prior,jump.prob, b.lin,sk1,ci, prior.height.mean, prior.height.var)
 {  
 #  print("death")
   # position to drop
@@ -404,26 +409,12 @@ function(data,pos,h,curloglik,prior,jump.prob, b.lin,sk1,ci)
   left <- pos[j-1]
   right <- pos[j+1]
 
-  #calculate prior for gamma distribution
-  ii<-0
-  sample.pop<-0
-  if(length(sk1$population.size)>=20){
-    while(length(sample.pop)<20){
-      j.left<-(j-1-ii)
-        if(j.left<1){j.left<-1}
-      j.right<-(j+1+ii)
-        if(j.right>length(h)){j.right<-length(h)}
-      sample.pop<-sk1$population.size[pos[j.left]<sk1$time&sk1$time<pos[j.right]]
-      ii<-ii+1
-      }
-    }
-  else {sample.pop<-sk1$population.size}
-
-  pop.mean<-sum(sample.pop)/length(sample.pop)
-  pop.sd<-sum((sample.pop-pop.mean)^2)/(length(sample.pop)-1)
-  prior[3]<-pop.mean/pop.sd
-  prior[2]<-(pop.mean^2)/pop.sd
-  
+  prior.mean<-prior.height.mean(pos[j])
+  prior.var<-prior.height.var(pos[j])
+ 
+  prior[3]<-prior.mean/prior.var
+  prior[2]<-(prior.mean^2)/prior.var
+ 
 
   # get new height
   h.left <- h[j-1]
@@ -513,7 +504,7 @@ h.mix<-(((data.time[i+1]-pos[left.pos])/(pos[right.pos]-pos[left.pos]))*(h[right
   a<-(h.jumps[-1]-h.jumps[-length(h.jumps)])/(jumps[-1]-jumps[-length(jumps)])
   c<-h.jumps[-1]-jumps[-1]*a
   area<-(1/a)*log(a*jumps[-1]+c)-(1/a)*log(a*jumps[-length(jumps)]+c)
-  stepfunction<-(jumps[-1]-jumps[-length(jumps)])*h.jumps[-1]
+  stepfunction<-(jumps[-1]-jumps[-length(jumps)])/h.jumps[-1]
   area[is.na(area)]<-stepfunction[is.na(area)]
 
   rightside<-sum(area*b1[-1])

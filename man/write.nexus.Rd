@@ -7,7 +7,7 @@ write.nexus(phy, file = "", translate = TRUE, original.data = TRUE)
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
   \item{file}{a file name specified by either a variable of mode character,
-    or a double-quoted string; if \code{file = ""}(the default) then the
+    or a double-quoted string; if \code{file = ""} (the default) then the
     tree is written on the standard output connection.}
   \item{translate}{a logical, if \code{TRUE} (the default) a translation
     of the tip labels is done which are replaced in the parenthetic
@@ -31,7 +31,7 @@ write.nexus(phy, file = "", translate = TRUE, original.data = TRUE)
 }
 \references{
   Maddison, D. R., Swofford, D. L. and Maddison, W. P. (1997) NEXUS: an
-  extensible file format for systemaric information. \emph{Systematic
+  extensible file format for systematic information. \emph{Systematic
     Biology}, \bold{46}, 590--621.
 }
 

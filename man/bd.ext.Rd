@@ -21,8 +21,15 @@ bd.ext(phy, S)
   \emph{b - d}, where \emph{b} is the birth rate, and \emph{d} the death
   rate.
 
-  The standard-errors of the estimated parameters are  function computed
-  using a normal approximations of the maximum likelihood estimates.
+  The standard-errors of the estimated parameters are computed using a
+  normal approximation of the maximum likelihood estimates.
+
+  If the argument \code{S} has names, then they are matched to the tip
+  labels of \code{phy}. The user must be careful here since the function
+  requires that both series of names perfectly match, so this operation
+  may fail if there is a typing or syntax error. If both series of names
+  do not match, the values \code{S} are taken to be in the same order
+  than the tip labels of \code{phy}, and a warning message is issued.
 
   Note that the function does not check that the tree is effectively
   ultrametric, so if it is not, the returned result may not be meaningful.
@@ -36,7 +43,7 @@ bd.ext(phy, S)
 \seealso{
   \code{\link{birthdeath}}, \code{\link{branching.times}},
   \code{\link{diversi.gof}}, \code{\link{diversi.time}},
-  \code{\link{ltt.plot}}, \code{\link{yule}}
+  \code{\link{ltt.plot}}, \code{\link{yule}}, \code{\link{yule.cov}}
 }
 \examples{
 ### An example from Paradis (2003) using the avian orders:

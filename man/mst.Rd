@@ -58,7 +58,7 @@ mst(X)
 }
 \seealso{
   \code{\link{dist.dna}}, \code{\link{dist.gene}},
-  \code{\link[stats]{dist}}, \code{\link[base]{plot}}
+  \code{\link[stats]{dist}}, \code{\link[graphics]{plot}}
 }
 \examples{
 library(stats)

@@ -1,4 +1,4 @@
-### pic.R  (2004-08-31)
+### pic.R  (2004-10-12)
 ###
 ###     Phylogenetically Independent Contrasts
 ###
@@ -31,8 +31,17 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
 
     phenotype <- as.numeric(rep(NA, nb.tip + nb.node))
     names(phenotype) <- as.character(c(1:nb.tip, -(1:nb.node)))
-    if (is.null(names(x)))
-      phenotype[1:nb.tip] <- x else for (i in 1:nb.tip) phenotype[i] <- x[phy$tip.label[i]]
+    if (is.null(names(x))) {
+        phenotype[1:nb.tip] <- x
+    } else {
+        if(!any(is.na(match(names(x), phy$tip.label))))
+          for (i in 1:nb.tip) phenotype[i] <- x[phy$tip.label[i]]
+        else {
+            phenotype[1:nb.tip] <- x
+            warning("the names of argument \"x\" and the names of the tip labels
+did not match: the former were ignored in the analysis.")
+        }
+    }
     
     bl <- phy$edge.length   # copy the branch lengths to rescale them subsequently
     ## `unused' says if the phenotype has NOT been used to compute a contrast

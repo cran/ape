@@ -49,10 +49,10 @@
 \seealso{
 	\code{\link{dist.phylo}}, \code{\link{discrete.dist}}, \code{\link{dist.taxo}}
 }
-\keyword{regression}
 \examples{
 ### This will draw the correlogram from Gittleman and Kot 1990
-### This is only for example, consider function plot.correlogram() to draw correlograms.
+### This is only for example, consider function plot.correlogram()
+### to draw correlograms.
 library(ape)
 data(carnivora)
 attach(carnivora)
@@ -83,3 +83,5 @@ pch <- ifelse(p < 0.05, 19, 21)
 xyplot(i~ordered(l,levels=l), type="b", xlab="Rank", ylab="I / Imax",
     lty=2, lwd=2, cex=1.5, pch=pch, ylim=c(-0.75,0.75))
 }
+\keyword{models}
+\keyword{regression}

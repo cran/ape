@@ -30,3 +30,4 @@
 	\code{\link{Moran.I}} for example of use
 }
 \keyword{regression}
+\keyword{manip}

@@ -50,7 +50,7 @@ skylineplot.deluxe(tree, \dots)
 \author{Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})}
 
 \seealso{
-\code{\link[base]{plot}} and \code{\link[base]{lines}} for the basic plotting
+\code{\link[graphics]{plot}} and \code{\link[graphics]{lines}} for the basic plotting
 function in R, \code{\link{coalescent.intervals}}, \code{\link{skyline}}
 }
 

@@ -25,11 +25,11 @@ add.scale.bar(x, y, phy, bar = NULL)
 }
 \note{
   Since the coordinate system is not displayed when plotting a tree, it
-  may be useful to use the function \code{\link[base]{locator}} to
+  may be useful to use the function \code{\link[graphics]{locator}} to
   determine the \code{x} and \code{y} arguments.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{plot.phylo}}, \code{\link[base]{locator}}
+  \code{\link{plot.phylo}}, \code{\link[graphics]{locator}}
 }
 \keyword{aplot}

@@ -26,10 +26,13 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
   estimating equations as described by Paradis and Claude (2002).
 }
 \details{
-  If a data frame is specified for the argument \code{data} and that
-  data frame has rownames, then its values are matched to the tip labels
-  of \code{phy}, otherwise its values are taken to be in the same order
-  than the tip labels of \code{phy}.
+  If a data frame is specified for the argument \code{data}, then its
+  rownames are matched to the tip labels of \code{phy}. The user must be
+  careful here since the function requires that both series of names
+  perfectly match, so this operation may fail if there is a typing or
+  syntax error. If both series of names do not match, the values in the
+  data frame are taken to be in the same order than the tip labels of
+  \code{phy}, and a warning message is issued. 
 
   If \code{data = NULL}, then it is assumed that the variables are in
   the same order than the tip labels of \code{phy}.
@@ -50,7 +53,7 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
 \references{
   Paradis, E. and Claude J. (2002) Analysis of comparative data using
   generalized estimating equations. \emph{Journal of theoretical
-    Biology}, \bold{216}, 000--000.
+    Biology}, \bold{218}, 175--185.
 }
 
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}

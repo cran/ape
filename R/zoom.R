@@ -26,7 +26,7 @@ zoom <- function(phy, focus, type = "phylogram", use.edge.length = TRUE)
     ext <- drop.tip(phy, phy$tip.label[-focus])
     layout(matrix(1:2, 1, 2), c(1, 3))
     phy$tip.label[-focus] <- ""
-    phy$tip.label[focus] <- "o"
+    phy$tip.label[focus] <- "*"
     par(col = "blue")
     plot.phylo(phy, type = type, use.edge.length = use.edge.length,
                no.margin = TRUE)

@@ -33,9 +33,9 @@ write.dna(x, file, format = "interleaved", append = FALSE,
     "interleaved"').}
 }
 \description{
-  This function writes in a file a list of DNA sequences using either a
-  sequential or an interleaved format. The names of the vectors of the
-  list are used as taxa names.
+  This function writes in a file a list of DNA sequences in sequential,
+  interleaved, or FASTA format. The names of the vectors of the list are
+  used as taxa names.
 }
 \details{
   The same three formats are supported in the present function than in

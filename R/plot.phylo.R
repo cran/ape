@@ -1,4 +1,4 @@
-### plot.phylo.R  (2004-09-23)
+### plot.phylo.R  (2004-10-19)
 ###
 ###                      Plot Phylogenies
 ###
@@ -23,145 +23,230 @@
 plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                        node.pos = NULL, show.node.label = FALSE,
                        edge.color = NULL, edge.width = NULL, font = 3,
-                       adj = 0, srt = 0, no.margin = FALSE, root.edge = FALSE,
-                       label.offset = 0, underscore = FALSE, x.lim = NULL,
+                       cex = par("cex"), adj = NULL, srt = 0, no.margin = FALSE,
+                       root.edge = FALSE, label.offset = 0, underscore = FALSE,
+                       x.lim = NULL, y.lim = NULL, direction = "rightwards",
                        lab4ut = "horizontal", ...)
 {
-    phy <- x
-    rm(x)
-    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
     type <- match.arg(type, c("phylogram", "cladogram", "unrooted"))
-    if (is.null(phy$edge.length)) use.edge.length <- FALSE
-    tmp <- as.numeric(phy$edge)
+    direction <- match.arg(direction, c("rightwards", "leftwards",
+                                        "upwards", "downwards"))
+    if (is.null(x$edge.length)) use.edge.length <- FALSE
+    tmp <- as.numeric(x$edge)
     nb.tip <- max(tmp)
     nb.node <- -min(tmp)
-
     if (type == "unrooted" | !use.edge.length) root.edge <- FALSE
-
     if (type %in% c("phylogram", "cladogram")) {
         if (is.null(node.pos)) {
             if (type == "phylogram") node.pos <- 1
             if (type == "cladogram") node.pos <- if (!use.edge.length) 2 else 1
         }
-        yy <- if (node.pos == 1) node.height(phy$edge) else node.height.clado(phy$edge)
+        yy <- if (node.pos == 1) node.height(x$edge) else node.height.clado(x$edge)
         if (!use.edge.length) {
-            xx <- node.depth(phy$edge) - 1
+            xx <- node.depth(x$edge) - 1
             xx <- max(xx) - xx
-        } else {
-            xx <- node.depth.edgelength(phy$edge, phy$edge.length)
+        } else  xx <- node.depth.edgelength(x$edge, x$edge.length)
+        if (root.edge) {
+            if (direction == "rightwards") xx <- xx + x$root.edge
+            if (direction == "leftwards") xx <- xx <- x$root.edge
+            if (direction == "upwards") yy <- yy + x$root.edge
+            if (direction == "downwards") yy <- yy - x$root.edge
         }
-        if (root.edge) xx <- xx + phy$root.edge
     } else { # if type == "unrooted"
-        XY <- if (use.edge.length) unrooted.xy(nb.tip, nb.node, phy$edge, phy$edge.length) else unrooted.xy(nb.tip, nb.node, phy$edge, rep(1, dim(phy$edge)[1]))
+        XY <- if (use.edge.length) unrooted.xy(nb.tip, nb.node, x$edge, x$edge.length) else unrooted.xy(nb.tip, nb.node, x$edge, rep(1, dim(x$edge)[1]))
         ## rescale so that we have only positive values
         xx <- XY$M[, 1] - min(XY$M[, 1])
         yy <- XY$M[, 2] - min(XY$M[, 2])
     }
 
-    if (no.margin) op <- par(mai = rep(0, 4))
+    if (type %in% c("phylogram", "cladogram") & direction != "rightwards") {
+        if (direction == "leftwards") {
+            xx <- -xx
+            xx <- xx - min(xx)
+        }
+        if (direction %in% c("upwards", "downwards")) {
+            tmp <- yy
+            yy <- xx
+            xx <- tmp - min(tmp) + 1
+            if (direction == "downwards") {
+                yy <- -yy
+                yy <- yy - min(yy)
+            }
+        }
+    }
+    if (no.margin) par(mai = rep(0, 4))
     if (is.null(x.lim)) {
         if (type %in% c("phylogram", "cladogram")) {
-            x.lim <- max(xx[as.character(1:nb.tip)] +
-                         nchar(phy$tip.label) * 0.018 * max(xx) * par("cex"))
+            if (direction %in% c("rightwards", "leftwards")) {
+                xs <- 0
+                if (direction == "leftwards")
+                  x.lim <- max(xx["-1"] + nchar(x$tip.label) * 0.018 * max(xx) * cex)
+                else
+                  x.lim <- max(xx[as.character(1:nb.tip)] +
+                                  nchar(x$tip.label) * 0.018 * max(xx) * cex)
+            } else {
+                xs <- 1
+                x.lim <- nb.tip
+            }
         } else x.lim <- max(xx) # if type == "unrooted"
+    } else {
+        if (type %in% c("phylogram", "cladogram"))
+          xs <- if (direction %in% c("rightwards", "leftwards")) 0 else 1
     }
-    if (type == "unrooted") {
-        y.lim <- max(yy)
-        offset <- max(nchar(phy$tip.label) * 0.018 * max(xx) * par("cex"))
+    if (is.null(y.lim)) {
+        if (type %in% c("phylogram", "cladogram")) {
+            if (direction %in% c("upwards", "downwards")) {
+                ys <- 0
+                if (direction == "downwards")
+                  y.lim <- max(yy["-1"] + nchar(x$tip.label) * 0.018 * max(yy) * cex)
+                else y.lim <- max(yy[as.character(1:nb.tip)] +
+                                  nchar(x$tip.label) * 0.018 * max(yy) * cex)
+            } else {
+                ys <- 1
+                y.lim <- nb.tip
+            }
+        } else { # if type == "unrooted"
+            y.lim <- max(yy)
+            offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
+        }
+    } else {
+        if (type %in% c("phylogram", "cladogram"))
+          ys <- if (direction %in% c("rightwards", "leftwards")) 1 else 0
     }
-    if (is.null(edge.color)) edge.color <- rep("black", dim(phy$edge)[1]) else {
-        names(edge.color) <- phy$edge[, 2]
+    if (is.null(edge.color)) edge.color <- rep("black", dim(x$edge)[1]) else {
+        names(edge.color) <- x$edge[, 2]
         edge.color <- edge.color[as.character(c(1:nb.tip, -(nb.node:2)))]
     }
-    if (is.null(edge.width)) edge.width <- rep(1, dim(phy$edge)[1]) else {
-        names(edge.width) <- phy$edge[, 2]
+    if (is.null(edge.width)) edge.width <- rep(1, dim(x$edge)[1]) else {
+        names(edge.width) <- x$edge[, 2]
         edge.width <- edge.width[as.character(c(1:nb.tip, -(nb.node:2)))]
     }
     if (type %in% c("phylogram", "cladogram")) {
-        plot(0, type="n", xlim=c(0, x.lim), ylim=c(1, nb.tip),
-             xlab="", ylab="", xaxt="n", yaxt="n", bty="n", ...)
+        plot(0, type = "n", xlim = c(xs, x.lim), ylim = c(ys, y.lim),
+             xlab = "", ylab = "", xaxt = "n", yaxt = "n", bty = "n", ...)
     } else { # if type == "unrooted"
-        plot(0, type="n", xlim=c(0 - offset, x.lim + offset), ylim=c(0 - offset, y.lim + offset),
-             xlab="", ylab="", xaxt="n", yaxt="n", bty="n", ...)
+        plot(0, type = "n", xlim = c(0 - offset, x.lim + offset),
+             ylim = c(0 - offset, y.lim + offset), xlab = "",
+             ylab = "", xaxt = "n", yaxt = "n", bty = "n", ...)
+    }
+    if (is.null(adj))
+      adj <- if (type %in% c("phylogram", "cladogram") & direction == "leftwards") 1 else 0
+    if (type %in% c("phylogram", "cladogram")) {
+        MAXSTRING <- max(strwidth(x$tip.label, cex = cex))
+        if (direction == "rightwards") {
+            if (adj == 1) lox <- label.offset + MAXSTRING * 1.05
+            if (adj == 0.5) lox <- label.offset + MAXSTRING * .525
+            if (adj == 0) lox <- label.offset
+            loy <- 0
+        }
+        if (direction == "leftwards") {
+            if (adj == 1) lox <- -label.offset
+            if (adj == 0.5) lox <- -label.offset - MAXSTRING * .525
+            if (adj == 0) lox <- -label.offset - MAXSTRING * 1.05
+            loy <- 0
+            xx <- xx + MAXSTRING
+        }
+        if (direction == "upwards") {
+            psr <- par("usr")
+            MAXSTRING <- MAXSTRING * 1.09 * (psr[4] - psr[3]) / (psr[2] - psr[1])
+            if (adj == 1) loy <- label.offset + MAXSTRING * 1.05
+            if (adj == 0.5) loy <- label.offset + MAXSTRING * .525
+            if (adj == 0) loy <- label.offset
+            lox <- 0
+            srt <- 90 + srt
+        }
+        if (direction == "downwards") {
+            psr <- par("usr")
+            MAXSTRING <- MAXSTRING * 1.09 * (psr[4] - psr[3]) / (psr[2] - psr[1])
+            if (adj == 1) loy <- -label.offset - MAXSTRING * 1.05
+            if (adj == 0.5) loy <- -label.offset - MAXSTRING * .525
+            if (adj == 0) loy <- -label.offset
+            lox <- 0
+            yy <- yy + MAXSTRING
+            srt <- 270 + srt
+        }
     }
 
-    switch(type, "phylogram" = phylogram.plot(phy$edge, nb.tip, nb.node, xx, yy, edge.color, edge.width),
-                 "cladogram" = cladogram.plot(phy$edge, xx, yy, edge.color, edge.width),
-                 "unrooted" = unrooted.plot(phy$edge, xx, yy, edge.color, edge.width))
-
-    if (root.edge) segments(0, yy["-1"], phy$root.edge, yy["-1"])
-
-    if (!underscore) phy$tip.label <- gsub("_", " ", phy$tip.label)
+    switch(type, "phylogram" = phylogram.plot(x$edge, nb.tip, nb.node, xx, yy,
+                                              direction, edge.color, edge.width),
+                 "cladogram" = cladogram.plot(x$edge, xx, yy, edge.color, edge.width),
+                 "unrooted" = unrooted.plot(x$edge, xx, yy, edge.color, edge.width))
+    if (root.edge) segments(0, yy["-1"], x$root.edge, yy["-1"])
+    if (!underscore) x$tip.label <- gsub("_", " ", x$tip.label)
     if (type %in% c("phylogram", "cladogram")) {
-        if (adj == 1) label.offset <- label.offset + max(strwidth(phy$tip.label,)) * 1.05
-        if (adj == 0.5) label.offset <- label.offset + max(strwidth(phy$tip.label,)) * 1.05 / 2
-        text(xx[as.character(1:nb.tip)] + label.offset, 1:nb.tip, phy$tip.label,
-             adj = adj, font = font, srt = srt)
+        text(xx[as.character(1:nb.tip)] + lox, yy[as.character(1:nb.tip)] + loy,
+             x$tip.label, adj = adj, font = font, srt = srt, cex = cex)
     } else { # if type == "unrooted"
         if (lab4ut == "horizontal") {
             y.adj <- x.adj <- numeric(nb.tip)
-            sel <- abs(XY$axe) > 3*pi/4
-            x.adj[sel] <- -strwidth(phy$tip.label)[sel] * 1.05
-            sel <- abs(XY$axe) > pi/4 & abs(XY$axe) < 3*pi/4
-            x.adj[sel] <- -strwidth(phy$tip.label)[sel] * (2 * abs(XY$axe)[sel] / pi - 0.5)
-            sel <- XY$axe > pi/4 & XY$axe < 3*pi/4
-            y.adj[sel] <- strheight(phy$tip.label)[sel] / 2
-            sel <- XY$axe < -pi/4 & XY$axe > -3*pi/4
-            y.adj[sel] <- -strheight(phy$tip.label)[sel] * 1.5 / 2
+            sel <- abs(XY$axe) > 0.75 * pi
+            x.adj[sel] <- -strwidth(x$tip.label)[sel] * 1.05
+            sel <- abs(XY$axe) > pi/4 & abs(XY$axe) < 0.75 * pi
+            x.adj[sel] <- -strwidth(x$tip.label)[sel] * (2 * abs(XY$axe)[sel] / pi - 0.5)
+            sel <- XY$axe > pi / 4 & XY$axe < 0.75 * pi
+            y.adj[sel] <- strheight(x$tip.label)[sel] / 2
+            sel <- XY$axe < -pi / 4 & XY$axe > -0.75 * pi
+            y.adj[sel] <- -strheight(x$tip.label)[sel] * 0.75
             text(xx[as.character(1:nb.tip)] + x.adj, yy[as.character(1:nb.tip)] + y.adj,
-                 phy$tip.label, adj = c(adj, 0), font = font, srt = srt)
+                 x$tip.label, adj = c(adj, 0), font = font, srt = srt, cex = cex)
         } else { # if lab4ut == "axial"
             adj <- as.numeric(abs(XY$axe) > pi / 2)
             srt <- 180 * XY$axe / pi
             srt[as.logical(adj)] <- srt[as.logical(adj)] - 180
             for (i in 1:nb.tip) {
-                text(xx[as.character(i)], yy[as.character(i)],
-                     phy$tip.label[i], adj = adj[i], font = font, srt = srt[i])
+                text(xx[as.character(i)], yy[as.character(i)], cex = cex,
+                     x$tip.label[i], adj = adj[i], font = font, srt = srt[i])
             }
         }
     }
     if (show.node.label) text(xx[as.character(-(1:nb.node))] + label.offset,
-                              yy[as.character(-(1:nb.node))], phy$node.label,
-                              adj = adj, font = font, srt = srt)
-    invisible(list(type = type, use.edge.length = use.edge.length, node.pos = node.pos,
-                   show.node.label = show.node.label, edge.color = edge.color,
-                   edge.width = edge.width, font = font, adj = adj, srt = srt,
-                   no.margin = no.margin, label.offset = label.offset, x.lim = x.lim))
+                              yy[as.character(-(1:nb.node))], x$node.label,
+                              adj = adj, font = font, srt = srt, cex = cex)
+    invisible(list(type = type, use.edge.length = use.edge.length,
+                   node.pos = node.pos, show.node.label = show.node.label,
+                   edge.color = edge.color, edge.width = edge.width,
+                   font = font, cex = cex, adj = adj, srt = srt,
+                   no.margin = no.margin, label.offset = label.offset,
+                   x.lim = x.lim, y.lim = y.lim, direction = direction))
 }
 
-phylogram.plot <- function(edge, nb.tip, nb.node, xx, yy, edge.color, edge.width)
+phylogram.plot <- function(edge, nb.tip, nb.node, xx, yy,
+                           direction, edge.color, edge.width)
 {
-    if (nb.node == 1) {
-        x0v <- 0
-        y0v <- 1
-        y1v <- nb.tip
-        x0h <- rep(0, nb.tip)
-        x1h <- xx[as.character(1:nb.tip)]
-        y0h <- 1:nb.tip
-    } else {
-        ## un trait vertical à chaque noeud...
-        x0v <- xx[1:nb.node]
-        y0v <- y1v <- numeric(nb.node)
-        for (i in as.numeric(names(x0v))) {
-            pair <- as.character(edge[which(edge[, 1] == i), 2])
-            y0v[-i] <- min(yy[pair])
-            y1v[-i] <- max(yy[pair])
-        }
-        names(x0v) <- NULL
-        ## ... et un trait horizontal partant de chaque tip et chaque noeud
-        ##  vers la racine
-        x0h <- x1h <- numeric(nb.tip + nb.node - 1)
-        y0h <- numeric(nb.tip + nb.node - 1)
-        j <- 1
-        for (i in c(1:nb.tip, -(nb.node:2))) {
-            y0h[j] <- yy[as.character(i)]
-            x0h[j] <- xx[as.character(edge[which(edge[, 2] == i), 1])]
-            x1h[j] <- xx[as.character(i)]
-            j <- j + 1
-        }
+    if (direction %in% c("upwards", "downwards")) {
+        tmp <- yy
+        yy <- xx
+        xx <- tmp
     }
-    segments(x0v, y0v, x0v, y1v) # draws vertical lines
-    segments(x0h, y0h, x1h, y0h, col = edge.color, lwd = edge.width) # draws horizontal lines
+    ## un trait vertical à chaque noeud...
+    x0v <- xx[1:nb.node]
+    y0v <- y1v <- numeric(nb.node)
+    for (i in names(x0v)) {
+        j <- edge[which(edge[, 1] == i), 2]
+        y0v[-as.numeric(i)] <- min(yy[j])
+        y1v[-as.numeric(i)] <- max(yy[j])
+    }
+    names(x0v) <- NULL
+    ## ... et un trait horizontal partant de chaque tip et chaque noeud
+    ##  vers la racine
+    sq <- if (nb.node == 1) 1:nb.tip else c(1:nb.tip, -(nb.node:2))
+    x0h <- x1h <- y0h <- numeric(nb.tip + nb.node - 1)
+    j <- 1
+    for (i in as.character(sq)) {
+        y0h[j] <- yy[i]
+        x0h[j] <- xx[edge[which(edge[, 2] == i), 1]]
+        x1h[j] <- xx[i]
+        j <- j + 1
+        x1v <- x0v
+        y1h <- y0h
+    }
+    if (direction %in% c("rightwards", "leftwards")) {
+        segments(x0v, y0v, x1v, y1v) # draws vertical lines
+        segments(x0h, y0h, x1h, y1h, col = edge.color, lwd = edge.width) # draws horizontal lines
+    } else {
+        segments(y0v, x0v, y1v, x1v) # draws horizontal lines
+        segments(y0h, x0h, y1h, x1h, col = edge.color, lwd = edge.width) # draws vertical lines
+    }
 }
 
 cladogram.plot <- function(edge, xx, yy, edge.color, edge.width)

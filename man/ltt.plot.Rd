@@ -34,21 +34,21 @@ mltt.plot(phy, ..., dcol = TRUE, dlty = FALSE,
   numbers of lineages through time from phylogenetic trees.
 }
 \details{
-  \code{ltt.plot()} does a simple lineages through time (LTT)
+  \code{ltt.plot} does a simple lineages through time (LTT)
   plot. Additional arguments (\code{...}) may be used to change, for
   instance, the limits on the axes (with \code{xlim} and/or
   \code{ylim}) or other graphical settings (\code{col} for the color,
   \code{lwd} for the line thickness, \code{lty} for the line type may be
-  useful; see \code{\link[base]{par}} for an exhaustive listing of
+  useful; see \code{\link[graphics]{par}} for an exhaustive listing of
   graphical parameters). The \eqn{y}-axis can be log-transformed by
   adding the following option: \code{log = "y"}.
 
-  \code{ltt.lines()} adds a LTT curve to an existing plot. Additional
+  \code{ltt.lines} adds a LTT curve to an existing plot. Additional
   arguments (\code{...}) may be used to change the settings of the added
   line. Of course, the settings of the already existing LTT plot cannot
   be altered this way.
 
-  \code{mltt.plot()} does a multiple LTT plot taking as arguments one or
+  \code{mltt.plot} does a multiple LTT plot taking as arguments one or
   several trees. These trees may be given as objects of class
   \code{"phylo"} (single trees) or \code{c("phylo", "multi.tree")}
   (multiple trees). Any number of objects may be given. This function is
@@ -70,8 +70,8 @@ mltt.plot(phy, ..., dcol = TRUE, dlty = FALSE,
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{skyline}}, \code{\link{branching.times}},
-  \code{\link{birthdeath}}, \code{\link{bd.ext}},
-  \code{\link[base]{plot}} for the basic plotting function in R
+  \code{\link{birthdeath}}, \code{\link{bd.ext}}, \code{\link{yule.cov}}
+  \code{\link[graphics]{plot}} for the basic plotting function in R
 }
 \examples{
 data(bird.families)

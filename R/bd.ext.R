@@ -1,4 +1,4 @@
-### bd.ext.R  (2004-08-20)
+### bd.ext.R  (2004-10-12)
 ###
 ###     Extended Version of the Birth-Death Models to
 ###       Estimate Speciation and Extinction Rates
@@ -24,11 +24,15 @@
 bd.ext <- function(phy, S)
 {
     if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
-    if (!is.null(names(S))) S <- S[phy$tip.label]
+    if (!is.null(names(S))) {
+        if(!any(is.na(match(names(S), phy$tip.label)))) S <- S[phy$tip.label]
+        else warning("the names of argument \"S\" and the names of the tip labels
+did not match: the former were ignored in the analysis.")
+    }
     N <- length(S)
     x <- branching.times(phy)
     x <- c(x[1], x)
-    trm.br <- phy$edge.length[phy$edge[, 2] > 0]
+    trm.br <- phy$edge.length[as.numeric(phy$edge[, 2]) > 0]
     dev <- function(a, r)
     {
         -2 * (sum(log((N - 1):1))
@@ -51,9 +55,6 @@ bd.ext <- function(phy, S)
         se <- sqrt(diag(solve(out$hessian)))
     }
     Dev <- out$minimum
-###     Extended Version of the Birth-Death Models to
-###       Estimate Speciation and Extinction Rates
-
     cat("\nExtended Version of the Birth-Death Models to\n")
     cat("    Estimate Speciation and Extinction Rates\n\n")
     cat("    Data: phylogenetic:", deparse(substitute(phy)), "\n")

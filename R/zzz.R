@@ -22,5 +22,7 @@
 
 .First.lib <- function(lib, pkg) {
     require(gee)
+    require(nlme)
+    require(lattice)
     library.dynam("ape", pkg, lib)
 }

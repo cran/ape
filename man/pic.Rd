@@ -20,6 +20,12 @@ pic(x, phy, scaled = TRUE, var.contrasts = FALSE)
   If \code{x} has names, its values are matched to the tip labels of
   \code{phy}, otherwise its values are taken to be in the same order
   than the tip labels of \code{phy}.
+
+  The user must be careful here since the function requires that both
+  series of names perfectly match, so this operation may fail if there
+  is a typing or syntax error. If both series of names do not match, the
+  values in the \code{x} are taken to be in the same order than the tip
+  labels of \code{phy}, and a warning message is issued.
 }
 \value{
   either a vector of phylogenetically independent contrasts (if

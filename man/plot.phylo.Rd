@@ -3,11 +3,12 @@
 \title{Plot Phylogenies}
 \usage{
 \method{plot}{phylo}(x, type = "phylogram", use.edge.length = TRUE,
-             node.pos = NULL, show.node.label = FALSE,
-             edge.color = NULL, edge.width = NULL, font = 3,
-             adj = 0, srt = 0, no.margin = FALSE, root.edge = FALSE,
-             label.offset = 0, underscore = FALSE, x.lim = NULL,
-             lab4ut = "horizontal", ...)
+    node.pos = NULL, show.node.label = FALSE,
+    edge.color = NULL, edge.width = NULL, font = 3,
+    cex = par("cex"), adj = NULL, srt = 0, no.margin = FALSE,
+    root.edge = FALSE, label.offset = 0, underscore = FALSE,
+    x.lim = NULL, y.lim = NULL, direction = "rightwards",
+    lab4ut = "horizontal", ...)
 }
 \arguments{
   \item{x}{an object of class \code{"phylo"}.}
@@ -35,14 +36,21 @@
     the component \code{edge} of \code{phy}. If fewer widths are given
     than the length of \code{edge}, then these are recycled.}
   \item{font}{an integer specifying the type of font for the labels: 1
-    (plain text), 2 (bold), 3 (italic, the default), or 4 (bold italic).}
+    (plain text), 2 (bold), 3 (italic, the default), or 4 (bold
+    italic).}
+  \item{cex}{a numeric value giving the factor scaling of the tip and
+    node labels (Character EXpansion). The default is to take the
+    current value from the graphical parameters.}
   \item{adj}{a numeric specifying the justification of the text strings
-    of the labels: 0 (left-justification, the default), 0.5 (centering),
-    or 1 (right-justification). This option has no effect if \code{type
-      = "unrooted"}.}
+    of the labels: 0 (left-justification), 0.5 (centering), or 1
+    (right-justification). This option has no effect if \code{type =
+      "unrooted"}. If \code{NULL} (the default) the value is set with
+    respect of \code{direction} (see details).}
   \item{srt}{a numeric giving how much the labels are rotated in degrees
-    (negative values are allowed resulting in clock-like rotation). This
-    option has no effect if \code{type = "unrooted"}.}
+    (negative values are allowed resulting in clock-like rotation); the
+    value has an effect respectively to the value of
+    \code{direction} (see Examples). This option has no effect if
+    \code{type = "unrooted"}.}
   \item{no.margin}{a logical. If \code{TRUE}, the margins are set to
     zero and the plot uses all the space of the device (note that this
     was the behaviour of \code{plot.phylo} up to version 0.2-1 of `ape'
@@ -59,6 +67,10 @@
   \item{x.lim}{a numeric giving the limit of the x-axis. If \code{NULL},
     this is computed with respect to various parameters such as the
     string lengths of the labels and the branch lengths.}
+  \item{y.lim}{same than above for the y-axis.}
+  \item{direction}{a character string specifying the direction of the
+    tree. Four values are possible: "rightwards" (the default),
+    "leftwards", "upwards", and "downwards".}
   \item{lab4ut}{(= labels for unrooted trees) a character string
     specifying the display of tip labels for unrooted trees: either
     \code{"horizontal"} where all labels are horizontal (the default),
@@ -74,10 +86,9 @@
   The formatting of the labels of both the nodes and the tips is the
   same.
 
-  The new default behaviour is to use the current margins rather
-  than to set them to zero. If \code{no.margin = TRUE}, the margins are
-  set to zero and are not restored after plotting the tree, so that the
-  user can access the coordinates system of the plot.
+  If \code{no.margin = TRUE}, the margins are set to zero and are not
+  restored after plotting the tree, so that the user can access the
+  coordinates system of the plot.
 
   The option `node.pos' allows the user to alter the vertical position
   (i.e. ordinates) of the nodes. If \code{node.pos = 1}, then the
@@ -89,12 +100,20 @@
   \code{type = "phylogram"} then `node.pos = 1'; if \code{type =
     "cladogram"} and \code{use.edge.length = FALSE} then `node.pos = 2';
   if \code{type = "cladogram"} and \code{use.edge.length = TRUE} then
-  `node.pos = 1'.
+  `node.pos = 1'. Remember that in this last situation, the branch
+  lengths make sense when projected on the x-axis.
 
-  If the argument \code{x.lim} is not specified by the user, it is
-  determined roughly by the function. This may not always give a nice
-  result: the user may check these values with the (invisibly) returned
-  list (see ``Value:'').
+  If \code{adj} is not specified, then the value is determined with
+  respect to \code{direction}: if \code{direction = "leftwards"} then
+  \code{adj = 1} (0 otherwise).
+
+  If the arguments \code{x.lim} and \code{y.lim} are not specified by the
+  user, they are determined roughly by the function. This may not always
+  give a nice result: the user may check these values with the
+  (invisibly) returned list (see ``Value:'').
+
+  Note that if you resize manually the graphical device (windows or X11)
+  you may need to replot the tree.
 }
 \value{
   The function returns invisibly a list with the following components
@@ -107,17 +126,19 @@
   \item{edge.color}
   \item{edge.width}
   \item{font}
+  \item{cex}
   \item{adj}
   \item{srt}
   \item{no.margin}
   \item{label.offset}
   \item{x.lim}
-
+  \item{y.lim}
+  \item{direction}
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{read.tree}}, \code{\link{add.scale.bar}},
-  \code{\link[base]{plot}} for the basic plotting function in R
+  \code{\link[graphics]{plot}} for the basic plotting function in R
 }
 \examples{
 ### An extract from Sibley and Ahlquist (1990)
@@ -139,16 +160,14 @@ plot(tree.owls, type = "u", use.edge.length = FALSE)
 layout(matrix(1))
 
 data(xenarthra)
-op <- par()
-\dontrun{par(ask = TRUE)}
 plot(xenarthra)
 ### remove the margins...
 plot(xenarthra, no.margin = TRUE)
 ### ... and use a smaller font size
-par(cex = 0.8)
-plot(xenarthra, no.margin = TRUE)
-plot(xenarthra, type = "c", no.margin = TRUE, use.edge.length = FALSE)
-par(op)
+plot(xenarthra, no.margin = TRUE, cex = 0.8)
+plot(xenarthra, type = "c", no.margin = TRUE,
+     use.edge.length = FALSE, cex = 0.8)
+par(mar = c(5.1, 4.1, 4.1, 2.1))
 
 data(bird.orders)
 ### using random colours and thichness
@@ -168,11 +187,20 @@ plot(bird.orders, type = "c", use.edge.length = FALSE,
 segments(rep(0, 6), 6.5:1.5, rep(2, 6), 6.5:1.5, lwd = 5, col = X)
 text(rep(2.5, 6), 6.5:1.5, paste(X, "..."), adj = 0)
 title("Character mapping is possible...")
-par(cex = 0.75)
-plot(bird.orders, "u", font = 1)
+plot(bird.orders, "u", font = 1, cex = 0.75)
 data(bird.families)
-par(cex = 0.5)
-plot(bird.families, "u", lab4ut = "axial", font = 1)
-par(cex = 1)
+plot(bird.families, "u", lab4ut = "axial", font = 1, cex = 0.5)
+### cladogram with oblique tip labels
+plot(bird.orders, "c", FALSE, direction = "u", srt = -40, x.lim = 25.5)
+### facing trees with different informations...
+tr <- bird.orders
+tr$tip.label <- rep("", 23)
+layout(matrix(1:2, 1, 2), c(5, 4))
+plot(bird.orders, "c", FALSE, adj = 0.5, no.margin = TRUE, label.offset = 0.8,
+     edge.color = sample(X, length(bird.orders$edge)/2, replace = TRUE),
+     edge.width = rep(5, length(bird.orders$edge)/2))
+text(7.5, 23, "Facing trees with\ndifferent informations", font = 2)
+plot(tr, "p", direction = "l", no.margin = TRUE,
+     edge.width = sample(1:10, length(bird.orders$edge)/2, replace = TRUE))
 }
 \keyword{hplot}
