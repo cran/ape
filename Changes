@@ -1,3 +1,19 @@
+		CHANGES IN APE VERSION 1.3-1
+
+
+NEW FEATURES
+
+    o The new function nodelabels() allows to add labels to the nodes
+      of a tree using text or plotting symbols in a flexible way.
+
+    o In plot.phylo() the arguments `x.lim' and `y.lim' can now be two
+      numeric values specifying the lower and upper limits on the x-
+      and y-axes. This allows to leave some space on any side of the
+      tree. If a single value is given, this is taken as the upper
+      limit (as before).
+
+
+
 		CHANGES IN APE VERSION 1.3
 
 

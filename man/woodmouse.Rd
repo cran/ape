@@ -1,6 +1,6 @@
 \name{woodmouse}
 \alias{woodmouse}
-\title{Cytochrome b Sequences of Woodmice}
+\title{Cytochrome b Gene Sequences of Woodmice}
 \description{
   This is a set of 15 sequences of the mitochondrial gene cytochrome
   \emph{b} of the woodmouse (\emph{Apodemus sylvaticus}) which is a

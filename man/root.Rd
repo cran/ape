@@ -6,8 +6,8 @@ root(phy, outgroup)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
-  \item{outgroup}{a vector of mode numeric or character specifying the tips
-    to delete.}
+  \item{outgroup}{a vector of mode numeric or character specifying the
+    new outgroup.}
 }
 \description{
   This function reroots a phylogenetic tree with respect to the
@@ -15,8 +15,8 @@ root(phy, outgroup)
 }
 \details{
   The argument \code{outgroup} can be either character or numeric. In
-  the first case, it gives the labels of the tips to be deleted; in the
-  second case the numbers of these labels in the vector
+  the first case, it gives the labels of the tips of the new outgroup;
+  in the second case the numbers of these labels in the vector
   \code{phy$tip.label} are given.
 
   If \code{outgroup} is of length one (i.e. a single value), then the

@@ -27,8 +27,10 @@ compar.gee <- function(formula, data = NULL, family = "gaussian", phy,
         if(!any(is.na(match(rownames(data), phy$tip.label))))
           data <- data[phy$tip.label, ]
         else warning("the rownames of the data.frame and the names of the tip labels
-did not match: the former were ignored in the analysis.")
+do not match: the former were ignored in the analysis.")
     }
+    if (is.null(phy$edge.length))
+      stop("the tree has no branch lengths.")
     R <- vcv.phylo(phy, cor = TRUE)
     id <- rep(1, dim(R)[1])
     geemod <- do.call("gee", list(formula, id, data = data, family = family, R = R,

@@ -21,18 +21,19 @@
 ### MA 02111-1307, USA
 
 
-varcomp <- function(x, scale = FALSE, cum = FALSE) {
+varcomp <- function(x, scale = FALSE, cum = FALSE)
+{
   if (!("lme" %in% class(x))) stop("Object \"x\" is not of class \"lme\"")
   res <- seq(along = x$modelStruct$reStruct)
   var <- vector(length = length(res) + 1)
   for(i in res) {
-    var[length(var) - i] <- attr(summary(m$modelStruct$reStruct[[i]]),"stdDev")[1]*m$sigma
+    var[length(var) - i] <- attr(summary(x$modelStruct$reStruct[[i]]),"stdDev")[1]*x$sigma
   }
-  var[length(var)] <- m$sigma
+  var[length(var)] <- x$sigma
   var <- var^2
   if(scale) var <- var/sum(var)
   if(cum) var <- cumsum(var)
-  names(var) <- c(rev(names(m$modelStruct$reStruct)), "Within")
+  names(var) <- c(rev(names(x$modelStruct$reStruct)), "Within")
   class(var) <- "varcomp"
   return(var)
 }

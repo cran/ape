@@ -26,14 +26,11 @@ data(xenarthra)
 }
 \examples{
 data(xenarthra)
-op <- par()
 \dontrun{par(ask = TRUE)}
 plot(xenarthra)
 ### remove the margins...
 plot(xenarthra, no.margin = TRUE)
 ### ... and use a smaller font size
-par(cex = 0.8)
-plot(xenarthra, no.margin = TRUE)
-par(op)
+plot(xenarthra, no.margin = TRUE, cex = 0.8)
 }
 \keyword{datasets}

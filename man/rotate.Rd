@@ -14,7 +14,7 @@ rotate(phy, group)
   This function rotates a clade within a tree.
 }
 \details{
-  The argument \code{outgroup} can be one of the three followings: (1) a
+  The argument \code{group} can be one of the three followings: (1) a
   vector of mode character (= the labels of the tips); (2) a vector of
   mode numeric (= the numbers of these labels in the vector
   \code{phy$tip.label}), or (3) the string \code{"all"}. In cases (1)

@@ -1,4 +1,4 @@
-### plot.phylo.R  (2004-10-19)
+### plot.phylo.R  (2004-11-07)
 ###
 ###                      Plot Phylogenies
 ###
@@ -78,40 +78,50 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     if (is.null(x.lim)) {
         if (type %in% c("phylogram", "cladogram")) {
             if (direction %in% c("rightwards", "leftwards")) {
-                xs <- 0
-                if (direction == "leftwards")
-                  x.lim <- max(xx["-1"] + nchar(x$tip.label) * 0.018 * max(xx) * cex)
-                else
-                  x.lim <- max(xx[as.character(1:nb.tip)] +
-                                  nchar(x$tip.label) * 0.018 * max(xx) * cex)
-            } else {
-                xs <- 1
-                x.lim <- nb.tip
+                x.lim <- c(0, NA)
+                x.lim[2] <- if (direction == "leftwards")
+                  max(xx["-1"] + nchar(x$tip.label) * 0.018 * max(xx) * cex)
+                else  max(xx[as.character(1:nb.tip)] +
+                          nchar(x$tip.label) * 0.018 * max(xx) * cex)
+            } else x.lim <- c(1, nb.tip)
+        } else { # if type == "unrooted"
+            offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
+            x.lim <- c(0 - offset, max(xx) + offset)
+        }
+    } else  {
+        if (length(x.lim) == 1) {
+            if (type %in% c("phylogram", "cladogram"))
+              x.lim <- if (direction %in% c("rightwards", "leftwards"))
+                c(0, x.lim) else c(1, x.lim)
+            else { # if type == "unrooted"
+                offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
+                x.lim <- c(0 - offset, x.lim)
             }
-        } else x.lim <- max(xx) # if type == "unrooted"
-    } else {
-        if (type %in% c("phylogram", "cladogram"))
-          xs <- if (direction %in% c("rightwards", "leftwards")) 0 else 1
+        }
     }
     if (is.null(y.lim)) {
         if (type %in% c("phylogram", "cladogram")) {
             if (direction %in% c("upwards", "downwards")) {
-                ys <- 0
-                if (direction == "downwards")
-                  y.lim <- max(yy["-1"] + nchar(x$tip.label) * 0.018 * max(yy) * cex)
-                else y.lim <- max(yy[as.character(1:nb.tip)] +
-                                  nchar(x$tip.label) * 0.018 * max(yy) * cex)
-            } else {
-                ys <- 1
-                y.lim <- nb.tip
-            }
+                y.lim <- c(0, NA)
+                y.lim[2] <- if (direction == "downwards")
+                  max(yy["-1"] + nchar(x$tip.label) * 0.018 * max(yy) * cex)
+                else max(yy[as.character(1:nb.tip)] +
+                         nchar(x$tip.label) * 0.018 * max(yy) * cex)
+            } else y.lim <- c(1, nb.tip)
         } else { # if type == "unrooted"
-            y.lim <- max(yy)
             offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
+            y.lim <- c(0 - offset, max(yy) + offset)
         }
     } else {
-        if (type %in% c("phylogram", "cladogram"))
-          ys <- if (direction %in% c("rightwards", "leftwards")) 1 else 0
+        if (length(y.lim) == 1) {
+            if(type %in% c("phylogram", "cladogram"))
+              y.lim <- if (direction %in% c("rightwards", "leftwards"))
+                c(1, y.lim) else c(0, y.lim)
+            else { # if type == "unrooted"
+                offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
+                y.lim <- c(0 - offset, y.lim)
+            }
+        }
     }
     if (is.null(edge.color)) edge.color <- rep("black", dim(x$edge)[1]) else {
         names(edge.color) <- x$edge[, 2]
@@ -122,11 +132,10 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
         edge.width <- edge.width[as.character(c(1:nb.tip, -(nb.node:2)))]
     }
     if (type %in% c("phylogram", "cladogram")) {
-        plot(0, type = "n", xlim = c(xs, x.lim), ylim = c(ys, y.lim),
-             xlab = "", ylab = "", xaxt = "n", yaxt = "n", bty = "n", ...)
+        plot(0, type = "n", xlim = x.lim, ylim = y.lim, xlab = "",
+             ylab = "", xaxt = "n", yaxt = "n", bty = "n", ...)
     } else { # if type == "unrooted"
-        plot(0, type = "n", xlim = c(0 - offset, x.lim + offset),
-             ylim = c(0 - offset, y.lim + offset), xlab = "",
+        plot(0, type = "n", xlim = x.lim, ylim = y.lim, xlab = "",
              ylab = "", xaxt = "n", yaxt = "n", bty = "n", ...)
     }
     if (is.null(adj))
@@ -202,12 +211,14 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     if (show.node.label) text(xx[as.character(-(1:nb.node))] + label.offset,
                               yy[as.character(-(1:nb.node))], x$node.label,
                               adj = adj, font = font, srt = srt, cex = cex)
-    invisible(list(type = type, use.edge.length = use.edge.length,
-                   node.pos = node.pos, show.node.label = show.node.label,
-                   edge.color = edge.color, edge.width = edge.width,
-                   font = font, cex = cex, adj = adj, srt = srt,
-                   no.margin = no.margin, label.offset = label.offset,
-                   x.lim = x.lim, y.lim = y.lim, direction = direction))
+    L <- list(type = type, use.edge.length = use.edge.length,
+              node.pos = node.pos, show.node.label = show.node.label,
+              edge.color = edge.color, edge.width = edge.width,
+              font = font, cex = cex, adj = adj, srt = srt,
+              no.margin = no.margin, label.offset = label.offset,
+              x.lim = x.lim, y.lim = y.lim, direction = direction)
+    .last_plot.phylo <<- c(L, list(xx = xx), list(yy = yy))
+    invisible(L)
 }
 
 phylogram.plot <- function(edge, nb.tip, nb.node, xx, yy,

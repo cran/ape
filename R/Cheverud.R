@@ -28,6 +28,7 @@ compar.cheverud <- function(y, W, tolerance=1e-6, gold.tol=1e-4)
 {
   W <- W - diag(W) # ensure diagonal is zero
   y <- as.matrix(y)
+  if(dim(y)[2] != 1) stop("Error: y must be a single column vector.")
   D <- solve(diag(apply(t(W),2,sum)))
   Wnorm <- D %*% W #Row normalize W matrix
   n <- dim(y)[1]
@@ -39,7 +40,16 @@ compar.cheverud <- function(y, W, tolerance=1e-6, gold.tol=1e-4)
    
   # Find distinct eigenvalues
   sorted <- sort(Wlam)
-  Distinct <- numeric(0)
+  # Check real:
+  for (ii in 1:n) {
+    if(abs(Im(sorted[ii])) > 1e-12) {
+      warning(paste("Complex eigenvalue coerced to real:", Im(sorted[ii])))
+	  }
+    sorted[ii] <- Re(sorted[ii]) # Remove imaginary part
+  }
+  sorted <- as.real(sorted)
+
+	Distinct <- numeric(0)
   Distinct[1] <- -Inf
   Distinct[2] <- sorted[1]
   nDistinct <- 2

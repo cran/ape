@@ -9,8 +9,7 @@
 compar.cheverud(y, W, tolerance = 1e-06, gold.tol = 1e-04)
 }
 \arguments{
-  \item{y}{A vector or matrix containing the data to analyse. 
-		If \code{y} is a matrix, each column is treated as a separate variable. }
+  \item{y}{A vector containing the data to analyse. }
   \item{W}{The phylogenetic connectivity matrix.
 	  All diagonal elements will be ignored.}
   \item{tolerance}{Minimum difference allowed to consider eigenvalues as distinct.}
@@ -19,9 +18,9 @@ compar.cheverud(y, W, tolerance = 1e-06, gold.tol = 1e-04)
 \details{
 	Model: \deqn{y = \rho W y + e}{y = rho.W.y + e}
 	where \eqn{e}{e} is the error term, assumed to be normally distributed.
-	\eqn{\rho}{rho} is estimated by the maximum likelihood procedure given in Rholf (2001),
+	\eqn{\rho}{rho} is estimated by the maximum likelihood procedure given in Rohlf (2001),
 	using a golden section search algorithm.
-	The code of this function is indeed adapted from a MatLab code given in appendix in Rholf's article,
+	The code of this function is indeed adapted from a MatLab code given in appendix in Rohlf's article,
 	to correct a mistake in Cheverud's original paper.
 }
 \value{
@@ -32,7 +31,7 @@ compar.cheverud(y, W, tolerance = 1e-06, gold.tol = 1e-04)
 }
 \references{
 	J. M. Cheverud, M. M. Dow and W. Leutenegger (1985) The Quantitative Assessment of Phylogenetic Constraints in Comparative Analyses: Sexual Dimorphism in Body Weight AMong Primates. \emph{Evolution} \bold{39}(6): 1335-1351\cr
-	F. J. Rholf (2001) Comparative Methods for the Analysis of Continuous Variables: Geometric Interpretations. \emph{Evolution} \bold{55}(11): 2143-2160\cr
+	F. J. Rohlf (2001) Comparative Methods for the Analysis of Continuous Variables: Geometric Interpretations. \emph{Evolution} \bold{55}(11): 2143-2160\cr
 	P. H. Harvey and M. D. Pagel (1991) The Comparative Method in Evolutionary Biology. \emph{Oxford Series in Ecology and Evolution}, Oxford Universty Press\cr
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr} }
@@ -43,7 +42,7 @@ y<-c(10,8,3,4)
 W <- matrix(c(1,1/6,1/6,1/6,1/6,1,1/2,1/2,1/6,1/2,1,1,1/6,1/2,1,1), 4)
 compar.cheverud(y,W)
 
-### Example from Rholf's 2001 article:
+### Example from Rohlf's 2001 article:
 W<- matrix(c(
   0,1,1,2,0,0,0,0,
   1,0,1,2,0,0,0,0,

@@ -2,13 +2,15 @@
 \alias{Moran.I}
 \title{Moran's I Autocorrelation Index}
 \usage{
-  Moran.I(x, dist, scaled = FALSE)
+  Moran.I(x, dist, scaled = FALSE, na.rm = FALSE)
 }
 \arguments{
   \item{x}{a numeric vector.}
   \item{dist}{a distance weigths matrix.}
   \item{scaled}{logical, indicate whether the index should be scaled to
     allow comparisons between indices (default to \code{FALSE}).}
+	\item{na.rm}{a logical value indicating whether 'NA' values in 'x' 
+		should be stripped before the computation proceeds.}
 }
 \description{
   Computes Moran's I autocorrelation index of a given vector \code{x}
@@ -32,6 +34,9 @@
 	}
   The value of I may be evaluated under two null hypotheses, normality and randomization.
   Only the randomization hypothesis is implemented for now.
+
+	The 'na.rm' option is forwarded to all 'sd', 'sum' and 'mean' functions used in computations.
+	Note that 'NA' values are allowed only in 'x' and not in 'dist'. 
 }
 \value{
   A list containing the attributes:

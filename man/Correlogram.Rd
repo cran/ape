@@ -4,13 +4,22 @@
 \alias{correlogram.phylo}
 \title{Compute a correlogram}
 \usage{
-  correlogram.formula(formula, data)
+  correlogram.formula(formula, data = NULL, use="all.obs")
   correlogram.phylo(x, phy, nclass = NULL, breaks = NULL)
 }
 \arguments{
   \item{x}{a vector containing the data to plot}
-  \item{formula}{a formula of the kind \code{y1+..+yn ~ g1/../gn}, where \code{y} are the data to plot and all \code{g} are the nested levels}
-  \item{data}{a dataframe containing all variables in the formula}
+  \item{formula}{a formula of the kind \code{y1+..+yn ~ g1/../gn}, where \code{y} are the data to plot and all \code{g} are the nested levels.}
+  \item{data}{a dataframe containing all variables in the formula.
+		If NULL, variables are taken from the environment.}
+	\item{use}{an optional character string giving a method for computing 
+		Moran's indices in the presence of missing values.  This must be
+    one of the strings '"all.obs"', '"complete.obs"' or '"pairwise.complete.obs"'.
+	  In the first case, 'NA' values produce an error.
+	  If the seond option is used, all lines including 'NA' will be ignored.
+	  In the later case, 'NA' will be removed separately for each correlogram.
+	  If only one 'y' is given in the formula, the two last options will send the same result.
+	  Finally, unless 'use' is set to '"all.obs'", lines width 'NA' values in grouping variables will be removed.}
   \item{phy}{an object of class "phylo" width edge lengths}
   \item{breaks,nclass}{The class bounds or the number of classes to use. If both are NULL, compute Moran's I on the whole distance matrix.}
 }

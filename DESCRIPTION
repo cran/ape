@@ -1,6 +1,6 @@
 Package: ape
-Version: 1.3
-Date: 2004-10-12
+Version: 1.3-1
+Date: 2004-11-02
 Title: Analyses of Phylogenetics and Evolution
 Author: Emmanuel Paradis <paradis@isem.univ-montp2.fr>,
         Korbinian Strimmer <strimmer@stat.uni-muenchen.de>,
@@ -11,6 +11,7 @@ Author: Emmanuel Paradis <paradis@isem.univ-montp2.fr>,
         Yvonnick Noel <noel@univ-lille3.fr>,
         Ben Bolker <bolker@zoo.ufl.edu>
 Maintainer: Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+Depends: R (>= 2.0.0)
 Suggests: gee, nlme, lattice
 ZipData: no
 Description: Ape provides functions for reading, writing, plotting,
@@ -25,4 +26,4 @@ Description: Ape provides functions for reading, writing, plotting,
   to and from hclust objects and for classifying genes in trees using
   the Klastorin-Misawa-Tajima approach.
 License: GPL version 2 or newer
-Packaged: Wed Nov  3 19:25:39 2004; PARADYS
+Packaged: Wed Nov 10 17:17:55 2004; PARADYS

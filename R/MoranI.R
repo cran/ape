@@ -26,19 +26,21 @@
 
 
 Moran.I <- function(
-  x,             # x the vector of values to analyse
-  dist,          # dist is the distance matrix to use
-  scaled = FALSE # tell if we must scale the indice to allow comparisons
+  x,              # x the vector of values to analyse
+  dist,           # dist is the distance matrix to use
+  scaled = FALSE, # tell if we must scale the indice to allow comparisons
+  na.rm = FALSE   # should we ignore missing values?
 ) {
 
   # Number of values:
-  n <- length(x);
-  if(dim(dist)[1] != n | dim(dist)[2] != n) {
+  nn <- length(x);
+  n <- ifelse(na.rm, sum(!is.na(x)), nn) 
+  if(dim(dist)[1] != nn | dim(dist)[2] != nn) {
     stop("\"dist\" must be a matrix of size n*n, with n=length(x)=", n, ".");
   }
 
   # Normalization of distances:
-  for(i in 1:n) {
+  for(i in 1:nn) {
     s <- sum(dist[i,]);
     if(s != 0) {
       dist[i,] <- dist[i,] / s;
@@ -46,17 +48,20 @@ Moran.I <- function(
   }
 
   s <- sum(dist);
-  m <- mean(x);
+  m <- mean(x, na.rm = na.rm);
   c <- 0; # covariance
   v <- 0; # variance
   # Compute covariance:
-  for(i in 1:n) {
-    for(j in 1:n) {
+  for(i in 1:nn) {
+    if(na.rm && is.na(x[i])) next
+    for(j in 1:nn) {
+      if(na.rm && is.na(x[j])) next
       c <- c + dist[i,j] * (x[i] - m) * (x[j] - m);
     }
   }
   # Compute variance:
-  for(i in 1:n) {
+  for(i in 1:nn) {
+    if(na.rm && is.na(x[i])) next
     v <- v + (x[i] - m) ^ 2;
   }
   obs <- (n / s) * (c / v);
@@ -69,21 +74,21 @@ Moran.I <- function(
 
   # Scaling:
   if(scaled) {
-    temp <- vector(length=n);
-    for(i in 1:n) {
+    temp <- vector(length = nn);
+    for(i in 1:nn) {
       temp[i] <- (x[i] - m) * sum(dist[i,]);
     }
-    i.max <- (n/s) * (sd(temp) / sd(x - m));
+    i.max <- (n/s) * (sd(temp, na.rm = na.rm) / sd(x - m, na.rm = na.rm));
     obs <- obs/i.max;
   }
 
   # Expected sd:
   S1 <- (1/2) * sum((dist + t(dist))^2);
   S2 <- 0;
-  for(i in 1:n) {
+  for(i in 1:nn) {
     S2 <- S2 + (sum(dist[i,]) + sum(dist[,i]))^2;
   }
-  k <- ((1/n) * sum((x - m)^4)) / ((1/n) * sum((x - m)^2))^2
+  k <- ((1/n) * sum((x - m)^4, na.rm = na.rm)) / ((1/n) * sum((x - m)^2, na.rm = na.rm))^2
   sdi <- sqrt((
           n * ((n^2 - 3*n + 3)*S1 - n*S2 + 3*s^2)
           - k * (n*(n-1)*S1 - 2*n*S2 + 6*s^2)
@@ -92,9 +97,9 @@ Moran.I <- function(
          1/((n-1)^2));
 
   # Computes p-value:
-  pv <- 1 - 2*abs(pnorm(obs, m=ei, sd=sdi) - 0.5);
+  pv <- 1 - 2*abs(pnorm(obs, m = ei, sd = sdi) - 0.5);
 
-  return(list(observed = obs, expected=ei, sd=sdi, p.value=pv));
+  return(list(observed = obs, expected = ei, sd = sdi, p.value = pv));
 }
 
 dist.taxo <- function(x)
@@ -111,71 +116,97 @@ dist.taxo <- function(x)
   return(d)
 }
 
-correlogram.formula <- function(formula, data)
+correlogram.formula <- function(formula, data = NULL, use = "all.obs")
 {
   err <- "Formula must be of the kind \"y1+y2+..+yn~x1/x2/../xn\"."
+  if(!(use %in% c("all.obs", "complete.obs", "pairwise.complete.obs")))
+    stop("Argument 'use' must be either 'all.obs', 'complete.obs' or 'pairwise.complete.obs'.")
 
   if (is.null(data)) data <- parent.frame()
 
   if(formula[[1]] != "~") stop(err);
 
-  # Variable:
-  var <- formula[[2]]
-  
   #Must check if y is transformed:
   get.var <- function(var) {
     if(length(var) == 1) {
       # Simple variable
       var.name <- deparse(var)
-      return(list(y=data[[var.name]], name=var.name))
+      if(!is.null(data[[var.name]])) {
+        # Look within dataframe:
+		    y <- data[[var.name]]
+      } else {
+        # Not found, look in global environment:
+		    y <- get(var.name)
+      }
+      return(list(y = y, name = var.name))
     } else if(length(var) == 2) {
       # Transformed variable:
       var.name <- deparse(var[[2]])
       fun.name <- deparse(var[[1]])
-      return(list(y=get(fun.name)(data[[var.name]]), name=deparse(var)))
-    } else stop(err)
+      if(!is.null(data[[var.name]])) {
+        # Look within dataframe:
+		    y <- data[[var.name]]
+      } else {
+        # Not found, look in global environment:
+		    y <- parent.frame(2)[[var.name]]
+      }
+      return(list(y=get(fun.name)(y), name=deparse(var)))
+    } else if (length(var) == 3) {
+      if(var[[1]] == '$') {
+        var.name <- deparse(var[[3]])
+        df.name  <- deparse(var[[2]])
+        return(list(y = get(df.name)[[var.name]], name = deparse(var)))
+      } else stop(err)
+    }
   }
 
   y <- list()
-
-  if(length(var) < 3) {
-    # Simple or transformed variable:
-    var <- get.var(var)
+  ally <- formula[[2]]
+  while(length(ally) == 3 && ally[[1]] == '+') {
+    var <- get.var(ally[[3]])
     y[[var$name]] <- var$y
-  } else {
-    # Multiple variable:
-    ally <- formula[[2]]
-    while(length(ally) == 3) {
-      if(ally[[1]] != "+") stop(err)
-      var <- get.var(ally[[3]])
-      y[[var$name]] <- var$y
-      ally <- ally[[2]]
-    }
-    # Last y:
-    var <- get.var(ally)
-    y[[var$name]] <- var$y
+    ally <- ally[[2]]
   }
+  # Last y:
+  var <- get.var(ally)
+  y[[var$name]] <- var$y
+  
 	
   #Groups:
   groups <- formula[[3]]
   d <- list()
+  g <- list()
 
-  while(length(groups) == 3) {
-    if(groups[[1]] != "/") stop(err)
-    group  <- groups[[3]]
+  while(length(groups) == 3 && groups[[1]] == '/') {
+    group  <- get.var(groups[[3]])
     groups <- groups[[2]]
-    if(length(group) != 1) stop(err)
-    s <- deparse(group)
-    cat("Analysing level:", s, "\n")
-    d[[s]] <- dist.taxo(data[[s]])
+    cat("Analysing level:", group$name, "\n")
+    g[[group$name]] <- group$y
+    d[[group$name]] <- dist.taxo(group$y)
   }
   # The last group:
-  group <- groups
-  if(length(group) != 1) stop(err)
-  s <- deparse(group)
-  cat("Analysing level:", s, "\n")
-  d[[s]] <- dist.taxo(data[[s]])
+  group <- get.var(groups)
+  cat("Analysing level:", group$name, "\n")
+  g[[group$name]] <- group$y
+  d[[group$name]] <- dist.taxo(group$y)
   
+  # Remove all data with missing grouping values: 
+  filter <- rep(TRUE, length(y[[1]])) # All obs used
+  if(use == "complete.obs" || use == "pairwise.complete.obs") {
+    G <- sapply(g, is.na)
+    for(i in 1:dim(G)[[2]]) {
+      filter <- filter & !G[,i]
+    }
+  }
+ 
+  # Deal with the complete.obs option:
+  if(use == "complete.obs") {
+    M <- sapply(y, is.na)
+    for(i in 1:dim(M)[[2]]) {
+      filter <- filter & !M[,i]
+    }
+  }
+
   # Now compute Moran's I:
   n <- length(d)
   l <- p <- i <- vector(length = n)
@@ -184,14 +215,14 @@ correlogram.formula <- function(formula, data)
     for(j in 1:n) {
       if(j == 1) Mat <- d[[j]]
       else Mat <- d[[j]] & !d[[j-1]]
-      I.M  <- Moran.I(y[[k]], Mat, scale=TRUE);
+      I.M  <- Moran.I(y[[k]][filter], Mat[filter, filter], scale = TRUE, na.rm = (use == "pairwise.complete.obs"));
       i[j] <- I.M$obs
       p[j] <- I.M$p.v
       l[j] <- names(d)[j]
     }
 
     # Create an object of class 'correlogram':
-    corr <- list(obs=i, p.values=p, labels=l)
+    corr <- list(obs = i, p.values = p, labels = l, filter = filter)
     class(corr) <- "correlogram"
     corList[[k]] <- corr
   }
@@ -260,10 +291,8 @@ correlogram.phylo <- function(x, phy, nclass = NULL, breaks = NULL)
 plot.correlogram <- function(x, test.level=0.05, ...)
 {
   if (!("correlogram" %in% class(x))) stop("object \"x\" is not of class \"correlogram\"")
-  # Draw the correlogram (using lattice library):
-  library(lattice)
   # Black circles are significant at the 5% level:
-  pch <- ifelse(x$p.values < test.level, 19, 21)
+  pch <- ifelse(x$p.values < test.level, 19, 21) 
   # Plot it!
   return(xyplot(x$obs~ordered(x$l,levels=x$l), type="b", xlab="Rank", ylab="I / Imax", lty=2, lwd=2, cex=1.5, pch=pch, ...))
 }
@@ -344,7 +373,8 @@ plot.correlogramList <- function(x, test.level=0.05, ...)
         p.values=pvl, key=simpleKey(names(x), lines=TRUE, points=FALSE, rectangle=FALSE), ...))
 }
 
-#co <- correlogram.formula(log10(SW) + log10(FW) ~ Order/SuperFamily/Family/Genus, data=carn, test.level=0.01, ylim=c(-0.5,1))
+#data(carnivora)
+#co <- correlogram.formula(log10(SW) + log10(FW) ~ Order/SuperFamily/Family/Genus, data=carnivora)
 #plot(co)
 
 

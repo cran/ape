@@ -64,9 +64,11 @@
   \item{underscore}{a logical specifying whether the underscores in tip
     labels should be written as spaces (the default) or left as are (if
     \code{TRUE}).}
-  \item{x.lim}{a numeric giving the limit of the x-axis. If \code{NULL},
-    this is computed with respect to various parameters such as the
-    string lengths of the labels and the branch lengths.}
+  \item{x.lim}{a numeric vector of length one or two giving the limit(s)
+    of the x-axis. If \code{NULL}, this is computed with respect to
+    various parameters such as the string lengths of the labels and the
+    branch lengths. If a single value is given, this is taken as the
+    upper limit.}
   \item{y.lim}{same than above for the y-axis.}
   \item{direction}{a character string specifying the direction of the
     tree. Four values are possible: "rightwards" (the default),
