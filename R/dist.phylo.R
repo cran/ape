@@ -1,8 +1,8 @@
-### dist.phylo.R  (2002-08-28)
+### dist.phylo.R  (2004-04-21)
 ###
 ###     Pairwise Distances from a Phylogenetic Tree
 ###
-### Copyright 2002 Julien Claude <claude@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -23,41 +23,65 @@
 dist.phylo <- function(phy)
 {
     if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
+    if (is.null(phy$edge.length)) stop("your tree has no branch lengths defined")
     tmp <- as.numeric(phy$edge)
     nb.tip <- max(tmp)
     nb.node <- -min(tmp)
+    N <- nb.tip + nb.node
 
-    ## xx: vecteur donnant la distance d'un noeud ou tip à partir de la racine
-    xx <- as.numeric(rep(NA, nb.tip + nb.node))
-    names(xx) <- as.character(c(-(1:nb.node), 1:nb.tip))
-    xx["-1"] <- 0
-    for (i in 2:length(xx)) {
-        nod <- names(xx[i])
-        ind <- which(phy$edge[, 2] == nod)
-        base <- phy$edge[ind, 1]
-        xx[i] <- xx[base] + phy$edge.length[ind]
-    }
-    ## seq.nod (liste de vecteurs): séquence des noeuds allant de chaque tip vers la racine
-    seq.nod <- list()
-    for (i in as.character(1:nb.tip)) {
-        vec <- i
-        j <- i
-        while (j != "-1") {
-            ind <- which(phy$edge[, 2] == j)
-            j <- phy$edge[ind, 1]
-            vec <- c(vec, j)
+    x <- matrix(NA, N, N)
+    mode(x) <- "numeric"
+    diag(x) <- 0
+    rownames(x) <- colnames(x) <- as.character(c(1:nb.tip, -(1:nb.node)))
+    
+    for (i in 1:dim(phy$edge)[1])
+      x[phy$edge[i, 2], phy$edge[i, 1]] <- x[phy$edge[i, 1], phy$edge[i, 2]] <- phy$edge.length[i]
+
+    ok <- c(rep(TRUE, nb.tip), rep(FALSE, nb.node))
+    names(ok) <- rownames(x)
+
+    basal <- ""
+    while(!identical(basal, "-1")) {
+        term <- names(ok[ok])
+        ind <- as.logical(match(phy$edge[, 2], term))
+        ind[is.na(ind)] <- FALSE
+        basal <- names(which(table(phy$edge[ind, 1]) >= 2))
+        for (nod in basal) {
+            i.anc <- which(phy$edge[, 2] == nod)
+            l <- phy$edge.length[i.anc]
+            anc <- phy$edge[i.anc, 1]
+
+            desc <- phy$edge[which(phy$edge[, 1] == nod), 2]
+            ## Here we need to check that all the branches found in the next
+            ## few lines just above are `available' for `clustering'; this may
+            ## not be the case if other sister-branches have daughter-branches
+            ## which are not yet defined, for instance if there is a multichotomy.
+            if (all(desc %in% term)) {
+                ## compute the distances among the selected tips (changer ce "comment"!!!)
+                for (i in 1:(length(desc) - 1)) {
+                    if (as.numeric(desc[i]) > 0) d1 <- desc[i] else {
+                        lin <- x[desc[i], 1:nb.tip]
+                        d1 <- names(lin[!is.na(lin)])
+                    }
+                    for (j in (i + 1):length(desc)) {
+                        if (as.numeric(desc[j]) > 0) d2 <- desc[j] else {
+                            lin <- x[desc[j], 1:nb.tip]
+                            d2 <- names(lin[!is.na(lin)])
+                        }
+                        for (y in d1) for (z in d2) x[y, z] <- x[z, y] <-  x[nod, y] + x[nod, z] # peut être simplifiée?
+                        ## compute the distances between the tips in `d2' and the ancestor of the current node
+                        x[d2, anc] <- x[anc, d2] <- x[nod, d2] + l
+                    }
+                    ## compute the distances between the tips in `d1' and the ancestor of the current node
+                    x[d1, anc] <- x[anc, d1] <- x[nod, d1] + l
+                }
+                ok[desc] <- FALSE
+                ok[nod] <- TRUE
+            }
         }
-        seq.nod[[i]] <- vec
     }
-    dist <- diag(rep(0, nb.tip))
-    for (i in as.character(1:(nb.tip - 1))) {
-        for (j in as.character(2:nb.tip)) {
-            ind <- min(match(seq.nod[[i]], seq.nod[[j]]), na.rm = TRUE)
-            k <- as.numeric(i)
-            l <- as.numeric(j)
-            dist[k, l] <- dist[l, k] <- xx[i] + xx[j] - 2 * xx[seq.nod[[j]][ind]]
-        }
-    }
+
+    dist <- x[1:nb.tip, 1:nb.tip]
     rownames(dist) <- colnames(dist) <- phy$tip.label
     dist
 }

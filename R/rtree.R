@@ -1,6 +1,6 @@
-### branching.times.R  (2004-04-23)
+### rtree.R  (2004-05-23)
 ###
-###     Branching Times of a Phylogenetic Tree
+###                  Generates Random Trees
 ###
 ### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
@@ -20,25 +20,25 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-branching.times <- function(phy)
+rtree <- function(n, br = TRUE)
 {
-    if (class(phy) != "phylo") 
-        stop("object \"phy\" is not of class \"phylo\"")
-    tmp <- as.numeric(phy$edge)
-    nb.tip <- max(tmp)
-    nb.node <- -min(tmp)
-    xx <- as.numeric(rep(NA, 1 + nb.node))
-    names(xx) <- as.character(c(-(1:nb.node), 1))
-    xx["-1"] <- 0
-    for (i in 2:length(xx)) {
-        nod <- names(xx[i])
-        ind <- which(phy$edge[, 2] == nod)
-        base <- phy$edge[ind, 1]
-        xx[i] <- xx[base] + phy$edge.length[ind]
+    edge <- rep(NA, 4 * n - 4)
+    dim(edge) <- c(2 * n - 2, 2)
+    mode(edge) <- "numeric"
+    edge[1:2, 1] <- 1
+
+    rnd <- ceiling(runif(n - 2, 0, 2:(n - 1)))
+
+    for (i in 2:(n - 1)) {
+        edge[which(is.na(edge[1:((i - 1) * 2), 2]))[rnd[i - 1]], 2] <- i
+        edge[(i - 1) * 2 + 1, 1] <- i
+        edge[(i - 1) * 2 + 2, 1] <- i
     }
-    depth <- xx[length(xx)]
-    branching.times <- depth - xx[-length(xx)]
-    if (!is.null(phy$node.label)) 
-        names(branching.times) <- phy$node.label
-    branching.times
+    edge <- -edge
+    edge[, 2][is.na(edge[, 2])] <- 1:n
+    mode(edge) <- "character"
+    phy <- list(edge = edge, tip.label = paste("t", 1:n, sep = ""))
+    class(phy) <- "phylo"
+    if (br) phy$edge.length <- runif(2 * n - 2)
+    read.tree(text = write.tree(phy))
 }

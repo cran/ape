@@ -1,4 +1,4 @@
-### pic.R  (2002-08-28)
+### pic.R  (2004-05-21)
 ###
 ###     Phylogenetically Independent Contrasts
 ###
@@ -46,9 +46,8 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
         term <- names(phenotype[!is.na(phenotype) & unused])
         ind <- as.logical(match(phy$edge[, 2], term))
         ind[is.na(ind)] <- FALSE
-        term.br <- matrix(phy$edge[ind], length(term), 2)
         ## extract the nodes with 2 branches above
-        basal <- names(which(table(term.br[, 1]) == 2))
+        basal <- names(which(table(phy$edge[ind, 1]) == 2))
         for (nod in basal) {
             pair.ind <- which(phy$edge[, 1] == nod)
             i <- pair.ind[1]

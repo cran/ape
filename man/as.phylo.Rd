@@ -11,7 +11,7 @@ as.hclust.phylo(x, ...)
 }
 \arguments{
   \item{hc}{an object of class \code{"hclust"}), i.e. a clustering tree 
-            computed using  \code{\link[mva]{hclust}}.}
+            computed using  \code{\link[stats]{hclust}}.}
   \item{x}{a phylogenetic tree, i.e. an object of class \code{"phy"}. To
     be converted into a \code{"hclust"} object the phylogenetic tree
     needs to be  ultra-metric and binary.}
@@ -19,7 +19,7 @@ as.hclust.phylo(x, ...)
 }
 \description{
  The function \code{as.phylo.hclust} (short form \code{as.phylo})
- converts a clustering tree computed using \code{\link[mva]{hclust}} into a
+ converts a clustering tree computed using \code{\link[stats]{hclust}} into a
  phylogenetic tree, i.e. into an object of class \code{"phylo"}.
  
  The function \code{as.hclust.phylo} (short form \code{as.hclust})
@@ -29,7 +29,7 @@ as.hclust.phylo(x, ...)
 An object of class \code{"hclust"} or \code{"phylo"}, respectively.
 }
 \seealso{
-  \code{\link[mva]{hclust}}, \code{\link[mva]{as.hclust}},
+  \code{\link[stats]{hclust}}, \code{\link[stats]{as.hclust}},
   \code{\link{is.binary.tree}}, \code{\link{is.ultrametric}}
 }
 \author{Gangolf Jobb (\url{http://www.treefinder.de})
@@ -37,7 +37,7 @@ An object of class \code{"hclust"} or \code{"phylo"}, respectively.
 
 \examples{
 library(ape)
-library(mva) # for hclust and example data set
+library(stats) # for hclust and example data set
 
 # create hclust object
 data(USArrests)

@@ -8,9 +8,12 @@ read.tree(file = "", format = "Newick", rooted = TRUE, text = NULL,
 \arguments{
   \item{file}{a file name specified by either a variable of mode character,
     or a double-quoted string; if \code{file = ""} (the default) then the
-    tree is input on the keyboard, the entry being terminated with a blank line.}
+    tree is input on the keyboard, the entry being terminated with a
+    blank line.}
   \item{format}{a character giving the format of the tree file; by
-    default \code{"Newick"}. Currently only the Newick format is available.}
+    default \code{"Newick"}. Currently only the Newick format is
+    available (see \code{\link{read.nexus}} to read trees in Nexus
+    files).}
   \item{rooted}{a logical indicating whether the tree is rooted or not;
     defaults to \code{TRUE}. This is currently not implemented, meaning
     that all trees are read as rooted.}
@@ -78,7 +81,8 @@ read.tree(file = "", format = "Newick", rooted = TRUE, text = NULL,
 
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{write.tree}}, \code{\link[base]{scan}} for the basic R
+  \code{\link{write.tree}}, \code{\link{read.nexus}},
+  \code{\link{write.nexus}}, \code{\link[base]{scan}} for the basic R
   function to read data in a file
 }
 \examples{

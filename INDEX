@@ -39,8 +39,8 @@ landplants              Gene Tree of 36 Landplant rbcL Sequences
 ltt.plot                Lineages Through Time Plot
 mantel.test             Mantel Test for Similarity of Two Matrices
 mst                     Minimum Spanning Tree
-node.depth.edgelength   Distance from Root to Nodes and Tips
 node.depth              Depth of Nodes and Tips
+node.depth.edgelength   Distance from Root to Nodes and Tips
 NPRS.criterion          Objective Function Employed in Nonparametric
                         Rate Smoothing
 opsin                   Gene Tree of 32 opsin Sequences
@@ -52,6 +52,7 @@ read.dna                Read DNA Sequences in a File
 read.GenBank            Read DNA Sequences from GenBank via Internet
 read.nexus              Read Tree File in Nexus Format
 read.tree               Read Tree File in Parenthetic Format
+rtree                   Generates Random Trees
 seg.sites               Find Segregating Sites in DNA Sequences
 skyline                 Skyline Plot Estimate of Effective Population
                         Size

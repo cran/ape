@@ -1,4 +1,4 @@
-### as.phylo.R  (2003-05-26)
+### as.phylo.R  (2004-04-27)
 ###
 ###     Conversion between phylo and hclust trees
 ###
@@ -224,7 +224,7 @@
 ########### PUBLIC ##############
 
 # use method overloading 
-# already defined in mva
+# already defined in package `stats'
 #as.hclust <- function(phy) UseMethod("as.hclust")
 
 # convert phylo object into hclust object
@@ -257,13 +257,21 @@ as.phylo.hclust <- function(hc)
   if (class(hc) != "hclust")
     stop("object \"hc\" is not of class \"hclust\"")
 
+  ## This fixes a bug which made R crashing with some names
+  ## (added by EP 2004-04-27)
+  NAMES <- hc$labels
+  hc$labels <- as.character(1:length(NAMES))
+
   buildTreeFromHclust(hc)  
-  if (getError() !=0) stop("Could not load \"hclust\" object")
+  if (getError() != 0) stop("Could not load \"hclust\" object")
   
   phylo.out <- getPhylo()
   
   destroyTree()
-  
+
+  ## put back the original names:
+  phylo.out$tip.label <- NAMES[as.numeric(phylo.out$tip.label)]
+
   return(phylo.out)
 }
 

@@ -58,10 +58,10 @@ mst(X)
 }
 \seealso{
   \code{\link{dist.dna}}, \code{\link{dist.gene}},
-  \code{\link[mva]{dist}}, \code{\link[base]{plot}}
+  \code{\link[stats]{dist}}, \code{\link[base]{plot}}
 }
 \examples{
-library(mva)
+library(stats)
 n <- 20
 X <- matrix(runif(n * 10), n, 10)
 d <- dist(X)
