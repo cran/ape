@@ -33,11 +33,13 @@ read.GenBank(access.nb, seq.names = access.nb)
 ### as used in Paradis (1997)
 ref <- c("U15717", "U15718", "U15719", "U15720",
          "U15721", "U15722", "U15723", "U15724")
-Rampho <- read.GenBank(ref)
+### Copy/paste or type the following commands if you
+### want to try them.
+\dontrun{Rampho <- read.GenBank(ref)}
 ### print the first sequence
 ### (can be done with `Rampho$U15717' as well)
-Rampho[[1]]
+\dontrun{Rampho[[1]]}
 ### print the first sequence in a cleaner way
-cat(Rampho[[1]], "\n", sep = "")
+\dontrun{cat(Rampho[[1]], "\n", sep = "")}
 }
 \keyword{IO}

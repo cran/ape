@@ -5,8 +5,7 @@
 
 \title{Phylogenetic Tree of 193 HIV-1 Sequences}
 
-\description
-{
+\description{
   This data set describes an estimated clock-like phylogeny of 193 HIV-1
   group M sequences sampled in the Democratic Republic of Congo. 
 }

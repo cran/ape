@@ -1,8 +1,9 @@
 Package: ape
-Version: 0.2
-Date: 2002-09-20
+Version: 0.2-1
+Date: 2002-10-28
 Title: Analyses of Phylogenetics and Evolution
 Author: Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+        Korbibian Strimmer <strimmer@stat.uni-muenchen.de>
         Julien Claude <claude@isem.univ-montp2.fr>
         Yvonnick Noel <noel@univ-lille3.fr>
         Ben Bolker <bolker@zoo.ufl.edu>
