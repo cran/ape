@@ -1,3 +1,20 @@
+		CHANGES IN APE VERSION 1.2-5
+
+
+NEW FEATURES
+
+    o The new function bd.ext() fits a birth-death model with combined
+      phylogenetic and taxonomic data, and estimates the corresponding
+      speciation and extinction rates.
+
+
+OTHER CHANGES
+
+    o The package gee is no more required by ape but only suggested
+      since only the function compar.gee() calls gee.
+
+
+
 		CHANGES IN APE VERSION 1.2-4
 
 

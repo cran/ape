@@ -32,4 +32,4 @@ add.scale.bar(x, y, phy, bar = NULL)
 \seealso{
   \code{\link{plot.phylo}}, \code{\link[base]{locator}}
 }
-\keyword{hplot}
+\keyword{aplot}

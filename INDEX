@@ -3,6 +3,8 @@ all.equal.phylo         Global Comparison of two Phylogenies
 as.phylo                Conversion between "phylo" and "hclust" trees
 balance                 Balance of a Dichotomous Phylogenetic Tree
 base.freq               Base frequencies from DNA Sequences
+bd.ext                  Extended Version of the Birth-Death Models to
+                        Estimate Speciation and Extinction Rates
 bind.tree               Binds Trees
 bird.families           Phylogeny of the Families of Birds From Sibley
                         and Ahlquist

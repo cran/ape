@@ -70,8 +70,8 @@ mltt.plot(phy, ..., dcol = TRUE, dlty = FALSE,
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{skyline}}, \code{\link{branching.times}},
-  \code{\link{birthdeath}}, \code{\link[base]{plot}} for the basic
-  plotting function in R
+  \code{\link{birthdeath}}, \code{\link{bd.ext}},
+  \code{\link[base]{plot}} for the basic plotting function in R
 }
 \examples{
 data(bird.families)
@@ -116,3 +116,4 @@ legend(-10, 5, lwd = c(2, 1), lty = c(1, 2), bty = "n",
        legend = c("Bird orders", "Random trees"))
 }
 \keyword{hplot}
+\keyword{aplot}
