@@ -87,15 +87,15 @@ Pybus et al. (2000).  The latter is in turn directly related to lineage-through-
 
 
 \references{
-  Strimmer, K. and O.G. Pybus. 2001. Exploring the demographic history
+  Strimmer, K. and Pybus, O. G. (2001) Exploring the demographic history
   of DNA sequences using the generalized skyline plot. \emph{Molecular
     Biology and Evolution}, \bold{18}, 2298--2305.
 
-  Pybus, O. G, A. Rambaut and P. H. Harvey (2000) An integrated
+  Pybus, O. G, Rambaut, A. and Harvey, P. H. (2000) An integrated
   framework for the inference of viral population history from
   reconstructed genealogies. \emph{Genetics}, \bold{155}, 1429--1437.
 
-  Nee, S., E. C. Holmes, A. Rambaut and P. H. Harvey (1995) Inferring
+  Nee, S., Holmes, E. C., Rambaut, A. and Harvey, P. H. (1995) Inferring
   population history from molecular phylogenies. \emph{Philosophical
     Transactions of the Royal Society of London. Series B. Biological
     Sciences}, \bold{349}, 25--31.

@@ -21,8 +21,6 @@ balance(phy)
   character) of the matrix \code{edge} of \code{phy} are used as rownames.
 }
 \references{
-  For a discussion on tree balance:
-
   Aldous, D. J. (2001) Stochastic models and descriptive statistics for
   phylogenetic trees, from Yule to today. \emph{Statistical Science},
   \bold{16}, 23--34.

@@ -1,4 +1,4 @@
-### drop.tip.R  (2004-09-17)
+### drop.tip.R  (2004-12-15)
 ###
 ###     Remove Tips in a Phylogenetic Tree
 ###
@@ -20,10 +20,16 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-drop.tip <- function(phy, tip, trim.internal = TRUE)
+drop.tip <- function(phy, tip, trim.internal = TRUE, subtree = FALSE)
 {
     if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
-    nb.tip <- max(as.numeric(phy$edge))
+    if (subtree) {
+        trim.internal <- TRUE
+        edge.bak <- phy$edge
+    }
+    tmp <- as.numeric(phy$edge)
+    nb.tip <- max(tmp)
+    nb.node <- -min(tmp)
     nobr <- is.null(phy$edge.length)
     if (is.numeric(tip)) tip <- phy$tip.label[tip]
     del <- phy$tip.label %in% tip
@@ -39,28 +45,61 @@ drop.tip <- function(phy, tip, trim.internal = TRUE)
             phy$edge <- phy$edge[!ind, ]
             if (!nobr) phy$edge.length <- phy$edge.length[!ind]
         }
-    }
-    else {
+    } else {
         temp <- phy$edge[, 2][as.numeric(phy$edge[, 2]) < 0]
         k <- temp %in% phy$edge[, 1]
         ind <- phy$edge[, 2] %in% temp[!k]
         phy$edge[which(ind), 2] <- as.character(nb.tip + (1:sum(ind)))
-        if (is.null(phy$node.label)) new.tip.label <- rep("NA", sum(ind))
-        else {
+        if (is.null(phy$node.label)) new.tip.label <- rep("NA", sum(ind)) else {
             new.tip.label <- phy$node.label[!k]
             phy$node.label <- phy$node.label[k]
         }
         phy$tip.label <- c(phy$tip.label, new.tip.label)
     }
     useless.nodes <- names(which(table(phy$edge[, 1]) == 1))
-    for (i in useless.nodes) {
-        ind1 <- which(phy$edge[, 1] == i)
-        ind2 <- which(phy$edge[, 2] == i)
-        phy$edge[ind2, 2] <- phy$edge[ind1, 2]
-        phy$edge <- phy$edge[-ind1, ]
-        if (!nobr) {
-            phy$edge.length[ind2] <- phy$edge.length[ind2] + phy$edge.length[ind1]
-            phy$edge.length <- phy$edge.length[-ind1]
+    if (subtree) {
+        if (!nobr) mnbr <- mean(phy$edge.length)
+        if (length(useless.nodes) == 1) n <- length(tip) else {
+            seq.nod <- list()
+            wh <- numeric(0)
+            for (i in as.character(which(del))) { # it is not needed to loop through all tips!
+                vec <- i
+                j <- i
+                while (!(j %in% useless.nodes)) {
+                    ind <- which(edge.bak[, 2] == j)
+                    wh <- c(wh, ind)
+                    j <- edge.bak[ind, 1]
+                    vec <- c(vec, j)
+                }
+                seq.nod[[i]] <- vec
+            }
+            n <- table(unlist(lapply(seq.nod, function(x) rev(x)[1])))
+        }
+        new.lab <- paste("[", n, "_tips]", sep = "")
+        for (i in 1:length(useless.nodes)) {
+            wh <- which(phy$edge[, 1] == useless.nodes[i])
+            phy$tip.label <- c(phy$tip.label, new.lab[i])
+            if (wh == dim(phy$edge)[1]) {
+                phy$edge <- rbind(phy$edge, c(useless.nodes[i], as.character(nb.tip + i)))
+                if (!nobr) phy$edge.length <- c(phy$edge.length, mnbr)
+            } else {
+                phy$edge <- rbind(phy$edge[1:wh, ],
+                                  c(useless.nodes[i], as.character(nb.tip + i)),
+                                  phy$edge[(wh + 1):dim(phy$edge)[1], ])
+                if (!nobr) phy$edge.length <- c(phy$edge.length[1:wh], mnbr,
+                                                phy$edge.length[(wh + 1):(dim(phy$edge)[1] - 1)])
+            }
+        }
+    } else {
+        for (i in useless.nodes) {
+            ind1 <- which(phy$edge[, 1] == i)
+            ind2 <- which(phy$edge[, 2] == i)
+            phy$edge[ind2, 2] <- phy$edge[ind1, 2]
+            phy$edge <- phy$edge[-ind1, ]
+            if (!nobr) {
+                phy$edge.length[ind2] <- phy$edge.length[ind2] + phy$edge.length[ind1]
+                phy$edge.length <- phy$edge.length[-ind1]
+            }
         }
     }
     tmp <- as.numeric(phy$edge)
@@ -75,8 +114,8 @@ drop.tip <- function(phy, tip, trim.internal = TRUE)
     dim(tmp) <- c(n / 2, 2)
     mode(tmp) <- "character"
     phy$edge <- tmp
-    if (!trim.internal) {
-        S <- write.tree(phy)
+    if (!trim.internal | subtree) {
+        S <- write.tree(phy, multi.line = FALSE)
         phy <- if (nobr) clado.build(S) else tree.build(S)
     }
     phy

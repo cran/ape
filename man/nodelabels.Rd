@@ -43,7 +43,7 @@ nodelabels(text, node, adj = c(0.5, 0.5), frame = "rect",
   all nodes.
 
   A simple call of the function with no arguments
-  (i.e. \code{nodelabels}) prints the numbers of all nodes.
+  (i.e. \code{nodelabels()}) prints the numbers of all nodes.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
@@ -52,8 +52,8 @@ nodelabels(text, node, adj = c(0.5, 0.5), frame = "rect",
 \examples{
 tr <- read.tree(text = "((Homo,Pan),Gorilla);")
 plot(tr)
-nodelabels("15 Ma", 1, frame = "r", bg = "yellow", adj = 0)
-nodelabels("8 Ma", 2, frame = "c", bg = "tomato", font = 3)
+nodelabels("7.3 Ma", 1, frame = "r", bg = "yellow", adj = 0)
+nodelabels("5.4 Ma", 2, frame = "c", bg = "tomato", font = 3)
 
 data(bird.orders)
 plot(bird.orders, use.edge.length = FALSE, font = 1)

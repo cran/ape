@@ -1,4 +1,4 @@
-### write.tree.R  (2003-01-17)
+### write.tree.R  (2004-12-20)
 ###
 ###     Write Tree File in Parenthetic Format
 ###
@@ -20,7 +20,8 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-write.tree <- function(phy, file = "", append = FALSE, format = "Newick")
+write.tree <- function(phy, file = "", append = FALSE, format = "Newick",
+                       multi.line = TRUE)
 {
     cp <- function(s) STRING <<- paste(STRING, s, sep = "")
     add.internal <- function(i)
@@ -63,14 +64,25 @@ write.tree <- function(phy, file = "", append = FALSE, format = "Newick")
         cp(")")
         if (!is.null(phy$node.label)) cp(phy$node.label[1])
         cp(";")
-    }
-    else {
+    } else {
         cp(")")
         if (!is.null(phy$node.label)) cp(phy$node.label[1])
         cp(":")
         cp(as.character(phy$root.edge))
         cp(";")
     }
+    if (nchar(STRING) < 80) multi.line <- FALSE
+    if (multi.line) {
+        tmp <- unlist(strsplit(STRING, NULL))
+        wh <- grep("[,:]", tmp)
+        fin <- seq(7, length(wh), by = 7)
+        fin <- if (fin[length(fin)] == length(wh))
+          wh[fin] else c(wh[fin], length(tmp))
+        debut <- c(1, fin[-length(fin)] + 1)
+        STRING <- character(length(fin))
+        for (i in 1:length(STRING))
+          STRING[i] <- paste(tmp[debut[i]:fin[i]], collapse = "")
+    }
     if (file == "") return(STRING)
-    else cat(STRING, "\n", file = file, append = append, sep = "")
+    else cat(STRING, file = file, append = append, sep = "\n")
 }

@@ -1,8 +1,8 @@
-### write.nexus.R  (2003-01-17)
+### write.nexus.R  (2004-12-20)
 ###
 ###           Write Tree File in Nexus Format
 ###
-### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -71,7 +71,7 @@ write.nexus <- function(phy, file = "", translate = TRUE, original.data = TRUE)
         phy$tip.label <- as.character(1:length(phy$tip.label))
     }
     cat("\tTREE * UNTITLED = [&R] ", file = file, append = TRUE)
-    write.tree(phy, file = file, append = TRUE)
-    cat("END;\n", file = file, append = TRUE)
+    cat(write.tree(phy, file = "", multi.line = F), file = file, append = TRUE)
+    cat("\nEND;\n", file = file, append = TRUE)
     if(original.data) cat(ORI, file = file, append = TRUE, sep = "\n")
 }

@@ -20,22 +20,12 @@
 \alias{phylogram}
 \alias{prepareTree}
 \alias{setTree}
-\alias{buildTreeFromHclust}
 \alias{buildTreeFromPhylo}
 \alias{destroyTree}
-\alias{edgeLengthsForPhylo}
 \alias{getError}
-\alias{getHclust}
-\alias{getPhylo}
-\alias{leftNodesForHclust}
-\alias{lowerNodesForPhylo}
 \alias{nEdges}
 \alias{nNodes}
-\alias{nodeHeightsForHclust}
 \alias{nTips}
-\alias{rightNodesForHclust}
-\alias{tipLabelsForPhylo}
-\alias{upperNodesForPhylo}
 \alias{getMisawaTajima}
 \alias{phylogram.plot}
 \alias{cladogram.plot}
@@ -43,18 +33,12 @@
 \alias{unrooted.xy}
 \alias{node.height}
 \alias{node.height.clado}
-
-
-
-\title{Internal Ape Functions}
-
 \alias{birth.step}
 \alias{death.step}
 \alias{ht.move}
 \alias{loglik.pop}
 \alias{pos.move}
-
-
+\title{Internal Ape Functions}
 \description{
   Internal ape functions.
 }

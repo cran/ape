@@ -1,8 +1,8 @@
-### as.phylo.R  (2004-04-27)
+### as.phylo.R  (2004-11-25)
 ###
-###     Conversion between phylo and hclust trees
+###           Conversion Among Tree Objects
 ###
-### Copyright 2003 Gangolf Jobb <gangolf@treefinder.de>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -20,260 +20,76 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-########### PRIVATE ##############
+as.phylo <- function (x, ...) UseMethod("as.phylo")
 
-### functions to set and extract phylo tree ###
+as.phylo.hclust <- function(x, ...)
+{
+    N <- dim(x$merge)[1]
+    edge <- matrix(NA, 2 * N, 2)
+    edge.length <- numeric(2 * N)
+    ## `node' gives the number of the node for the i-th row of x$merge
+    node <- numeric(N)
+    node[N] <- -1
+    cur.nod <- -2
+    j <- 1
+    for (i in N:1) {
+        edge[j:(j + 1), 1] <- node[i]
+        for (l in 1:2) {
+            k <- j + l - 1
+            if (x$merge[i, l] > 0) {
+                edge[k, 2] <- node[x$merge[i, l]] <- cur.nod
+                cur.nod <- cur.nod - 1
+                edge.length[k] <- x$height[i] - x$height[x$merge[i, l]]
+            } else {
+                edge[k, 2] <- -x$merge[i, l]
+                edge.length[k] <- x$height[i]
+            }
+        }
+        j <- j + 2
+    }
+    mode(edge) <- "character"
+    obj <- list(edge = edge, edge.length = edge.length, tip.label = x$labels)
+    class(obj) <- "phylo"
+    read.tree(text = write.tree(obj, multi.line = FALSE))
+}
 
- buildTreeFromPhylo <-
-  function(tree) {
-   lowerNodes <- tree$edge[,1]
-   upperNodes <- tree$edge[,2]
-   edgeLengths <- tree$edge.length
-   tipLabels <- tree$tip.label
-   .C(
-    "buildTreeFromPhylo",
-    as.integer(lowerNodes),
-    as.integer(upperNodes),
-    as.double(edgeLengths),
-    as.integer(length(edgeLengths)),
-    as.character(tipLabels),
-    as.integer(length(tipLabels)),
-    result=integer(1),
-    PACKAGE = "ape"
-   )$result   
- }
+as.phylo.phylog <- function(x, ...)
+{
+    tr <- read.tree(text = x$tre)
+    edge.length <- numeric(dim(tr$edge)[1])
+    term  <- which(as.numeric(tr$edge[, 2]) > 0)
+    inte  <- which(as.numeric(tr$edge[, 2]) < 0)
+    edge.length[term] <- x$leaves[tr$tip.label]
+    edge.length[inte] <- x$nodes[tr$node.label][-1]
+    tr$edge.length <- edge.length
+    if (x$nodes["Root"] != 0) {
+        edge.root <- x$nodes["Root"]
+        names(edge.root) <- NULL
+        tr$edge.root <- edge.root
+    }
+    tr
+}
 
- destroyTree <-
-  function()
-   .C(
-    "destroyTree",
-    result=integer(1),
-    PACKAGE = "ape"
-   )$result
-
- getError <-
-  function()
-   .C(
-    "getError",
-    result=integer(1),
-    PACKAGE = "ape"
-   )$result
-
- nTips <-
-  function()
-   .C(
-    "nTips",
-    result=integer(1),
-    PACKAGE = "ape"
-   )$result
-
- nNodes <-
-  function()
-   .C(
-    "nNodes",
-    result=integer(1),
-    PACKAGE = "ape"
-   )$result
-
- nEdges <-
-  function()
-   .C(
-    "nEdges",
-    result=integer(1),
-    PACKAGE = "ape"
-   )$result
-
- tipLabelsForPhylo <-
-  function() {
-   .C(
-    "tipLabelsForPhylo",
-    result=character(nTips()),
-    PACKAGE = "ape"
-   )$result
-  }
-
- edgeLengthsForPhylo <-
-  function() {
-   .C(
-    "edgeLengthsForPhylo",
-    result=double(nEdges()),
-    PACKAGE = "ape"
-   )$result
-  }
-
- lowerNodesForPhylo <-
-  function() {
-   .C(
-    "lowerNodesForPhylo",
-    result=integer(nEdges()),
-    PACKAGE = "ape"
-   )$result
-  }
-
- upperNodesForPhylo <-
-  function() {
-   .C(
-    "upperNodesForPhylo",
-    result=integer(nEdges()),
-    PACKAGE = "ape"
-   )$result
-  }
-
- getPhylo <-
-  function() {
-   edge <- matrix(nrow=nEdges(),ncol=2)
-   edge[,1] <- lowerNodesForPhylo()
-   edge[,2] <- upperNodesForPhylo()
-   edge.length <- edgeLengthsForPhylo()
-   tip.label <- tipLabelsForPhylo()
-   mode(edge) <- "character"
-   tree <- list(edge = edge,edge.length = edge.length,tip.label = tip.label)
-   class(tree) <- "phylo"     
-   return(tree)
-  }
-
-
-### functions to extract hclust tree ###
-
- buildTreeFromHclust <-
-  function(tree) {
-   leftNodes <- tree$merge[,1]
-   rightNodes <- tree$merge[,2]
-   nodeHeights <- tree$height
-   tipLabels <- tree$labels
-   tipOrder <- tree$order
-   .C(
-    "buildTreeFromHclust",
-    as.integer(leftNodes),
-    as.integer(rightNodes),
-    as.double(nodeHeights),
-    as.integer(length(nodeHeights)),
-    as.character(tipLabels),
-    as.integer(length(tipLabels)),
-    result=integer(1),
-    PACKAGE = "ape"
-   )$result
- }
-
- leftNodesForHclust <-
-  function() {
-   .C(
-    "leftNodesForHclust",
-    result=integer(1+nEdges()-nTips()),
-    PACKAGE = "ape"
-   )$result
-  }
-
- rightNodesForHclust <-
-  function() {
-   .C(
-    "rightNodesForHclust",
-    result=integer(1+nEdges()-nTips()),
-    PACKAGE = "ape"
-   )$result
-  }
-
- nodeHeightsForHclust <-
-  function() {
-   .C(
-    "nodeHeightsForHclust",
-    result=double(1+nEdges()-nTips()),
-    PACKAGE = "ape"
-   )$result
-  }
-
- getHclust <-
-  function(mycall) {
-   merge <- matrix(nrow=(1+nEdges()-nTips()),ncol=2)
-   merge[,1] <- leftNodesForHclust()
-   merge[,2] <- rightNodesForHclust()
-   height <- nodeHeightsForHclust()
-   labels <- tipLabelsForPhylo()
-   order <- 1:length(labels)
-   
-   # sort according to heights
-   #height.order <- order(height)
-   #height <- height[height.order]
-   #merge[,1] <- merge[height.order,1]
-   #merge[,2] <- merge[height.order,2]
-   
-   #remap <- function(x, new.order)
-   #{
-     # remap all positive entries
-   #  tmp <- x > 0 
-    # x[tmp] <- new.order[x[tmp]]
-    # return (x)
-   #}
-   #merge[,1] <- remap(merge[,1], height.order)
-   #merge[,2] <- remap(merge[,2], height.order)
-   
-     
-   storage.mode(merge) <- 'integer'
-   storage.mode(order) <- 'integer'
-      
-   tree <- list(merge=merge,height=height, order=order,
-                labels=labels,method='unknown',
-		call=mycall
-		)
-   class(tree) <- "hclust"
-   
-   return(tree)
-  }
-
-
-########### PUBLIC ##############
-
-# use method overloading 
-# already defined in package `stats'
-#as.hclust <- function(phy) UseMethod("as.hclust")
-
-# convert phylo object into hclust object
 as.hclust.phylo <- function(x, ...)
 {
-  phy <- x
-  rm(x)
-  if (class(phy) != "phylo")
-    stop("object is not of class \"phylo\"")
-
-  if (is.ultrametric(phy) == FALSE) stop("object of class \"phylo\" not ultrametric") 
-  if (is.binary.tree(phy) == FALSE) stop("object of class \"phylo\" not binary")
-  
-  buildTreeFromPhylo(phy)
-  if (getError() !=0) stop("Could not load \"phylo\" object")
-  
-  hclass.out <- getHclust(match.call())
-  
-  destroyTree()
-  
-  return(hclass.out)
+    if (!is.ultrametric(x)) stop("the tree is not ultrametric")
+    if (!is.binary.tree(x)) stop("the tree is not binary")
+    bt <- rev(branching.times(x))
+    N <- length(bt)
+    tmp <- x$edge
+    mode(tmp) <- "numeric"
+    nm <- as.numeric(names(bt))
+    merge <- matrix(NA, N, 2)
+    for (i in 1:N) {
+        ind <- which(tmp[, 1] == nm[i])
+        for (k in 1:2)
+          merge[i, k] <- if (tmp[ind[k], 2] > 0) -tmp[ind[k], 2]
+          else which(nm == tmp[ind[k], 2])
+    }
+    names(bt) <- NULL
+    obj <- list(merge = merge, height = bt, order = 1:(N + 1),
+                labels = x$tip.label, call = match.call(),
+                method = "unknown")
+    class(obj) <- "hclust"
+    obj
 }
-
-# use method overloading 
-as.phylo <- function(hc) UseMethod("as.phylo")
-
-# convert hclust object into phylo object
-as.phylo.hclust <- function(hc)
-{
-  if (class(hc) != "hclust")
-    stop("object \"hc\" is not of class \"hclust\"")
-
-  ## This fixes a bug which made R crashing with some names
-  ## (added by EP 2004-04-27)
-  NAMES <- hc$labels
-  hc$labels <- as.character(1:length(NAMES))
-
-  buildTreeFromHclust(hc)  
-  if (getError() != 0) stop("Could not load \"hclust\" object")
-  
-  phylo.out <- getPhylo()
-  
-  destroyTree()
-
-  ## put back the original names:
-  phylo.out$tip.label <- NAMES[as.numeric(phylo.out$tip.label)]
-
-  return(phylo.out)
-}
-
-
-

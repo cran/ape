@@ -88,5 +88,5 @@ root <- function(phy, outgroup)
         phy$edge[which(phy$edge == newroot)] <- "-1"
         phy$edge[i.oroot] <- newroot
     }
-    read.tree(text = write.tree(phy))
+    read.tree(text = write.tree(phy, multi.line = FALSE))
 }

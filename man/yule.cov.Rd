@@ -70,7 +70,7 @@ yule.cov(phy, formula, data = NULL)
   A NULL value is returned, the results are simply printed.
 }
 \references{
-  Paradis, E. (2004) Statistical analysis of diversification with
+  Paradis, E. (2005) Statistical analysis of diversification with
   species traits. \emph{Evolution}, (in press).
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}

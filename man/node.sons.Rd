@@ -17,7 +17,7 @@
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
 \seealso{
-  \code{\link{node.depth}}, \code{\link{node.depth.edgelength}}, \code{\link{node.leafnumber}}.
+  \code{\link{node.depth}}, \code{\link{node.leafnumber}}
 }
 \keyword{manip}
 

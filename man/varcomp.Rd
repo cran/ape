@@ -19,7 +19,8 @@ varcomp(x, scale = FALSE, cum = FALSE)
   A named vector of class \code{varcomp} with estimated variance components.
 }
 \references{
-	Venables, W.N. and Ripley, B.D. (2002) "Modern Applied Statistics with S", 4th Edition, Springer-Verlag.	
+  Venables, W. N. and Ripley, B. D. (2002) \emph{Modern applied statistics
+  with S (fourth edition)}. New York: Springer-Verlag.
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
 \seealso{ \code{\link[nlme]{lme}}, \code{\link{Correlogram}}}

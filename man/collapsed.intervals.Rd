@@ -51,7 +51,7 @@ An object of class \code{"collapsedIntervals"} with the following entries:
 
 
 \references{
-  Strimmer, K. and O.G. Pybus (2001) Exploring the demographic history
+  Strimmer, K. and Pybus, O. G. (2001) Exploring the demographic history
   of DNA sequences using the generalized skyline plot. \emph{Molecular
     Biology and Evolution}, \bold{18}, 2298--2305.
 }

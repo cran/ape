@@ -4,7 +4,7 @@
 \usage{
 \method{plot}{phylo}(x, type = "phylogram", use.edge.length = TRUE,
     node.pos = NULL, show.node.label = FALSE,
-    edge.color = NULL, edge.width = NULL, font = 3,
+    edge.color = "black", edge.width = 1, font = 3,
     cex = par("cex"), adj = NULL, srt = 0, no.margin = FALSE,
     root.edge = FALSE, label.offset = 0, underscore = FALSE,
     x.lim = NULL, y.lim = NULL, direction = "rightwards",
@@ -14,7 +14,7 @@
   \item{x}{an object of class \code{"phylo"}.}
   \item{type}{a character string specifying the type of phylogeny to be
     drawn; it must be one of "phylogram" (the default), "cladogram",
-    "unrooted", or any unambiguous abbreviation of these.}
+    "unrooted", "radial" or any unambiguous abbreviation of these.}
   \item{use.edge.length}{a logical indicating whether to use the edge
     lengths of the phylogeny to draw the branches (the default) or not
     (if \code{FALSE}). This option has no effect if the object of class
@@ -140,7 +140,8 @@
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{read.tree}}, \code{\link{add.scale.bar}},
-  \code{\link[graphics]{plot}} for the basic plotting function in R
+  \code{\link{axisPhylo}}, \code{\link[graphics]{plot}} for the basic
+  plotting function in R
 }
 \examples{
 ### An extract from Sibley and Ahlquist (1990)
@@ -192,6 +193,7 @@ title("Character mapping is possible...")
 plot(bird.orders, "u", font = 1, cex = 0.75)
 data(bird.families)
 plot(bird.families, "u", lab4ut = "axial", font = 1, cex = 0.5)
+plot(bird.families, "r", font = 1, cex = 0.5)
 ### cladogram with oblique tip labels
 plot(bird.orders, "c", FALSE, direction = "u", srt = -40, x.lim = 25.5)
 ### facing trees with different informations...

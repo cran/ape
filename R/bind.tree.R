@@ -69,5 +69,5 @@ bind.tree <- function(x, y, node = -1, branch = NULL, position = NULL)
     else if (!is.null(y$node.label)) obj$node.label <- c(rep(NA, -min(as.numeric(x$edge))), y$node.label)
     if (!is.null(x$root.edge)) obj$root.edge <- x$root.edge
     class(obj) <- "phylo"
-    tree.build(write.tree(obj))
+    tree.build(write.tree(obj, multi.line = FALSE))
 }

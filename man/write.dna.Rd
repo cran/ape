@@ -76,13 +76,15 @@ write.dna(x, file, format = "interleaved", append = FALSE,
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \references{
+  Anonymous. FASTA format description.
+  \url{http://www.ncbi.nlm.nih.gov/BLAST/fasta.html}
+
+  Anonymous. IUPAC ambiguity codes.
+  \url{http://www.ncbi.nlm.nih.gov/SNP/iupac.html}
+
   Felsenstein, J. (1993) Phylip (Phylogeny Inference Package) version
   3.5c. Department of Genetics, University of Washington.
   \url{http://evolution.genetics.washington.edu/phylip/phylip.html}
-
-  \url{http://www.ncbi.nlm.nih.gov/SNP/iupac.html}
-
-  \url{http://www.ncbi.nlm.nih.gov/BLAST/fasta.html}
 }
 \seealso{
   \code{\link{read.dna}}, \code{\link{read.GenBank}}

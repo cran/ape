@@ -14,7 +14,7 @@
 }
 \details{
 	Grafen's (1989) computation of branch lengths:
-	Each node is gviven a 'height', namely the number of leaves of the subtree minus one, 0 for leaves.
+	Each node is given a 'height', namely the number of leaves of the subtree minus one, 0 for leaves.
 	Each height is scaled so that root height is 1, and then raised at power 'rho' (>0).
 	Branch lengths are then computed as the difference between height of lower node and height of upper node.
 }
@@ -23,7 +23,9 @@
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
 \references{
-	Grafen, A. (1989) The Phylogenetic Regression. \emph{Philosophical Transactions of the Royal society of London. Series B, Biological Sciences}, \bold{326}(1233), 119--157.
+    Grafen, A. (1989) The phylogenetic regression. \emph{Philosophical
+    Transactions of the Royal society of London. Series B. Biological
+    Sciences}, \bold{326}, 119--157.
 }
 \seealso{
   \code{\link{read.tree}} for a description of \code{phylo} objects.

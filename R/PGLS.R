@@ -185,20 +185,11 @@ coef.corGrafen <- function(object, unconstrained = TRUE, ...)
 
 # Use Grafen's branch lengths:
 
-node.sons <- function(phy, node)
+node.sons <- function (phy, node)
 {
-  if (!("phylo" %in% class(phy))) stop("Object \"phy\" is not of class \"phylo\"")
-  E <- phy$edge
-  n <- dim(E)[1]
-  sons <- numeric(0)
-  count <- 1
-  for(i in 1:n) {
-    if(E[i,1] == node) {
-      sons[count] <- E[i,2];
-      count <- count + 1
-    }
-  }
-  return(sons)
+    if (!("phylo" %in% class(phy)))
+        stop("Object \"phy\" is not of class \"phylo\"")
+    phy$edge[which(phy$edge[, 1] == node), 2]
 }
 
 node.leafnumber <- function(phy, node)

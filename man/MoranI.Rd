@@ -46,7 +46,7 @@
   \item{p.value}{The p-value of having the observed value under the null hypothesis.}
 }
 \references{
-  Gittleman, J. L. and M. Kot (1990) Adaptation: statistics and a null
+  Gittleman, J. L. and Kot, M. (1990) Adaptation: statistics and a null
   model for estimating phylogenetic effects. \emph{Systematic Zoology},
   \bold{39}, 227--241.
 }

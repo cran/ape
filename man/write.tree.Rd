@@ -2,34 +2,41 @@
 \alias{write.tree}
 \title{Write Tree File in Parenthetic Format}
 \usage{
-write.tree(phy, file = "", append = FALSE, format = "Newick")
+write.tree(phy, file = "", append = FALSE, format = "Newick",
+           multi.line = TRUE)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
   \item{file}{a file name specified by either a variable of mode character,
-    or a double-quoted string; if \code{file = ""}(the default) then the
-    tree is written on the standard output connection.}
+    or a double-quoted string; if \code{file = ""} (the default) then the
+    tree is written on the standard output connection (i.e. the console).}
   \item{append}{a logical, if \code{TRUE} the tree is appended to the file
     without erasing the data possibly existing in the file, otherwise
     the file (if it exists) is overwritten (\code{FALSE} the default).}
   \item{format}{a character giving the format of the tree file; by
-    default \code{"Newick"}. Currently only \code{"Newick"} is available.}
+    default \code{"Newick"}. Currently only \code{"Newick"} is
+    available.}
+  \item{multi.line}{a logical, if \code{TRUE} (the default) line breaks
+    are introduced in the tree in parenthetic form.}
 }
 \description{
   This function writes in a file a tree in parenthetic format using the
-  Newick or New Hampshire format.
+  Newick (also known as New Hampshire) format.
 }
 \value{
-  None (invisible `NULL').
+  a vector of mode character if \code{file = ""}, none (invisible
+  `NULL') otherwise.
 }
 \details{
   The node labels and the root edge length, if available, are written in
   the file.
 }
 \references{
-  \url{http://evolution.genetics.washington.edu/phylip/newick_doc.html}
-
+  Felsenstein, J. The Newick tree format.
   \url{http://evolution.genetics.washington.edu/phylip/newicktree.html}
+
+  Olsen, G. Interpretation of the "Newick's 8:45" tree format standard.
+  \url{http://evolution.genetics.washington.edu/phylip/newick_doc.html}
 }
 
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}

@@ -1,4 +1,4 @@
-### mcmc.popsize.R  (2004-10-13)
+### mcmc.popsize.R  (2004-12-02)
 ###
 ###     Run reversible jump MCMC to sample demographic histories 
 ###
@@ -164,6 +164,8 @@ mcmc.popsize <-
     mx <- max(bk+dk)
     bk <- bk/mx*0.9
     dk <- dk/mx*0.9
+    bk[is.na(bk)]<-0     # added
+    dk[is.na(dk)]<-0     # added
     jump.prob[,3] <- bk
     jump.prob[,4] <- dk
     jump.prob[1,2] <- 0
@@ -213,6 +215,8 @@ mcmc.popsize <-
     mx <- max(bk+dk)
     bk <- bk/mx*0.9
     dk <- dk/mx*0.9
+    bk[is.na(bk)]<-0   # added
+    dk[is.na(dk)]<-0   # added
     jump.prob[,3] <- bk
     jump.prob[,4] <- dk
     jump.prob[1,2] <- 0

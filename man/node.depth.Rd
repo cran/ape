@@ -26,6 +26,6 @@ node.depth(x)
   be useful for developpers.
 }
 \seealso{
-  \code{\link{node.depth.edgelength}}, \code{\link{plot.phylo}}
+  \code{\link{plot.phylo}}
 }
 \keyword{manip}

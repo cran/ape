@@ -19,7 +19,6 @@ mantel.test(m1, m2, nperm = 1000, graph = FALSE, ...)
   This function computes Mantel's permutation test for similarity of two
   matrices. It permutes the rows and columns of the two matrices
   randomly and calculates a Z-statistic.
-
 }
 \details{
   The function calculates a Z-statistic for the Mantel test, equal to
@@ -48,11 +47,11 @@ mantel.test(m1, m2, nperm = 1000, graph = FALSE, ...)
   209--220.
 
   Manly, B. F. J. (1986) \emph{Multivariate statistical methods: a primer.}
-  London: Chapman & Hall.}
-
+  London: Chapman & Hall.
+}
 \author{Original code in S by Ben Bolker \email{bolker@zoo.ufl.edu}, ported
-  to R by Julien Claude \email{claude@isem.univ-montp2.fr}}
-
+  to R by Julien Claude \email{claude@isem.univ-montp2.fr}
+}
 \examples{
 q1 <- matrix(runif(36), nrow = 6)
 q2 <- matrix(runif(36), nrow = 6)

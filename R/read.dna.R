@@ -23,6 +23,7 @@
 read.dna <- function(file, format = "interleaved", skip = 0,
                      nlines = 0, comment.char = "#", seq.names = NULL)
 {
+    format <- match.arg(format, c("interleaved", "sequential", "fasta"))
     X <- scan(file = file, what = character(), sep = "\n", quiet = TRUE,
               skip = skip, nlines = nlines, comment.char = comment.char)
     fl <- X[1]

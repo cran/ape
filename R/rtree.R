@@ -40,5 +40,5 @@ rtree <- function(n, br = TRUE)
     phy <- list(edge = edge, tip.label = paste("t", 1:n, sep = ""))
     class(phy) <- "phylo"
     if (br) phy$edge.length <- runif(2 * n - 2)
-    read.tree(text = write.tree(phy))
+    read.tree(text = write.tree(phy, multi.line = FALSE))
 }

@@ -34,13 +34,8 @@
 \examples{
 ### maybe the simplest example of two representations
 ### for the same rooted tree
-cat("((a:1,b:1):1,c:2);", file = "t1.tre")
-cat("(c:2,(a:1,b:1):1);", file = "t2.tre")
-t1 <- read.tree("t1.tre")
-t2 <- read.tree("t2.tre")
+t1 <- read.tree(text = "((a:1,b:1):1,c:2);")
+t2 <- read.tree(text = "(c:2,(a:1,b:1):1);")
 all.equal(t1, t2)
-### clean-up
-unlink("t1.tre")
-unlink("t2.tre")
 }
 \keyword{manip}

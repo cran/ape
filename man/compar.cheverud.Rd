@@ -30,9 +30,17 @@ compar.cheverud(y, W, tolerance = 1e-06, gold.tol = 1e-04)
 	\item{residuals}{Error terms (\eqn{e}{e})}
 }
 \references{
-	J. M. Cheverud, M. M. Dow and W. Leutenegger (1985) The Quantitative Assessment of Phylogenetic Constraints in Comparative Analyses: Sexual Dimorphism in Body Weight AMong Primates. \emph{Evolution} \bold{39}(6): 1335-1351\cr
-	F. J. Rohlf (2001) Comparative Methods for the Analysis of Continuous Variables: Geometric Interpretations. \emph{Evolution} \bold{55}(11): 2143-2160\cr
-	P. H. Harvey and M. D. Pagel (1991) The Comparative Method in Evolutionary Biology. \emph{Oxford Series in Ecology and Evolution}, Oxford Universty Press\cr
+  Cheverud, J. M., Dow, M. M. and Leutenegger, W. (1985) The quantitative
+  assessment of phylogenetic constraints in comparative analyses: sexual
+  dimorphism in body weight among primates. \emph{Evolution},
+  \bold{39}, 1335--1351.
+  
+  Rohlf, F. J. (2001) Comparative methods for the analysis of continuous
+  variables: geometric interpretations. \emph{Evolution}, \bold{55},
+  2143--2160.
+  
+  Harvey, P. H. and Pagel, M. D. (1991) \emph{The comparative method in
+    evolutionary biology}. Oxford University Press.
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr} }
 \seealso{ \code{\link{compar.lynch}}}

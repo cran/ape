@@ -10,7 +10,8 @@ read.dna(file, format = "interleaved", skip = 0,
     or a double-quoted string.}
   \item{format}{a character string specifying the format of the DNA
     sequences. Three choices are possible: \code{"interleaved"},
-    \code{"sequential"}, or \code{"fasta"}.}
+    \code{"sequential"}, or \code{"fasta"}, or any unambiguous
+    abbreviation of these.}
   \item{skip}{the number of lines of the input file to skip before
     beginning to read data.}
   \item{nlines}{the number of lines to be read (by default the file is
@@ -70,13 +71,15 @@ read.dna(file, format = "interleaved", skip = 0,
     spaces. All the data in the file before the first sequence is ignored.}
 }
 \references{
+  Anonymous. FASTA format description.
+  \url{http://www.ncbi.nlm.nih.gov/BLAST/fasta.html}
+
+  Anonymous. IUPAC ambiguity codes.
+  \url{http://www.ncbi.nlm.nih.gov/SNP/iupac.html}
+
   Felsenstein, J. (1993) Phylip (Phylogeny Inference Package) version
   3.5c. Department of Genetics, University of Washington.
   \url{http://evolution.genetics.washington.edu/phylip/phylip.html}
-
-  \url{http://www.ncbi.nlm.nih.gov/SNP/iupac.html}
-
-  \url{http://www.ncbi.nlm.nih.gov/BLAST/fasta.html}
 }
 \seealso{
   \code{\link{read.GenBank}}, \code{\link{write.dna}},

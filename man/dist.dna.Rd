@@ -127,7 +127,7 @@ dist.dna.TamuraNei(x, y, variance = FALSE, basefreq = NULL,
   3.5c. Department of Genetics, University of Washington.
   \url{http://evolution.genetics.washington.edu/phylip/phylip.html}
 
-  Jukes, T. H. and C. R. Cantor. (1969) Evolution of protein
+  Jukes, T. H. and Cantor, C. R. (1969) Evolution of protein
   molecules. in \emph{Mammalian Protein Metabolism}, ed. Munro, H. N.,
   pp. 21--132, New York: Academic Press.
 
@@ -140,19 +140,19 @@ dist.dna.TamuraNei(x, y, variance = FALSE, basefreq = NULL,
   \emph{Bioinformatics}, \bold{17}, 1244--1245.
   \url{http://www.megasoftware.net/}
 
-  Jin, L. and M. Nei (1990) Limitations of the evolutionary parsimony
+  Jin, L. and Nei, M. (1990) Limitations of the evolutionary parsimony
   method of phylogenetic analysis. \emph{Molecular Biology and
     Evolution}, \bold{7}, 82--102.
 
-  Tajima, F. and Nei., M. (1984) Estimation of evolutionary distance
+  Tajima, F. and Nei, M. (1984) Estimation of evolutionary distance
   between nucleotide sequences. \emph{Molecular Biology and Evolution},
   \bold{1}, 269--285.
 
-  Tamura, K. 1992. Estimation of the number of nucleotide substitutions
+  Tamura, K. (1992) Estimation of the number of nucleotide substitutions
   when there are strong transition-transversion and G + C-content
   biases. \emph{Molecular Biology and Evolution}, \bold{9}, 678--687.
 
-  Tamura, K. and M. Nei. 1993. Estimation of the number of nucleotide
+  Tamura, K. and Nei, M. (1993) Estimation of the number of nucleotide
   substitutions in the control region of mitochondrial DNA in humans and
   chimpanzees. \emph{Molecular Biology and Evolution}, \bold{10}, 512--526. 
 }

@@ -74,9 +74,11 @@ read.tree(file = "", format = "Newick", rooted = TRUE, text = NULL,
   \code{c("phylo", "multi.tree")}, and is a list of objects of class \code{"phylo"}.
 }
 \references{
-  \url{http://evolution.genetics.washington.edu/phylip/newick_doc.html}
-
+  Felsenstein, J. The Newick tree format.
   \url{http://evolution.genetics.washington.edu/phylip/newicktree.html}
+
+  Olsen, G. Interpretation of the "Newick's 8:45" tree format standard.
+  \url{http://evolution.genetics.washington.edu/phylip/newick_doc.html}
 }
 
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}

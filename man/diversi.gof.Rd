@@ -45,7 +45,7 @@ diversi.gof(x, null = "exponential", z = NULL)
   \bold{15}, 476--479.
 
   Stephens, M. A. (1974) EDF statistics for goodness of fit and some
-  comparisons. \emph{Journal of American Statistical Association},
+  comparisons. \emph{Journal of the American Statistical Association},
   \bold{69}, 730--737.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}

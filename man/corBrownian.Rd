@@ -41,7 +41,12 @@
   \code{\link{corClasses}}.
 }
 \references{
-	Felsenstein, J. (1985) Phylogenies and the Comparative Method. \emph{American Naturalist}, \bold{125}(1), 1--15.\cr
-	Martins, E. P. and T. F. Hansen (1997) Phylogenies and the Comparative Method: A General Approach to Incorporating Phylogenetic Information into the Analysis of Interspecific Data. \emph{American Naturalist}, \bold{149}(4), 646--667.
+  Felsenstein, J. (1985) Phylogenies and the comparative method.
+  \emph{American Naturalist}, \bold{125}, 1--15.
+
+  Martins, E. P. and Hansen, T. F. (1997) Phylogenies and the comparative
+  method: a general approach to incorporating phylogenetic information
+  into the analysis of interspecific data. \emph{American Naturalist},
+  \bold{149}, 646--667.
 }
 \keyword{models}

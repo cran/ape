@@ -42,7 +42,9 @@
   \code{\link{corClasses}}, \code{\link{compute.brlen}}, \code{\link{vcv.phylo}}.
 }
 \references{
-	Grafen, A. (1989) The Phylogenetic Regression. \emph{Philosophical Transactions of the Royal society of London. Series B, Biological Sciences}, \bold{326}(1233), 119--157.
+  Grafen, A. (1989) The phylogenetic regression. \emph{Philosophical
+    Transactions of the Royal society of London. Series B. Biological
+    Sciences}, \bold{326}, 119--157.
 }
 \keyword{models}
 

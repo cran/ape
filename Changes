@@ -1,3 +1,69 @@
+		CHANGES IN APE VERSION 1.4
+
+
+NEW FEATURES
+
+    o The new function nj() performs phylogeny estimation with the
+      neighbor-joining method of Saitou and Nei (1987; Mol. Biol.
+      Evol., 4:406).
+
+    o The new function which.edge() identifies the edges of a tree
+      that belong to a group specified as a set of tips.
+
+    o The new function as.phylo.phylog() converts an object of class
+      "phylog" (from the package ade4) into an object of class
+      "phylo".
+
+    o The new function axisPhylo() draws axes on the side of a
+      phylogeny plot.
+
+    o The new function howmanytrees() calculates the number of trees
+      in different cases and giving a number of tips.
+
+    o write.tree() has a new option `multi.line' (TRUE by default) to
+      write a Newick tree on several lines rather than on a single
+      line.
+
+    o The functionalities of zoom() have been extended. Several
+      subtrees can be visualized at the same time, and they are marked
+      on the main tree with colors. The context of the subtrees can be
+      marked with the option `subtree' (see below).
+
+    o drop.tip() has a new option `subtree' (FALSE by default) which
+      specifies whether to output in the tree how many tips have been
+      deleted and where.
+
+    o The arguments of add.scale.bar() have been redefined and have
+      now default values (see ?add.scale.bar for details). This
+      function now works even if the plotted tree has no edge length.
+
+    o plot.phylo() can now plot radial trees, but this does not take
+      edge lengths into account.
+
+    o In plot.phylo() with `type = "phylogram"', if the values of
+      `edge.color' and `edge.width' are identical for sister-branches,
+      they are propagated to the vertical line that link them.
+
+
+BUG FIXES
+
+    o Repeated calls to as.phylo.hclust() or as.hclust.phylo() made R
+      crashing. This is fixed.
+
+    o In plot.phylo(), the options `edge.color' and `edge.width' are
+      now properly recycled; their default values are now "black" and
+      1, respectively.
+
+    o A bug has been fixed in write.nexus().
+
+
+OTHER CHANGES
+
+    o The function node.depth.edgelength() has been removed and
+      replaced by a C code.
+
+
+
 		CHANGES IN APE VERSION 1.3-1
 
 

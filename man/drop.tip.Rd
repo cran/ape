@@ -2,7 +2,7 @@
 \alias{drop.tip}
 \title{Remove Tips in a Phylogenetic Tree}
 \usage{
-drop.tip(phy, tip, trim.internal = TRUE)
+drop.tip(phy, tip, trim.internal = TRUE, subtree = FALSE)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -10,6 +10,8 @@ drop.tip(phy, tip, trim.internal = TRUE)
     to delete.}
   \item{trim.internal}{a logical specifying whether to delete the
     corresponding internal branches.}
+  \item{subtree}{a logical specifying whether to output in the tree how
+    many tips have been deleted and where.}
 }
 \description{
   This function removes the terminal branches of a phylogenetic tree,
@@ -24,6 +26,13 @@ drop.tip(phy, tip, trim.internal = TRUE)
   If \code{trim.internal = FALSE}, the new tips are given \code{"NA"} as
   labels, unless there are node labels in the tree in which case they
   are used.
+
+  If \code{subtree = TRUE}, the returned tree has one or several
+  terminal branches indicating how many tips have been removed (with a
+  label \code{"[x_tips]"}). This is done for as many monophyletic groups
+  that have been deleted.
+
+  Note that \code{subtree = TRUE} implies \code{trim.internal = TRUE}.
 }
 \value{
   an object of class \code{"phylo"}.
@@ -49,5 +58,8 @@ tip <- c(
 "Paramythiidae","Passeridae", "Fringillidae")
 plot(drop.tip(bird.families, tip))
 plot(drop.tip(bird.families, tip, trim.internal = FALSE))
+data(bird.orders)
+plot(drop.tip(bird.orders, 6:23, subtree = TRUE), font = 1)
+plot(drop.tip(bird.orders, c(1:5, 20:23), subtree = TRUE), font = 1)
 }
 \keyword{manip}

@@ -1,8 +1,12 @@
-### birthdeath.R  (2003-05-29)
+### birthdeath.R  (2004-10-12)
 ###
 ###       Estimation of Speciation and Extinction Rates
 ###                 With Birth-Death Models
-### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+###
+### birthdeath: standard model
+### bd.ext: extended version
+###
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -75,4 +79,51 @@ birthdeath <- function(phy)
     cat("   Profile likelihood 95 % confidence intervals:\n")
     cat("      d / b: [", CI[1, 1], ", ", CI[1, 2], "]", "\n", sep = "")
     cat("      b - d: [", CI[2, 1], ", ", CI[2, 2], "]", "\n\n", sep = "")
+}
+
+bd.ext <- function(phy, S)
+{
+    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
+    if (!is.null(names(S))) {
+        if(!any(is.na(match(names(S), phy$tip.label)))) S <- S[phy$tip.label]
+        else warning("the names of argument \"S\" and the names of the tip labels
+did not match: the former were ignored in the analysis.")
+    }
+    N <- length(S)
+    x <- branching.times(phy)
+    x <- c(x[1], x)
+    trm.br <- phy$edge.length[as.numeric(phy$edge[, 2]) > 0]
+    dev <- function(a, r)
+    {
+        -2 * (sum(log((N - 1):1))
+              + (N - 2) * log(r)
+              + (3 * N) * log(1 - a)
+              + 2 * r * sum(x[2:N])
+              - 2 * sum(log(exp(r * x[2:N]) - a))
+              + r * sum(trm.br)
+              + sum((S - 1) * log(exp(r * trm.br) - 1))
+              - sum((S + 1) * log(exp(r * trm.br) - a)))
+    }
+    out <- nlm(function(p) dev(p[1], p[2]), c(0, 0.2), hessian = TRUE)
+    if (out$estimate[1] < 0) {
+        out <- nlm(function(p) dev(0, p), 0.2, hessian = TRUE)
+        para <- c(0, out$estimate)
+        se <- c(0, sqrt(diag(solve(out$hessian))))
+    }
+    else {
+        para <- out$estimate
+        se <- sqrt(diag(solve(out$hessian)))
+    }
+    Dev <- out$minimum
+    cat("\nExtended Version of the Birth-Death Models to\n")
+    cat("    Estimate Speciation and Extinction Rates\n\n")
+    cat("    Data: phylogenetic:", deparse(substitute(phy)), "\n")
+    cat("             taxonomic:", deparse(substitute(S)), "\n")
+    cat("        Number of tips:", N, "\n")
+    cat("              Deviance:", Dev, "\n")
+    cat("        Log-likelihood:", -Dev/2, "\n")
+    cat("   Parameter estimates:\n")
+    cat("      d / b =", para[1], "  StdErr =", se[1], "\n")
+    cat("      b - d =", para[2], "  StdErr =", se[2], "\n")
+    cat("   (b: speciation rate, d: extinction rate)\n")
 }
