@@ -11,7 +11,7 @@ chronogram(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
   
   \item{scale}{Age of the root in the inferred chronogram (default value: 0). }
       
-  \item{expo = 2}{Exponent in the objective function (default value: 2)} 
+  \item{expo}{Exponent in the objective function (default value: 2)} 
   
   \item{minEdgeLength}{Minimum edge length in the phylogram (default
     value: 1e-06). If any branch lengths are smaller then they will be

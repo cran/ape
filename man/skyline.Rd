@@ -8,6 +8,9 @@
 \title{Skyline Plot Estimate of Effective Population Size}
 \usage{
 skyline(x, \dots)
+skyline.phylo(x, \dots)
+skyline.coalescentIntervals(x, epsilon=0, \dots)
+skyline.collapsedIntervals(x, old.style=FALSE, \dots)
 find.skyline.epsilon(ci, GRID=1000, MINEPS=1e-6, \dots)
 }
 \arguments{

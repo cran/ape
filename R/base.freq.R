@@ -1,8 +1,8 @@
-### base.freq.R  (2002-08-28)
+### base.freq.R  (2003-08-13)
 ###
 ###     Base frequencies from DNA Sequences
 ###
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -27,5 +27,5 @@ base.freq <- function(x)
     if (is.list(x)) x <- unlist(x)
     x <- x[grep("[acgt]", x)] # get only the known bases
     n <- length(x)
-    return(table(x) / n)
+    table(factor(x, levels = c("a", "c", "g", "t"))) / n
 }

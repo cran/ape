@@ -1,4 +1,4 @@
-### read.nexus.R  (2003-06-24)
+### read.nexus.R  (2003-08-15)
 ###
 ###     Read Tree File in Nexus Format
 ###
@@ -93,30 +93,30 @@ clado.build <- function(tp) {
 read.nexus <- function(file, tree.names = NULL)
 {
     X <- scan(file = file, what = character(), sep = "\n", quiet = TRUE)
-    X <- gsub("ENDBLOCK;", "END;", X)
-    endblock <- grep("END;", X)
+    X <- gsub("[Ee][Nn][Dd][Bb][Ll][Oo][Cc][Kk];", "END;", X)
+    endblock <- grep("[Ee][Nn][Dd];", X)
     semico <- grep(";", X)
-    i1 <- grep("BEGIN TREES;", X)
-    i2 <- grep("TRANSLATE", X)
+    i1 <- grep("[Bb][Ee][Gg][Ii][Nn] [Tt][Rr][Ee][Ee][Ss];", X)
+    i2 <- grep("[Tt][Rr][Aa][Nn][Ss][Ll][Aa][Tt][Ee]", X)
+    translation <- FALSE
     if (length(i2) == 1) if (i2 > i1) translation <- TRUE
     if (translation) {
         end <- semico[semico > i2][1]
         x <- paste(X[i2:end], sep = "", collapse = "")
-        x <- gsub("TRANSLATE", "", x)
+        x <- gsub("[Tt][Rr][Aa][Nn][Ss][Ll][Aa][Tt][Ee]", "", x)
         x <- unlist(strsplit(x, "[,; \t]"))
         x <- x[x != ""]
         TRANS <- matrix(x, ncol = 2, byrow = TRUE)
         TRANS[, 2] <- gsub("['\"]", "", TRANS[, 2])
     }
-    if (translation) start <- semico[semico > i2][1] + 1
-    else start <- semico[semico > i1][1]
+    if (translation) start <- semico[semico > i2][1] + 1 else start <- semico[semico > i1][1]
     end <- endblock[endblock > i1][1] - 1
     tree <- paste(X[start:end], sep = "", collapse = "")
     if (length(grep("\\[&U\\]", tree)) > 0) {
         warning("at least one tree was unrooted\n(the current version of ape does not distinguish\nrooted and unrooted trees)")
-        tree <- gsub("\\[&U\\]", "", tree)
+        tree <- gsub("\\[&[Uu]\\]", "", tree)
     }
-    tree <- gsub("\\[&R\\]", "", tree)
+    tree <- gsub("\\[&[Rr]\\]", "", tree)
     tree <- gsub(" ", "", tree)
     tree <- unlist(strsplit(tree, "[=;]"))
     tree <- tree[grep("[\\(\\)]", tree)]
@@ -124,8 +124,7 @@ read.nexus <- function(file, tree.names = NULL)
     STRING <- as.list(tree)
     trees <- list()
     for (i in 1:nb.tree) {
-        if (length(grep(":", STRING[[i]]))) obj <- tree.build(STRING[[i]])
-        else obj <- clado.build(STRING[[i]])
+        if (length(grep(":", STRING[[i]]))) obj <- tree.build(STRING[[i]]) else obj <- clado.build(STRING[[i]])
         if (translation) {
             for (j in 1:length(obj$tip.label)) {
                 ind <- which(obj$tip.label[j] == TRANS[, 1])
@@ -140,13 +139,11 @@ read.nexus <- function(file, tree.names = NULL)
         }
         trees[[i]] <- obj
     }
-    if (nb.tree == 1) trees <- trees[[1]]
-    else {
+    if (nb.tree == 1) trees <- trees[[1]] else {
         if (is.null(tree.names)) names(trees) <- paste("tree", 1:nb.tree, sep = "")
         else names(trees) <- tree.names
         class(trees) <- c("phylo", "multi.tree")
     }
-    if (length(grep("[\\/]", file)) == 1) attr(trees, "origin") <- file
-    else attr(trees, "origin") <- paste(getwd(), file, sep = "/")
+    if (length(grep("[\\/]", file)) == 1) attr(trees, "origin") <- file else attr(trees, "origin") <- paste(getwd(), file, sep = "/")
     return(trees)
 }
