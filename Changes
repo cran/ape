@@ -1,3 +1,24 @@
+		CHANGES IN APE VERSION 1.2-1
+
+
+NEW FEATURES
+
+    o plot.phylo() can now draw the edge of the root of a tree if it
+      has one (see the new option `root.edge', its  default is FALSE).
+
+BUG FIXES
+
+    o A bug was fixed in read.nexus(): files with semicolons inside
+      comment blocks were not read correctly.
+
+    o The behaviour of read.tree() and read.nexus() was corrected so
+      that tree files with badly represented root edges (e.g., with
+      an extra pair of parentheses, see the help pages for details)
+      are now correctly represented in the object of class "phylo";
+      a warning message is now issued.
+
+
+
 		CHANGES IN APE VERSION 1.2
 
 

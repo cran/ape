@@ -1,4 +1,4 @@
-### plot.phylo.R  (2003-12-04)
+### plot.phylo.R  (2004-02-04)
 ###
 ###     Plot Phylogenies
 ###
@@ -23,7 +23,7 @@
 plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                        node.pos = NULL, show.node.label = FALSE,
                        edge.color = NULL, edge.width = NULL, font = 3,
-                       adj = 0, srt = 0, no.margin = FALSE,
+                       adj = 0, srt = 0, no.margin = FALSE, root.edge = FALSE,
                        label.offset = NULL, underscore = FALSE, x.lim = NULL, ...)
 {
     phy <- x
@@ -34,6 +34,8 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     tmp <- as.numeric(phy$edge)
     nb.tip <- max(tmp)
     nb.node <- -min(tmp)
+
+    if (type == "unrooted" | !use.edge.length) root.edge <- FALSE
 
     if (type %in% c("phylogram", "cladogram")) {
         if (is.null(node.pos)) {
@@ -50,6 +52,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
         } else {
             xx <- node.depth.edgelength(phy$edge, phy$edge.length)
         }
+        if (root.edge) xx <- xx + phy$root.edge
     } else { # if type == "unrooted"
         if (use.edge.length) XY <- unrooted.xy(nb.tip, nb.node, phy$edge, phy$edge.length) else
         XY <- unrooted.xy(nb.tip, nb.node, phy$edge, rep(1, dim(phy$edge)[1]))
@@ -89,6 +92,8 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     switch(type, "phylogram" = phylogram.plot(phy$edge, nb.tip, nb.node, xx, yy, edge.color, edge.width),
                  "cladogram" = cladogram.plot(phy$edge, xx, yy, edge.color, edge.width),
                  "unrooted" = unrooted.plot(phy$edge, xx, yy, edge.color, edge.width))
+
+    if (root.edge) segments(0, yy["-1"], phy$root.edge, yy["-1"])
 
     if (!underscore) phy$tip.label <- gsub("_", " ", phy$tip.label)
     if (type %in% c("phylogram", "cladogram")) {

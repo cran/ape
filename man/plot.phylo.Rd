@@ -5,7 +5,7 @@
 \method{plot}{phylo}(x, type = "phylogram", use.edge.length = TRUE,
              node.pos = NULL, show.node.label = FALSE,
              edge.color = NULL, edge.width = NULL, font = 3,
-             adj = 0, srt = 0, no.margin = FALSE,
+             adj = 0, srt = 0, no.margin = FALSE, root.edge = FALSE,
              label.offset = NULL, underscore = FALSE, x.lim = NULL, ...)
 }
 \arguments{
@@ -44,6 +44,9 @@
     zero and the plot uses all the space of the device (note that this
     was the behaviour of \code{plot.phylo} up to version 0.2-1 of `ape'
     with no way to modify it by the user, at least easily).}
+  \item{root.edge}{a logical indicating whether to draw the root edge
+    (defaults to FALSE); this has no effect if `use.edge.length = FALSE'
+    or if `type = "unrooted"'.}
   \item{label.offset}{a numeric giving the space between the nodes and
     the tips of the phylogeny and their corresponding labels. If
     \code{NULL}, this is computed with respect to various parameters

@@ -1,4 +1,4 @@
-### read.nexus.R  (2003-08-15)
+### read.nexus.R  (2004-02-02)
 ###
 ###     Read Tree File in Nexus Format
 ###
@@ -93,6 +93,18 @@ clado.build <- function(tp) {
 read.nexus <- function(file, tree.names = NULL)
 {
     X <- scan(file = file, what = character(), sep = "\n", quiet = TRUE)
+    ## first remove all the comments
+    LEFT <- grep("\\[", X)
+    RIGHT <- grep("\\]", X)
+    for (i in length(LEFT):1) {
+        if (LEFT[i] == RIGHT[i]) {
+            X[LEFT[i]] <- gsub("\\[.*\\]", "", X[LEFT[i]])
+        } else {
+            X[LEFT[i]] <- gsub("\\[.*", "", X[LEFT[i]])
+            X[RIGHT[i]] <- gsub(".*\\]", "", X[RIGHT[i]])
+            if (LEFT[i] < RIGHT[i] - 1) X <- X[-((LEFT[i] + 1):(RIGHT[i] - 1))]
+        }
+    }
     X <- gsub("[Ee][Nn][Dd][Bb][Ll][Oo][Cc][Kk];", "END;", X)
     endblock <- grep("[Ee][Nn][Dd];", X)
     semico <- grep(";", X)
@@ -112,11 +124,6 @@ read.nexus <- function(file, tree.names = NULL)
     if (translation) start <- semico[semico > i2][1] + 1 else start <- semico[semico > i1][1]
     end <- endblock[endblock > i1][1] - 1
     tree <- paste(X[start:end], sep = "", collapse = "")
-    if (length(grep("\\[&U\\]", tree)) > 0) {
-        warning("at least one tree was unrooted\n(the current version of ape does not distinguish\nrooted and unrooted trees)")
-        tree <- gsub("\\[&[Uu]\\]", "", tree)
-    }
-    tree <- gsub("\\[&[Rr]\\]", "", tree)
     tree <- gsub(" ", "", tree)
     tree <- unlist(strsplit(tree, "[=;]"))
     tree <- tree[grep("[\\(\\)]", tree)]
@@ -138,12 +145,28 @@ read.nexus <- function(file, tree.names = NULL)
             }
         }
         trees[[i]] <- obj
+        ## Check here that the root edge is not incorrectly represented
+        ## in the object of class "phylo" by simply checking that there
+        ## is a bifurcation at the root (node "-1")
+        if(sum(trees[[i]]$edge[, 1] == "-1") == 1) {
+            warning("The root edge is apparently not correctly represented\nin your tree: this may be due to an extra pair of\nparentheses in your file; the returned object has been\ncorrected but your file may not be in a valid Newick\nformat")
+            ind <- which(trees[[i]]$edge[, 1] == "-1")
+            trees[[i]]$root.edge <- trees[[i]]$edge.length[ind]
+            trees[[i]]$edge <- trees[[i]]$edge[-ind, ]
+            for (j in 1:length(trees[[i]]$edge))
+              if (as.numeric(trees[[i]]$edge[j]) < 0)
+                trees[[i]]$edge[j] <- as.character(as.numeric(trees[[i]]$edge[j]) + 1)
+            ## Check a second time and if there is still a problem...!!!
+            if(sum(trees[[i]]$edge[, 1] == "-1") == 1)
+              stop("There is apparently two root edges in your file:\cannot read tree file")
+        }
     }
     if (nb.tree == 1) trees <- trees[[1]] else {
         if (is.null(tree.names)) names(trees) <- paste("tree", 1:nb.tree, sep = "")
         else names(trees) <- tree.names
         class(trees) <- c("phylo", "multi.tree")
     }
-    if (length(grep("[\\/]", file)) == 1) attr(trees, "origin") <- file else attr(trees, "origin") <- paste(getwd(), file, sep = "/")
-    return(trees)
+    if (length(grep("[\\/]", file)) == 1) attr(trees, "origin") <- file
+    else attr(trees, "origin") <- paste(getwd(), file, sep = "/")
+    trees
 }

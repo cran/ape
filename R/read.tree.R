@@ -1,4 +1,4 @@
-### read.tree.R  (2003-06-06)
+### read.tree.R  (2004-02-02)
 ###
 ###     Read Tree File in Parenthetic Format
 ###
@@ -81,14 +81,7 @@ tree.build <- function(tp) {
             if (skeleton[i - 1] == ")") go.down()   # go down one level
         }
     }
-    ## The following lines are for the transition between R 1.7.0
-    ## and R 1.8.0 (EP 2003-05-29)
-    if (as.numeric(R.Version()$minor) >= 8) {
-        if (is.na(node.label[1])) node.label[1] <- ""
-    }
-    else {
-        if (node.label[1] == "NA") node.label[1] <- ""
-    }
+    if (is.na(node.label[1])) node.label[1] <- "" # assumes we have at least R 1.8.0
     edge <- edge[-nb.edge, ]
     mode(edge) <- "character"
     root.edge <- edge.length[nb.edge]
@@ -126,11 +119,25 @@ read.tree <- function(file = "", format = "Newick", rooted = TRUE, text = NULL,
     for (i in 1:nb.tree) STRING[[i]] <- paste(tsp[x[i]:y[i]], sep = "", collapse = "")
     list.obj <- list()
     for (i in 1:nb.tree) {
-        if (length(grep(":", STRING[[i]]) > 0)) list.obj[[i]] <- tree.build(STRING[[i]])
+        if (length(grep(":", STRING[[i]]))) list.obj[[i]] <- tree.build(STRING[[i]])
         else list.obj[[i]] <- clado.build(STRING[[i]])
+        ## Check here that the root edge is not incorrectly represented
+        ## in the object of class "phylo" by simply checking that there
+        ## is a bifurcation at the root (node "-1")
+        if(sum(list.obj[[i]]$edge[, 1] == "-1") == 1) {
+            warning("The root edge is apparently not correctly represented\nin your tree: this may be due to an extra pair of\nparentheses in your file; the returned object has been\ncorrected but your file may not be in a valid Newick\nformat")
+            ind <- which(list.obj[[i]]$edge[, 1] == "-1")
+            list.obj[[i]]$root.edge <- list.obj[[i]]$edge.length[ind]
+            list.obj[[i]]$edge <- list.obj[[i]]$edge[-ind, ]
+            for (j in 1:length(list.obj[[i]]$edge))
+              if (as.numeric(list.obj[[i]]$edge[j]) < 0)
+                list.obj[[i]]$edge[j] <- as.character(as.numeric(list.obj[[i]]$edge[j]) + 1)
+            ## Check a second time and if there is still a problem...!!!
+            if(sum(list.obj[[i]]$edge[, 1] == "-1") == 1)
+              stop("There is apparently two root edges in your file:\cannot read tree file")
+        }
     }
-    if (nb.tree == 1) list.obj <- list.obj[[1]]
-    else {
+    if (nb.tree == 1) list.obj <- list.obj[[1]] else {
         if (is.null(tree.names)) names(list.obj) <- paste("tree", 1:nb.tree, sep = "")
         else names(list.obj) <- tree.names
         class(list.obj) <- c("phylo", "multi.tree")

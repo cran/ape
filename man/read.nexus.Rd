@@ -21,6 +21,14 @@ read.nexus(file, tree.names = NULL)
   read with other functions (e.g., \code{\link{read.dna}},
   \code{\link[base]{read.table}}, ...). A trace of the original data is
   kept with the attribute \code{"origin"} (see below).
+
+  `read.nexus tries to represent correctly trees with a badly
+  represented root edge (i.e. with an extra pair of parentheses). For
+  instance, the tree "((A:1,B:1):10);" will be read like "(A:1,B:1):10;"
+  but a warning message will be issued in the former case as this is
+  apparently not a valid Newick format. If there are two root edges
+  (e.g., "(((A:1,B:1):10):10);"), then the tree is not read and an error
+  message is issued.
 }
 \value{
   an object of class \code{"phylo"} with the following components:

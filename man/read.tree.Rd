@@ -38,6 +38,14 @@ read.tree(file = "", format = "Newick", rooted = TRUE, text = NULL,
   The default option for \code{file} allows to type directly the tree on
   the keyboard (or possibly to copy from an editor and paste in R's
   console) with, e.g., \code{mytree <- read.tree()}.
+
+  `read.tree' tries to represent correctly trees with a badly
+  represented root edge (i.e. with an extra pair of parentheses). For
+  instance, the tree "((A:1,B:1):10);" will be read like "(A:1,B:1):10;"
+  but a warning message will be issued in the former case as this is
+  apparently not a valid Newick format. If there are two root edges
+  (e.g., "(((A:1,B:1):10):10);"), then the tree is not read and an error
+  message is issued.
 }
 \value{
   an object of class \code{"phylo"} with the following components:
