@@ -1,0 +1,18 @@
+Package: ape
+Version: 0.1
+Date: 2002-08-27
+Title: Analyses of Phylogenetics and Evolution
+Author: Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+        Julien Claude <claude@isem.univ-montp2.fr>
+        Yvonnick Noel <noel@univ-lille3.fr>
+        Ben Bolker <bolker@zoo.ufl.edu>
+Maintainer: Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+Depends: R (>= 1.4.1), gee
+Description: Ape provides functions for reading, and plotting phylogenetic
+  trees in parenthetic format (standard Newick format), analyses of
+  comparative data in a phylogenetic framework, analyses of diversification
+  and macroevolution, computing distances from allelic and nucleotide data,
+  reading nucleotide sequences from GenBank via internet, and several tools
+  such  as Mantel's test, computation of minimum spanning tree, or the
+  population parameter theta based on various approaches.
+License: GPL version 2 or newer
