@@ -23,7 +23,6 @@
 compar.gee <- function(formula, data = NULL, family = "gaussian", phy,
                        scale.fix = FALSE, scale.value = 1)
 {
-    require(gee)
     if (is.null(data)) data <- parent.frame()
     else {
         if(!any(is.na(match(rownames(data), phy$tip.label))))

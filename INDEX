@@ -63,6 +63,8 @@ read.dna                Read DNA Sequences in a File
 read.GenBank            Read DNA Sequences from GenBank via Internet
 read.nexus              Read Tree File in Nexus Format
 read.tree               Read Tree File in Parenthetic Format
+root                    Roots Phylogenetic Trees
+rotate                  Rotate an Internal Branch of a Tree
 rtree                   Generates Random Trees
 seg.sites               Find Segregating Sites in DNA Sequences
 skyline                 Skyline Plot Estimate of Effective Population

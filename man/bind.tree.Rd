@@ -33,7 +33,7 @@ bind.tree(x, y, node = -1, branch = NULL, position = NULL)
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{drop.tip}}
+  \code{\link{drop.tip}}, \code{\link{root}}, \code{\link{rotate}}
 }
 \examples{
 ### binds the two clades of bird orders

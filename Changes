@@ -1,3 +1,34 @@
+		CHANGES IN APE VERSION 1.2-7
+
+
+NEW FEATURES
+
+    o The new function root() reroots a phylogenetic tree with respect
+      to a specified outgroup.
+
+    o The new function rotate() rotates an internal branch of a tree.
+
+    o In plot.phylo(), the new argument "lab4ut" (labels for unrooted
+      trees) controls the display of the tip labels in unrooted trees.
+      This display has been greatly improved: the tip labels are now not
+      expected to overlap with the tree (particularly if lab4ut =
+      "axial"). In all cases, combining appropriate values of "lab4ut"
+      and the font size (via "par(cex = )") should result in readable
+      unrooted trees. See ?plot.phylo for some examples.
+
+    o In drop.tip(), the argument `tip' can now be numeric or character.
+
+
+BUG FIXES
+
+    o drop.tip() did not work correctly with trees with no branch
+      lengths: this is fixed.
+
+    o A bug in plot.phylo(..., type = "unrooted") made some trees being
+      plotted with some line crossings: this is now fixed.
+
+
+
 		CHANGES IN APE VERSION 1.2-6
 
 

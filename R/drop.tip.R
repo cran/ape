@@ -1,8 +1,8 @@
-### drop.tip.R  (2003-01-20)
+### drop.tip.R  (2004-09-17)
 ###
 ###     Remove Tips in a Phylogenetic Tree
 ###
-### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -24,10 +24,12 @@ drop.tip <- function(phy, tip, trim.internal = TRUE)
 {
     if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
     nb.tip <- max(as.numeric(phy$edge))
+    nobr <- is.null(phy$edge.length)
+    if (is.numeric(tip)) tip <- phy$tip.label[tip]
     del <- phy$tip.label %in% tip
     ind <- which(phy$edge[, 2] %in% as.character(which(del)))
     phy$edge <- phy$edge[-ind, ]
-    phy$edge.length <- phy$edge.length[-ind]
+    if (!nobr) phy$edge.length <- phy$edge.length[-ind]
     phy$tip.label <- phy$tip.label[!del]
     if (trim.internal) {
         while (!all(phy$edge[, 2][as.numeric(phy$edge[, 2]) < 0] %in% phy$edge[, 1])) {
@@ -35,7 +37,7 @@ drop.tip <- function(phy, tip, trim.internal = TRUE)
             k <- temp %in% phy$edge[, 1]
             ind <- phy$edge[, 2] %in% temp[!k]
             phy$edge <- phy$edge[!ind, ]
-            phy$edge.length <- phy$edge.length[!ind]
+            if (!nobr) phy$edge.length <- phy$edge.length[!ind]
         }
     }
     else {
@@ -56,8 +58,10 @@ drop.tip <- function(phy, tip, trim.internal = TRUE)
         ind2 <- which(phy$edge[, 2] == i)
         phy$edge[ind2, 2] <- phy$edge[ind1, 2]
         phy$edge <- phy$edge[-ind1, ]
-        phy$edge.length[ind2] <- phy$edge.length[ind2] + phy$edge.length[ind1]
-        phy$edge.length <- phy$edge.length[-ind1]
+        if (!nobr) {
+            phy$edge.length[ind2] <- phy$edge.length[ind2] + phy$edge.length[ind1]
+            phy$edge.length <- phy$edge.length[-ind1]
+        }
     }
     tmp <- as.numeric(phy$edge)
     n <- length(tmp)
@@ -71,6 +75,9 @@ drop.tip <- function(phy, tip, trim.internal = TRUE)
     dim(tmp) <- c(n / 2, 2)
     mode(tmp) <- "character"
     phy$edge <- tmp
-    if (!trim.internal) phy <- tree.build(write.tree(phy))
+    if (!trim.internal) {
+        S <- write.tree(phy)
+        phy <- if (nobr) clado.build(S) else tree.build(S)
+    }
     phy
 }

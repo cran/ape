@@ -6,7 +6,8 @@
              node.pos = NULL, show.node.label = FALSE,
              edge.color = NULL, edge.width = NULL, font = 3,
              adj = 0, srt = 0, no.margin = FALSE, root.edge = FALSE,
-             label.offset = 0, underscore = FALSE, x.lim = NULL, ...)
+             label.offset = 0, underscore = FALSE, x.lim = NULL,
+             lab4ut = "horizontal", ...)
 }
 \arguments{
   \item{x}{an object of class \code{"phylo"}.}
@@ -37,9 +38,11 @@
     (plain text), 2 (bold), 3 (italic, the default), or 4 (bold italic).}
   \item{adj}{a numeric specifying the justification of the text strings
     of the labels: 0 (left-justification, the default), 0.5 (centering),
-    or 1 (right-justification).}
+    or 1 (right-justification). This option has no effect if \code{type
+      = "unrooted"}.}
   \item{srt}{a numeric giving how much the labels are rotated in degrees
-    (negative values are allowed resulting in clock-like rotation).}
+    (negative values are allowed resulting in clock-like rotation). This
+    option has no effect if \code{type = "unrooted"}.}
   \item{no.margin}{a logical. If \code{TRUE}, the margins are set to
     zero and the plot uses all the space of the device (note that this
     was the behaviour of \code{plot.phylo} up to version 0.2-1 of `ape'
@@ -48,13 +51,20 @@
     (defaults to FALSE); this has no effect if `use.edge.length = FALSE'
     or if `type = "unrooted"'.}
   \item{label.offset}{a numeric giving the space between the nodes and
-    the tips of the phylogeny and their corresponding labels.}
+    the tips of the phylogeny and their corresponding labels. This
+    option has no effect if \code{type = "unrooted"}.}
   \item{underscore}{a logical specifying whether the underscores in tip
     labels should be written as spaces (the default) or left as are (if
     \code{TRUE}).}
   \item{x.lim}{a numeric giving the limit of the x-axis. If \code{NULL},
     this is computed with respect to various parameters such as the
     string lengths of the labels and the branch lengths.}
+  \item{lab4ut}{(= labels for unrooted trees) a character string
+    specifying the display of tip labels for unrooted trees: either
+    \code{"horizontal"} where all labels are horizontal (the default),
+    or \code{"axial"} where the labels are displayed in the axis of the
+    corresponding terminal branches. This option has an effect only if
+    \code{type = "unrooted"}.}
   \item{...}{further arguments to be passed to \code{plot()}.}
 }
 \description{
@@ -85,10 +95,6 @@
   determined roughly by the function. This may not always give a nice
   result: the user may check these values with the (invisibly) returned
   list (see ``Value:'').
-}
-\note{
-  The placement of the tip labels in unrooted trees are not very
-  nice. This will be sorted out in future versions.
 }
 \value{
   The function returns invisibly a list with the following components
@@ -162,5 +168,11 @@ plot(bird.orders, type = "c", use.edge.length = FALSE,
 segments(rep(0, 6), 6.5:1.5, rep(2, 6), 6.5:1.5, lwd = 5, col = X)
 text(rep(2.5, 6), 6.5:1.5, paste(X, "..."), adj = 0)
 title("Character mapping is possible...")
+par(cex = 0.75)
+plot(bird.orders, "u", font = 1)
+data(bird.families)
+par(cex = 0.5)
+plot(bird.families, "u", lab4ut = "axial", font = 1)
+par(cex = 1)
 }
 \keyword{hplot}

@@ -1,6 +1,6 @@
-### plot.phylo.R  (2004-08-31)
+### plot.phylo.R  (2004-09-23)
 ###
-###     Plot Phylogenies
+###                      Plot Phylogenies
 ###
 ### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
@@ -24,7 +24,8 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                        node.pos = NULL, show.node.label = FALSE,
                        edge.color = NULL, edge.width = NULL, font = 3,
                        adj = 0, srt = 0, no.margin = FALSE, root.edge = FALSE,
-                       label.offset = 0, underscore = FALSE, x.lim = NULL, ...)
+                       label.offset = 0, underscore = FALSE, x.lim = NULL,
+                       lab4ut = "horizontal", ...)
 {
     phy <- x
     rm(x)
@@ -53,8 +54,8 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     } else { # if type == "unrooted"
         XY <- if (use.edge.length) unrooted.xy(nb.tip, nb.node, phy$edge, phy$edge.length) else unrooted.xy(nb.tip, nb.node, phy$edge, rep(1, dim(phy$edge)[1]))
         ## rescale so that we have only positive values
-        xx <- XY[, 1] - min(XY[, 1])
-        yy <- XY[, 2] - min(XY[, 2])
+        xx <- XY$M[, 1] - min(XY$M[, 1])
+        yy <- XY$M[, 2] - min(XY$M[, 2])
     }
 
     if (no.margin) op <- par(mai = rep(0, 4))
@@ -62,11 +63,11 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
         if (type %in% c("phylogram", "cladogram")) {
             x.lim <- max(xx[as.character(1:nb.tip)] +
                          nchar(phy$tip.label) * 0.018 * max(xx) * par("cex"))
-        } else { # if type == "unrooted"
-            offset <- max(nchar(phy$tip.label) * 0.018 * max(xx) * par("cex"))
-            x.lim <- max(xx)
-            y.lim <- max(yy)
-        }
+        } else x.lim <- max(xx) # if type == "unrooted"
+    }
+    if (type == "unrooted") {
+        y.lim <- max(yy)
+        offset <- max(nchar(phy$tip.label) * 0.018 * max(xx) * par("cex"))
     }
     if (is.null(edge.color)) edge.color <- rep("black", dim(phy$edge)[1]) else {
         names(edge.color) <- phy$edge[, 2]
@@ -92,11 +93,32 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
 
     if (!underscore) phy$tip.label <- gsub("_", " ", phy$tip.label)
     if (type %in% c("phylogram", "cladogram")) {
+        if (adj == 1) label.offset <- label.offset + max(strwidth(phy$tip.label,)) * 1.05
+        if (adj == 0.5) label.offset <- label.offset + max(strwidth(phy$tip.label,)) * 1.05 / 2
         text(xx[as.character(1:nb.tip)] + label.offset, 1:nb.tip, phy$tip.label,
              adj = adj, font = font, srt = srt)
     } else { # if type == "unrooted"
-        text(xx[as.character(1:nb.tip)], yy[as.character(1:nb.tip)],
-             phy$tip.label, adj = adj, font = font, srt = srt)
+        if (lab4ut == "horizontal") {
+            y.adj <- x.adj <- numeric(nb.tip)
+            sel <- abs(XY$axe) > 3*pi/4
+            x.adj[sel] <- -strwidth(phy$tip.label)[sel] * 1.05
+            sel <- abs(XY$axe) > pi/4 & abs(XY$axe) < 3*pi/4
+            x.adj[sel] <- -strwidth(phy$tip.label)[sel] * (2 * abs(XY$axe)[sel] / pi - 0.5)
+            sel <- XY$axe > pi/4 & XY$axe < 3*pi/4
+            y.adj[sel] <- strheight(phy$tip.label)[sel] / 2
+            sel <- XY$axe < -pi/4 & XY$axe > -3*pi/4
+            y.adj[sel] <- -strheight(phy$tip.label)[sel] * 1.5 / 2
+            text(xx[as.character(1:nb.tip)] + x.adj, yy[as.character(1:nb.tip)] + y.adj,
+                 phy$tip.label, adj = c(adj, 0), font = font, srt = srt)
+        } else { # if lab4ut == "axial"
+            adj <- as.numeric(abs(XY$axe) > pi / 2)
+            srt <- 180 * XY$axe / pi
+            srt[as.logical(adj)] <- srt[as.logical(adj)] - 180
+            for (i in 1:nb.tip) {
+                text(xx[as.character(i)], yy[as.character(i)],
+                     phy$tip.label[i], adj = adj[i], font = font, srt = srt[i])
+            }
+        }
     }
     if (show.node.label) text(xx[as.character(-(1:nb.node))] + label.offset,
                               yy[as.character(-(1:nb.node))], phy$node.label,
@@ -317,19 +339,25 @@ unrooted.xy <- function(nb.tip, nb.node, edge, edge.length)
     angle <- as.numeric(rep(NA, nb.node)) # the angle allocated to each node wrt their nb of tips
     names(angle) <- names(nb.sp)
     axis <- angle # the axis of each branch
+    axe <- numeric(nb.tip) # the axis of the terminal branches (for export)
+    names(axe) <- as.character(1:nb.tip)
     ## start with the root...
     xx["-1"] <- yy["-1"] <- 0
     ind <- which(edge[, 1] == "-1")
     sons <- edge[ind, 2]
-    alpha <- 2 * pi / length(sons)
+    alpha <- 2 * pi * nb.sp[sons] / nb.tip
+    alpha[is.na(alpha)] <- 2 * pi / nb.tip # for tips
+    start <- -alpha[1] / 2
     for (i in 1:length(sons)) {
         h <- edge.length[ind[i]]
-        xx[sons[i]] <- h * cos(i * alpha)
-        yy[sons[i]] <- h * sin(i * alpha)
+        beta <- start + alpha[i] / 2
+        xx[sons[i]] <- h * cos(beta)
+        yy[sons[i]] <- h * sin(beta)
         if (as.numeric(sons[i]) < 0) {
-            axis[sons[i]] <- i * alpha
-            angle[sons[i]] <- 2 * pi * nb.sp[sons[i]] / nb.tip
-        }
+            axis[sons[i]] <- beta
+            angle[sons[i]] <- alpha[i]
+        } else axe[sons[i]] <- beta
+        start <- start + alpha[i]
     }
     next.node <- sons[as.numeric(sons) < 0]
     ## ... and go on with the other nodes and the tips
@@ -349,6 +377,7 @@ unrooted.xy <- function(nb.tip, nb.node, edge, edge.length)
                 } else {
                     beta <- start + angle[ancestor] / nb.sp[ancestor] / 2
                     start <- start + angle[ancestor] / nb.sp[ancestor]
+                    axe[sons[i]] <- beta
                 }
                 xx[sons[i]] <- h * cos(beta) + xx[ancestor]
                 yy[sons[i]] <- h * sin(beta) + yy[ancestor]
@@ -361,5 +390,6 @@ unrooted.xy <- function(nb.tip, nb.node, edge, edge.length)
     }
     M <- matrix(c(xx, yy), ncol = 2)
     rownames(M) <- names(xx)
-    M
+    axe[axe > pi] <- axe[axe > pi] - 2 * pi # insures that returned angles are in [-Pi, +PI]
+    list(M = M, axe = axe)
 }

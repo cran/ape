@@ -21,5 +21,6 @@
 ### MA 02111-1307, USA
 
 .First.lib <- function(lib, pkg) {
+    require(gee)
     library.dynam("ape", pkg, lib)
 }
