@@ -39,7 +39,7 @@ read.dna(file, format = "interleaved", skip = 0,
   data (the numbers of taxa and the numbers of nucleotides); the
   sequences are considered as aligned and thus must be of the same
   lengths for all taxa. For the FASTA format, the conventions defined in
-  the URL below (see References) is followed; the sequences are taken as
+  the URL below (see References) are followed; the sequences are taken as
   non-aligned. For all formats, the nucleotides can be arranged in any
   way with blanks and line-breaks inside (with the restriction that the
   first ten nucleotides must be contiguous for the interleaved and

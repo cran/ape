@@ -42,6 +42,6 @@ cherry(phy)
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{gamma.stat}}
+  \code{\link{gammaStat}}
 }
 \keyword{univar}

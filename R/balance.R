@@ -52,5 +52,5 @@ balance <- function(phy)
     }
     balance <- balance[-(1:nb.tip), ]
     if (!is.null(phy$node.label)) rownames(balance) <- phy$node.label
-    return(balance)
+    balance
 }

@@ -54,14 +54,14 @@ void FreeTree(Tree *t) {
 
 /*============================================================================*/
 
-Tree *current=NULL;
+static Tree *current=NULL;
 
-int tip_index;
-int edge_index; 
-int node_index;
+static int tip_index;
+static int edge_index; 
+static int node_index;
 
 enum {OK=0,ERROR}; /* one may invent more descriptive error codes */
-int error=OK;
+static int error=OK;
 
 /*============================================================================*/
 

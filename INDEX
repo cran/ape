@@ -12,6 +12,7 @@ birthdeath              Estimation of Speciation and Extinction Rates
                         With Birth-Death Models
 branching.times         Branching Times of a Phylogenetic Tree
 cherry                  Number of Cherries and Null Models of Trees
+chiroptera              Bat Phylogeny
 chronogram              Chronogram Computed by Nonparametric Rate
                         Smoothing
 coalescent.intervals    Coalescent Intervals
@@ -25,7 +26,7 @@ diversi.gof             Tests of Constant Diversification Rates
 diversi.time            Analysis of Diversification with Survival
                         Models
 drop.tip                Remove Tips in a Phylogenetic Tree
-gamma.stat              Gamma-Statistic of Pybus and Harvey
+gammaStat               Gamma-Statistic of Pybus and Harvey
 GC.content              Content in GC from DNA Sequences
 heterozygosity          Heterozygosity at a Locus Using Gene
                         Frequencies
@@ -38,6 +39,8 @@ landplants              Gene Tree of 36 Landplant rbcL Sequences
 ltt.plot                Lineages Through Time Plot
 mantel.test             Mantel Test for Similarity of Two Matrices
 mst                     Minimum Spanning Tree
+node.depth.edgelength   Distance from Root to Nodes and Tips
+node.depth              Depth of Nodes and Tips
 NPRS.criterion          Objective Function Employed in Nonparametric
                         Rate Smoothing
 opsin                   Gene Tree of 32 opsin Sequences
@@ -65,3 +68,5 @@ write.dna               Write DNA Sequences in a File
 write.nexus             Write Tree File in Nexus Format
 write.tree              Write Tree File in Parenthetic Format
 xenarthra               Molecular Phylogeny of Living Xenarthrans
+yule                    Fits Yule Model to a Phylogenetic Tree
+zoom                    Zoom on a Portion of a Phylogeny

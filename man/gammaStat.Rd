@@ -1,8 +1,8 @@
-\name{gamma.stat}
-\alias{gamma.stat}
+\name{gammaStat}
+\alias{gammaStat}
 \title{Gamma-Statistic of Pybus and Harvey}
 \usage{
-gamma.stat(phy)
+gammaStat(phy)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -24,8 +24,8 @@ gamma.stat(phy)
   with mean zero and standard-deviation unity (Pybus and Harvey
   2000). Thus, the null hypothesis that the clade diversified with
   constant rates may be tested with \code{1 -
-    2*pnorm(abs(gamma.stat(phy)))} for a two-tailed test, or \code{1 -
-    pnorm(abs(gamma.stat(phy)))} for a one-tailed test, both returning
+    2*pnorm(abs(gammaStat(phy)))} for a two-tailed test, or \code{1 -
+    pnorm(abs(gammaStat(phy)))} for a one-tailed test, both returning
   the corresponding P-value.
 }
 \references{

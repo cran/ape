@@ -40,5 +40,5 @@ branching.times <- function(phy)
     depth <- max(xx)
     branching.times <- depth - xx[1:nb.node]
     if (!is.null(phy$node.label)) names(branching.times) <- phy$node.label
-    return(branching.times)
+    branching.times
 }

@@ -1,4 +1,4 @@
-### gamma.stat.R  (2002-08-28)
+### gammaStat.R  (2002-08-28)
 ###
 ###     Gamma-Statistic of Pybus and Harvey
 ###
@@ -20,7 +20,7 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-gamma.stat <- function(phy)
+gammaStat <- function(phy)
 {
     if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
     N <- max(as.numeric(phy$edge))
@@ -30,5 +30,5 @@ gamma.stat <- function(phy)
     stat <- sum(cumsum((2:(N - 1)) * g[-(N - 1)])) / (N - 2)
     m <- ST / 2
     s <- ST * sqrt(1 / (12 * (N - 2)))
-    return((stat - m) / s)
+    (stat - m) / s
 }

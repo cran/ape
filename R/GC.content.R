@@ -23,5 +23,5 @@
 GC.content <- function(x)
 {
     BF <- base.freq(x)
-    return(sum(BF[2:3]))
+    sum(BF[2:3])
 }

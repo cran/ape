@@ -228,10 +228,12 @@
 #as.hclust <- function(phy) UseMethod("as.hclust")
 
 # convert phylo object into hclust object
-as.hclust.phylo <- function(phy)
+as.hclust.phylo <- function(x, ...)
 {
+  phy <- x
+  rm(x)
   if (class(phy) != "phylo")
-    stop("object \"phy\" is not of class \"phylo\"")
+    stop("object is not of class \"phylo\"")
 
   if (is.ultrametric(phy) == FALSE) stop("object of class \"phylo\" not ultrametric") 
   if (is.binary.tree(phy) == FALSE) stop("object of class \"phylo\" not binary")

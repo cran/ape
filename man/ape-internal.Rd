@@ -37,6 +37,12 @@
 \alias{tipLabelsForPhylo}
 \alias{upperNodesForPhylo}
 \alias{getMisawaTajima}
+\alias{phylogram.plot}
+\alias{cladogram.plot}
+\alias{unrooted.plot}
+\alias{unrooted.xy}
+\alias{node.height}
+\alias{node.height.clado}
 \title{Internal Ape Functions}
 \description{
   Internal ape functions.

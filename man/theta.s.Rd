@@ -10,7 +10,8 @@ theta.s(s, n, variance = FALSE)
   \item{n}{a numeric giving the length of the sequences (i.e. the number
     of sites under study).}
   \item{variance}{a logical indicating whether the variance of the 
-    estimated THETA should be returned (\code{TRUE}), thedefault being \code{FALSE}.}
+    estimated THETA should be returned (\code{TRUE}), the default being
+    \code{FALSE}.}
 }
 \description{
   This function computes the population parameter THETA using the

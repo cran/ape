@@ -72,5 +72,5 @@ drop.tip <- function(phy, tip, trim.internal = TRUE)
     mode(tmp) <- "character"
     phy$edge <- tmp
     if (!trim.internal) phy <- tree.build(write.tree(phy))
-    return(phy)
+    phy
 }

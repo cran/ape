@@ -7,32 +7,31 @@
 \usage{
 as.phylo(hc)
 as.phylo.hclust(hc)
-as.hclust.phylo(phy)
+as.hclust.phylo(x, ...)
 }
 \arguments{
   \item{hc}{an object of class \code{"hclust"}), i.e. a clustering tree 
-            computed using  \code{\link{hclust}}.}
-  \item{phy}{a phylogenetic tree, i.e. an object of class \code{"phy"}. To be converted
-            into a \code{"hclust"} object the phylogenetic tree needs to be  ultra-metric and binary.}
-   
+            computed using  \code{\link[mva]{hclust}}.}
+  \item{x}{a phylogenetic tree, i.e. an object of class \code{"phy"}. To
+    be converted into a \code{"hclust"} object the phylogenetic tree
+    needs to be  ultra-metric and binary.}
+  \item{...}{further arguments to be passed to or from other methods.}
 }
 \description{
- The function \code{as.phylo.hclust} (short form \code{as.phylo}) converts a clustering 
- tree computed using \code{\link{hclust}}
- into a phylogenetic tree, i.e. into an object of class \code{"phylo"}.
+ The function \code{as.phylo.hclust} (short form \code{as.phylo})
+ converts a clustering tree computed using \code{\link[mva]{hclust}} into a
+ phylogenetic tree, i.e. into an object of class \code{"phylo"}.
  
- The function \code{as.hclust.phylo} (short form \code{as.hclust}) converts a phylogenetic tree into a 
- \code{"hclust"} object.
+ The function \code{as.hclust.phylo} (short form \code{as.hclust})
+ converts a phylogenetic tree into a \code{"hclust"} object.
 }
 \value{
 An object of class \code{"hclust"} or \code{"phylo"}, respectively.
-
 }
 \seealso{
-\code{\link{hclust}}, \code{\link{as.hclust}}, \code{\link{is.binary.tree}},
-\code{\link{is.ultrametric}}.
+  \code{\link[mva]{hclust}}, \code{\link[mva]{as.hclust}},
+  \code{\link{is.binary.tree}}, \code{\link{is.ultrametric}}
 }
-
 \author{Gangolf Jobb (\url{http://www.treefinder.de})
 }
 

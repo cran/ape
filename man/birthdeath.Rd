@@ -48,6 +48,6 @@ birthdeath(phy)
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{branching.times}}, \code{\link{diversi.gof}},
-  \code{\link{diversi.time}}, \code{\link{ltt.plot}}
+  \code{\link{diversi.time}}, \code{\link{ltt.plot}}, \code{\link{yule}}
 }
 \keyword{models}

@@ -84,10 +84,10 @@ all.equal.phylo <- function(target, current, ...)
                     cat("Both phylogenies seem identical.\n")
                 }
                 else {
-                    if (equal.nb.br.tip2root[2] == "TRUE") cat("Topologies are the same\n")
+                    if (equal.nb.br.tip2root == "TRUE") cat("Topologies are the same\n")
                     else cat("Topologies differ.\n")
-                    lab1 <- t1$tip.label[as.numeric(names(nb.br.tip2root1))]
-                    lab2 <- t2$tip.label[as.numeric(names(nb.br.tip2root2))]
+                    lab1 <- phy1$tip.label[as.numeric(names(nb.br.tip2root1))]
+                    lab2 <- phy2$tip.label[as.numeric(names(nb.br.tip2root2))]
                     if (identical(all.equal(lab1, lab2), TRUE)) {
                         cat("The labeled trees are the same.\n")
                         cat("Both phylogenies seem identical.\n")

@@ -35,11 +35,13 @@ ref <- c("U15717", "U15718", "U15719", "U15720",
          "U15721", "U15722", "U15723", "U15724")
 ### Copy/paste or type the following commands if you
 ### want to try them.
-\dontrun{Rampho <- read.GenBank(ref)}
+\dontrun{
+Rampho <- read.GenBank(ref)
 ### print the first sequence
 ### (can be done with `Rampho$U15717' as well)
-\dontrun{Rampho[[1]]}
+Rampho[[1]]
 ### print the first sequence in a cleaner way
-\dontrun{cat(Rampho[[1]], "\n", sep = "")}
+cat(Rampho[[1]], "\n", sep = "")
+}
 }
 \keyword{IO}

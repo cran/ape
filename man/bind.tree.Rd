@@ -59,5 +59,6 @@ layout(matrix(c(1, 2, 3, 3), 2, 2))
 plot(tree.bird1)
 plot(tree.bird2)
 plot(birds)
+layout(matrix(1))
 }
 \keyword{manip}

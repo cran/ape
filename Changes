@@ -1,3 +1,61 @@
+		CHANGES IN APE VERSION 1.2
+
+
+NEW FEATURES
+
+    o plot.phylo() has been completely re-written and offers several
+      new functionalities. Three types of trees can now be drawn:
+      phylogram (as previously), cladogram, and unrooted tree; in
+      all three types the branch lengths can be drawn using the edge
+      lengths of the phylogeny or not (e.g., if the latter is absent).
+      The vertical position of the nodes can be adjusted with two
+      choices (see option `node.pos'). The code has been re-structured,
+      and two new functions (potentially useful for developpers) are
+      documented separately: node.depth.edgelength() and node.depth();
+      see the respective help pages for details.
+
+    o The new function zoom() allows to explore very large trees by
+      focusing on a small portion of it.
+
+    o The new function yule() fits by maximum likelihood the Yule model
+      (birth-only process) to a phylogenetic tree.
+
+    o Support for writing DNA sequences in FASTA format has been
+      introduced in write.dna() (support for reading sequences in
+      this format was introduced in read.dna() in version 1.1-2).
+      The function has been completely re-written, fixing some bugs
+      (see below); the default behaviour is no more to display the
+      sequences on the standard output. Several options have been
+      introduced to control the sequence printing in a flexible
+      way. The help page has been extended.
+
+    o A new data set is included: a supertree of bats in NEXUS format.
+
+
+BUG FIXES
+
+    o In theta.s(), the default of the option `variance' has
+      been changed to `FALSE' (as was indicated in the help page).
+
+    o Several bugs were fixed in the code of all.equal.phylo().
+
+    o Several bugs were fixed in write.dna(), particularly this
+      function did not work with `format = "sequential"'.
+
+    o Various errors were corrected in the help pages.
+
+
+OTHER CHANGES
+
+    o The argument names of as.hclust.phylo() have been changed
+      from "(phy)" to "(x, ...)" to conform to the definition of
+      the corresponding generic function.
+
+    o gamma.stat() has been renamed gammaStat() to avoid confusion
+      since gamma() is a generic function.
+
+
+
 		CHANGES IN APE VERSION 1.1-3
 
 
@@ -87,7 +145,7 @@ NEW FEATURES
       specifies whether the underscores in tip labels should be written on
       the plot as such or replaced with spaces (the default).
 
-    o The function birthdeath() now computes 95 % confidence intervals of
+    o The function birthdeath() now computes 95% confidence intervals of
       the estimated parameters using profile likelihood.
       
     o Three new data sets are included: a gene tree estimated from 36

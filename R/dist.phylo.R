@@ -59,5 +59,5 @@ dist.phylo <- function(phy)
         }
     }
     rownames(dist) <- colnames(dist) <- phy$tip.label
-    return(dist)
+    dist
 }

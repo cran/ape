@@ -71,5 +71,5 @@ bind.tree <- function(x, y, node = -1, branch = NULL, position = NULL)
     if (!is.null(x$root.edge)) obj$root.edge <- x$root.edge
     class(obj) <- "phylo"
     obj <- tree.build(write.tree(obj))
-    return(obj)
+    obj
 }

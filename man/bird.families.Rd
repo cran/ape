@@ -32,6 +32,9 @@ data(bird.families)
 }
 \examples{
 data(bird.families)
+op <- par()
+par(cex = 0.3)
 plot(bird.families)
+par(op)
 }
 \keyword{datasets}

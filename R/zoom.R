@@ -1,8 +1,8 @@
-### read.GenBank.R  (2002-08-28)
+### zoom.R  (2003-12-27)
 ###
-###     Read DNA Sequences from GenBank via Internet
+###     Zoom on a Portion of a Phylogeny
 ###
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -20,21 +20,17 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-read.GenBank <- function(access.nb, seq.names = access.nb)
+zoom <- function(phy, focus, type = "phylogram", use.edge.length = TRUE)
 {
-    obj <- lapply(as.list(access.nb), get.dna)
-    names(obj) <- seq.names
-    obj
-}
-
-get.dna <- function(access.nb)
-{    
-    URL <- paste("http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=",
-                 access.nb, sep = "")
-    tmp <- scan(file = URL, what = "", sep = "\n", quiet = TRUE)
-    FI <- grep("ORIGIN", tmp) + 1
-    LA <- which(tmp == "//") - 1
-    tmp <- unlist(strsplit(tmp[FI:LA], NULL))
-    tmp <- tmp[grep("[acgt]", tmp)]
-    tmp
+    if (is.character(focus)) focus <- which(phy$tip.label == focus)
+    ext <- drop.tip(phy, phy$tip.label[-focus])
+    layout(matrix(1:2, 1, 2), c(1, 3))
+    phy$tip.label[-focus] <- ""
+    phy$tip.label[focus] <- "o"
+    par(col = "blue")
+    plot.phylo(phy, type = type, use.edge.length = use.edge.length,
+               label.offset = 0, no.margin = TRUE)
+    par(col = "black")
+    plot.phylo(ext, type = type, use.edge.length = use.edge.length,
+               label.offset = 0, no.margin = TRUE)
 }

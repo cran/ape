@@ -63,7 +63,7 @@ f.cherry.yule <- function(n, k)
               2 * k/(n - 1) * f.cherry.yule(n - 1, k)
         }
     }
-    return(P)
+    P
 }
 
 f.cherry.uniform <- function(n, k)
@@ -81,5 +81,5 @@ f.cherry.uniform <- function(n, k)
                  * gamma(k - 2 + 1))
         }
     }
-    return(P)
+    P
 }

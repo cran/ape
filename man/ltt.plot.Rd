@@ -53,5 +53,6 @@ plot(tmp)
 ltt.plot(bird.families, main = "Bird families")
 plot(tmp2)
 ltt.plot(bird.orders, main = "Bird orders")
+layout(matrix(1))
 }
 \keyword{hplot}

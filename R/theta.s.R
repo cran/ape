@@ -21,7 +21,7 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-theta.s <- function(s, n, variance = TRUE)
+theta.s <- function(s, n, variance = FALSE)
 {
     a1 <- sum(1 / (1:(n - 1)))
     th <- s / a1
