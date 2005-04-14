@@ -29,7 +29,7 @@ seg.sites(X)
 }
 \seealso{
   \code{\link{base.freq}}, \code{\link{GC.content}},
-  \code{\link{theta.s}}
+  \code{\link{theta.s}}, \code{\link{nuc.div}}
 }
 \examples{
 data(woodmouse)

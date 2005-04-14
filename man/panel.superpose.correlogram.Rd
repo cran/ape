@@ -17,7 +17,7 @@
              pch = superpose.symbol$pch,
              p-values = NULL,
              test.level = 0.05,
-             cex = superpose.symbol$cex, 
+             cex = superpose.symbol$cex,
              font = superpose.symbol$font,
              fontface = superpose.symbol$fontface,
              fontfamily = superpose.symbol$fontfamily,
@@ -35,6 +35,6 @@
 }
 \author{Julien Dutheil \email{julien.dutheil@uni-montp2.fr}}
 \seealso{
-  \code{\link[lattice]{panel.superpose}}, \code{\link{plot.correlogramList}}. 
+  \code{\link[lattice]{panel.superpose}}, \code{\link{plot.correlogramList}}.
 }
 \keyword{dplot}

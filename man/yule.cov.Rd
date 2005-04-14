@@ -71,7 +71,7 @@ yule.cov(phy, formula, data = NULL)
 }
 \references{
   Paradis, E. (2005) Statistical analysis of diversification with
-  species traits. \emph{Evolution}, (in press).
+  species traits. \emph{Evolution}, \bold{59}, 1--12.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{

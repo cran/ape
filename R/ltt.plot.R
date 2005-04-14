@@ -8,13 +8,13 @@
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
@@ -43,14 +43,12 @@ mltt.plot <- function(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
     ## this will also accept objects of class `c("phylo", "multi.tree")'
     if (class(phy)[1] != "phylo")
       stop("object \"phy\" is not of class \"phylo\"")
-    
     ltt.xy <- function(phy) {
         x <- -c(rev(sort(branching.times(phy))), 0)
         names(x) <- NULL
         y <- 1:length(x)
         cbind(x, y)
     }
-
     if (length(class(phy)) == 1) {
         TREES <- list(ltt.xy(phy))
         names(TREES) <- deparse(substitute(phy))
@@ -58,7 +56,6 @@ mltt.plot <- function(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
         TREES <- lapply(phy, ltt.xy)
         names(TREES) <- names(phy)
     }
-
     dts <- list(...)
     if (length(dts)) {
         mc <- as.character(match.call())[-(1:2)]

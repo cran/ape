@@ -15,7 +15,7 @@ compar.lynch(x, G, eps = 1e-4)
   This function computes the heritable additive value and the residual
   deviation for continous characters, taking into account the
   phylogenetic relationships among species, following the comparative
-  method described in Lynch (1991).  
+  method described in Lynch (1991).
 }
 \details{
   The parameter estimates are computed following the EM
@@ -28,7 +28,7 @@ compar.lynch(x, G, eps = 1e-4)
   estimates. Convergence occurs when the differences between two
   successive iterations of the EM algorithm leads to differences between
   both residual and additive values less than or equal to \code{eps}.
-} 
+}
 \note{
   The present function does not perform the estimation of ancestral
   phentoypes as proposed by Lynch (1991). This will be implemented in

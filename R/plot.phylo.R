@@ -8,13 +8,13 @@
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
@@ -51,7 +51,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                      as.integer(nb.node), as.integer(x$edge[, 1]),
                      as.integer(x$edge[, 2]), as.integer(nms),
                      as.double(x$edge.length), as.double(numeric(nb.tip + nb.node)),
-                     PACKAGE = "ape")[[7]]
+                     DUP = FALSE, PACKAGE = "ape")[[7]]
             names(xx) <- as.character(nms)
             }
         if (root.edge)

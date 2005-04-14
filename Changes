@@ -1,3 +1,60 @@
+		CHANGES IN APE VERSION 1.5
+
+
+NEW FEATURES
+
+    o Two new functions, as.matching.phylo() and as.phylo.matching(),
+      convert objects between the classes "phylo" and "matching". The
+      latter implements the representation of binary trees introduced by
+      Diaconis and Holmes (1998; PNAS, 95:14600). The generic function
+      as.matching() has been introduced as well.
+
+    o Two new functions, multi2di() and di2multi(), allow to resolve
+      and collapse multichotomies with branches of length zero.
+
+    o The new function nuc.div() computes the nucleotide diversity
+      from a sample a DNA sequences.
+
+    o dist.dna() has been completely rewritten with a much faster
+      (particularly for large data sets) C code. Eight models are
+      available: JC69, K80, F81, K81, F84, T92, TN93, and GG95 (the
+      option `method' has been renamed `model'). Computation of variance
+      is available for all models. A gamma-correction is possible for
+      JC69, K80, F81, and TN93. There is a new option, pairwise.deletion,
+      to remove sites with missing data on a pairwise basis. The option
+      `GCcontent' has been removed.
+
+    o read.GenBank() has a new option (species.names) which specifies
+      whether to return the species names of the organisms in addition
+      to the accession numbers of the sequences (this is the default
+      behaviour).
+
+    o write.nexus() can now write several trees in the same NEXUS file.
+
+    o drop.tip() has a new option `root.edge' that allows to specify the
+      new root edge if internal branches are trimmed.
+
+
+BUG FIXES
+
+    o as.phylo.hclust() failed if some labels had parentheses: this
+      is fixed.
+
+    o Several bugs were fixed in all.equal.phylo(). This function now
+      returns the logical TRUE if the trees are identical but with
+      different representations (a report was printed previously).
+
+    o read.GenBank() did not correctly handle ambiguous base codes:
+      this is fixed.
+
+
+OTHER CHANGES
+
+    o birthdeath() now returns an object of class "birthdeath" for
+      which there is a print method.
+
+
+
 		CHANGES IN APE VERSION 1.4
 
 

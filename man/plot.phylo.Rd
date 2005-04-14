@@ -22,7 +22,7 @@
   \item{node.pos}{a numeric taking the value 1 or 2 which specifies the
     vertical position of the nodes with respect to their descendants. If
     \code{NULL} (the default), then the value is determined in relation
-    to `type' and `use.edge.length' (see details).}  
+    to `type' and `use.edge.length' (see details).}
   \item{show.node.label}{a logical indicating whether to show the node
     labels on the phylogeny (defaults to \code{"FALSE"}, i.e. the labels
     are not shown).}

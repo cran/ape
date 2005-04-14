@@ -8,13 +8,13 @@
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
@@ -42,7 +42,7 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
 did not match: the former were ignored in the analysis.")
         }
     }
-    
+
     bl <- phy$edge.length   # copy the branch lengths to rescale them subsequently
     ## `unused' says if the phenotype has NOT been used to compute a contrast
     unused <- rep(TRUE, nb.tip + nb.node)
@@ -50,7 +50,7 @@ did not match: the former were ignored in the analysis.")
     contr <- numeric(nb.node)
     names(contr) <- as.character(-(1:nb.node))
     if (var.contrasts) var.con <- contr
-    
+
     while(sum(unused) > 1) {
         term <- names(phenotype[!is.na(phenotype) & unused])
         ind <- as.logical(match(phy$edge[, 2], term))

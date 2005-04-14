@@ -8,13 +8,13 @@
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
@@ -80,14 +80,14 @@ Initialize.corPhyl <- function(object, data, ...)
 
   # Specific to corPhyl:
   phy <- attr(object, "tree")
-  if (is.null(data)) 
+  if (is.null(data))
     data <- parent.frame()
   if(is.null(rownames(data))) {
     warning("No row names supplied in dataframe, data taken to be in the same order as in tree.")
     attr(object, "index") <- 1:dim(data)[1]
   } else {
     index <- match(rownames(data), phy$tip.label)
-    if(any(is.na(index))) { 
+    if(any(is.na(index))) {
       warning("Row names in dataframe do not match tree tip names. data taken to be in the same order as in tree.")
       attr(object, "index") <- 1:dim(data)[1]
     } else {
@@ -118,7 +118,7 @@ corMatrix.corMartins <- function(object, covariate = getCovariate(object), corr 
   if (!("corMartins" %in% class(object))) stop("ERROR!!! Object is not of class \"corMartins\".")
   if(!any(attr(object, "index"))) stop("ERROR!!! object have not been initialized.")
   tree <- attr(object, "tree")
-  dist <- dist.phylo(tree)  
+  dist <- dist.phylo(tree)
   mat <- exp(-object[1] * dist)
   if(corr) mat <- cov2cor(mat)
   n <- dim(mat)[1]
@@ -150,7 +150,7 @@ corMatrix.corGrafen <- function(object, covariate = getCovariate(object), corr =
 coef.corBrownian <- function(object, unconstrained = TRUE, ...)
 {
   if (!("corBrownian" %in% class(object))) stop("ERROR!!! Object is not of class \"corBrownian\".")
-  return(numeric(0))  
+  return(numeric(0))
 }
 
 coef.corMartins <- function(object, unconstrained = TRUE, ...)
@@ -164,7 +164,7 @@ coef.corMartins <- function(object, unconstrained = TRUE, ...)
     }
   }
   aux <- as.vector(object)
-  names(aux) <- "alpha" 
+  names(aux) <- "alpha"
   return(aux)
 }
 
@@ -179,7 +179,7 @@ coef.corGrafen <- function(object, unconstrained = TRUE, ...)
     }
   }
   aux <- exp(as.vector(object))
-  names(aux) <- "rho" 
+  names(aux) <- "rho"
   return(aux)
 }
 
@@ -194,7 +194,8 @@ node.sons <- function (phy, node)
 
 node.leafnumber <- function(phy, node)
 {
-  if (!("phylo" %in% class(phy))) stop("Object \"phy\" is not of class \"phylo\"")
+  if (!("phylo" %in% class(phy)))
+    stop("Object \"phy\" is not of class \"phylo\"")
   if(as.numeric(node) > 0) return(1)
   else {
     number <- 0
@@ -213,7 +214,7 @@ compute.brlen <- function(phy, method="Grafen", power=1)
   for(i in 1:n) {
     bottom <- ((node.leafnumber(phy, E[i,1]) - 1)/(n.leaves - 1))^power
     top    <- ifelse(as.numeric(E[i, 2]) > 0, 0, ((node.leafnumber(phy, E[i, 2]) - 1)/(n.leaves - 1))^power)
-    phy$edge.length[i] <- bottom - top 
+    phy$edge.length[i] <- bottom - top
   }
   #Now scale the tree:
   return(phy)

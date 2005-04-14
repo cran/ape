@@ -8,14 +8,12 @@ ratogram(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
 \arguments{
   \item{phy}{A phylogenetic tree (i.e. an object of class \code{"phylo"}), where
     the branch lengths are measured in substitutions.}
-  
+
   \item{scale}{Age of the root in the chronogram corresponding to the inferred ratogram(default value: 0). }
-      
+
   \item{expo}{Exponent in the objective function (default value: 2)}
-  
   \item{minEdgeLength}{Minimum edge length in the phylogram (default value: 1e-06). If any branch lengths are
     smaller then they will be set to this value. }
-  
 }
 \description{
 
@@ -38,17 +36,13 @@ Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})
 }
 
 \seealso{
-\code{\link{chronogram}}, 
-\code{\link{NPRS.criterion}}.
+\code{\link{chronogram}}, \code{\link{NPRS.criterion}}.
 }
-
-
 \references{
   Sanderson, M. J. (1997) A nonparametric approach to estimating
     divergence times in the absence of rate constancy. \emph{Molecular
     Biology and Evolution}, \bold{14}, 1218--1231.
 }
-
 \examples{
 library(ape)
 

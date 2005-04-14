@@ -2,10 +2,12 @@
 \alias{write.nexus}
 \title{Write Tree File in Nexus Format}
 \usage{
-write.nexus(phy, file = "", translate = TRUE, original.data = TRUE)
+write.nexus(..., file = "", translate = TRUE, original.data = TRUE)
 }
 \arguments{
-  \item{phy}{an object of class \code{"phylo"}.}
+  \item{...}{either (i) a single object of class \code{"phylo"}, (ii) a
+    series of such objects separated by commas, or (iii) a list
+    containing such objects.}
   \item{file}{a file name specified by either a variable of mode character,
     or a double-quoted string; if \code{file = ""} (the default) then the
     tree is written on the standard output connection.}
@@ -17,14 +19,17 @@ write.nexus(phy, file = "", translate = TRUE, original.data = TRUE)
     \code{"file"} (see below).}
 }
 \description{
-  This function writes a tree in a file with the NEXUS format.
+  This function writes trees in a file with the NEXUS format.
 }
 \details{
   If \code{original.data = TRUE}, the file as specified by the attribute
-  \code{"origin"} of \code{phy} is read and its data (except the trees)
-  are written in \code{file}.
+  \code{"origin"} of the first tree is read and its data (except the
+  trees) are written in \code{file}.
 
-  Currently, only a single tree can be written in \code{file}.
+  If several trees are given, they must have all the same tip labels.
+
+  If among the objects given some are not trees of class \code{"phylo"},
+  they are simply skipped and no t written to the file.
 }
 \value{
   None (invisible `NULL').

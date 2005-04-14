@@ -21,7 +21,7 @@ theta.k(x, n = NULL, k = NULL)
   individual genotypes from which the sample size and number of alleles
   are derived (\code{theta.k(x)}), or giving directly these two
   quantities (\code{theta.k(n, k)}).
-  
+
   The argument \code{x} can be either a factor or a vector. If it is a
   factor, then it is taken to give the individual alleles in the
   population. If it is a numeric vector, then its values are taken to be

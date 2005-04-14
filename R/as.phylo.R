@@ -1,20 +1,20 @@
-### as.phylo.R  (2004-11-25)
+### as.phylo.R  (2005-03-07)
 ###
 ###           Conversion Among Tree Objects
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2005 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
@@ -50,7 +50,13 @@ as.phylo.hclust <- function(x, ...)
     mode(edge) <- "character"
     obj <- list(edge = edge, edge.length = edge.length, tip.label = x$labels)
     class(obj) <- "phylo"
-    read.tree(text = write.tree(obj, multi.line = FALSE))
+    ## the following manipulation is in case there are parentheses
+    ## or other special characters in the tip labels:
+    tmp <- obj$tip.label
+    obj$tip.label <- as.character(1:length(obj$tip.label))
+    obj <- read.tree(text = write.tree(obj, multi.line = FALSE))
+    obj$tip.label <- tmp[as.numeric(obj$tip.label)]
+    obj
 }
 
 as.phylo.phylog <- function(x, ...)

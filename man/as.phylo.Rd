@@ -11,7 +11,7 @@ as.phylo(x, ...)
 \method{as.hclust}{phylo}(x, ...)
 }
 \arguments{
-  \item{x}{an object of the correct to be converted into another class.}
+  \item{x}{an object to be converted into another class.}
   \item{...}{further arguments to be passed to or from other methods.}
 }
 \description{
@@ -19,7 +19,6 @@ as.phylo(x, ...)
   tree of class \code{"phylo"}. There are currently two methods for this
   generic for objects of class \code{"hclust"} and of class
   \code{"phylog"} (implemented in the package ade4).
-
   \code{as.hclust.phylo} is a method of the generic
   \code{\link[stats]{as.hclust}} which converts an object of class
   \code{"phylo"} into one of class \code{"hclust"}. This can used to

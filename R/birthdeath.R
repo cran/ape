@@ -1,4 +1,4 @@
-### birthdeath.R  (2004-10-12)
+### birthdeath.R  (2005-03-23)
 ###
 ###       Estimation of Speciation and Extinction Rates
 ###                 With Birth-Death Models
@@ -6,19 +6,19 @@
 ### birthdeath: standard model
 ### bd.ext: extended version
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2005 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
@@ -66,19 +66,29 @@ birthdeath <- function(phy)
     while (foo(up) < 0) up <- up + inc
     CI[2, 1] <- uniroot(foo, lower = lo, upper = para[2])$root
     CI[2, 2] <- uniroot(foo, lower = para[2], upper = up)$root
+    names(para) <- names(se) <- rownames(CI) <- c("d/b", "b-d")
+    colnames(CI) <- c("lo", "up")
+    obj <- list(tree = deparse(substitute(phy)), N = N,
+                dev = Dev, para = para, se = se, CI = CI)
+    class(obj) <- "birthdeath"
+    obj
+}
+
+print.birthdeath <- function(x, ...)
+{
     cat("\nEstimation of Speciation and Extinction Rates\n")
     cat("            With Birth-Death Models\n\n")
-    cat("     Phylogenetic tree:", deparse(substitute(phy)), "\n")
-    cat("        Number of tips:", N, "\n")
-    cat("              Deviance:", Dev, "\n")
-    cat("        Log-likelihood:", -Dev/2, "\n")
+    cat("     Phylogenetic tree:", x$tree, "\n")
+    cat("        Number of tips:", x$N, "\n")
+    cat("              Deviance:", x$dev, "\n")
+    cat("        Log-likelihood:", -(x$dev)/2, "\n")
     cat("   Parameter estimates:\n")
-    cat("      d / b =", para[1], "  StdErr =", se[1], "\n")
-    cat("      b - d =", para[2], "  StdErr =", se[2], "\n")
+    cat("      d / b =", x$para[1], "  StdErr =", x$se[1], "\n")
+    cat("      b - d =", x$para[2], "  StdErr =", x$se[2], "\n")
     cat("   (b: speciation rate, d: extinction rate)\n")
     cat("   Profile likelihood 95 % confidence intervals:\n")
-    cat("      d / b: [", CI[1, 1], ", ", CI[1, 2], "]", "\n", sep = "")
-    cat("      b - d: [", CI[2, 1], ", ", CI[2, 2], "]", "\n\n", sep = "")
+    cat("      d / b: [", x$CI[1, 1], ", ", x$CI[1, 2], "]", "\n", sep = "")
+    cat("      b - d: [", x$CI[2, 1], ", ", x$CI[2, 2], "]", "\n\n", sep = "")
 }
 
 bd.ext <- function(phy, S)

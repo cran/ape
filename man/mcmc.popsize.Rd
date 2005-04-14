@@ -3,13 +3,12 @@
 \alias{extract.popsize}
 \alias{plot.popsize}
 \alias{lines.popsize}
-
 \title{Reversible Jump MCMC to Infer Demographic History}
 \usage{
 mcmc.popsize(tree,nstep, thinning=1, burn.in=0,progress.bar=TRUE,
     method.prior.changepoints=c("hierarchical", "fixed.lambda"), max.nodes=30,
    lambda=0.5, gamma.shape=0.5, gamma.scale=2,
-    method.prior.heights=c("skyline", "constant", "custom"), 
+    method.prior.heights=c("skyline", "constant", "custom"),
     prior.height.mean,
     prior.height.var)
 extract.popsize(mcmc.out, credible.interval=0.95, time.points=200, thinning=1, burn.in=0)
@@ -18,16 +17,13 @@ lines.popsize(x, show.median=TRUE,show.years=FALSE, subst.rate, present.year, ..
 
 }
 \arguments{
-  \item{tree}{Either an ultrametric tree (i.e. an object of class \code{"phylo"}), 
+  \item{tree}{Either an ultrametric tree (i.e. an object of class \code{"phylo"}),
            or coalescent intervals (i.e. an object of class \code{"coalescentIntervals"}). }
-  
   \item{nstep}{Number of MCMC steps, i.e. length of the Markov chain (suggested value: 10,000-50,000).}
-  
   \item{thinning}{Thinning factor (suggest value: 10-100).}
-  
   \item{burn.in}{Number of steps dropped from the chain to allow for a burn-in phase (suggest value: 1000).}
 
-  \item{progress.bar}{Show progress bar during the MCMC run.}	  
+  \item{progress.bar}{Show progress bar during the MCMC run.}
 
   \item{method.prior.changepoints}{If \code{hierarchical}is chosen (the default) then the smoothing parameter lambda is drawn from
      a gamma distribution with some specified shape and scale parameters.
@@ -35,19 +31,13 @@ lines.popsize(x, show.median=TRUE,show.years=FALSE, subst.rate, present.year, ..
   }
 
   \item{max.nodes}{Upper limit for the number of internal nodes of the approximating spline (default: 30).}
-
-  
-  \item{lambda}{Smoothing parameter. For \code{method="fixed.lambda"} the specifed value of lambda determines 
+  \item{lambda}{Smoothing parameter. For \code{method="fixed.lambda"} the specifed value of lambda determines
       the mean of the prior distribution   for the number of internal nodes of the approximating
       spline for the demographic function (suggested value: 0.1-1.0).}
-  
   \item{gamma.shape}{Shape parameter of the gamma function from which \code{lambda} is drawn for
     \code{method="hierarchical"}.}
-  
-   \item{gamma.scale}{Scale parameter of the gamma function from which \code{lambda} is drawn for 
+   \item{gamma.scale}{Scale parameter of the gamma function from which \code{lambda} is drawn for
     \code{method="hierarchical"}.}
- 
- 
   \item{method.prior.heights}{Determines the prior for the heights of the change points.
           If \code{custom} is chosen then two functions describing the mean and variance
 	  of the heigths in depence of time have to be specified (via \code{prior.height.mean}
@@ -55,20 +45,12 @@ lines.popsize(x, show.median=TRUE,show.years=FALSE, subst.rate, present.year, ..
 	  \code{constant} assumes constant population size and variance determined by Felsenstein
 	  (1992), and \code{skyline} assumes a skyline plot (see Opgen-Rhein et al. 2004 for
 	  more details).}
-  
- 
-  \item{prior.height.mean}{Function describing the mean of the prior distribution for the heights 
+  \item{prior.height.mean}{Function describing the mean of the prior distribution for the heights
                            (only used if \code{method.prior.heights = custom}).}
-  
-  \item{prior.height.var}{Function describing the variance of the prior distribution for the heights 
+
+  \item{prior.height.var}{Function describing the variance of the prior distribution for the heights
                            (only used if \code{method.prior.heights = custom}).}
-  
- 
- 
- 
-  
   \item{mcmc.out}{Output from \code{mcmc.popsize} - this is needed as input for \code{extract.popsize}.}
-  
  \item{credible.interval}{Probability mass of the confidence band (default: 0.95).}
 
  \item{time.points}{Number of discrete time points in the table output by \code{extract.popsize}.}
@@ -80,19 +62,15 @@ lines.popsize(x, show.median=TRUE,show.years=FALSE, subst.rate, present.year, ..
   \item{show.years}{Option that determines whether the time is plotted in units of
         of substitutions (default) or in years (requires specification of substution rate
 	and year of present).}
-	
-\item{subst.rate}{Substitution rate (see option show.years).}	
-\item{present.year}{Present year (see option show.years).}	
-
-  \item{\dots}{Further arguments to be passed on  to \code{plot}.}  
+\item{subst.rate}{Substitution rate (see option show.years).}
+\item{present.year}{Present year (see option show.years).}
+  \item{\dots}{Further arguments to be passed on  to \code{plot}.}
 }
 \description{
  These functions implement a reversible jump MCMC framework to infer the demographic history,
  as well as corresponding confidence bands,
  from a genealogical tree. The computed demographic history is a continous
  and smooth function in time.
- 
- 
  \code{mcmc.popsize} runs the actual MCMC chain and outputs information about the
  sampling steps, \code{extract.popsize} generates from this MCMC
  output a table of population size in time, and  \code{plot.popsize} and \code{lines.popsize}
@@ -105,23 +83,19 @@ lines.popsize(x, show.median=TRUE,show.years=FALSE, subst.rate, present.year, ..
 }
 
 
-\author{Rainer Opgen-Rhein (\url{http://www.stat.uni-muenchen.de/~opgen/}) and 
+\author{Rainer Opgen-Rhein (\url{http://www.stat.uni-muenchen.de/~opgen/}) and
         Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/}).
         Parts of the rjMCMC sampling procedure are adapted from R code by Karl Browman
 	 (\url{http://www.biostat.jhsph.edu/~kbroman/})}
 
 \seealso{
 \code{\link{skyline}} and \code{\link{skylineplot}}. }
-
-
-
 \references{
-  Opgen-Rhein, R., L. Fahrmeir, and K. Strimmer, K. 2004. Inference of demographic history
-  from genealogical trees using reversible jump Markov chain Monte Carlo. 
-  \emph{BMC Evolutionary Biology}.
+  Opgen-Rhein, R., Fahrmeir, L. and Strimmer, K. 2005. Inference of
+  demographic history from genealogical trees using reversible jump
+  Markov chain Monte Carlo. \emph{BMC Evolutionary Biology}, \bold{5},
+  6.
 }
-
-
 \examples{
 library(ape)
 

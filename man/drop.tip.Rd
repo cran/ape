@@ -2,7 +2,8 @@
 \alias{drop.tip}
 \title{Remove Tips in a Phylogenetic Tree}
 \usage{
-drop.tip(phy, tip, trim.internal = TRUE, subtree = FALSE)
+drop.tip(phy, tip, trim.internal = TRUE, subtree = FALSE,
+         root.edge = 0)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -12,6 +13,9 @@ drop.tip(phy, tip, trim.internal = TRUE, subtree = FALSE)
     corresponding internal branches.}
   \item{subtree}{a logical specifying whether to output in the tree how
     many tips have been deleted and where.}
+  \item{root.edge}{an integer giving the number of internal branches to
+    be used to build the new root edge. This has no effect if
+    \code{trim.internal = FALSE}.}
 }
 \description{
   This function removes the terminal branches of a phylogenetic tree,
@@ -33,6 +37,9 @@ drop.tip(phy, tip, trim.internal = TRUE, subtree = FALSE)
   that have been deleted.
 
   Note that \code{subtree = TRUE} implies \code{trim.internal = TRUE}.
+
+  To undestand how the option \code{root.edge} works, see the examples
+  below.
 }
 \value{
   an object of class \code{"phylo"}.
@@ -61,5 +68,12 @@ plot(drop.tip(bird.families, tip, trim.internal = FALSE))
 data(bird.orders)
 plot(drop.tip(bird.orders, 6:23, subtree = TRUE), font = 1)
 plot(drop.tip(bird.orders, c(1:5, 20:23), subtree = TRUE), font = 1)
+
+### Examples of the use of `root.edge'
+tr <- read.tree(text = "(A:1,(B:1,(C:1,(D:1,E:1):1):1):1):1;")
+drop.tip(tr, c("A", "B"), root.edge = 0) # = (C:1,(D:1,E:1):1);
+drop.tip(tr, c("A", "B"), root.edge = 1) # = (C:1,(D:1,E:1):1):1;
+drop.tip(tr, c("A", "B"), root.edge = 2) # = (C:1,(D:1,E:1):1):2;
+drop.tip(tr, c("A", "B"), root.edge = 3) # = (C:1,(D:1,E:1):1):3;
 }
 \keyword{manip}

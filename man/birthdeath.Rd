@@ -1,11 +1,15 @@
 \name{birthdeath}
 \alias{birthdeath}
+\alias{print.birthdeath}
 \title{Estimation of Speciation and Extinction Rates With Birth-Death Models}
 \usage{
 birthdeath(phy)
+\method{print}{birthdeath}(x, ...)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
+  \item{x}{an object of class \code{"birthdeath"}.}
+  \item{...}{further arguments passed to the \code{print} function.}
 }
 \description{
   This function fits by maximum likelihood a birth-death model to the
@@ -31,7 +35,14 @@ birthdeath(phy)
   ultrametric, so if it is not, the returned result may not be meaningful.
 }
 \value{
-  A NULL value is returned, the results are simply printed.
+  An object of class \code{"birthdeath"} which is a list with the
+  following components:
+  \item{tree}{the name of the tree analysed.}
+  \item{N}{the number of species.}
+  \item{dev}{the deviance (= -2 log lik) at its minimum.}
+  \item{para}{the estimated parameters.}
+  \item{se}{the corresponding standard-errors.}
+  \item{CI}{the 95\% profile-likelihood confidence intervals.}
 }
 \references{
   Kendall, D. G. (1948) On the generalized ``birth-and-death''

@@ -22,6 +22,7 @@ GC.content(x)
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{base.freq}}, \code{\link{seg.sites}}
+  \code{\link{base.freq}}, \code{\link{seg.sites}},
+  \code{\link{nuc.div}}
 }
 \keyword{univar}

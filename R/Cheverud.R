@@ -8,20 +8,20 @@
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
 
-# This function is adapted from a MatLab code from 
+# This function is adapted from a MatLab code from
 # Rholf, F. J. (2001) Comparative Methods for the Analysis of Continuous Variables: Geometric Interpretations.
 # Evolution 55(11): 2143-2160
 compar.cheverud <- function(y, W, tolerance=1e-6, gold.tol=1e-4)
@@ -35,9 +35,9 @@ compar.cheverud <- function(y, W, tolerance=1e-6, gold.tol=1e-4)
   m <- dim(y)[2]
   y <- y-matrix(rep(1, n)) %*% apply(y,2,mean) # Deviations from mean
   Wy <- Wnorm %*% y
-  
+
   Wlam <- eigen(Wnorm)$values # eigenvalues of W
-   
+
   # Find distinct eigenvalues
   sorted <- sort(Wlam)
   # Check real:
@@ -59,7 +59,7 @@ compar.cheverud <- function(y, W, tolerance=1e-6, gold.tol=1e-4)
       Distinct[nDistinct] <- sorted[ii]
     }
   }
-   
+
   # Search for minimum of LL
 
   likelihood <- function(rhohat) {
@@ -73,7 +73,7 @@ compar.cheverud <- function(y, W, tolerance=1e-6, gold.tol=1e-4)
     LL <- log(t(y) %*% y - 2 * rhohat * t(y) %*% Wy + rhohat * rhohat * t(Wy) %*% Wy) - logDet*2/n
     return(LL)
   }
-  
+
   GoldenSearch <- function(ax, cx) {
     # Golden section search over the interval ax to cx
     # Return rhohat and likelihood value.

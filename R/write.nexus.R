@@ -1,41 +1,49 @@
-### write.nexus.R  (2004-12-20)
+### write.nexus.R  (2005-04-14)
 ###
 ###           Write Tree File in Nexus Format
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2005 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-write.nexus <- function(phy, file = "", translate = TRUE, original.data = TRUE)
+write.nexus <- function(..., file = "", translate = TRUE, original.data = TRUE)
 {
-    if (class(phy) != "phylo")
-      stop(paste("object \"", deparse(substitute(phy)),
-                 "\" is not of class \"phylo\""), sep = "")
+    obj <- list(...)
+    ## We insure that all trees are in a list, even if there is a single one:
+    if (length(obj) == 1) {
+        if (class(obj[[1]]) == "phylo") ntree <- 1
+        else {
+            obj <- unlist(obj, recursive = FALSE)
+            ntree <- length(obj)
+        }
+    } else ntree <- length(obj)
     cat("#NEXUS\n", file = file)
-    cat(paste("[R-package APE, ", date(), "]\n\n", sep = ""), file = file, append = TRUE)
-    if(original.data){
-        if (!is.null(attr(phy, "origin"))) {
-            if (!file.exists(attr(phy, "origin"))) {
-                warning(paste("the file", attr(phy, "origin"),
-                              "cannot be found,\nthe original data won't be written with the tree."))
+    cat(paste("[R-package APE, ", date(), "]\n\n", sep = ""),
+        file = file, append = TRUE)
+    if (original.data) {
+        if (!is.null(attr(obj[[1]], "origin"))) {
+            if (!file.exists(attr(obj[[1]], "origin"))) {
+                warning(paste("the file", attr(obj[[1]], "origin"),
+                              "cannot be found,
+the original data won't be written with the tree."))
                 original.data <- FALSE
             }
             else {
-                ORI <- scan(file = attr(phy, "origin"), what = character(),
+                ORI <- scan(file = attr(obj[[1]], "origin"), what = character(),
                             sep = "\n", skip = 1)
                 start <- grep("BEGIN TAXA;", ORI)
                 ORI <- ORI[-(1:(start - 1))]
@@ -49,29 +57,40 @@ write.nexus <- function(phy, file = "", translate = TRUE, original.data = TRUE)
         }
         else original.data <- FALSE
     }
+    N <- length(obj[[1]]$tip.label)
     if (!original.data) {
         cat("BEGIN TAXA;\n", file = file, append = TRUE)
-        cat(paste("\tDIMENSIONS NTAX = ", length(phy$tip.label), ";\n", sep = ""),
+        cat(paste("\tDIMENSIONS NTAX = ", N, ";\n", sep = ""),
             file = file, append = TRUE)
         cat("\tTAXLABELS\n", file = file, append = TRUE)
-        cat(paste("\t\t", gsub(" ", "_", phy$tip.label), sep = ""),
+        cat(paste("\t\t", obj[[1]]$tip.label, sep = ""),
             sep = "\n", file = file, append = TRUE)
         cat("\t;\n", file = file, append = TRUE)
         cat("END;\n", file = file, append = TRUE)
     }
-
     cat("BEGIN TREES;\n", file = file, append = TRUE)
-    phy$tip.label <- gsub(" ", "_", phy$tip.label)
     if (translate) {
+        ## We take arbitrarily the labels of the first tree, and
+        ## translate them as "1", "2", "3", ...
         cat("\tTRANSLATE\n", file = file, append = TRUE)
-        X <- paste("\t\t", 1:length(phy$tip.label), "\t", phy$tip.label, ",", sep = "")
+        X <- paste("\t\t", 1:N, "\t", obj[[1]]$tip.label, ",", sep = "")
+        ## We remove the last comma:
         X[length(X)] <- gsub(",", "", X[length(X)])
         cat(X, file = file, append = TRUE, sep = "\n")
         cat("\t;\n", file = file, append = TRUE)
-        phy$tip.label <- as.character(1:length(phy$tip.label))
+        token <- as.character(1:N)
+        names(token) <- obj[[1]]$tip.label
+        obj[[1]]$tip.label <- token
+        if (ntree > 1)
+          for (i in 2:ntree)
+            obj[[i]]$tip.label <- token[obj[[i]]$tip.label]
     }
-    cat("\tTREE * UNTITLED = [&R] ", file = file, append = TRUE)
-    cat(write.tree(phy, file = "", multi.line = F), file = file, append = TRUE)
-    cat("\nEND;\n", file = file, append = TRUE)
+    for (i in 1:ntree) {
+        if (class(obj[[i]]) != "phylo") next
+        cat("\tTREE * UNTITLED = [&R] ", file = file, append = TRUE)
+        cat(write.tree(obj[[i]], file = "", multi.line = FALSE),
+            "\n", sep = "",file = file, append = TRUE)
+    }
+    cat("END;\n", file = file, append = TRUE)
     if(original.data) cat(ORI, file = file, append = TRUE, sep = "\n")
 }

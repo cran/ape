@@ -8,13 +8,13 @@
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
@@ -36,14 +36,14 @@ skyline.coalescentIntervals <- function(x, epsilon=0, ...)
 {
   if (class(x) != "coalescentIntervals")
     stop("object \"x\" is not of class \"coalescentIntervals\"")
-  
+
   if (epsilon < 0)
   {
     eps <- find.skyline.epsilon(x, ...)
   }
   else
     eps <- epsilon
-  
+
   skyline(collapsed.intervals(x, epsilon=eps), ...)
 }
 
@@ -58,12 +58,12 @@ skyline.collapsedIntervals <- function(x, old.style=FALSE, ...)
   params <- x$collapsed.interval.count
   l <- x$lineages
   w <- x$interval.length
-  
+
   b <- choose(l,2) # binomial coefficients
 
   sg <- rep(0,params)   # sizes of collapsed intervals
   cg <- rep(0,params)   # coalescent events in interval
-  
+
   if(old.style)
     ng <- rep(0,params) # lineages at beginning of an in interval
   else
@@ -71,14 +71,14 @@ skyline.collapsedIntervals <- function(x, old.style=FALSE, ...)
     ng <- rep(0,params) # sum of classic skp estimates in an interval
     m.classic <- w*b
   }
-  
+
   for (i in 1:params)
   {
     group <- link==i
     sgr <- w[group]
     sg[[i]] <- sum(sgr)
     cg[[i]] <- length(sgr)
-    
+
     if(old.style)
       ng[[i]] <- l[group][[1]]
     else
@@ -91,7 +91,7 @@ skyline.collapsedIntervals <- function(x, old.style=FALSE, ...)
     m <- sg*(ng*(ng-cg)/(2.0*cg) )
   else
     m <- ng/cg
-    
+
   # log-likelihood
   logL <- sum(log(b/m[link]) - b/m[link]*w)
 
@@ -102,7 +102,7 @@ skyline.collapsedIntervals <- function(x, old.style=FALSE, ...)
     logL.AICc <- logL - K- K*(K+1)/(S-K-1)
   else
     logL.AICc <- NA
-    
+
   obj <- list(
     time=t,
     interval.length=sg,
@@ -131,12 +131,12 @@ find.skyline.epsilon <- function(ci, GRID=1000, MINEPS=1e-6, ...)
   size <- ci$interval.count
   besteps <- ci$total.depth
   eps <- besteps
-  
+
   cli <- collapsed.intervals(ci,eps)
   skpk <- skyline(cli, ...)
   bestaicc <- skpk$ logL.AICc
   params <- skpk$parameter.count
-  
+
   delta <- besteps/GRID
 
   eps <- eps-delta
@@ -144,7 +144,7 @@ find.skyline.epsilon <- function(ci, GRID=1000, MINEPS=1e-6, ...)
   {
     cli <- collapsed.intervals(ci,eps)
     skpk <- skyline(cli, ...)
-    aicc <- skpk$ logL.AICc  
+    aicc <- skpk$ logL.AICc
     params <- skpk$parameter.count
 
     if (aicc > bestaicc && params < size-1)
@@ -154,7 +154,7 @@ find.skyline.epsilon <- function(ci, GRID=1000, MINEPS=1e-6, ...)
     }
     eps <- eps-delta
   }
-    
+
    cat("epsilon =", besteps, "\n")
 
   besteps

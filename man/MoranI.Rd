@@ -9,7 +9,7 @@
   \item{dist}{a distance weigths matrix.}
   \item{scaled}{logical, indicate whether the index should be scaled to
     allow comparisons between indices (default to \code{FALSE}).}
-	\item{na.rm}{a logical value indicating whether 'NA' values in 'x' 
+	\item{na.rm}{a logical value indicating whether 'NA' values in 'x'
 		should be stripped before the computation proceeds.}
 }
 \description{
@@ -36,7 +36,7 @@
   Only the randomization hypothesis is implemented for now.
 
 	The 'na.rm' option is forwarded to all 'sd', 'sum' and 'mean' functions used in computations.
-	Note that 'NA' values are allowed only in 'x' and not in 'dist'. 
+	Note that 'NA' values are allowed only in 'x' and not in 'dist'.
 }
 \value{
   A list containing the attributes:
@@ -64,9 +64,9 @@ attach(carnivora)
 # Compute distance matrix for each taxonomic level:
 dG  <- dist.taxo(Genus)
 dF  <- dist.taxo(Family)
-dSF <- dist.taxo(SuperFamily) 
+dSF <- dist.taxo(SuperFamily)
 dO  <- dist.taxo(Order)
-# We draw the correlogram of average body weights, 
+# We draw the correlogram of average body weights,
 # with log10-transformed variable:
 IG  <- Moran.I(log10(SW), dG        , scale=TRUE)
 IF  <- Moran.I(log10(SW), dF  & !dG , scale=TRUE)
