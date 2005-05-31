@@ -25,7 +25,7 @@ compar.cheverud(y, W, tolerance = 1e-06, gold.tol = 1e-04)
 }
 \value{
   A list with the following components:
-  \item{rhohat}{The maximul likelihood estimate of \eqn{\rho}{rho}}
+  \item{rhohat}{The maximum likelihood estimate of \eqn{\rho}{rho}}
   \item{Wnorm}{The normalized version of \code{W}}
 	\item{residuals}{Error terms (\eqn{e}{e})}
 }

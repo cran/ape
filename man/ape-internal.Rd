@@ -4,8 +4,6 @@
 \alias{f.cherry.uniform}
 \alias{sort.index}
 \alias{nsca}
-\alias{get.dna}
-\alias{get.species.names}
 \alias{perm.rowscols}
 \alias{mant.zstat}
 \alias{lower.triang}

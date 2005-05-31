@@ -364,13 +364,13 @@ node.height <- function(x)
     ## the `yy' value of its ancestor
     unused <- rep(TRUE, nb.tip + nb.node)
     names(unused) <- names(yy)
-    
+
     while(sum(unused) > 1) {
         term <- names(yy[!is.na(yy) & unused])
         ind <- as.logical(match(x[, 2], term))
         ind[is.na(ind)] <- FALSE
         term.br <- matrix(x[ind], length(term), 2)
-    
+
         ## extract the nodes with at least 2 branches above
         basal <- names(which(table(term.br[, 1]) >= 2))
         for (nod in basal) {
@@ -411,13 +411,13 @@ node.height.clado <- function(x)
     ## the `yy' value of its ancestor
     unused <- rep(TRUE, nb.tip + nb.node)
     names(unused) <- names(yy)
-    
+
     while(sum(unused) > 1) {
         term <- names(yy[!is.na(yy) & unused])
         ind <- as.logical(match(x[, 2], term))
         ind[is.na(ind)] <- FALSE
         term.br <- matrix(x[ind], length(term), 2)
-    
+
         ## extract the nodes with at least 2 branches above
         basal <- names(which(table(term.br[, 1]) >= 2))
         for (nod in basal) {

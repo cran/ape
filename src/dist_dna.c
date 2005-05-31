@@ -212,8 +212,8 @@ void dist_dna_K81(char **x, int *n, int *s, double *d, int *pairdel,
   }
 }
 
-void dist_dna_F84(char **x, int *n, int *s, double *d, double *BF, int *pairdel,
-		  int *variance, double *var)
+void dist_dna_F84(char **x, int *n, int *s, double *d, double *BF,
+		  int *pairdel, int *variance, double *var)
 {
   int i, j, k, Nd, Ns, L, target, s1, s2;
   double P, Q, A, B, C, a, b, t1, t2, t3;

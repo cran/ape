@@ -23,7 +23,7 @@ node.depth(x)
 \note{
   This function is actually called by plot.phylo(), and is unlikely to
   be called directly. However, it is documented separately since it may
-  be useful for developpers.
+  be useful for developers.
 }
 \seealso{
   \code{\link{plot.phylo}}

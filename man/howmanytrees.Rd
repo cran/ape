@@ -44,7 +44,7 @@ howmanytrees(n, rooted = TRUE, binary = TRUE,
 
   Note that if an infinite value (\code{Inf}) is returned this does not
   mean that there is an infinite number of trees (this cannot be if the
-  numnber of tips is finite), but that the calculation is beyond the
+  number of tips is finite), but that the calculation is beyond the
   limits of the computer.
 }
 \value{

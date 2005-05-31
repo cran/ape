@@ -44,10 +44,10 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
   The present function has been tested with version 2.4 of PHYML; it
   should also work with version 2.3, but it won't work with version 2.1.
 
-  Under unix-like systems, it seems necessary to run R from a csh or a
+  Under unix-like systems, it seems necessary to run R from csh or a
   similar shell (sh might not work).
 
-  The user must take care to set correctly the three diffferent paths
+  The user must take care to set correctly the three different paths
   involved here: the path to PHYML's binary, the path to the sequence
   file, and the path to R's working directory. The function should work
   if all three paths are different. Obviously, there should be no problem

@@ -2,7 +2,7 @@
 ###
 ###     Remove Tips in a Phylogenetic Tree
 ###
-### Copyright 2005 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003--2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -145,6 +145,11 @@ drop.tip <- function(phy, tip, trim.internal = TRUE, subtree = FALSE,
         }
     }
     tmp <- as.numeric(phy$edge)
+    if (!is.null(phy$node.label)) {
+        x <- unique(tmp)
+        x <- x[x < 0]
+        phy$node.label <- phy$node.label[-x]
+    }
     n <- length(tmp)
     nodes <- tmp < 0
     ind.nodes <- (1:n)[nodes]

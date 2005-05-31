@@ -1,4 +1,4 @@
-### read.GenBank.R  (2005-03-29)
+### read.GenBank.R  (2005-05-31)
 ###
 ###     Read DNA Sequences from GenBank via Internet
 ###
@@ -23,32 +23,36 @@
 read.GenBank <- function(access.nb, seq.names = access.nb,
                          species.names = TRUE)
 {
-    obj <- lapply(as.list(access.nb), get.dna)
-    if (species.names) species <- names(obj)
+    N <- length(access.nb)
+    ## If there are more than 400 sequences, we need to break down the
+    ## requests, otherwise there is a segmentation fault.
+    nrequest <- N %/% 400 + as.logical(N %% 400)
+    X <- character(0)
+    for (i in 1:nrequest) {
+        a <- (i - 1) * 400 + 1
+        b <- 400 * i
+        if (i == nrequest) b <- N
+        URL <- paste("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&id=",
+                     paste(access.nb[a:b], collapse = ","),
+                     "&rettype=gb", sep = "")
+        X <- c(X, scan(file = URL, what = "", sep = "\n", quiet = TRUE))
+    }
+    FI <- grep("ORIGIN", X) + 1
+    LA <- which(X == "//") - 1
+    obj <- list()
+    length(obj) <- N
+    for (i in 1:N) {
+        ## remove all spaces and digits
+        tmp <- gsub("[[:digit:] ]", "", X[FI[i]:LA[i]])
+        obj[[i]] <- unlist(strsplit(tmp, NULL))
+    }
     names(obj) <- seq.names
     if (species.names) {
-        species <- lapply(as.list(access.nb), get.species.names)
-        attr(obj, "species") <- gsub(" ", "_", unlist(species))
+        tmp <- character(N)
+        sp <- grep("ORGANISM", X)
+        for (i in 1:N)
+          tmp[i] <- unlist(strsplit(X[sp[i]], " +ORGANISM +"))[2]
+        attr(obj, "species") <- gsub(" ", "_", tmp)
     }
     obj
-}
-
-get.dna <- function(access.nb)
-{
-    URL <- paste("http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=",
-                 access.nb, sep = "")
-    tmp <- scan(file = URL, what = "", sep = "\n", quiet = TRUE)
-    FI <- grep("ORIGIN", tmp) + 1
-    LA <- which(tmp == "//") - 1
-    tmp <- gsub("[[:digit:] ]", "", tmp[FI:LA]) # remove all spaces and digits
-    tmp <- unlist(strsplit(tmp, NULL))
-    tmp
-}
-
-get.species.names <- function(access.nb)
-{
-    URL <- paste("http://www.ncbi.nlm.nih.gov/entrez/viewer.fcgi?val=",
-                 access.nb, sep = "")
-    tmp <- scan(file = URL, what = "", sep = "\n", quiet = TRUE)
-    unlist(strsplit(tmp[grep("ORGANISM", tmp)], "[<>]"))[3]
 }

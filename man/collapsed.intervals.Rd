@@ -22,7 +22,7 @@ Proceeding from the tips to the root of the tree each small
 interval is pooled with the neighboring interval closer to the root. If the
 neighboring interval is also small, then pooling continues until the composite
 interval is larger than \code{epsilon}. Note that this approach prevents the
-occurrence of zero-length intervals at the present. 
+occurrence of zero-length intervals at the present.
 For more details see Strimmer and Pybus (2001).
 }
 
@@ -39,8 +39,8 @@ An object of class \code{"collapsedIntervals"} with the following entries:
     intervals.}
    \item{collapsed.interval.count}{The number of collapsed intervals.}
   \item{total.depth}{ The sum of the lengths of all coalescent
-    intervals.}    
-  \item{epsilon}{The value of the underlying smoothing parameter.} 
+    intervals.}
+  \item{epsilon}{The value of the underlying smoothing parameter.}
 }
 
 \author{Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})}
@@ -59,10 +59,10 @@ An object of class \code{"collapsedIntervals"} with the following entries:
 \examples{
 library(ape)
 
-data("hivtree.table") # example tree 
+data("hivtree.table") # example tree
 
 # colescent intervals from vector of interval lengths
-ci <- coalescent.intervals(hivtree.table$size) 
+ci <- coalescent.intervals(hivtree.table$size)
 ci
 
 # collapsed intervals

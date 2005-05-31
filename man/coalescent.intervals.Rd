@@ -27,7 +27,7 @@ An object of class \code{"coalescentIntervals"} with the following entries:
   \item{interval.count}{ The total number of coalescent
     intervals.}
   \item{total.depth}{ The sum of the lengths of all coalescent
-    intervals.}   
+    intervals.}
 }
 \seealso{
 \code{\link{branching.times}}, \code{\link{collapsed.intervals}},

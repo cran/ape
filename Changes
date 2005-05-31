@@ -1,4 +1,40 @@
-		CHANGES IN APE VERSION 1.5
+		CHANGES IN APE VERSION 1.6
+
+
+NEW FEATURES
+
+    o The new function dist.topo() computes the topological distances
+      between two trees.
+
+    o The new function boot.phylo() performs a bootstrap analysis on
+      phylogeny estimation.
+
+    o The new functions prop.part() and prop.clades() analyse
+      bipartitions from a series of trees.
+
+
+OTHER CHANGES
+
+    o read.GenBank() now uses the EFetch utility of NCBI instead of
+      the usual Web interface: it is now much faster (e.g., 12 times
+      faster to retrieve 8 sequences, 37 times for 60 sequences).
+
+
+BUG FIXES
+
+    o Several bugs were fixed in read.dna().
+
+    o Several bugs were fixed in diversi.time().
+
+    o is.binary.tree() did not work correctly if the tree has no edge
+      lengths: this is fixed.
+
+    o drop.tip() did not correctly propagated the `node.label' of a
+      tree: this is fixed.
+
+
+
+ 		CHANGES IN APE VERSION 1.5
 
 
 NEW FEATURES
@@ -168,7 +204,7 @@ NEW FEATURES
 
     o Two new functions, panel.superpose.correlogram() and
       plot.correlogramList(), allow to plot several phylogenetic
-      correlograms.     
+      correlograms.
 
     o The new function node.leafnumber() computes the number of leaves
       of a subtree defined by a particular node.
@@ -481,7 +517,7 @@ NEW FEATURES
     o The Klastorin (1982) method as suggested by Misawa and Tajima
       (2000, Mol. Biol. Evol. 17:1879-1884) for classifying genes
       on the basis of phylogenetic trees has been implemented (see
-      the function klastorin()). 
+      the function klastorin()).
 
     o Functions have been added to convert APE's "phylo" objects in
       "hclust" cluster objects and vice versa (see the help page of
@@ -501,21 +537,21 @@ NEW FEATURES
       labels are no more allowed. Another side effect is that read.nexus()
       now does not replace the underscores (_) in tip labels with spaces
       (this behaviour was undocumented).
-      
+
     o The function plot.phylo() has a new option (`underscore') which
       specifies whether the underscores in tip labels should be written on
       the plot as such or replaced with spaces (the default).
 
     o The function birthdeath() now computes 95% confidence intervals of
       the estimated parameters using profile likelihood.
-      
+
     o Three new data sets are included: a gene tree estimated from 36
       landplant rbcL sequences, a gene tree estimated from 32 opsin
       sequences, and a gene tree for 50 BRCA1 mammalian sequences.
 
 
 BUG FIXES
-      
+
     o A bug was fixed in dist.gene() where nothing was returned.
 
     o A bug in plot.mst() was fixed.
@@ -529,10 +565,10 @@ BUG FIXES
 
 
 NEW FEATURES
-      
+
     o Two new functions, read.dna() and write.dna(), read/write in a file
       DNA sequences in interleaved or in sequential format.
-      
+
     o Two new functions, read.nexus() and write.nexus(), read/write trees
       in a NEXUS file.
 

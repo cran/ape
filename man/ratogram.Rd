@@ -20,21 +20,16 @@ ratogram(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
  \code{ratogram} computes a ratogram from a phylogram by applying the NPRS
  (nonparametric rate smoothing) algorithm described in Sanderson (1997).
 }
-
 \details{
   Please refer to Sanderson (1997) for mathematical details
 }
-
 \value{
 \code{chronogram} returns an object of class \code{"phylo"}. The branch lengths of this
 tree will be the absolute rates estimated for each branch.}
-
 }
-
 \author{Gangolf Jobb (\url{http://www.treefinder.de}) and
 Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})
 }
-
 \seealso{
 \code{\link{chronogram}}, \code{\link{NPRS.criterion}}.
 }

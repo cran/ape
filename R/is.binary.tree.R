@@ -8,13 +8,13 @@
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
@@ -23,6 +23,8 @@
 is.binary.tree <- function(tree)
 {
     if (class(tree) != "phylo") stop("object \"tree\" is not of class \"phylo\"")
-    if (length(tree$tip.label)*2-2 == length(tree$edge.length)) return(TRUE)
+    ## modified by EP so that it works without edge lengths too (2005-05-31):
+    tmp <- as.numeric(tree$edge)
+    if (max(tmp) - 1 ==  -min(tmp)) return(TRUE)
     else return(FALSE)
 }

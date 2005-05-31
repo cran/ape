@@ -8,20 +8,20 @@
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
 # For debugging:
-#setwd("Dev/r/APE/Data/")           
+#setwd("Dev/r/APE/Data/")
 #carn<-read.table("Gittleman1986.csv", header=T, sep="\t")
 
 
@@ -34,7 +34,7 @@ Moran.I <- function(
 
   # Number of values:
   nn <- length(x);
-  n <- ifelse(na.rm, sum(!is.na(x)), nn) 
+  n <- ifelse(na.rm, sum(!is.na(x)), nn)
   if(dim(dist)[1] != nn | dim(dist)[2] != nn) {
     stop("\"dist\" must be a matrix of size n*n, with n=length(x)=", n, ".");
   }
@@ -170,8 +170,7 @@ correlogram.formula <- function(formula, data = NULL, use = "all.obs")
   # Last y:
   var <- get.var(ally)
   y[[var$name]] <- var$y
-  
-	
+
   #Groups:
   groups <- formula[[3]]
   d <- list()
@@ -189,8 +188,8 @@ correlogram.formula <- function(formula, data = NULL, use = "all.obs")
   cat("Analysing level:", group$name, "\n")
   g[[group$name]] <- group$y
   d[[group$name]] <- dist.taxo(group$y)
-  
-  # Remove all data with missing grouping values: 
+
+  # Remove all data with missing grouping values:
   filter <- rep(TRUE, length(y[[1]])) # All obs used
   if(use == "complete.obs" || use == "pairwise.complete.obs") {
     G <- sapply(g, is.na)
@@ -198,7 +197,7 @@ correlogram.formula <- function(formula, data = NULL, use = "all.obs")
       filter <- filter & !G[,i]
     }
   }
- 
+
   # Deal with the complete.obs option:
   if(use == "complete.obs") {
     M <- sapply(y, is.na)
@@ -281,7 +280,7 @@ correlogram.phylo <- function(x, phy, nclass = NULL, breaks = NULL)
     p <- I.M$p.v
     l <- paste("Distance")
   }
-  
+
   # Create an object of class 'correlogram':
   corr <- list(obs=i, p.values=p, labels=l)
   class(corr) <- "correlogram"
@@ -292,30 +291,30 @@ plot.correlogram <- function(x, test.level=0.05, ...)
 {
   if (!("correlogram" %in% class(x))) stop("object \"x\" is not of class \"correlogram\"")
   # Black circles are significant at the 5% level:
-  pch <- ifelse(x$p.values < test.level, 19, 21) 
+  pch <- ifelse(x$p.values < test.level, 19, 21)
   # Plot it!
   return(xyplot(x$obs~ordered(x$l,levels=x$l), type="b", xlab="Rank", ylab="I / Imax", lty=2, lwd=2, cex=1.5, pch=pch, ...))
 }
 
-panel.superpose.correlogram <- function (x, y = NULL, subscripts, groups, panel.groups = "panel.xyplot", 
-    col, col.line = superpose.line$col, col.symbol = superpose.symbol$col, 
-    pch = superpose.symbol$pch, p.values = NULL, test.level=0.05, cex = superpose.symbol$cex, font = superpose.symbol$font, 
-    fontface = superpose.symbol$fontface, fontfamily = superpose.symbol$fontfamily, 
-    lty = superpose.line$lty, lwd = superpose.line$lwd, ...) 
+panel.superpose.correlogram <- function(x, y = NULL, subscripts, groups, panel.groups = "panel.xyplot",
+    col, col.line = superpose.line$col, col.symbol = superpose.symbol$col,
+    pch = superpose.symbol$pch, p.values = NULL, test.level = 0.05, cex = superpose.symbol$cex, font = superpose.symbol$font,
+    fontface = superpose.symbol$fontface, fontfamily = superpose.symbol$fontfamily,
+    lty = superpose.line$lty, lwd = superpose.line$lwd, ...)
 {
     x <- as.numeric(x)
-    if (!is.null(y)) 
+    if (!is.null(y))
         y <- as.numeric(y)
     if (length(x) > 0) {
         if (!missing(col)) {
-            if (missing(col.line)) 
+            if (missing(col.line))
                 col.line <- col
-            if (missing(col.symbol)) 
+            if (missing(col.symbol))
                 col.symbol <- col
         }
         superpose.symbol <- trellis.par.get("superpose.symbol")
         superpose.line <- trellis.par.get("superpose.line")
-        vals <- if (is.factor(groups)) 
+        vals <- if (is.factor(groups))
             levels(groups)
         else sort(unique(groups))
         nvals <- length(vals)
@@ -331,20 +330,20 @@ panel.superpose.correlogram <- function (x, y = NULL, subscripts, groups, panel.
         font <- rep(font, length = nvals)
         fontface <- rep(fontface, length = nvals)
         fontfamily <- rep(fontfamily, length = nvals)
-        panel.groups <- if (is.function(panel.groups)) 
+        panel.groups <- if (is.function(panel.groups))
             panel.groups
-        else if (is.character(panel.groups)) 
+        else if (is.character(panel.groups))
             get(panel.groups)
         else eval(panel.groups)
         for (i in seq(along = vals)) {
             id <- (groups[subscripts] == vals[i])
             if (any(id)) {
-                args <- list(x = x[id], groups = groups, subscripts = subscripts[id], 
-                  pch = pch[id], cex = cex[i], font = font[i], 
-                  fontface = fontface[i], fontfamily = fontfamily[i], 
-                  col.line = col.line[i], col.symbol = col.symbol[i], 
+                args <- list(x = x[id], groups = groups, subscripts = subscripts[id],
+                  pch = pch[id], cex = cex[i], font = font[i],
+                  fontface = fontface[i], fontfamily = fontfamily[i],
+                  col.line = col.line[i], col.symbol = col.symbol[i],
                   lty = lty[i], lwd = lwd[i], ...)
-                if (!is.null(y)) 
+                if (!is.null(y))
                   args$y <- y[id]
                 do.call("panel.groups", args)
             }
