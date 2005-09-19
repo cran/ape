@@ -3,7 +3,7 @@
 \title{Write Tree File in Parenthetic Format}
 \usage{
 write.tree(phy, file = "", append = FALSE, format = "Newick",
-           multi.line = TRUE)
+           multi.line = TRUE, digits = 10)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -18,6 +18,8 @@ write.tree(phy, file = "", append = FALSE, format = "Newick",
     available.}
   \item{multi.line}{a logical, if \code{TRUE} (the default) line breaks
     are introduced in the tree in parenthetic form.}
+  \item{digits}{a numeric giving the number of digits used for printing
+    branch lengths.}
 }
 \description{
   This function writes in a file a tree in parenthetic format using the

@@ -1,8 +1,8 @@
-### root.R  (2004-09-20)
+### root.R (2005-08-18)
 ###
-###                (re)Roots Phylogenetic Trees
+###            Root of Phylogenetic Trees
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -19,6 +19,14 @@
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
+
+is.rooted <- function(phy)
+{
+    if (class(phy) != "phylo")
+      stop("object \"phy\" is not of class \"phylo\"")
+    if (!is.null(phy$root.edge)) return(TRUE)
+    else if (table(phy$edge[, 1])["-1"] > 2) return(FALSE) else return(TRUE)
+}
 
 root <- function(phy, outgroup)
 {
@@ -74,7 +82,7 @@ root <- function(phy, outgroup)
         nod <- phy$edge[i, 1]
     }
 
-    i.oroot <- which(phy$edge[, 1] == "-1")    
+    i.oroot <- which(phy$edge[, 1] == "-1")
     ## Unroot the tree if there's a basal dichotomy...
     if (length(i.oroot) == 2) {
         j <- i.oroot[which(i.oroot != i)]

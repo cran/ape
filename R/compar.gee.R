@@ -1,20 +1,20 @@
-### compar.gee.R  (2004-10-12)
+### compar.gee.R (2004-10-12)
 ###
 ###     Comparative Analysis with GEEs
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2002-2004 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
@@ -89,7 +89,7 @@ print.compar.gee <- function(x, ...)
     cat("\nSummary of Residuals:\n")
     print(residu)
     if (any(nas))
-        cat("\n\nCoefficients: (", sum(nas), " not defined because of singularities)\n", 
+        cat("\n\nCoefficients: (", sum(nas), " not defined because of singularities)\n",
             sep = "")
     else cat("\n\nCoefficients:\n")
     print(coef)

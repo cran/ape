@@ -1,4 +1,4 @@
-### is.binary.tree.R  (2002-09-12)
+### is.binary.tree.R  (2002-09-12) [modified by EP 2005-05-31, 2005-08-18]
 ###
 ###     Tests whether a given phylogenetic tree is binary
 ###
@@ -20,11 +20,20 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-is.binary.tree <- function(tree)
+is.binary.tree <- function(phy)
 {
-    if (class(tree) != "phylo") stop("object \"tree\" is not of class \"phylo\"")
+    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
     ## modified by EP so that it works without edge lengths too (2005-05-31):
-    tmp <- as.numeric(tree$edge)
-    if (max(tmp) - 1 ==  -min(tmp)) return(TRUE)
-    else return(FALSE)
+    tmp <- as.numeric(phy$edge)
+    nb.tip <- max(tmp)
+    nb.node <- -min(tmp)
+    ## modified by EP so that it works with both rooted and unrooted
+    ## trees (2005-08-18):
+    if (is.rooted(phy)) {
+        if (nb.tip - 1 ==  nb.node) return(TRUE)
+        else return(FALSE)
+    } else {
+        if (nb.tip - 2 ==  nb.node) return(TRUE)
+        else return(FALSE)
+    }
 }

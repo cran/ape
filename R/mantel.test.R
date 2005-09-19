@@ -1,8 +1,8 @@
-### mantel.test.R  (2002-08-28)
+### mantel.test.R (2005-06-13)
 ###
 ###     Mantel Test for Similarity of Two Matrices
 ###
-### Copyright 2002 Ben Bolker <bolker@zoo.ufl.edu>,
+### Copyright 2002-2005 Ben Bolker <bolker@zoo.ufl.edu>,
 ###      and Julien Claude <claude@isem.univ-montp2.fr>
 ###
 ### This file is part of the `ape' library for R and related languages.
@@ -37,14 +37,12 @@ lower.triang <- function(m)
     m[col(m) <= row(m)]
 }
 
-mantel.test <- function(m1, m2, nperm = 1000, graph = FALSE, ...)
+mantel.test <- function (m1, m2, nperm = 1000, graph = FALSE, ...)
 {
-    n <- dim(m1)[1]
+    n <- nrow(m1)
     realz <- mant.zstat(m1, m2)
-    nullstats <- numeric(nperm)
-    for (i in 1:nperm) nullstats[i] <- mant.zstat(m1, perm.rowscols(m2, n))
-    nullstats <- sort(nullstats)
-    pval <- 1 - ((1:nperm)[nullstats > realz])[1] / nperm
+    nullstats <- replicate(nperm, mant.zstat(m1, perm.rowscols(m2, n)))
+    pval <- (sum(nullstats > realz) - 1)/nperm
     if (graph) {
         plot(density(nullstats), type = "l", ...)
         abline(v = realz)

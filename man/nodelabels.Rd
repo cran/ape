@@ -7,7 +7,8 @@
 }
 \usage{
 nodelabels(text, node, adj = c(0.5, 0.5), frame = "rect",
-           pch = NULL, col = "black", bg = "lightblue", ...)
+           pch = NULL, thermo = NULL, col = "black",
+           bg = "lightblue", ...)
 }
 \arguments{
   \item{text}{a vector of mode character giving the text to be
@@ -25,6 +26,10 @@ nodelabels(text, node, adj = c(0.5, 0.5), frame = "rect",
     this is eventually recycled. See \code{\link[graphics]{par}} for R's
     plotting symbols. If \code{pch} is used, then \code{text} is
     ignored.}
+  \item{thermo}{a numeric vector giving some proportions for each node
+    (the thermometers are filled up to this level), or a two-column
+    matrix giving two proportions (the thermometers are filled between
+    these two levels).}
   \item{col}{a character string giving the color to be used for the
     plotting symbols; this is eventually recycled.}
   \item{bg}{a character string giving the color to be used for the
@@ -36,8 +41,9 @@ nodelabels(text, node, adj = c(0.5, 0.5), frame = "rect",
     below).}
 }
 \details{
-  If the arguments \code{text} is missing and \code{pch} is left as
-  \code{NULL}, then the numbers of the nodes are printed.
+  If the arguments \code{text} is missing and \code{pch} and
+  \code{thermo} are left as \code{NULL}, then the numbers of the nodes
+  are printed.
 
   If \code{node} is missing, then the text or the symbols are printed on
   all nodes.
@@ -74,6 +80,9 @@ plot(bird.orders, use.edge.length = FALSE, font = 1)
 nodelabels(bs, adj = -0.2, frame = "n", cex = 0.8, font = 2)
 nodelabels(bs2, adj = c(1.2, 1), frame = "n", cex = 0.8, font = 3)
 nodelabels(bs3, adj = c(1.2, -0.2), frame = "n", cex = 0.8)
+
+plot(bird.orders, "c", use.edge.length = FALSE, font = 1)
+nodelabels(thermo = runif(22), cex = .8)
 
 plot(bird.orders, "u", FALSE, font = 1, lab4ut = "a")
 nodelabels(cex = .75, bg = "yellow")

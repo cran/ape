@@ -1,8 +1,8 @@
-### read.dna.R  (2004-08-31)
+### read.dna.R (2004-04-15)
 ###
 ###     Read DNA Sequences in a File
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public

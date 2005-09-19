@@ -1,4 +1,6 @@
-/* Copyright 2005 Emmanuel Paradis <paradis@isem.univ-montp2.fr> */
+/* dist.dna.c       2005-09-12 */
+
+/* Copyright 2005 Emmanuel Paradis
 
 /* This file is part of the `ape' library for R and related languages. */
 /* It is made available under the terms of the GNU General Public */
@@ -18,7 +20,31 @@
 
 #include <R.h>
 
-#define both_non_n(a, b) (strcmp(a, "n") && strcmp(b, "n"))
+#define both_non_n(a, b) (strcmp(a, "n") && strcmp(a, "-") && strcmp(b, "n") && strcmp(b, "-"))
+
+void dist_dna_raw(char **x, int *n, int *s, double *d, int *pairdel)
+{
+  int i, j, k, s1, s2, target, Nd, L;
+
+  for (i = 0; i < *n - 1; i++) {
+    for (j = i + 1; j < *n; j++) {
+      target = *n * i - i*(i + 1)/2 + j - i - 1;
+      Nd = 0;
+      L = 0;
+      for (k = 0; k < *s; k++) {
+	s1 = i * *s + k;
+	s2 = j * *s + k;
+	if (*pairdel) {
+	  if (both_non_n(x[s1], x[s2])) L += 1;
+	  else continue;
+	}
+	if (strcmp(x[s1], x[s2])) Nd += 1;
+      }
+      if (!*pairdel) L = *s;
+      d[target] = ((double) Nd/L);
+    }
+  }
+}
 
 void dist_dna_JC69(char **x, int *n, int *s, double *d, int *pairdel,
 		   int *variance, double *var, int *gamma, double *alpha)
@@ -512,21 +538,22 @@ void dist_dna(char **x, int *n, int *s, int *model, double *d,
 	      int *gamma, double *alpha)
 {
   switch (*model) {
-  case 1 : dist_dna_JC69(x, n, s, d, pairdel, variance,
+  case 1 : dist_dna_raw(x, n, s, d, pairdel); break;
+  case 2 : dist_dna_JC69(x, n, s, d, pairdel, variance,
 			 var, gamma, alpha); break;
-  case 2 : dist_dna_K80(x, n, s, d, pairdel, variance,
+  case 3 : dist_dna_K80(x, n, s, d, pairdel, variance,
 			var, gamma, alpha); break;
-  case 3 : dist_dna_F81(x, n, s, d, BF, pairdel, variance,
+  case 4 : dist_dna_F81(x, n, s, d, BF, pairdel, variance,
 			var, gamma, alpha); break;
-  case 4 : dist_dna_K81(x, n, s, d, pairdel, variance,
+  case 5 : dist_dna_K81(x, n, s, d, pairdel, variance,
 			var); break;
-  case 5 : dist_dna_F84(x, n, s, d, BF, pairdel, variance,
+  case 6 : dist_dna_F84(x, n, s, d, BF, pairdel, variance,
 			var); break;
-  case 6 : dist_dna_T92(x, n, s, d, BF, pairdel, variance,
+  case 7 : dist_dna_T92(x, n, s, d, BF, pairdel, variance,
 			var); break;
-  case 7 : dist_dna_TN93(x, n, s, d, BF, pairdel, variance,
+  case 8 : dist_dna_TN93(x, n, s, d, BF, pairdel, variance,
 			 var, gamma, alpha); break;
-  case 8 : dist_dna_GG95(x, n, s, d, pairdel,
+  case 9 : dist_dna_GG95(x, n, s, d, pairdel,
 			 variance, var); break;
   }
 }

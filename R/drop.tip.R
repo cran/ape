@@ -1,8 +1,8 @@
-### drop.tip.R  (2005-04-14)
+### drop.tip.R (2005-04-14)
 ###
 ###     Remove Tips in a Phylogenetic Tree
 ###
-### Copyright 2003--2005 Emmanuel Paradis
+### Copyright 2003-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -71,7 +71,7 @@ drop.tip <- function(phy, tip, trim.internal = TRUE, subtree = FALSE,
                 ind <- which(phy$edge[, 2] == MRCA)
                 newrootedge <- newrootedge + phy$edge.length[ind]
                 MRCA <- phy$edge[ind, 1]
-                if (MRCA == "-1" & i < root.edge) {
+                if (MRCA == "-1" && i < root.edge) {
                     newrootedge <- newrootedge
                     break
                 }
@@ -161,7 +161,7 @@ drop.tip <- function(phy, tip, trim.internal = TRUE, subtree = FALSE,
     dim(tmp) <- c(n / 2, 2)
     mode(tmp) <- "character"
     phy$edge <- tmp
-    if (!trim.internal | subtree) {
+    if (!trim.internal || subtree) {
         S <- write.tree(phy, multi.line = FALSE)
         phy <- if (nobr) clado.build(S) else tree.build(S)
     }

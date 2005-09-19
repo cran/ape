@@ -1,8 +1,8 @@
-### pic.R  (2004-10-12)
+### pic.R (2004-10-12)
 ###
 ###     Phylogenetically Independent Contrasts
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2002-2004 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -22,12 +22,17 @@
 
 pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
 {
-    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
+    if (class(phy) != "phylo")
+      stop("object \"phy\" is not of class \"phylo\"")
+    if (is.null(phy$edge.length))
+      stop("your tree has no branch lengths")
     tmp <- as.numeric(phy$edge)
     nb.tip <- max(tmp)
     nb.node <- -min(tmp)
-    if (nb.node != nb.tip - 1) stop("\"phy\" is not fully dichotomous")
-    if (length(x) != nb.tip) stop("length of phenotypic and of phylogenetic data do not match")
+    if (nb.node != nb.tip - 1)
+      stop("\"phy\" is not fully dichotomous")
+    if (length(x) != nb.tip)
+      stop("length of phenotypic and of phylogenetic data do not match")
 
     phenotype <- as.numeric(rep(NA, nb.tip + nb.node))
     names(phenotype) <- as.character(c(1:nb.tip, -(1:nb.node)))
@@ -35,7 +40,7 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
         phenotype[1:nb.tip] <- x
     } else {
         if(!any(is.na(match(names(x), phy$tip.label))))
-          for (i in 1:nb.tip) phenotype[i] <- x[phy$tip.label[i]]
+          phenotype[1:nb.tip] <- x[phy$tip.label]
         else {
             phenotype[1:nb.tip] <- x
             warning("the names of argument \"x\" and the names of the tip labels
@@ -53,8 +58,7 @@ did not match: the former were ignored in the analysis.")
 
     while(sum(unused) > 1) {
         term <- names(phenotype[!is.na(phenotype) & unused])
-        ind <- as.logical(match(phy$edge[, 2], term))
-        ind[is.na(ind)] <- FALSE
+        ind <- phy$edge[, 2] %in% term
         ## extract the nodes with 2 branches above
         basal <- names(which(table(phy$edge[ind, 1]) == 2))
         for (nod in basal) {

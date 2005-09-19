@@ -2,7 +2,7 @@
 ###
 ###     Nucleotide Diversity
 ###
-### Copyright 2005 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -22,7 +22,7 @@
 
 nuc.div <- function(x, variance = FALSE, pairwise.deletion = FALSE)
 {
-    if (pairwise.deletion & variance)
+    if (pairwise.deletion && variance)
       warning("cannot compute the variance of nucleotidic diversity
 with pairwise deletion: try 'pairwise.deletion = FALSE' instead.")
     if (is.list(x)) {
@@ -36,7 +36,7 @@ with pairwise deletion: try 'pairwise.deletion = FALSE' instead.")
     if (pairwise.deletion) {
         for (i in 1:(N - 1))
           for (j in (i + 1):N) {
-              sel <- !(x[i, ] == "n" | x[j, ] == "n")
+              sel <- !(x[i, ] == "n" || x[j, ] == "n")
               sum.pi <- sum.pi + sum(x[i, ][sel] != x[j, ][sel]) / sum(sel)
           }
         obj <- sum.pi / (N * (N - 1) / 2)

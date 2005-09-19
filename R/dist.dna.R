@@ -1,11 +1,33 @@
+### dist.dna.R (2005-09-12)
+###
+###     Pairwise Distances from DNA Sequences
+###
+### Copyright 2002-2005 Emmanuel Paradis
+###
+### This file is part of the `ape' library for R and related languages.
+### It is made available under the terms of the GNU General Public
+### License, version 2, or at your option, any later version,
+### incorporated herein by reference.
+###
+### This program is distributed in the hope that it will be
+### useful, but WITHOUT ANY WARRANTY; without even the implied
+### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+### PURPOSE.  See the GNU General Public License for more
+### details.
+###
+### You should have received a copy of the GNU General Public
+### License along with this program; if not, write to the Free
+### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+### MA 02111-1307, USA
+
 dist.dna <- function(x, model = "K80", variance = FALSE,
                      gamma = FALSE, pairwise.deletion = FALSE,
                      base.freq = NULL, as.matrix = FALSE)
 {
-    MODELS <- c("JC69", "K80", "F81", "K81",
+    MODELS <- c("raw", "JC69", "K80", "F81", "K81",
                 "F84", "T92", "TN93", "GG95")
     imod <- which(MODELS == model)
-    if (gamma & imod %in% c(3, 5, 6, 8)) {
+    if (gamma && imod %in% c(3, 5, 6, 8)) {
         warning(paste("gamma-correction not available for model", model))
         gamma <- FALSE
     }

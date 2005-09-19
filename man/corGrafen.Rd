@@ -31,7 +31,7 @@ corGrafen(value=numeric(0), phy, form=~1, fixed = FALSE)
     arguments. None are used in these methods.}
 }
 \description{
-  rafen's (1989) covariance structure. Branch lengths are computed using
+  Grafen's (1989) covariance structure. Branch lengths are computed using
   Grafen's method (see \code{\link{compute.brlen}}). The covariance
   matrice is then the traditional variance-covariance matrix for a
   phylogeny.

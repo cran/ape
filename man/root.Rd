@@ -1,8 +1,10 @@
 \name{root}
 \alias{root}
+\alias{is.rooted}
 \title{Roots Phylogenetic Trees}
 \usage{
 root(phy, outgroup)
+is.rooted(phy)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -10,8 +12,10 @@ root(phy, outgroup)
     new outgroup.}
 }
 \description{
-  This function reroots a phylogenetic tree with respect to the
-  specified outgroup.
+  \code{root} reroots a phylogenetic tree with respect to the specified
+  outgroup.
+
+  \code{is.rooted} tests whether a tree is rooted.
 }
 \details{
   The argument \code{outgroup} can be either character or numeric. In
@@ -28,9 +32,13 @@ root(phy, outgroup)
   the outgroup, then the returned tree is not the same than the original
   one (see examples). If \code{outgroup} is not monophyletic, the
   operation fails and an error message is issued.
+
+  A tree is considered rooted if either only two branches connect to the
+  root, or if there is a \code{root.edge} element. In all other cases,
+  \code{is.rooted} returns \code{FALSE}.
 }
 \value{
-  an object of class \code{"phylo"}.
+  an object of class \code{"phylo"} for root; a logical for is.rooted.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
@@ -38,7 +46,20 @@ root(phy, outgroup)
 }
 \examples{
 data(bird.orders)
+
 plot(root(bird.orders, 1))
 plot(root(bird.orders, 1:5))
+
+is.rooted(bird.orders) # yes!
+is.rooted(root(bird.orders, 1)) # no!
+### This is because the tree has been unrooted first before re-rooting.
+### You can delete the outgroup...
+is.rooted(drop.tip(root(bird.orders, 1), "Struthioniformes"))
+### ... or resolve the basal trichotomy:
+is.rooted(multi2di(root(bird.orders, 1)))
+### To keep the basal trichotomy but forcing the tree as rooted:
+tr <- root(bird.orders, 1)
+tr$root.edge <- 0
+is.rooted(tr)
 }
 \keyword{manip}

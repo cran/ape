@@ -1,20 +1,20 @@
-### read.nexus.R  (2004-08-31)
+### read.nexus.R (2004-08-31)
 ###
 ###     Read Tree File in Nexus Format
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003-2004 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
@@ -33,7 +33,7 @@ clado.build <- function(tp) {
         tip.label[tip] <<- tpc[k]
         k <<- k + 1
         tip <<- tip + 1
-        j <<- j + 1 
+        j <<- j + 1
     }
     go.down <- function() {
         l <- which(edge[, 2] == current.node)
@@ -55,7 +55,7 @@ clado.build <- function(tp) {
     nb.edge <- nb.node + nb.tip
     node.label <- character(nb.node)
     tip.label <- character(nb.tip)
-    
+
     edge <- matrix(NA, nb.edge, 2)
     edge[nb.edge, 1] <- 0  # see comment above
     edge[nb.edge, 2] <- -1 #

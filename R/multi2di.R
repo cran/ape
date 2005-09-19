@@ -1,8 +1,8 @@
-### multi2di.R  (2005-04-15)
+### multi2di.R (2005-04-15)
 ###
 ###     Collapse and Resolve Multichotomies
 ###
-### Copyright 2005 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public

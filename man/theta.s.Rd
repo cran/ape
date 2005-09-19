@@ -7,9 +7,8 @@ theta.s(s, n, variance = FALSE)
 }
 \arguments{
   \item{s}{a numeric giving the number of segregating sites.}
-  \item{n}{a numeric giving the length of the sequences (i.e. the number
-    of sites under study).}
-  \item{variance}{a logical indicating whether the variance of the 
+  \item{n}{a numeric giving the number of sequences.}
+  \item{variance}{a logical indicating whether the variance of the
     estimated THETA should be returned (\code{TRUE}), the default being
     \code{FALSE}.}
 }
@@ -43,7 +42,7 @@ theta.s(s, n, variance = FALSE)
 data(woodmouse)
 y <- seg.sites(woodmouse)
 s <- length(y)
-n <- length(woodmouse[[1]])
+n <- length(woodmouse)
 theta.s(s, n)
 theta.s(s, n, variance = TRUE)
 }

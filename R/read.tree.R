@@ -1,8 +1,8 @@
-### read.tree.R  (2004-08-31)
+### read.tree.R (2005-08-18)
 ###
 ###     Read Tree File in Parenthetic Format
 ###
-### Copyright 2002--2004 Emmanuel Paradis
+### Copyright 2002-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -53,7 +53,7 @@ tree.build <- function(tp) {
     nb.node <- length(skeleton[skeleton == ")"])
     nb.tip <- length(skeleton[skeleton == ","]) + 1
     ## We will assume there is an edge at the root;
-    ## if so, it will be removed and put in a vector
+    ## if so, it will be removed and put into a vector
     nb.edge <- nb.node + nb.tip
     node.label <- character(nb.node)
     tip.label <- character(nb.tip)
@@ -81,7 +81,7 @@ tree.build <- function(tp) {
             if (skeleton[i - 1] == ")") go.down()   # go down one level
         }
     }
-    if (is.na(node.label[1])) node.label[1] <- "" # assumes we have at least R 1.8.0
+    if (is.na(node.label[1])) node.label[1] <- ""
     edge <- edge[-nb.edge, ]
     mode(edge) <- "character"
     root.edge <- edge.length[nb.edge]
@@ -93,6 +93,7 @@ tree.build <- function(tp) {
                 root.edge = root.edge)
     if (all(obj$node.label == "")) obj$node.label <- NULL
     if (is.na(obj$root.edge)) obj$root.edge <- NULL
+    if (all(is.na(obj$edge.length))) obj$edge.length <- NULL # added 2005-08-18
     class(obj) <- "phylo"
     obj
 }
@@ -108,6 +109,11 @@ read.tree <- function(file = "", format = "Newick", rooted = TRUE, text = NULL,
     else {
         tree <- scan(file = file, what = character(), sep = "\n", quiet = TRUE,
                      skip = skip, comment.char = comment.char, ...)
+    }
+    ## Suggestion from Eric Durand and Nicolas Bortolussi (added 2005-08-17):
+    if (identical(tree, character(0))) {
+        warning("empty character string.")
+        return(NULL)
     }
     tree <- gsub("[ \t]", "", tree)
     tsp <- unlist(strsplit(tree, NULL))

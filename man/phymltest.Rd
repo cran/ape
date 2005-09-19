@@ -6,7 +6,7 @@
 \title{Fits a Bunch of Models with PHYML}
 \usage{
 phymltest(seqfile, format = "interleaved", itree = NULL,
-          exclude = NULL, execname = NULL, path2exec = NULL)
+          exclude = NULL, execname, path2exec = NULL)
 \method{print}{phymltest}(x, ...)
 \method{summary}{phymltest}(object, ...)
 \method{plot}{phymltest}(x, ...)
@@ -24,9 +24,8 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
     excluded from the analysis. These must be among those below, and
     follow the same syntax.}
   \item{execname}{a character string specifying the name of the PHYML
-    binary file. If \code{NULL} and the operating system is ``windows'',
-    the default name \code{"phyml_w32"} is used, otherwise the name must
-    be given.}
+    binary file. This argument can be left missing under Windows: the
+    default name \code{"phyml_w32"} will then be used.}
   \item{path2exec}{a character string giving the path to the PHYML
     binary file. If \code{NULL} the file must be accessible to R (either
     it is in the computer path, or it is in R's working directory).}
@@ -121,7 +120,7 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
   \code{\link{dist.dna}}
 }
 \examples{
-### A "fake" example with random likelihood values: it does not
+### A `fake' example with random likelihood values: it does not
 ### make sense, but does not need PHYML and gives you a flavour
 ### of how the output looks like:
 x <- runif(28, -100, -50)

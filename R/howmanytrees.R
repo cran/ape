@@ -2,7 +2,7 @@
 ###
 ###     Calculate Numbers of Phylogenetic Trees
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -23,7 +23,7 @@
 howmanytrees <- function(n, rooted = TRUE, binary = TRUE,
                          labeled = TRUE, detail = FALSE)
 {
-    if (!labeled & !(rooted & binary))
+    if (!labeled && !(rooted & binary))
       stop("can compute number of unlabeled trees only for rooted binary cases.")
     if (n < 3) N <- 1 else {
         if (labeled) {

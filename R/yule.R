@@ -1,11 +1,11 @@
-### yule.R  (2003-12-24)
+### yule.R  (2005-01-24)
 ###
 ###     Fits Yule Model to a Phylogenetic Tree
 ###
 ### yule: standard Yule model (constant birth rate)
 ### yule.cov: Yule model with covariates
 ###
-### Copyright 2003 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003-2004 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public

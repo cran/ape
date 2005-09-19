@@ -2,10 +2,10 @@
 \alias{is.binary.tree}
 \title{Test for Binary Tree}
 \usage{
-is.binary.tree(tree)
+is.binary.tree(phy)
 }
 \arguments{
-  \item{tree}{phylogenetic tree (i.e. an object of class \code{"phylo"}).}
+  \item{phy}{phylogenetic tree (i.e. an object of class \code{"phylo"}).}
 }
 \description{
  This function tests whether a phylogenetic tree is binary, i.e. whether every node

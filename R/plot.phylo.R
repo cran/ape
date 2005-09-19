@@ -1,8 +1,8 @@
-### plot.phylo.R  (2004-12-09)
+### plot.phylo.R (2005-09-13)
 ###
-###                      Plot Phylogenies
+###          Plot Phylogenies
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2002-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -35,7 +35,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     tmp <- as.numeric(x$edge)
     nb.tip <- max(tmp)
     nb.node <- -min(tmp)
-    if (type == "unrooted" | !use.edge.length) root.edge <- FALSE
+    if (type == "unrooted" || !use.edge.length) root.edge <- FALSE
     if (type %in% c("phylogram", "cladogram")) {
         if (is.null(node.pos)) {
             if (type == "phylogram") node.pos <- 1
@@ -76,7 +76,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
         xx <- X * cos(Y)
         yy <- X * sin(Y)
     }
-    if (type %in% c("phylogram", "cladogram") & direction != "rightwards") {
+    if (type %in% c("phylogram", "cladogram") && direction != "rightwards") {
         if (direction == "leftwards") {
             xx <- -xx
             xx <- xx - min(xx)
@@ -164,7 +164,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
          ylab = "", xaxt = "n", yaxt = "n", bty = "n", ...)
     if (is.null(adj))
       adj <-
-        if (type %in% c("phylogram", "cladogram") & direction == "leftwards") 1
+        if (type %in% c("phylogram", "cladogram") && direction == "leftwards") 1
         else 0
     if (type %in% c("phylogram", "cladogram")) {
         MAXSTRING <- max(strwidth(x$tip.label, cex = cex))
@@ -245,7 +245,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
               font = font, cex = cex, adj = adj, srt = srt,
               no.margin = no.margin, label.offset = label.offset,
               x.lim = x.lim, y.lim = y.lim, direction = direction)
-    .last_plot.phylo <<- c(L, list(xx = xx), list(yy = yy))
+    .last_plot.phylo <<- c(L, list(xx = xx, yy = yy))
     invisible(L)
 }
 
@@ -324,8 +324,7 @@ node.depth <- function(x)
 
     while(sum(unused) > 1) {
         term <- names(xx[!is.na(xx) & unused])
-        ind <- as.logical(match(x[, 2], term))
-        ind[is.na(ind)] <- FALSE
+        ind <- x[, 2] %in% term
         term.br <- matrix(x[ind], length(term), 2)
         ## extract the nodes with at least 2 branches above
         basal <- names(which(table(term.br[, 1]) >= 2))
@@ -367,8 +366,7 @@ node.height <- function(x)
 
     while(sum(unused) > 1) {
         term <- names(yy[!is.na(yy) & unused])
-        ind <- as.logical(match(x[, 2], term))
-        ind[is.na(ind)] <- FALSE
+        ind <- x[, 2] %in% term
         term.br <- matrix(x[ind], length(term), 2)
 
         ## extract the nodes with at least 2 branches above
@@ -414,8 +412,7 @@ node.height.clado <- function(x)
 
     while(sum(unused) > 1) {
         term <- names(yy[!is.na(yy) & unused])
-        ind <- as.logical(match(x[, 2], term))
-        ind[is.na(ind)] <- FALSE
+        ind <- x[, 2] %in% term
         term.br <- matrix(x[ind], length(term), 2)
 
         ## extract the nodes with at least 2 branches above

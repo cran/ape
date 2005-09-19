@@ -24,7 +24,6 @@
 #setwd("Dev/r/APE/Data/")
 #carn<-read.table("Gittleman1986.csv", header=T, sep="\t")
 
-
 Moran.I <- function(
   x,              # x the vector of values to analyse
   dist,           # dist is the distance matrix to use

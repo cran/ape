@@ -1,8 +1,8 @@
-### ltt.plot.R  (2004-08-31)
+### ltt.plot.R (2004-08-31)
 ###
 ###     Lineages Through Time Plot
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2002-2004 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public

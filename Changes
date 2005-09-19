@@ -1,3 +1,83 @@
+		CHANGES IN APE VERSION 1.7
+
+
+NEW FEATURES
+
+    o The new function ace() estimates ancestral character states for
+      continuous characters (with ML, GLS, and contrasts methods), and
+      discrete characters (with ML only) for any number of states.
+
+    o The new function compar.ou() fits the Ornstein-Uhlenbeck model
+      of directional evolution for continuous characters. The user
+      specifies the node(s) of the tree where the character optimum
+      changes.
+
+    o The new function is.rooted() tests whether a tree (of class
+      "phylo") is rooted.
+
+    o The new function rcoal() generates random ultrametric trees with
+      the possibility to specify the function that generates the
+      inter-nodes distances.
+
+    o The new function mrca() gives for all pairs of tips in a tre
+      (and optionally nodes too) the most recent common ancestor.
+
+    o nodelabels() has a new options `thermo' to plot proportions (up
+      to three classes) on the nodes a tree.
+
+    o rtree() has been improved: it can now generate rooted or
+      unrooted trees, and the mathematical function that generates the
+      branch lengths may be specified by the user. The tip labels may
+      be given directly in the call to rtree. The limit cases (n = 2,
+      3) are now handled correctly.
+
+    o dist.topo() has a new argument `method' with two choices: "PH85"
+      for Penny and Henny's method (already available before and now
+      the default), and "BHV01" for the geometric distance by Billera
+      et al. (2001, Adv. Appl. Math. 27:733).
+
+    o write.tree() has a new option, `digits', which specifies the
+      number of digits to be printed in the Newick tree. By default
+      digits = 10. The numbers are now always printed in decimal form
+      (i.e., 1.0e-1 is now avoided).
+
+    o dist.dna() can now compute the raw distances between pairs of
+      DNA sequences by specifying model = "raw".
+
+    o dist.phylo() has a new option `full' to possibly compute the
+      distances among all tips and nodes of the tree. The default if
+      `full = FALSE'.
+
+
+BUG FIXES
+
+    o Several bugs were fixed in all.equal.phylo().
+
+    o dist.dna() did not handle correctly gaps ("-") in alignments:
+      they are now considered as missing data.
+
+    o rotate() did not work if the tips were not ordered: this is
+      fixed.
+
+    o mantel.test() returned NA in some special cases: this is fixed
+      and the function has been improved and is now faster.
+
+    o A bug was fixed in diversi.gof() where the calculation of A² was
+      incorrect.
+
+    o cherry() did not work correctly under some OSs (mainly Linux):
+      this is fixed.
+
+    o is.binary.tree() has been modified so that it works with both
+      rooted and unrooted trees.
+
+    o The documentation of theta.s() was not correct: this has been
+      fixed.
+
+    o plot.mst() did not work correctly: this is fixed.
+
+
+
 		CHANGES IN APE VERSION 1.6
 
 
@@ -42,7 +122,7 @@ NEW FEATURES
     o Two new functions, as.matching.phylo() and as.phylo.matching(),
       convert objects between the classes "phylo" and "matching". The
       latter implements the representation of binary trees introduced by
-      Diaconis and Holmes (1998; PNAS, 95:14600). The generic function
+      Diaconis and Holmes (1998; PNAS 95:14600). The generic function
       as.matching() has been introduced as well.
 
     o Two new functions, multi2di() and di2multi(), allow to resolve

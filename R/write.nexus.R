@@ -1,8 +1,8 @@
-### write.nexus.R  (2005-04-14)
+### write.nexus.R (2005-04-14)
 ###
-###           Write Tree File in Nexus Format
+###          Write Tree File in Nexus Format
 ###
-### Copyright 2005 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public

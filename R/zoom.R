@@ -1,8 +1,8 @@
-### zoom.R  (2004-12-17)
+### zoom.R (2004-12-17)
 ###
 ###     Zoom on a Portion of a Phylogeny
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003-2004 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public

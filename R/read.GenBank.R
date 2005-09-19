@@ -1,8 +1,8 @@
-### read.GenBank.R  (2005-05-31)
+### read.GenBank.R (2005-05-31)
 ###
-###     Read DNA Sequences from GenBank via Internet
+###    Read DNA Sequences from GenBank via Internet
 ###
-### Copyright 2005 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2002-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public

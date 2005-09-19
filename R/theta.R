@@ -1,24 +1,24 @@
-### theta.R  (2002-08-28)
+### theta.R (2002-08-28)
 ###
-###           Population Parameter THETA
+###         Population Parameter THETA
 ###
 ### theta.h: using homozigosity
 ### theta.k: using expected number of alleles
 ### theta.s: using segregating sites in DNA sequences
 ###
-### Copyright 2002 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2002 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,

@@ -1,20 +1,20 @@
-### cherry.R  (2004-08-31)
+### cherry.R (2005-06-30)
 ###
 ###     Number of Cherries and Null Models of Trees
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2002-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
@@ -27,8 +27,8 @@ cherry <- function(phy)
     n <- max(tmp)
     nb.node <- -min(tmp)
     if (nb.node != n - 1) stop("\"phy\" is not fully dichotomous")
-    if (n < 4) stop("not enough tips in your phylogeny for this analysis")	
-    cherry <- sum(table(phy$edge[, 1][phy$edge[, 2] > 0]) == 2)
+    if (n < 4) stop("not enough tips in your phylogeny for this analysis")
+    cherry <- sum(table(phy$edge[, 1][as.numeric(phy$edge[, 2]) > 0]) == 2)
     small.n <- if (n < 20) TRUE else FALSE
     if (small.n) {
         P.yule <- f.cherry.yule(n, cherry)
@@ -53,7 +53,7 @@ cherry <- function(phy)
 
 f.cherry.yule <- function(n, k)
 {
-    P <- if (k == 0 | k > floor(n/2)) 0 else if (n == 4) if (k == 1) 2/3 else if (k == 2) 1/3 else 0
+    P <- if (k == 0 || k > floor(n/2)) 0 else if (n == 4) if (k == 1) 2/3 else if (k == 2) 1/3 else 0
              else (1 - 2 * (k - 1)/(n - 1)) * f.cherry.yule(n - 1, k - 1) +
               2 * k/(n - 1) * f.cherry.yule(n - 1, k)
     P
@@ -61,7 +61,7 @@ f.cherry.yule <- function(n, k)
 
 f.cherry.uniform <- function(n, k)
 {
-    P <- if (k == 0 | k > floor(n/2)) 0 else if (n == 4) if (k == 1) 4/5 else if (k == 2) 1/5 else 0
+    P <- if (k == 0 || k > floor(n/2)) 0 else if (n == 4) if (k == 1) 4/5 else if (k == 2) 1/5 else 0
         else if (k == 1) 0 else (gamma(n + 1) * gamma(n - 2 + 1) * gamma(n - 4 + 1) * 2^(n-2*k)) /
                 (gamma(n -2 * k + 1) * gamma(2 * n - 4 + 1) * gamma(k + 1) * gamma(k - 2 + 1))
     P

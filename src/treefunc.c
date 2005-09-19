@@ -1,5 +1,5 @@
 
-/* 
+/*
  *  treefunc.c
  *
  * (c) 2003  Gangolf Jobb (http://www.treefinder.de)
@@ -8,7 +8,7 @@
  *  and traversing trees
  *  (e.g., to convert between "phylo" and "hclust" objects
  *  and to classify genes)
- *  
+ *
  *
  *  This code may be distributed under the GNU GPL
  */
@@ -57,7 +57,7 @@ void FreeTree(Tree *t) {
 static Tree *current=NULL;
 
 static int tip_index;
-static int edge_index; 
+static int edge_index;
 static int node_index;
 
 enum {OK=0,ERROR}; /* one may invent more descriptive error codes */
@@ -204,7 +204,6 @@ void nEdges(int *result) {
  if(!current) {error=ERROR; *result=0; return;}
 
  *result=nNodes_(current)-1;
- 
 }
 
 /*============================================================================*/

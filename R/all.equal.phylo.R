@@ -1,8 +1,8 @@
-### all.equal.phylo.R  (2005-03-25)
+### all.equal.phylo.R  (2005-06-09)
 ###
 ###     Global Comparison of two Phylogenies
 ###
-### Copyright 2005 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2002-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -36,7 +36,7 @@ all.equal.phylo <- function(target, current, ...)
             }
             seq.nod[[i]] <- vec
         }
-        return(unlist(lapply(seq.nod, length)) - 1)
+        unlist(lapply(seq.nod, length)) - 1
     }
     ## first, do a global comparison of both phylogenies
     if (identical(all.equal.list(target, current, ...), TRUE)) return(TRUE)
@@ -67,30 +67,33 @@ all.equal.phylo <- function(target, current, ...)
                                     nb.node1))
                 ## compare tip labels
                 equal.tip.label <- FALSE
-                if (all.equal(sort(target$tip.label), sort(current$tip.label)))
+                if (isTRUE(all.equal(sort(target$tip.label), sort(current$tip.label))))
                   equal.tip.label <- TRUE
                 if (!equal.tip.label)
-                  msg <- c(msg, "Tip labels differ.")
-                else msg <- c(msg, "Tip labels are the same.")
-                ## compare topologies
-                tip2root1 <- sort(nb.br.tip2root(target, nb.tip1))
-                tip2root2 <- sort(nb.br.tip2root(current, nb.tip2))
-                equal.nb.br.tip2root <- all.equal(tip2root1, tip2root2, ...) # not sure about the dot-dot-dot here (EP 7-12-2002)
-                if (identical(equal.nb.br.tip2root, TRUE)) {
-                    msg <- c(msg, "Topologies are the same.")
-                    names(tip2root1) <-
-                      target$tip.label[as.numeric(names(tip2root1))]
-                    names(tip2root2) <-
-                      current$tip.label[as.numeric(names(tip2root2))]
-                    tip2root1 <- tip2root1[sort(names(tip2root1))]
-                    tip2root2 <- tip2root2[sort(names(tip2root2))]
-                    if (identical(all.equal(tip2root1, tip2root2), TRUE)) return(TRUE)
+                  msg <- c(msg, "Tip labels differ.",
+                               "---Comparison stopped here.---")
+                else {
+                    msg <- c(msg, "Tip labels are the same.")
+                    ## compare topologies
+                    tip2root1 <- sort(nb.br.tip2root(target, nb.tip1))
+                    tip2root2 <- sort(nb.br.tip2root(current, nb.tip2))
+                    equal.nb.br.tip2root <- all.equal(tip2root1, tip2root2, ...) # not sure about the dot-dot-dot here (EP 7-12-2002)
+                    if (isTRUE(equal.nb.br.tip2root)) {
+                        msg <- c(msg, "Topologies are the same.")
+                        names(tip2root1) <-
+                          target$tip.label[as.numeric(names(tip2root1))]
+                        names(tip2root2) <-
+                          current$tip.label[as.numeric(names(tip2root2))]
+                        tip2root1 <- tip2root1[sort(names(tip2root1))]
+                        tip2root2 <- tip2root2[sort(names(tip2root2))]
+                        if (isTRUE(all.equal(tip2root1, tip2root2))) return(TRUE)
+                        else
+                          msg <- c(msg, "The labeled trees differ.")
+                    }
                     else
-                      msg <- c(msg, "The labeled trees differ.")
+                      msg <- c(msg, "Topologies differ.",
+                               "---Comparison stopped here.---")
                 }
-                else
-                  msg <- c(msg, "Topologies differ.",
-                           "---Comparison stopped here.---")
             }
         }
         msg

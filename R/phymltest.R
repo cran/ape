@@ -1,3 +1,25 @@
+### phymltest.R (2004-11-04)
+###
+###     Fits a Bunch of Models with PHYML
+###
+### Copyright 2004 Emmanuel Paradis
+###
+### This file is part of the `ape' library for R and related languages.
+### It is made available under the terms of the GNU General Public
+### License, version 2, or at your option, any later version,
+### incorporated herein by reference.
+###
+### This program is distributed in the hope that it will be
+### useful, but WITHOUT ANY WARRANTY; without even the implied
+### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+### PURPOSE.  See the GNU General Public License for more
+### details.
+###
+### You should have received a copy of the GNU General Public
+### License along with this program; if not, write to the Free
+### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+### MA 02111-1307, USA
+
 .phymltest.model <- c("JC69", "JC69+I", "JC69+G", "JC69+I+G",
                       "K80", "K80+I", "K80+G", "K80+I+G",
                       "F81", "F81+I", "F81+G", "F81+I+G",
@@ -15,11 +37,11 @@
                     9, 10, 10, 11)
 
 phymltest <- function(seqfile, format = "interleaved", itree = NULL,
-                      exclude = NULL, execname = NULL, path2exec = NULL)
+                      exclude = NULL, execname, path2exec = NULL)
 {
-    windoz <- if (.Platform$OS.type == "windows") TRUE else FALSE
-    if (is.null(execname) & windoz)
-      execname <- "phyml_w32"
+    windoz <- .Platform$OS.type == "windows"
+    if (missing(execname) && windoz) execname <- "phyml_w32"
+    else stop("you must give an executable file name for PHYML")
     outfile <- paste(seqfile, "_phyml_stat.txt", sep = "")
     inp <- seqfile
     if (file.exists(outfile)) inp <- c(inp, "A")
@@ -58,7 +80,7 @@ phymltest <- function(seqfile, format = "interleaved", itree = NULL,
                         c(rep("M", 3), "V", "Y", "R", "A", rep("Y", 2)))
     loglik <- numeric(N)
     names(input.model) <- names(loglik) <- .phymltest.model
-    if (is.null(path2exec)) exec <- execname        
+    if (is.null(path2exec)) exec <- execname
     else exec <- paste(path2exec, execname, sep = "/")
     imod <- if (is.null(exclude)) 1:N else (1:N)[!.phymltest.model %in% exclude]
     for (i in imod) {
@@ -99,11 +121,11 @@ summary.phymltest <- function(object, ...)
             if (nfp[i] >= nfp[j]) next
             m1 <- unlist(strsplit(names(object)[i], "\\+"))
             m2 <- unlist(strsplit(names(object)[j], "\\+"))
-            if (m1[1] == "K80" & m2[1] == "F81") next
+            if (m1[1] == "K80" && m2[1] == "F81") next
             ## à vérifier que ds les 2 lignes suivantes les conversions
             ## se font bien correctement!!!!
-            if (length(grep("\\+I", names(object)[i])) > 0 & length(grep("\\+I", names(object)[j])) == 0) next
-            if (length(grep("\\+G", names(object)[i])) > 0 & length(grep("\\+G", names(object)[j])) == 0) next
+            if (length(grep("\\+I", names(object)[i])) > 0 && length(grep("\\+I", names(object)[j])) == 0) next
+            if (length(grep("\\+G", names(object)[i])) > 0 && length(grep("\\+G", names(object)[j])) == 0) next
             ## Now we should be sure that m1 is nested in m2.
             chi2 <- c(chi2, 2 * (object[j] - object[i]))
             df <- c(df, nfp[j] - nfp[i])

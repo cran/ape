@@ -1,8 +1,8 @@
-### rotate.R  (2004-09-22)
+### rotate.R  (2005-06-13)
 ###
 ###     Rotate an Internal Branch of a Tree
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2004-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -22,14 +22,17 @@
 
 rotate <- function(phy, group)
 {
-    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
+    if (class(phy) != "phylo")
+      stop("object \"phy\" is not of class \"phylo\"")
     if (length(group) == 1) if (group == "all") {
         ind <- which(as.numeric(phy$edge[, 2]) > 0)
         phy$edge[ind, 2] <- phy$edge[rev(ind), 2]
         phy$tip.label <- rev(phy$tip.label)
         return(phy)
     }
-    if (is.character(group)) tip <- as.character(which(phy$tip.label == group))
+    group <- sort(group)
+    if (is.character(group))
+      tip <- as.character(which(phy$tip.label %in% group))
     if (is.numeric(group)) tip <- as.character(group)
     ## Check that the group is monophyletic
     msg <- "the specified group is not monophyletic!"

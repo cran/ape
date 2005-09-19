@@ -2,19 +2,19 @@
 ###
 ###     Bind Trees
 ###
-### Copyright 2004 Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2003-2004 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
@@ -31,7 +31,8 @@ bind.tree <- function(x, y, node = -1, branch = NULL, position = NULL)
         new.node <- as.character(-nb.node - 1)
         if (branch == "-1") {
             if (is.null(x$root.edge)) stop("there is no root edge.")
-            if (position > x$root.edge) stop ("argument \"position\" is larger than the root edge.")
+            if (position > x$root.edge)
+              stop ("argument \"position\" is larger than the root edge.")
             x$edge[which(x$edge[, 1] == "-1"), 1] <- new.node
             x$edge <- rbind(c("-1", new.node), x$edge)
             x$root.edge <- x$root.edge - position
@@ -52,7 +53,7 @@ bind.tree <- function(x, y, node = -1, branch = NULL, position = NULL)
     }
     if (!is.character(node)) node <- as.character(node)
     tmp <- as.numeric(y$edge)
-    tmp <- ifelse(tmp > 0, tmp + nb.tip, tmp - nb.node)    
+    tmp <- ifelse(tmp > 0, tmp + nb.tip, tmp - nb.node)
     if (is.null(y$root.edge)) tmp[which(tmp == -(nb.node + 1))] <- node # implicit mode conversion
     else mode(tmp) <- "character"
     tmp <- matrix(tmp, ncol = 2)

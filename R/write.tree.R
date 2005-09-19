@@ -1,8 +1,8 @@
-### write.tree.R  (2004-12-20)
+### write.tree.R (2005-08-17)
 ###
 ###     Write Tree File in Parenthetic Format
 ###
-### Copyright 2002--2004 Emmanuel Paradis
+### Copyright 2002-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -21,8 +21,11 @@
 ### MA 02111-1307, USA
 
 write.tree <- function(phy, file = "", append = FALSE, format = "Newick",
-                       multi.line = TRUE)
+                       multi.line = TRUE, digits = 10)
 {
+    brl <- !is.null(phy$edge.length)
+    nodelab <- !is.null(phy$node.label)
+
     cp <- function(s) STRING <<- paste(STRING, s, sep = "")
     add.internal <- function(i)
     {
@@ -34,18 +37,19 @@ write.tree <- function(phy, file = "", append = FALSE, format = "Newick",
             if (j != br[length(br)]) cp(",")
         }
         cp(")")
-        if (!is.null(phy$node.label)) cp(phy$node.label[-i])
-        if (!is.null(phy$edge.length)) {
+        if (nodelab) cp(phy$node.label[-i])
+        if (brl) {
             cp(":")
-            cp(as.character(phy$edge.length[which(phy$edge[, 2] == i)]))
+            cp(formatC(phy$edge.length[which(phy$edge[, 2] == i)],
+                       format = "f", digits = digits))
         }
     }
     add.terminal <- function(i)
     {
         cp(phy$tip.label[phy$edge[i, 2]])
-        if (!is.null(phy$edge.length)) {
+        if (brl) {
             cp(":")
-            cp(as.character(phy$edge.length[i]))
+            cp(formatC(phy$edge.length[i], format = "f", digits = digits))
         }
     }
     if (class(phy) != "phylo")
@@ -62,13 +66,13 @@ write.tree <- function(phy, file = "", append = FALSE, format = "Newick",
     }
     if (is.null(phy$root.edge)) {
         cp(")")
-        if (!is.null(phy$node.label)) cp(phy$node.label[1])
+        if (nodelab) cp(phy$node.label[1])
         cp(";")
     } else {
         cp(")")
-        if (!is.null(phy$node.label)) cp(phy$node.label[1])
+        if (nodelab) cp(phy$node.label[1])
         cp(":")
-        cp(as.character(phy$root.edge))
+        cp(formatC(phy$root.edge, format = "f", digits = digits))
         cp(";")
     }
     if (nchar(STRING) < 80) multi.line <- FALSE

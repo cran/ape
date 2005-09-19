@@ -9,13 +9,13 @@
 ### It is made available under the terms of the GNU General Public
 ### License, version 2, or at your option, any later version,
 ### incorporated herein by reference.
-### 
+###
 ### This program is distributed in the hope that it will be
 ### useful, but WITHOUT ANY WARRANTY; without even the implied
 ### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 ### PURPOSE.  See the GNU General Public License for more
 ### details.
-### 
+###
 ### You should have received a copy of the GNU General Public
 ### License along with this program; if not, write to the Free
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
@@ -69,7 +69,7 @@ objFuncLogScale <-
     result=double(1),
     PACKAGE = "ape"
    )$result
-           
+
 getDurations <-
   function(params,scale)
    .C(
@@ -79,7 +79,7 @@ getDurations <-
     result=double(getNEdges()),
     PACKAGE = "ape"
    )$result
-             
+
 getRates <-
   function(params,scale)
    .C(
@@ -98,26 +98,22 @@ getExternalParams <-
     PACKAGE = "ape"
    )$result
 
-### private functions 
+### private functions
 
 prepareTree <- function(phy, minEdgeLength = 1e-06)
 {
     len <- phy$edge.length
-    if (length(len) > 2048) stop("Only 2048 branches in tree allowed!") 
-
+    if (length(len) > 2048) stop("Only 2048 branches in tree allowed!")
     low <- phy$edge[, 1] # edges in the tree
     upp <- phy$edge[, 2]
-   
     setTree(low, upp, len, minEdgeLength, phy$tip.labels)
 }
 
 optimTree <- function(phy, expo = 2) # call prepareTree first
-{ 
-    dur <- rep(log(0.5), getNFreeParams() ) # start value    
-    objL <- function(d) objFuncLogScale(d, expo)     
-    
+{
+    dur <- rep(log(0.5), getNFreeParams() ) # start value
+    objL <- function(d) objFuncLogScale(d, expo)
     opt <- optim(dur, objL, method = "BFGS")
-
     return(opt)
 }
 
@@ -129,14 +125,14 @@ phylogram <- function(phy, ...)
 
     prepareTree(phy, ...)
     ##opt <- optimTree(phy, ...)
-    
+
     newTree <- phy
     newTree$edge.length <- getEdgeLengths()
-    
+
     return(newTree)
 }
 
-### public functions 
+### public functions
 
 chronogram <- function(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
 {
@@ -144,10 +140,10 @@ chronogram <- function(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
 
     prepareTree(phy, minEdgeLength = minEdgeLength)
     opt <- optimTree(phy, expo = expo)
-    
+
     newTree <- phy
     newTree$edge.length <- getDurations(opt$par, scale)
-        
+
     return(newTree)
 }
 
@@ -158,10 +154,10 @@ ratogram <- function(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
 
     prepareTree(phy, minEdgeLength = minEdgeLength)
     opt <- optimTree(phy, expo = expo)
-    
+
     newTree <- phy
     newTree$edge.length <- getRates(opt$par, scale)
-    
+
     return(newTree)
 }
 
@@ -169,9 +165,9 @@ NPRS.criterion <- function(phy, chrono, expo = 2, minEdgeLength = 1e-06)
 {
     if (!is.ultrametric(chrono))
       stop("tree \"chrono\" is not ultrametric (clock-like)")
-    
+
     prepareTree(chrono, minEdgeLength = minEdgeLength)
-    parms <- getExternalParams() 
+    parms <- getExternalParams()
     prepareTree(phy, minEdgeLength = minEdgeLength)
-    objFuncLogScale(parms, expo) 
-} 
+    objFuncLogScale(parms, expo)
+}
