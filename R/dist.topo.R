@@ -1,7 +1,7 @@
 ### dist.topo.R  (2005-08-15)
 ###
-###     Topological Distances, Tree Bipartition, and
-###              Bootstrapping Phylogenies
+###        Topological Distances, Tree Bipartition,
+###     Consensus Trees, and Bootstrapping Phylogenies
 ###
 ### Copyright 2005 Emmanuel Paradis
 ###
@@ -103,8 +103,19 @@ prop.part <- function(...)
         }
     }
     attr(clades, "number") <- no
+    class(clades) <- "prop.part"
     clades
 }
+
+print.prop.part <- function(x, ...)
+{
+    for (i in 1:length(x)) {
+        cat("==>", attr(x, "number")[i], "time(s):")
+        print(x[[i]], quote = FALSE)
+    }
+}
+
+summary.prop.part <- function(object, ...) attr(x, "number")
 
 prop.clades <- function(phy, ..., part = NULL)
 {
@@ -154,4 +165,36 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1)
         boot.tree[[i]] <- FUN(x[, boot.samp])
     }
     prop.clades(phy, boot.tree)
+}
+
+consensus <- function(..., p = 1)
+{
+    obj <- list(...)
+    if (length(obj) == 1 && class(obj[[1]]) != "phylo")
+      obj <- unlist(obj, recursive = FALSE)
+    ntree <- length(obj)
+    ## Get all observed partitions and their frequencies:
+    pp <- prop.part(obj)
+    ## Drop the partitions whose frequency is less than 'p':
+    pp <- pp[attr(pp, "number") >= p * ntree]
+    ## Get the order of the remaining partitions by decreasing size:
+    ind <- rev(sort(unlist(lapply(pp, length)),
+                    index.return = TRUE)$ix)
+    STRING <- paste(pp[[1]], collapse = ",")
+    STRING <- paste("(", STRING, ");", sep = "")
+    for (i in ind[-1]) {
+        ## 1. Delete all tips in the focus partition:
+        STRING <- unlist(strsplit(STRING, paste(pp[[i]], collapse = "|")))
+        ## 2. Put the partition in any of the created gaps:
+        STRING <- c(STRING[1],
+                    paste("(", paste(pp[[i]], collapse = ","), ")", sep = ""),
+                    STRING[-1])
+        ## 3. Stick back the Newick string:
+        STRING <- paste(STRING, collapse = "")
+    }
+    ## Remove the extra commas:
+    STRING <- gsub(",{2,}", ",", STRING)
+    STRING <- gsub("\\(,", "\\(", STRING)
+    STRING <- gsub(",\\)", "\\)", STRING)
+    read.tree(text = STRING)
 }

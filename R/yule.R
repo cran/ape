@@ -1,11 +1,11 @@
-### yule.R  (2005-01-24)
+### yule.R  (2005-12-07)
 ###
 ###     Fits Yule Model to a Phylogenetic Tree
 ###
 ### yule: standard Yule model (constant birth rate)
 ### yule.cov: Yule model with covariates
 ###
-### Copyright 2003-2004 Emmanuel Paradis
+### Copyright 2003-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -72,7 +72,9 @@ yule.cov <- function(phy, formula, data = NULL)
     Dev <- out$minimum
     para <- matrix(NA, ncol(X), 2)
     para[, 1] <- out$estimate
-    para[, 2] <- sqrt(diag(solve(out$hessian)))
+    if (any(out$gradient == 0))
+      warning("The likelihood gradient seems flat in at least one dimension (null gradient):\ncannot compute the standard-errors of the transition rates.\n")
+    else para[, 2] <- sqrt(diag(solve(out$hessian)))
     rownames(para) <- colnames(X)
     colnames(para) <- c("Estimate", "StdErr")
     cat("\n---- Yule Model With Covariates ----\n\n")

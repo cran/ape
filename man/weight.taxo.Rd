@@ -1,8 +1,8 @@
-\name{dist.taxo}
-\alias{dist.taxo}
+\name{weight.taxo}
+\alias{weight.taxo}
 \title{Pairwise Distances from a Taxonomic Level}
 \usage{
-  dist.taxo(x)
+  weight.taxo(x)
 }
 \arguments{
   \item{x}{a vector describing a taxonomic level}
@@ -27,7 +27,7 @@
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
 \seealso{
-	\code{\link{Moran.I}} for example of use
+  \code{\link{Moran.I}} for example of use
 }
 \keyword{regression}
 \keyword{manip}

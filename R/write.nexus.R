@@ -1,4 +1,4 @@
-### write.nexus.R (2005-04-14)
+### write.nexus.R (2005-12-18)
 ###
 ###          Write Tree File in Nexus Format
 ###
@@ -87,7 +87,9 @@ the original data won't be written with the tree."))
     }
     for (i in 1:ntree) {
         if (class(obj[[i]]) != "phylo") next
-        cat("\tTREE * UNTITLED = [&R] ", file = file, append = TRUE)
+        if (is.rooted(obj[[i]]))
+          cat("\tTREE * UNTITLED = [&R] ", file = file, append = TRUE)
+        else cat("\tTREE * UNTITLED = [&U] ", file = file, append = TRUE)
         cat(write.tree(obj[[i]], file = "", multi.line = FALSE),
             "\n", sep = "",file = file, append = TRUE)
     }

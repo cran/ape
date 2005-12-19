@@ -1,19 +1,25 @@
 \name{nodelabels}
 \alias{nodelabels}
-\title{Labelling the Nodes of a Tree}
+\alias{tiplabels}
+\title{Labelling the Nodes and the Tips of a Tree}
 \description{
-  This function adds labels to or near the nodes of a tree using text or
-  plotting symbols. The text can be framed.
+  These functions add labels to or near the nodes or the tips of a tree
+  using text or plotting symbols. The text can be framed.
 }
 \usage{
 nodelabels(text, node, adj = c(0.5, 0.5), frame = "rect",
            pch = NULL, thermo = NULL, col = "black",
            bg = "lightblue", ...)
+tiplabels(text, tip, adj = c(0.5, 0.5), frame = "rect",
+          pch = NULL, thermo = NULL, col = "black",
+          bg = "yellow", ...)
 }
 \arguments{
   \item{text}{a vector of mode character giving the text to be
     printed. Can be left empty.}
   \item{node}{a vector of mode numeric giving the numbers of the nodes
+    where the text or the symbols are to be printed. Can be left empty.}
+  \item{tip}{a vector of mode numeric giving the numbers of the tips
     where the text or the symbols are to be printed. Can be left empty.}
   \item{adj}{one or two numeric values specifying the horizontal and
     vertical, respectively, justification of the text. By default, the
@@ -41,15 +47,24 @@ nodelabels(text, node, adj = c(0.5, 0.5), frame = "rect",
     below).}
 }
 \details{
+  These two functions have the same optional arguments and the same
+  functioning.
+
   If the arguments \code{text} is missing and \code{pch} and
   \code{thermo} are left as \code{NULL}, then the numbers of the nodes
-  are printed.
+  (or of the tips) are printed.
 
-  If \code{node} is missing, then the text or the symbols are printed on
-  all nodes.
+  If \code{node} (or \code{tip}) is missing, then the text or the
+  symbols are printed on all nodes (or tips).
 
-  A simple call of the function with no arguments
-  (i.e. \code{nodelabels()}) prints the numbers of all nodes.
+  A simple call of these functions with no arguments
+  (e.g., \code{nodelabels()}) prints the numbers of all nodes (or
+  tips).
+
+  In the case of \code{tiplabels}, it will be useful to play with the
+  options \code{x.lim} and \code{label.offset} (and possibly
+  \code{show.tip.label}) of \code{plot.phylo} in most cases (see the
+  examples).
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
@@ -86,5 +101,12 @@ nodelabels(thermo = runif(22), cex = .8)
 
 plot(bird.orders, "u", FALSE, font = 1, lab4ut = "a")
 nodelabels(cex = .75, bg = "yellow")
+
+### representing two characters at the tips (you could have as many
+### as you want)
+plot(bird.orders, "c", FALSE, font = 1, label.offset = 3,
+     x.lim = 31, no.margin = TRUE)
+tiplabels(pch = 21, bg = gray(1:23/23), cex = 2, adj = 1.4)
+tiplabels(pch = 19, col = c("yellow", "red", "blue"), adj = 2.5, cex = 2)
 }
 \keyword{aplot}

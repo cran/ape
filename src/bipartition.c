@@ -1,4 +1,6 @@
-/* Copyright 2005 Emmanuel Paradis
+/* bipartition.c */
+
+/* Copyright 2005 Emmanuel Paradis */
 
 /* This file is part of the `ape' library for R and related languages. */
 /* It is made available under the terms of the GNU General Public */

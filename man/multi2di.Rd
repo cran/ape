@@ -7,11 +7,14 @@
   trees (objects of class \code{"phylo"}).
 }
 \usage{
-multi2di(phy)
+multi2di(phy, random = TRUE)
 di2multi(phy, tol = 1e-08)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
+  \item{random}{a logical value specifying whether to resolve the
+    multichotomies randomly (the default) or in the order they appear in
+    the tree (if \code{random = FALSE}).}
   \item{tol}{a numeric value giving the tolerance to consider a branch
     length significantly greater than zero.}
 }
@@ -31,5 +34,11 @@ data(bird.families)
 is.binary.tree(bird.families)
 is.binary.tree(multi2di(bird.families))
 all.equal(di2multi(multi2di(bird.families)), bird.families)
+### To see the results of randomly resolving a trichotomy:
+tr <- read.tree(text = "(a:1,b:1,c:1);")
+layout(matrix(1:4, 2, 2))
+for (i in 1:4)
+  plot(multi2di(tr), use.edge.length = FALSE, cex = 1.5)
+layout(matrix(1))
 }
 \keyword{manip}

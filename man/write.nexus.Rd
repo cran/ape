@@ -29,7 +29,7 @@ write.nexus(..., file = "", translate = TRUE, original.data = TRUE)
   If several trees are given, they must have all the same tip labels.
 
   If among the objects given some are not trees of class \code{"phylo"},
-  they are simply skipped and no t written to the file.
+  they are simply skipped and not written to the file.
 }
 \value{
   None (invisible `NULL').

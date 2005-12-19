@@ -1,4 +1,4 @@
-/* dist.dna.c       2005-09-12 */
+/* dist_dna.c       2005-09-12 */
 
 /* Copyright 2005 Emmanuel Paradis
 
@@ -17,6 +17,10 @@
 /* License along with this program; if not, write to the Free */
 /* Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, */
 /* MA 02111-1307, USA */
+
+/* THE CODES IN THIS FILE CAN BE GREATLY IMPROVED; SEE, E.G.,: */
+/* R-2.2.0/src/library/stats/src/distance.c */
+/* R-2.2.0/src/main/cov.c */
 
 #include <R.h>
 

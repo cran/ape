@@ -1,8 +1,8 @@
-### pic.R (2004-10-12)
+### pic.R (2005-12-16)
 ###
 ###     Phylogenetically Independent Contrasts
 ###
-### Copyright 2002-2004 Emmanuel Paradis
+### Copyright 2002-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -25,7 +25,7 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
     if (class(phy) != "phylo")
       stop("object \"phy\" is not of class \"phylo\"")
     if (is.null(phy$edge.length))
-      stop("your tree has no branch lengths")
+      stop("your tree has no branch lengths: you may consider setting them equal to one, or using the function `compute.brlen'.")
     tmp <- as.numeric(phy$edge)
     nb.tip <- max(tmp)
     nb.node <- -min(tmp)
@@ -33,6 +33,8 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
       stop("\"phy\" is not fully dichotomous")
     if (length(x) != nb.tip)
       stop("length of phenotypic and of phylogenetic data do not match")
+    if (any(is.na(x)))
+      stop("the present method cannot (yet) be used directly with missing data: you may consider removing the species with missing data from your tree with the function `drop.tip'.")
 
     phenotype <- as.numeric(rep(NA, nb.tip + nb.node))
     names(phenotype) <- as.character(c(1:nb.tip, -(1:nb.node)))
@@ -43,8 +45,8 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
           phenotype[1:nb.tip] <- x[phy$tip.label]
         else {
             phenotype[1:nb.tip] <- x
-            warning("the names of argument \"x\" and the names of the tip labels
-did not match: the former were ignored in the analysis.")
+            warning('the names of argument "x" and the names of the tip labels
+did not match: the former were ignored in the analysis.')
         }
     }
 

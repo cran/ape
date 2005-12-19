@@ -1,4 +1,4 @@
-### ace.R  (2005-09-19)
+### ace.R  (2005-12-16)
 ###
 ###            Ancestral Character Estimation
 ###
@@ -31,11 +31,17 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
     nb.tip <- max(tmp)
     nb.node <- -min(tmp)
     if (nb.node != nb.tip - 1)
-      stop('"phy" is not fully dichotomous.')
+      stop('"phy" is not rooted AND fully dichotomous.')
     if (length(x) != nb.tip)
       stop("length of phenotypic and of phylogenetic data do not match.")
+    if (!is.null(names(x))) {
+        if(!any(is.na(match(names(x), phy$tip.label))))
+          x <- x[phy$tip.label]
+        else warning('the names of argument "x" and the names of the tip labels
+did not match: the former were ignored in the analysis.')
+    }
     obj <- list()
-    phy$edge.length <- phy$edge.length^kappa
+    if (kappa != 1) phy$edge.length <- phy$edge.length^kappa
     if (type == "continuous") {
         if (method == "pic") {
             if (model != "BM")
@@ -112,18 +118,18 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
             if (is.null(corStruct))
               stop('you must give a correlation structure if method = "GLS".')
             if (class(corStruct)[1] == "corMartins")
-              M <- corStruct[1] * dist.phylo(phy, full = TRUE)
+              M <- corStruct[1] * cophenetic.phylo(phy, full = TRUE)
             if (class(corStruct)[1] == "corGrafen")
               phy <- compute.brlen(attr(object, "tree"),
                                    method = "Grafen",
                                    power = exp(corStruct[1]))
             if (class(corStruct)[1] %in% c("corBrownian", "corGrafen")) {
-                dis <- dist.phylo(attr(corStruct, "tree"), full = TRUE)
+                dis <- cophenetic.phylo(attr(corStruct, "tree"), full = TRUE)
                 MRCA <- mrca(attr(corStruct, "tree"), full = TRUE)
                 M <- dis["-1", MRCA]
                 dim(M) <- rep(sqrt(length(M)), 2)
             }
-            varAY <<- M[-(1:nb.tip), 1:nb.tip]
+            varAY <- M[-(1:nb.tip), 1:nb.tip]
             varA <- M[-(1:nb.tip), -(1:nb.tip)]
             V <- corMatrix(Initialize(corStruct, data.frame(x)),
                            corr = FALSE)
@@ -142,10 +148,10 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
           stop("only ML estimation is possible for discrete characters.")
         if (!is.factor(x)) x <- factor(x)
         nl <- nlevels(x)
-        levels <- levels(x)
+        lvls <- levels(x)
         x <- as.integer(x)
-        rate <- matrix(NA, nl, nl)
         if (is.character(model)) {
+            rate <- matrix(NA, nl, nl)
             if (model == "ER") np <- rate[] <- 1
             if (model == "ARD") {
                 np <- nl * (nl - 1)
@@ -159,17 +165,18 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
             }
         } else {
             rate <- model
-            np <- unique(rate)
+            np <- max(rate)
         }
+        rate[cbind(1:nl, 1:nl)] <- 0
+        rate[rate == 0] <- np + 1
 
         liks <- matrix(0, nb.tip + nb.node, nl)
         rownames(liks) <- as.character(c(1:nb.tip, -(1:nb.node)))
         for (i in 1:nb.tip) liks[i, x[i]] <- 1
 
-        Q <- matrix(NA, nl, nl)
+        Q <- matrix(0, nl, nl)
         dev <- function(p, output.liks = FALSE) {
-            Q[] <- p[rate]
-            diag(Q) <- 0
+            Q[] <- c(p, 0)[rate]
             diag(Q) <- -rowSums(Q)
             unused <- rep(TRUE, nb.tip + nb.node)
             done <- c(rep(TRUE, nb.tip), rep(FALSE, nb.node))
@@ -196,17 +203,19 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
                 }
                 done[basal] <- TRUE
             }
-            if (output.liks) return(liks[-(1:23), ])
+            if (output.liks) return(liks[-(1:nb.tip), ])
             - 2 * log(sum(liks["-1", ]))
         }
         out <- nlm(function(p) dev(p), p = rep(0.1, np), hessian = TRUE)
         obj$loglik <- -out$minimum / 2
         obj$rates <- out$estimate
-        obj$se <- sqrt(diag(solve(out$hessian)))
+        if (any(out$gradient == 0))
+          warning("The likelihood gradient seems flat in at least one dimension (null gradient):\ncannot compute the standard-errors of the transition rates.\n")
+        else obj$se <- sqrt(diag(solve(out$hessian)))
         if (CI) {
             lik.anc <- dev(obj$rate, TRUE)
             lik.anc <- lik.anc / rowSums(lik.anc)
-            colnames(lik.anc) <- levels
+            colnames(lik.anc) <- lvls
             obj$lik.anc <- lik.anc
         }
     }

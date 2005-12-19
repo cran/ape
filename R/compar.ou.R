@@ -54,7 +54,7 @@ did not match: the former were ignored in the analysis.')
             }
         }
     }
-    W <- dist.phylo(phy)
+    W <- cophenetic.phylo(phy)
     dev <- function(p) {
         M <- rowSums(exp(-p[1] * Wstart) - exp(-p[1] * Wend) * p[-(1:2)])
         V <- exp(-p[1]*W) * (1 - exp(-2*p[1]*(Tmax - W/2)))

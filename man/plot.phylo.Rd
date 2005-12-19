@@ -3,7 +3,7 @@
 \title{Plot Phylogenies}
 \usage{
 \method{plot}{phylo}(x, type = "phylogram", use.edge.length = TRUE,
-    node.pos = NULL, show.node.label = FALSE,
+    node.pos = NULL, show.tip.label = TRUE, show.node.label = FALSE,
     edge.color = "black", edge.width = 1, font = 3,
     cex = par("cex"), adj = NULL, srt = 0, no.margin = FALSE,
     root.edge = FALSE, label.offset = 0, underscore = FALSE,
@@ -23,8 +23,11 @@
     vertical position of the nodes with respect to their descendants. If
     \code{NULL} (the default), then the value is determined in relation
     to `type' and `use.edge.length' (see details).}
+  \item{show.tip.label}{a logical indicating whether to show the tip
+    labels on the phylogeny (defaults to \code{TRUE}, i.e. the labels
+    are shown).}
   \item{show.node.label}{a logical indicating whether to show the node
-    labels on the phylogeny (defaults to \code{"FALSE"}, i.e. the labels
+    labels on the phylogeny (defaults to \code{FALSE}, i.e. the labels
     are not shown).}
   \item{edge.color}{a vector of mode character giving the colours used
     to draw the branches of the plotted phylogeny. These are taken to be
@@ -124,6 +127,7 @@
   \item{type}
   \item{use.edge.length}
   \item{node.pos}
+  \item{show.tip.label}
   \item{show.node.label}
   \item{edge.color}
   \item{edge.width}

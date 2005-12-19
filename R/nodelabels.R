@@ -1,6 +1,6 @@
-### nodelabels.R (2005-09-12)
+### nodelabels.R (2005-12-17)
 ###
-###             Labelling the Nodes of a Tree
+###        Labelling the Nodes and the Tips of a Tree
 ###
 ### Copyright 2004-2005 Emmanuel Paradis
 ###
@@ -20,18 +20,11 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-nodelabels <- function(text, node, adj = c(0.5, 0.5), frame = "rect",
-                       pch = NULL, thermo = NULL, col = "black",
-                       bg = "lightblue", ...)
+BOTHlabels <- function(text, sel, adj, frame, pch, thermo, col, bg, ...)
 {
-    sel <- if (missing(node))
-      names(.last_plot.phylo$xx)[as.numeric(names(.last_plot.phylo$xx)) < 0]
-    else as.character(-abs(as.numeric(node)))
     if (missing(text)) text <- NULL
     if (length(adj) == 1) adj <- c(adj, 0.5)
-    if (is.null(text) && is.null(pch) && is.null(thermo))
-      text <-
-        names(.last_plot.phylo$xx)[as.numeric(names(.last_plot.phylo$xx)) < 0]
+    if (is.null(text) && is.null(pch) && is.null(thermo)) text <- sel
     frame <- match.arg(frame, c("rect", "circle", "none"))
     args <- list(...)
     CEX <- if ("cex" %in% names(args)) args$cex else par("cex")
@@ -52,8 +45,10 @@ nodelabels <- function(text, node, adj = c(0.5, 0.5), frame = "rect",
         }
     }
     if (!is.null(thermo)) {
-        width <- CEX * (par("usr")[2] - par("usr")[1]) / 30
+        width <- CEX * (par("usr")[2] - par("usr")[1]) / 40
         height <- CEX * (par("usr")[4] - par("usr")[3]) / 15
+        if (is.matrix(thermo) && ncol(thermo) == 2)
+          thermo[, 2] <- thermo[, 1] + thermo[, 2]
         symbols(.last_plot.phylo$xx[sel], .last_plot.phylo$yy[sel],
                 thermometers = cbind(width, height, thermo),
                 inches = FALSE, add = TRUE, fg = col, bg = bg)
@@ -61,7 +56,27 @@ nodelabels <- function(text, node, adj = c(0.5, 0.5), frame = "rect",
     if (!is.null(text)) text(.last_plot.phylo$xx[sel],
                              .last_plot.phylo$yy[sel],
                              text, adj = adj, ...)
-    if (!is.null(pch)) points(.last_plot.phylo$xx[sel],
-                              .last_plot.phylo$yy[sel],
+    if (!is.null(pch)) points(.last_plot.phylo$xx[sel] + adj[1] - 0.5,
+                              .last_plot.phylo$yy[sel] + adj[2] - 0.5,
                               pch = pch, col = col, bg = bg, ...)
+}
+
+nodelabels <- function(text, node, adj = c(0.5, 0.5), frame = "rect",
+                       pch = NULL, thermo = NULL, col = "black",
+                       bg = "lightblue", ...)
+{
+    sel <- if (missing(node))
+      names(.last_plot.phylo$xx)[as.numeric(names(.last_plot.phylo$xx)) < 0]
+    else as.character(-abs(as.numeric(node)))
+    BOTHlabels(text, sel, adj, frame, pch, thermo, col, bg, ...)
+}
+
+tiplabels <- function(text, tip, adj = c(0.5, 0.5), frame = "rect",
+                      pch = NULL, thermo = NULL, col = "black",
+                      bg = "yellow", ...)
+{
+    sel <- if (missing(tip))
+      names(.last_plot.phylo$xx)[as.numeric(names(.last_plot.phylo$xx)) > 0]
+    else tip
+    BOTHlabels(text, sel, adj, frame, pch, thermo, col, bg, ...)
 }

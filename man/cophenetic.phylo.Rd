@@ -1,18 +1,19 @@
-\name{dist.phylo}
+\name{cophenetic.phylo}
+\alias{cophenetic.phylo}
 \alias{dist.phylo}
 \title{Pairwise Distances from a Phylogenetic Tree}
 \usage{
-dist.phylo(phy, full = FALSE)
+\method{cophenetic}{phylo}(x, full = FALSE)
 }
 \arguments{
-  \item{phy}{an object of class \code{"phylo"}.}
+  \item{x}{an object of class \code{"phylo"}.}
   \item{full}{a logical indicating whether to return the distances among
     all tips and nodes (if \code{TRUE}); the default is to return only
     the distances among tips.}
 }
 \description{
   This function computes the pairwise distances between the pairs of
-  tips from a phylogenetic tree using the branch lengths of the latter.
+  tips from a phylogenetic tree using its branch lengths.
 }
 \value{
   a numeric matrix with colnames and rownames set, by default, to the
@@ -25,6 +26,7 @@ dist.phylo(phy, full = FALSE)
   Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}
 }
 \seealso{
-  \code{\link{read.tree}} to read tree files in Newick format
+  \code{\link{read.tree}} to read tree files in Newick format,
+  \code{\link[stats]{cophenetic}} for the generic function
 }
 \keyword{manip}

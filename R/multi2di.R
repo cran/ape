@@ -1,4 +1,4 @@
-### multi2di.R (2005-04-15)
+### multi2di.R (2005-12-16)
 ###
 ###     Collapse and Resolve Multichotomies
 ###
@@ -20,14 +20,14 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-multi2di <- function(phy)
+multi2di <- function(phy, random = TRUE)
 {
-    X <- table(phy$edge[, 1])
-    target <- names(which(X > 2))
+    target <- names(which(table(phy$edge[, 1]) > 2))
     if (is.null(target)) return(phy)
     next.node <- min(as.numeric(phy$edge)) - 1
     for (node in target) {
         ind <- which(phy$edge[, 1] == node)
+        if (random) phy$edge[ind, 2] <- sample(phy$edge[ind, 2])
         new.nodes <- as.character(next.node:(next.node - length(ind) + 3))
         N <- length(new.nodes)
         phy$edge[ind[-1], 1] <- c(new.nodes, new.nodes[N])

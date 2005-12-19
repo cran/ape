@@ -1,4 +1,4 @@
-### dist.phylo.R  (2005-09-14)
+### cophenetic.phylo.R  (2005-09-14)
 ###
 ###     Pairwise Distances from a Phylogenetic Tree
 ###
@@ -22,36 +22,43 @@
 
 dist.phylo <- function(phy, full = FALSE)
 {
-    if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
-    if (is.null(phy$edge.length)) stop("your tree has no branch lengths defined")
-    tmp <- as.numeric(phy$edge)
+    warning("the function dist.phylo is deprecated: cophenetic has been used instaead.\ndist.phylo will soon be removed: update your code.")
+    cophenetic.phylo(phy, full = FALSE)
+
+}
+
+cophenetic.phylo <- function(x, full = FALSE)
+{
+    if (is.null(x$edge.length))
+      stop("your tree has no branch lengths defined")
+    tmp <- as.numeric(x$edge)
     nb.tip <- max(tmp)
     nb.node <- -min(tmp)
     N <- nb.tip + nb.node
 
-    x <- matrix(NA, N, N)
-    mode(x) <- "numeric"
-    x[cbind(1:N, 1:N)] <- 0
-    dimnames(x)[1:2] <- list(as.character(c(1:nb.tip, -(1:nb.node))))
+    ans <- matrix(NA, N, N)
+    mode(ans) <- "numeric"
+    ans[cbind(1:N, 1:N)] <- 0
+    dimnames(ans)[1:2] <- list(as.character(c(1:nb.tip, -(1:nb.node))))
 
-    for (i in 1:dim(phy$edge)[1])
-      x[phy$edge[i, 2], phy$edge[i, 1]] <-
-        x[phy$edge[i, 1], phy$edge[i, 2]] <- phy$edge.length[i]
+    for (i in 1:dim(x$edge)[1])
+      ans[x$edge[i, 2], x$edge[i, 1]] <-
+        ans[x$edge[i, 1], x$edge[i, 2]] <- x$edge.length[i]
 
     ok <- c(rep(TRUE, nb.tip), rep(FALSE, nb.node))
-    names(ok) <- dimnames(x)[[1]]
+    names(ok) <- dimnames(ans)[[1]]
 
     basal <- ""
     while(!identical(basal, "-1")) {
         term <- names(ok[ok])
-        ind <- phy$edge[, 2] %in% term
-        basal <- names(which(table(phy$edge[ind, 1]) > 1))
+        ind <- x$edge[, 2] %in% term
+        basal <- names(which(table(x$edge[ind, 1]) > 1))
         for (nod in basal) {
-            i.anc <- which(phy$edge[, 2] == nod)
-            l <- phy$edge.length[i.anc]
-            anc <- phy$edge[i.anc, 1]
+            i.anc <- which(x$edge[, 2] == nod)
+            l <- x$edge.length[i.anc]
+            anc <- x$edge[i.anc, 1]
 
-            desc <- phy$edge[which(phy$edge[, 1] == nod), 2]
+            desc <- x$edge[which(x$edge[, 1] == nod), 2]
             ## Here we need to check that all the branches found in the next
             ## few lines just above are `available' for `clustering'; this may
             ## not be the case if other sister-branches have daughter-branches
@@ -60,26 +67,26 @@ dist.phylo <- function(phy, full = FALSE)
                 ## compute the distances ...
                 for (i in 1:(length(desc) - 1)) {
                     if (as.numeric(desc[i]) > 0) d1 <- desc[i] else {
-                        ## lin <- x[desc[i], 1:nb.tip]
-                        lin <- x[desc[i], ]
+                        ## lin <- ans[desc[i], 1:nb.tip]
+                        lin <- ans[desc[i], ]
                         d1 <- names(lin[!is.na(lin)])
                     }
                     for (j in (i + 1):length(desc)) {
                         if (as.numeric(desc[j]) > 0) d2 <- desc[j] else {
-                            ## lin <- x[desc[j], 1:nb.tip]
-                            lin <- x[desc[j], ]
+                            ## lin <- ans[desc[j], 1:nb.tip]
+                            lin <- ans[desc[j], ]
                             d2 <- names(lin[!is.na(lin)])
                         }
                         for (y in d1)
                           for (z in d2)
-                            x[y, z] <- x[z, y] <- x[nod, y] + x[nod, z]
+                            ans[y, z] <- ans[z, y] <- ans[nod, y] + ans[nod, z]
                         ## compute the distances between the tips in `d2'
                         ## and the ancestor of the current node
-                        x[d2, anc] <- x[anc, d2] <- x[nod, d2] + l
+                        ans[d2, anc] <- ans[anc, d2] <- ans[nod, d2] + l
                     }
                     ## compute the distances between the tips in `d1'
                     ## and the ancestor of the current node
-                    x[d1, anc] <- x[anc, d1] <- x[nod, d1] + l
+                    ans[d1, anc] <- ans[anc, d1] <- ans[nod, d1] + l
                 }
                 ok[desc] <- FALSE
                 ok[nod] <- TRUE
@@ -87,8 +94,8 @@ dist.phylo <- function(phy, full = FALSE)
         }
     }
     if (!full) {
-        x <- x[1:nb.tip, 1:nb.tip]
-        dimnames(x)[1:2] <- list(phy$tip.label)
+        ans <- ans[1:nb.tip, 1:nb.tip]
+        dimnames(ans)[1:2] <- list(x$tip.label)
     }
-    x
+    ans
 }

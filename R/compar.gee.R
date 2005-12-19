@@ -1,8 +1,8 @@
-### compar.gee.R (2004-10-12)
+### compar.gee.R (2005-12-16)
 ###
 ###     Comparative Analysis with GEEs
 ###
-### Copyright 2002-2004 Emmanuel Paradis
+### Copyright 2002-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -28,6 +28,10 @@ compar.gee <- function(formula, data = NULL, family = "gaussian", phy,
           data <- data[phy$tip.label, ]
         else warning("the rownames of the data.frame and the names of the tip labels
 do not match: the former were ignored in the analysis.")
+    }
+    for (i in all.vars(formula)) {
+        if (any(is.na(eval(parse(text = i), envir = data))))
+          stop("the present method cannot (yet) be used directly with missing data: you may consider removing the species with missing data from your tree with the function `drop.tip'.")
     }
     if (is.null(phy$edge.length))
       stop("the tree has no branch lengths.")

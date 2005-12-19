@@ -25,7 +25,7 @@
 }
 \description{
   Compute a correlogram from taxonomic variables or from a phylogenetic tree with branch lengths.
-  The first method relies on the \code{\link{dist.taxo}} function, and the second relies on the \code{\link{discrete.dist}} function.
+  The first method relies on the \code{\link{weight.taxo}} function, and the second relies on the \code{\link{discrete.dist}} function.
   Both methods send an object of class \code{correlogram} to be plotted by
   the \code{\link{plot.correlogram}} method.
   For the \code{correlogram.formula} function, if several \code{y} are specified, an object of class \code{correlogramList}

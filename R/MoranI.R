@@ -20,17 +20,12 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-# For debugging:
-#setwd("Dev/r/APE/Data/")
-#carn<-read.table("Gittleman1986.csv", header=T, sep="\t")
-
 Moran.I <- function(
   x,              # x the vector of values to analyse
   dist,           # dist is the distance matrix to use
   scaled = FALSE, # tell if we must scale the indice to allow comparisons
   na.rm = FALSE   # should we ignore missing values?
 ) {
-
   # Number of values:
   nn <- length(x);
   n <- ifelse(na.rm, sum(!is.na(x)), nn)
@@ -95,23 +90,20 @@ Moran.I <- function(
          ((n-1)*(n-2)*(n-3)*s^2) -
          1/((n-1)^2));
 
+  names(obs) <- NULL
   # Computes p-value:
   pv <- 1 - 2*abs(pnorm(obs, m = ei, sd = sdi) - 0.5);
 
   return(list(observed = obs, expected = ei, sd = sdi, p.value = pv));
 }
 
-dist.taxo <- function(x)
-{
-  n <- length(x);
-  d <- matrix(ncol = n, nrow = n);
-  for(i in 1:(n-1)) {
-    d[i,i] <- 0
-    for(j in (i+1):n) {
-      d[i,j] <- d[j,i] <- ifelse(x[i] == x[j], 1, 0)
-    }
+weight.taxo <- function (x) {
+  n <- length(x)
+  d <- matrix(ncol = n, nrow = n, 0)
+  for (i in 1:n) {
+    d[i, which(x[i] == x)] <- 1
+    d[i, i] <- 0
   }
-  d[n,n] <- 0
   return(d)
 }
 
@@ -170,7 +162,7 @@ correlogram.formula <- function(formula, data = NULL, use = "all.obs")
   var <- get.var(ally)
   y[[var$name]] <- var$y
 
-  #Groups:
+  ##Groups:
   groups <- formula[[3]]
   d <- list()
   g <- list()
@@ -180,13 +172,13 @@ correlogram.formula <- function(formula, data = NULL, use = "all.obs")
     groups <- groups[[2]]
     cat("Analysing level:", group$name, "\n")
     g[[group$name]] <- group$y
-    d[[group$name]] <- dist.taxo(group$y)
+    d[[group$name]] <- weight.taxo(group$y)
   }
   # The last group:
   group <- get.var(groups)
-  cat("Analysing level:", group$name, "\n")
+  #cat("Analysing level:", group$name, "\n")
   g[[group$name]] <- group$y
-  d[[group$name]] <- dist.taxo(group$y)
+  d[[group$name]] <- weight.taxo(group$y)
 
   # Remove all data with missing grouping values:
   filter <- rep(TRUE, length(y[[1]])) # All obs used
@@ -247,9 +239,9 @@ discrete.dist <- function(dist, inf, sup)
 correlogram.phylo <- function(x, phy, nclass = NULL, breaks = NULL)
 {
   if (!("phylo" %in% class(phy))) stop("object \"phy\" is not of class \"phylo\"")
-  if (is.null(phy$edge.length)) stop("tree \" phy\" must have branch lengths.") 
+  if (is.null(phy$edge.length)) stop("tree \" phy\" must have branch lengths.")
   #Get the minimum and maximum distance in the tree:
-  dist <- dist.phylo(phy)
+  dist <- cophenetic.phylo(phy)
   #What classes to use?
   if(!is.null(breaks)) {
     # User-defined breaks:
@@ -295,9 +287,9 @@ plot.correlogram <- function(x, test.level=0.05, ...)
   return(xyplot(x$obs~ordered(x$l,levels=x$l), type="b", xlab="Rank", ylab="I / Imax", lty=2, lwd=2, cex=1.5, pch=pch, ...))
 }
 
-panel.superpose.correlogram <- function(x, y = NULL, subscripts, groups, panel.groups = "panel.xyplot",
+panel.superpose.correlogram <- function (x, y = NULL, subscripts, groups, panel.groups = "panel.xyplot",
     col, col.line = superpose.line$col, col.symbol = superpose.symbol$col,
-    pch = superpose.symbol$pch, p.values = NULL, test.level = 0.05, cex = superpose.symbol$cex, font = superpose.symbol$font,
+    pch = superpose.symbol$pch, p.values = NULL, test.level=0.05, cex = superpose.symbol$cex, font = superpose.symbol$font,
     fontface = superpose.symbol$fontface, fontfamily = superpose.symbol$fontfamily,
     lty = superpose.line$lty, lwd = superpose.line$lwd, ...)
 {

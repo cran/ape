@@ -1,4 +1,4 @@
-### plot.phylo.R (2005-09-13)
+### plot.phylo.R (2005-12-18)
 ###
 ###          Plot Phylogenies
 ###
@@ -21,9 +21,10 @@
 ### MA 02111-1307, USA
 
 plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
-                       node.pos = NULL, show.node.label = FALSE,
-                       edge.color = "black", edge.width = 1, font = 3,
-                       cex = par("cex"), adj = NULL, srt = 0, no.margin = FALSE,
+                       node.pos = NULL, show.tip.label = TRUE,
+                       show.node.label = FALSE, edge.color = "black",
+                       edge.width = 1, font = 3,cex = par("cex"),
+                       adj = NULL, srt = 0, no.margin = FALSE,
                        root.edge = FALSE, label.offset = 0, underscore = FALSE,
                        x.lim = NULL, y.lim = NULL, direction = "rightwards",
                        lab4ut = "horizontal", ...)
@@ -35,6 +36,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     tmp <- as.numeric(x$edge)
     nb.tip <- max(tmp)
     nb.node <- -min(tmp)
+    if (!show.tip.label) x$tip.label <- rep("", nb.tip)
     if (type == "unrooted" || !use.edge.length) root.edge <- FALSE
     if (type %in% c("phylogram", "cladogram")) {
         if (is.null(node.pos)) {
@@ -53,12 +55,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                      as.double(x$edge.length), as.double(numeric(nb.tip + nb.node)),
                      DUP = FALSE, PACKAGE = "ape")[[7]]
             names(xx) <- as.character(nms)
-            }
-        if (root.edge)
-          switch(direction, "rightwards" = xx <- xx + x$root.edge,
-                 "leftwards" = xx <- xx <- x$root.edge,
-                 "upwards" = yy <- yy + x$root.edge,
-                 "downwards" = yy <- yy - x$root.edge)
+        }
     }
     if (type == "unrooted") {
         XY <- if (use.edge.length) unrooted.xy(nb.tip, nb.node, x$edge, x$edge.length) else unrooted.xy(nb.tip, nb.node, x$edge, rep(1, dim(x$edge)[1]))
@@ -90,6 +87,10 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                 yy <- yy - min(yy)
             }
         }
+    }
+    if (type %in% c("phylogram", "cladogram") && root.edge) {
+        if (direction == "rightwards") xx <- xx + x$root.edge
+        if (direction == "upwards") yy <- yy + x$root.edge
     }
     if (no.margin) par(mai = rep(0, 4))
     if (is.null(x.lim)) {
@@ -158,6 +159,11 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
             }
         }
     }
+    if (type %in% c("phylogram", "cladogram") && root.edge) {
+        if (direction == "leftwards") x.lim[2] <- x.lim[2] + x$root.edge
+        if (direction == "downwards") y.lim[2] <- y.lim[2] + x$root.edge
+    }
+
     edge.color <- rep(edge.color, length.out = dim(x$edge)[1])
     edge.width <- rep(edge.width, length.out = dim(x$edge)[1])
     plot(0, type = "n", xlim = x.lim, ylim = y.lim, xlab = "",
@@ -194,7 +200,11 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
       phylogram.plot(x$edge, nb.tip, nb.node, xx, yy,
                      direction, edge.color, edge.width)
     else cladogram.plot(x$edge, xx, yy, edge.color, edge.width)
-    if (root.edge) segments(0, yy["-1"], x$root.edge, yy["-1"])
+    if (root.edge)
+      switch(direction, "rightwards" = segments(0, yy["-1"], x$root.edge, yy["-1"]),
+             "leftwards" = segments(xx["-1"], yy["-1"], xx["-1"] + x$root.edge, yy["-1"]),
+             "upwards" = segments(xx["-1"], 0, xx["-1"], x$root.edge),
+             "downwards" = segments(xx["-1"], yy["-1"], xx["-1"], yy["-1"] + x$root.edge))
     if (!underscore) x$tip.label <- gsub("_", " ", x$tip.label)
     if (type %in% c("phylogram", "cladogram")) {
         text(xx[as.character(1:nb.tip)] + lox, yy[as.character(1:nb.tip)] + loy,
@@ -240,7 +250,8 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                               yy[as.character(-(1:nb.node))], x$node.label,
                               adj = adj, font = font, srt = srt, cex = cex)
     L <- list(type = type, use.edge.length = use.edge.length,
-              node.pos = node.pos, show.node.label = show.node.label,
+              node.pos = node.pos, show.tip.label = show.tip.label,
+              show.node.label = show.node.label,
               edge.color = edge.color, edge.width = edge.width,
               font = font, cex = cex, adj = adj, srt = srt,
               no.margin = no.margin, label.offset = label.offset,

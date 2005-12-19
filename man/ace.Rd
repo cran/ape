@@ -114,7 +114,7 @@ ace(x, bird.orders, method = "GLS",
     corStruct = corBrownian(1, bird.orders))
 ### For discrete characters:
 ans <- ace(c(rep(0, 5), rep(1, 18)), bird.orders, type = "d")
-#### Showing he likelihood of state "1" on each node:
+#### Showing the likelihood of state "1" on each node:
 plot(bird.orders, type = "c", FALSE)
 nodelabels(thermo = ans$lik.anc[, 2], cex = 0.75)
 }

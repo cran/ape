@@ -52,7 +52,7 @@
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
 \seealso{
-	\code{\link{dist.phylo}}, \code{\link{discrete.dist}}, \code{\link{dist.taxo}}
+	\code{\link{dist.phylo}}, \code{\link{discrete.dist}}, \code{\link{weight.taxo}}
 }
 \examples{
 ### This will draw the correlogram from Gittleman and Kot 1990
@@ -62,10 +62,10 @@ library(ape)
 data(carnivora)
 attach(carnivora)
 # Compute distance matrix for each taxonomic level:
-dG  <- dist.taxo(Genus)
-dF  <- dist.taxo(Family)
-dSF <- dist.taxo(SuperFamily)
-dO  <- dist.taxo(Order)
+dG  <- weight.taxo(Genus)
+dF  <- weight.taxo(Family)
+dSF <- weight.taxo(SuperFamily)
+dO  <- weight.taxo(Order)
 # We draw the correlogram of average body weights,
 # with log10-transformed variable:
 IG  <- Moran.I(log10(SW), dG        , scale=TRUE)

@@ -1,9 +1,11 @@
 \name{root}
 \alias{root}
+\alias{unroot}
 \alias{is.rooted}
 \title{Roots Phylogenetic Trees}
 \usage{
 root(phy, outgroup)
+unroot(phy)
 is.rooted(phy)
 }
 \arguments{
@@ -14,6 +16,9 @@ is.rooted(phy)
 \description{
   \code{root} reroots a phylogenetic tree with respect to the specified
   outgroup.
+
+  \code{unroot} unroots a phylogenetic tree, or returns it unchanged if
+  it is already unrooted.
 
   \code{is.rooted} tests whether a tree is rooted.
 }
@@ -38,7 +43,8 @@ is.rooted(phy)
   \code{is.rooted} returns \code{FALSE}.
 }
 \value{
-  an object of class \code{"phylo"} for root; a logical for is.rooted.
+  an object of class \code{"phylo"} for \code{root} and \code{unroot}; a
+  logical for \code{is.rooted}.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{

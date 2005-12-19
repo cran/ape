@@ -1,4 +1,3 @@
-
 /*
  *  treefunc.c
  *
@@ -12,7 +11,6 @@
  *
  *  This code may be distributed under the GNU GPL
  */
-
 
 #include <stdlib.h>
 #include <string.h>
@@ -132,7 +130,7 @@ void destroyTree(int *result) {
  if(current) {FreeTree(current); current=NULL;}
 
  *result=error;
- 
+
 }
 
 /*============================================================================*/
@@ -167,7 +165,7 @@ void nTips(int *result) {
  if(!current) {error=ERROR; *result=0; return;}
 
  *result=nTips_(current);
- 
+
 }
 
 /*============================================================================*/
@@ -222,7 +220,7 @@ double markClasses_(Tree *t) {
  if(destinct>sum) { t->mark=1;  return(destinct); }
 
                     t->mark=0;  return(sum);
- 
+
 }
 
 /*....*/
@@ -259,5 +257,5 @@ void getMisawaTajima(int *result) {
  if(!current) {error=ERROR; return;}
 
  getMisawaTajima_(current,result);
- 
+
 }

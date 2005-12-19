@@ -1,8 +1,8 @@
-### phymltest.R (2004-11-04)
+### phymltest.R (2005-11-10)
 ###
 ###     Fits a Bunch of Models with PHYML
 ###
-### Copyright 2004 Emmanuel Paradis
+### Copyright 2004-2005 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -24,7 +24,7 @@
                       "K80", "K80+I", "K80+G", "K80+I+G",
                       "F81", "F81+I", "F81+G", "F81+I+G",
                       "F84", "F84+I", "F84+G", "F84+I+G",
-                      "HKY85", "KHY85+I", "HKY85+G", "HKY85+I+G",
+                      "HKY85", "HKY85+I", "HKY85+G", "HKY85+I+G",
                       "TN93", "TN93+I", "TN93+G", "TN93+I+G",
                       "GTR", "GTR+I", "GTR+G", "GTR+I+G")
 
@@ -40,8 +40,10 @@ phymltest <- function(seqfile, format = "interleaved", itree = NULL,
                       exclude = NULL, execname, path2exec = NULL)
 {
     windoz <- .Platform$OS.type == "windows"
-    if (missing(execname) && windoz) execname <- "phyml_w32"
-    else stop("you must give an executable file name for PHYML")
+    if (missing(execname)) {
+        if (windoz) execname <- "phyml_w32"
+        else stop("you must give an executable file name for PHYML")
+    }
     outfile <- paste(seqfile, "_phyml_stat.txt", sep = "")
     inp <- seqfile
     if (file.exists(outfile)) inp <- c(inp, "A")

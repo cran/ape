@@ -37,6 +37,8 @@
 \alias{ht.move}
 \alias{loglik.pop}
 \alias{pos.move}
+\alias{BOTHlabels}
+\alias{chronopl.cv}
 \title{Internal Ape Functions}
 \description{
   Internal ape functions.

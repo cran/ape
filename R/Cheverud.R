@@ -20,7 +20,6 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-
 # This function is adapted from a MatLab code from
 # Rholf, F. J. (2001) Comparative Methods for the Analysis of Continuous Variables: Geometric Interpretations.
 # Evolution 55(11): 2143-2160

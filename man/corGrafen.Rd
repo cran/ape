@@ -4,7 +4,7 @@
 \alias{corMatrix.corGrafen}
 \title{Grafen's (1989) Correlation Structure}
 \usage{
-corGrafen(value=numeric(0), phy, form=~1, fixed = FALSE)
+corGrafen(value, phy, form=~1, fixed = FALSE)
 \method{coef}{corGrafen}(object, unconstrained = TRUE, ...)
 \method{corMatrix}{corGrafen}(object,
                   covariate = getCovariate(object), corr = TRUE, ...)

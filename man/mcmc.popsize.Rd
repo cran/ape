@@ -104,7 +104,7 @@ data("hivtree.newick") # example tree in NH format
 tree.hiv <- read.tree(text = hivtree.newick) # load tree
 
 # run mcmc chain
-mcmc.out <- mcmc.popsize(tree.hiv, nstep=100, thinning=1, burn.in=0) # toy run
+mcmc.out <- mcmc.popsize(tree.hiv, nstep=100, thinning=1, burn.in=0,progress.bar=FALSE) # toy run
 #mcmc.out <- mcmc.popsize(tree.hiv, nstep=10000, thinning=5, burn.in=500) # remove comments!!
 
 # make list of population size versus time

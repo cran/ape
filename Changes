@@ -1,6 +1,81 @@
+		CHANGES IN APE VERSION 1.8
+
+
+NEW FEATURES
+
+    o The new function chronopl() estimates dates using the penalized
+      likelihood method by Sanderson (2002; Mol. Biol. Evol., 19:101).
+
+    o The new function consensus() calculates the consensus tree of a
+      list of trees.
+
+    o The new function evolve.phylo() simulates the evolution of
+      continuous characters along a phylogeny under a Brownian model.
+
+    o The new plot method for objects of class "ancestral" displays a
+      tree together with ancestral values, as returned by the above
+      function.
+
+    o The new function as.phylo.formula() returns a phylogeny from a
+      set of nested taxonomic variables given as a formula.
+
+    o The new function read.caic() reads trees in CAIC format.
+
+    o The new function tiplabels() allows to add labels to the tips
+      of a tree using text or plotting symbols in a flexible way.
+
+    o The new function unroot() unroots a phylogeny.
+
+    o multi2di() has a new option, `random', which specifies whether
+      to resolve the multichotomies randomly (the default) or not.
+
+    o prop.part() now returns an object of class "prop.part" for which
+      there are print (to display a partition in a more friendly way)
+      and summary (to extract the numbers) methods.
+
+    o plot.phylo() has a new option, `show.tip.label', specifying
+      whether to print the labels of the tips. The default is TRUE.
+
+    o The code of nj() has been replaced by a faster C code: it is now
+      about 10, 25, and 40 times faster for 50, 100, and 200 taxa,
+      respectively.
+
+    o write.nexus() now writes whether a tree is rooted or not.
+
+
+BUG FIXES
+
+    o Two bugs have been fixed in root(): unrooted trees are now
+      handled corretly, and node labels are now output normally.
+
+    o A bug was fixed in phymltest(): the executable couldn't be found
+      in some cases.
+
+    o Three bug have been fixed in ace(): computing the likelihood of
+      ancestral states of discrete characters failed, custom models
+      did not work, and the function failed with a null gradient (a
+      warning message is now returned; this latter bug was also
+      present in yule.cov() as well and is now fixed).
+
+    o pic() hanged out when missing data were present: a message error
+      is now returned.
+
+    o A small bug was fixed in dist.dna() where the gamma correction
+      was not always correctly dispatched.
+
+    o plot.phylo() plotted correctly the root edge only when the tree
+      was plotted rightwards: this works now for all directions.
+
+
+OTHER CHANGES
+
+    o dist.taxo() has been renamed as weight.taxo().
+
+    o Various error and warning messages have been improved.
+
+
+
 		CHANGES IN APE VERSION 1.7
-
-
 NEW FEATURES
 
     o The new function ace() estimates ancestral character states for
@@ -19,11 +94,11 @@ NEW FEATURES
       the possibility to specify the function that generates the
       inter-nodes distances.
 
-    o The new function mrca() gives for all pairs of tips in a tre
+    o The new function mrca() gives for all pairs of tips in a tree
       (and optionally nodes too) the most recent common ancestor.
 
-    o nodelabels() has a new options `thermo' to plot proportions (up
-      to three classes) on the nodes a tree.
+    o nodelabels() has a new option `thermo' to plot proportions (up
+      to three classes) on the nodes of a tree.
 
     o rtree() has been improved: it can now generate rooted or
       unrooted trees, and the mathematical function that generates the

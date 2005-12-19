@@ -1,4 +1,4 @@
-### dist.dna.R (2005-09-12)
+### dist.dna.R (2005-11-14)
 ###
 ###     Pairwise Distances from DNA Sequences
 ###
@@ -27,7 +27,7 @@ dist.dna <- function(x, model = "K80", variance = FALSE,
     MODELS <- c("raw", "JC69", "K80", "F81", "K81",
                 "F84", "T92", "TN93", "GG95")
     imod <- which(MODELS == model)
-    if (gamma && imod %in% c(3, 5, 6, 8)) {
+    if (gamma && imod %in% c(1, 5, 6, 7, 9)) {
         warning(paste("gamma-correction not available for model", model))
         gamma <- FALSE
     }
@@ -49,7 +49,7 @@ dist.dna <- function(x, model = "K80", variance = FALSE,
     }
     BF <- if (is.null(base.freq)) base.freq(x) else base.freq
     if (!pairwise.deletion) {
-        sel <- !apply(x, 1, function(x) any(x == "n"))
+        sel <- !apply(x, 1, function(x) any(x == c("n", "-")))
         x <- x[sel, ]
     }
     s <- nrow(x) # the number of sites

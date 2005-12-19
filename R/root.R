@@ -1,4 +1,4 @@
-### root.R (2005-08-18)
+### root.R (2005-12-18)
 ###
 ###            Root of Phylogenetic Trees
 ###
@@ -23,15 +23,41 @@
 is.rooted <- function(phy)
 {
     if (class(phy) != "phylo")
-      stop("object \"phy\" is not of class \"phylo\"")
+      stop('object "phy" is not of class "phylo"')
     if (!is.null(phy$root.edge)) return(TRUE)
     else if (table(phy$edge[, 1])["-1"] > 2) return(FALSE) else return(TRUE)
 }
 
+unroot <- function(phy)
+{
+    if (class(phy) != "phylo")
+      stop('object "phy" is not of class "phylo"')
+    if (dim(phy$edge)[1] == 2)
+      stop("cannot unroot a tree with two edges.")
+    ## delete FIRST the root.edge (in case this is sufficient to
+    ## unroot the tree, i.e. there is multichotomy at the root)
+    if (!is.null(phy$root.edge)) phy$root.edge <- NULL
+    if (!is.rooted(phy)) return(phy)
+    i.oroot <- which(phy$edge[, 1] == "-1")
+    i <- i.oroot[1]
+    if (as.numeric(phy$edge[i, 2]) > 0) i <- i.oroot[2]
+    newroot <- phy$edge[i, 2]
+    j <- i.oroot[which(i.oroot != i)]
+    phy$edge[j, 1] <- newroot
+    phy$edge <- phy$edge[-i, ]
+    if (!is.null(phy$edge.length)) {
+        phy$edge.length[j] <- phy$edge.length[j] + phy$edge.length[i]
+        phy$edge.length <- phy$edge.length[-i]
+    }
+    phy$edge[which(phy$edge == newroot)] <- "-1"
+    read.tree(text = write.tree(phy, multi.line = FALSE))
+}
+
 root <- function(phy, outgroup)
 {
-    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
-    if (is.character(outgroup)) tip <- as.character(which(phy$tip.label == outgroup))
+    if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
+    if (is.character(outgroup))
+      tip <- as.character(which(phy$tip.label == outgroup))
     if (is.numeric(outgroup)) tip <- as.character(outgroup)
     ## First check that the outgroup is monophyletic--
     ## unless there's only one tip specified of course
@@ -66,9 +92,8 @@ root <- function(phy, outgroup)
         if (length(tip) != length(desc)) stop(msg)
         if (!all(sort(tip) == sort(desc))) stop(msg)
 
-    } else {
-        newroot <- phy$edge[which(phy$edge[, 2] == tip), 1]
-    }
+    } else newroot <- phy$edge[which(phy$edge[, 2] == tip), 1]
+
     if (newroot == "-1") return(phy)
 
     ## Invert all branches from the new root to the old one
@@ -88,13 +113,22 @@ root <- function(phy, outgroup)
         j <- i.oroot[which(i.oroot != i)]
         phy$edge[j, 1] <- phy$edge[i, 2]
         phy$edge <- phy$edge[-i, ]
-        phy$edge.length[j] <- phy$edge.length[j] + phy$edge.length[i]
-        phy$edge.length <- phy$edge.length[-i]
+        if (!is.null(phy$edge.length)) {
+            phy$edge.length[j] <- phy$edge.length[j] + phy$edge.length[i]
+            phy$edge.length <- phy$edge.length[-i]
+        }
         phy$edge[which(phy$edge == newroot)] <- "-1"
     } else {
         ## ... otherwise just invert the root with the newroot
         phy$edge[which(phy$edge == newroot)] <- "-1"
         phy$edge[i.oroot] <- newroot
+        ## ... and invert finally! (fixed 2005-11-07)
+        phy$edge[i, ] <- rev(phy$edge[i, ])
+    }
+    if (!is.null(phy$node.label)) {
+        tmp <- phy$node.label[1]
+        phy$node.label[1] <- phy$node.label[-as.numeric(newroot)]
+        phy$node.label[-as.numeric(newroot)] <- tmp
     }
     read.tree(text = write.tree(phy, multi.line = FALSE))
 }

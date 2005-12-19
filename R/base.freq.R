@@ -29,3 +29,9 @@ base.freq <- function(x)
     n <- length(x)
     table(factor(x, levels = c("a", "c", "g", "t"))) / n
 }
+
+GC.content <- function(x)
+{
+    BF <- base.freq(x)
+    sum(BF[2:3])
+}

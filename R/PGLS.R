@@ -39,7 +39,7 @@ corBrownian <- function(value = 1, phy, form=~1)
   return(value)
 }
 
-corMartins <- function(value = numeric(0), phy, form=~1, fixed=FALSE)
+corMartins <- function(value, phy, form=~1, fixed=FALSE)
 {
   if(length(value) > 1) stop("ERROR!!! Only one parameter is allowed in corPGLS structure.")
   if(value < 0) stop("ERROR!!! Parameter alpha must be positive.")
@@ -51,7 +51,7 @@ corMartins <- function(value = numeric(0), phy, form=~1, fixed=FALSE)
   return(value)
 }
 
-corGrafen <- function(value = numeric(0), phy, form=~1, fixed=FALSE)
+corGrafen <- function(value, phy, form=~1, fixed=FALSE)
 {
   if(length(value) > 1) stop("ERROR!!! Only one parameter is allowed in corGrafen structure.")
   if(value < 0) stop("ERROR!!! Parameter rho must be positive.")
@@ -102,7 +102,7 @@ corMatrix.corBrownian <- function(object, covariate = getCovariate(object), corr
   if (!("corBrownian" %in% class(object))) stop("ERROR!!! Object is not of class \"corBrownian\".")
   if(!any(attr(object, "index"))) stop("ERROR!!! object have not been initialized.")
   tree <- attr(object, "tree")
-  mat <- vcv.phylo(tree, corr)
+  mat <- vcv.phylo(tree, cor = corr)
   n <- dim(mat)[1]
   # reorder matrix:
   matr <- matrix(nrow=n, ncol=n)
@@ -118,7 +118,7 @@ corMatrix.corMartins <- function(object, covariate = getCovariate(object), corr 
   if (!("corMartins" %in% class(object))) stop("ERROR!!! Object is not of class \"corMartins\".")
   if(!any(attr(object, "index"))) stop("ERROR!!! object have not been initialized.")
   tree <- attr(object, "tree")
-  dist <- dist.phylo(tree)
+  dist <- cophenetic.phylo(tree)
   mat <- exp(-object[1] * dist)
   if(corr) mat <- cov2cor(mat)
   n <- dim(mat)[1]
@@ -136,7 +136,7 @@ corMatrix.corGrafen <- function(object, covariate = getCovariate(object), corr =
   if (!("corGrafen" %in% class(object))) stop("ERROR!!! Object is not of class \"corGrafen\".")
   if(!any(attr(object, "index"))) stop("ERROR!!! object have not been initialized.")
   tree <- compute.brlen(attr(object, "tree"), method = "Grafen", power = exp(object[1]))
-  mat <- vcv.phylo(tree, corr)
+  mat <- vcv.phylo(tree, cor = corr)
   n <- dim(mat)[1]
   # reorder matrix:
   matr <- matrix(nrow=n, ncol=n)
