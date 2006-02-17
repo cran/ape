@@ -1,6 +1,6 @@
 Package: ape
-Version: 1.8
-Date: 2005-12-19
+Version: 1.8-1
+Date: 2006-02-17
 Title: Analyses of Phylogenetics and Evolution
 Author: Emmanuel Paradis <paradis@isem.univ-montp2.fr>,
         Korbinian Strimmer <strimmer@stat.uni-muenchen.de>,
@@ -26,4 +26,4 @@ Description: Ape provides functions for reading, writing, plotting,
   of APE trees to and from hclust objects and for classifying genes in
   trees using the Klastorin-Misawa-Tajima approach.
 License: GPL version 2 or newer
-Packaged: Sun Dec 18 17:00:53 2005; root
+Packaged: Fri Feb 17 17:30:18 2006; hornik

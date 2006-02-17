@@ -45,7 +45,7 @@ dist.gene.percentage(x, variance = FALSE)
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{dist.dna}}, \code{\link{dist.phylo}}
+  \code{\link{dist.dna}}, \code{\link{cophenetic.phylo}}
 }
 \keyword{manip}
 

@@ -86,7 +86,7 @@ print.birthdeath <- function(x, ...)
     cat("      d / b =", x$para[1], "  StdErr =", x$se[1], "\n")
     cat("      b - d =", x$para[2], "  StdErr =", x$se[2], "\n")
     cat("   (b: speciation rate, d: extinction rate)\n")
-    cat("   Profile likelihood 95 % confidence intervals:\n")
+    cat("   Profile likelihood 95% confidence intervals:\n")
     cat("      d / b: [", x$CI[1, 1], ", ", x$CI[1, 2], "]", "\n", sep = "")
     cat("      b - d: [", x$CI[2, 1], ", ", x$CI[2, 2], "]", "\n\n", sep = "")
 }

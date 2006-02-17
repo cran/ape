@@ -22,7 +22,7 @@
 
 dist.phylo <- function(phy, full = FALSE)
 {
-    warning("the function dist.phylo is deprecated: cophenetic has been used instaead.\ndist.phylo will soon be removed: update your code.")
+    warning("the function `dist.phylo' is deprecated: \cophenetic' has been used instead.\n`dist.phylo' will soon be removed: update your code!")
     cophenetic.phylo(phy, full = FALSE)
 
 }

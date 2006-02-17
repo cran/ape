@@ -38,7 +38,7 @@ H(x, variance = FALSE)
   of the allele \eqn{i}.
 }
 \references{
-  Nei, M. (1987) \emph{Molecular Evolutionary Genetics}. New York:
+  Nei, M. (1987) \emph{Molecular evolutionary genetics}. New York:
   Columbia University Press.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}

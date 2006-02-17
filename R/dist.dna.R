@@ -1,4 +1,4 @@
-### dist.dna.R (2005-11-14)
+### dist.dna.R (2005-12-23)
 ###
 ###     Pairwise Distances from DNA Sequences
 ###
@@ -49,7 +49,7 @@ dist.dna <- function(x, model = "K80", variance = FALSE,
     }
     BF <- if (is.null(base.freq)) base.freq(x) else base.freq
     if (!pairwise.deletion) {
-        sel <- !apply(x, 1, function(x) any(x == c("n", "-")))
+        sel <- !apply(x, 1, function(x) any(x %in% c("n", "-")))
         x <- x[sel, ]
     }
     s <- nrow(x) # the number of sites

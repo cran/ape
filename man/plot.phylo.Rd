@@ -1,5 +1,6 @@
 \name{plot.phylo}
 \alias{plot.phylo}
+\alias{plot.multi.tree}
 \title{Plot Phylogenies}
 \usage{
 \method{plot}{phylo}(x, type = "phylogram", use.edge.length = TRUE,
@@ -9,9 +10,11 @@
     root.edge = FALSE, label.offset = 0, underscore = FALSE,
     x.lim = NULL, y.lim = NULL, direction = "rightwards",
     lab4ut = "horizontal", ...)
+\method{plot}{multi.tree}(x, layout = 1, ...)
 }
 \arguments{
-  \item{x}{an object of class \code{"phylo"}.}
+  \item{x}{an object of class \code{"phylo"} or of class
+    \code{"multi.tree"}.}
   \item{type}{a character string specifying the type of phylogeny to be
     drawn; it must be one of "phylogram" (the default), "cladogram",
     "unrooted", "radial" or any unambiguous abbreviation of these.}
@@ -82,12 +85,20 @@
     or \code{"axial"} where the labels are displayed in the axis of the
     corresponding terminal branches. This option has an effect only if
     \code{type = "unrooted"}.}
-  \item{...}{further arguments to be passed to \code{plot()}.}
+  \item{layout}{the number of trees to be plotted simultaneously.}
+  \item{...}{further arguments to be passed to \code{plot} or to
+    \code{plot.phylo}.}
 }
 \description{
-  This function plots a phylogenetic tree on the current graphical device.
+  These functions plot phylogenetic trees on the current graphical
+  device.
 }
 \details{
+  If \code{x} is a list of trees (i.e., an object of class
+  \code{"multi.tree"}), then any further argument may be passed with
+  \code{...} and could be any one of those listed above for a single
+  tree.
+
   The formatting of the labels of both the nodes and the tips is the
   same.
 
@@ -121,8 +132,8 @@
   you may need to replot the tree.
 }
 \value{
-  The function returns invisibly a list with the following components
-  which values are those used for the current plot:
+  \code{plot.phylo} returns invisibly a list with the following
+  components which values are those used for the current plot:
 
   \item{type}
   \item{use.edge.length}
@@ -144,7 +155,8 @@
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{read.tree}}, \code{\link{add.scale.bar}},
-  \code{\link{axisPhylo}}, \code{\link[graphics]{plot}} for the basic
+  \code{\link{axisPhylo}}, \code{\link{nodelabels}},
+  \code{\link[graphics]{plot}} for the basic
   plotting function in R
 }
 \examples{

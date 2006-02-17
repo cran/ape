@@ -34,10 +34,9 @@ howmanytrees(n, rooted = TRUE, binary = TRUE,
   For multifurcating trees, if \code{detail = TRUE}, a matrix is
   returned with the number of tips as rows (named from \code{1} to
   \code{n}), and the number of nodes as columns (named from \code{1} to
-  \code{n - 1}).
-
-  For bifurcating, rooted, unlabeled trees, a vector is returned with
-  names equal to the number of tips (from \code{1} to \code{n}).
+  \code{n - 1}). For bifurcating, rooted, unlabeled trees, a vector is
+  returned with names equal to the number of tips (from \code{1} to
+  \code{n}).
 
   The number of unlabeled trees (aka tree shapes) can be computed only
   for the rooted binary cases.

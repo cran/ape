@@ -52,7 +52,7 @@
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
 \seealso{
-	\code{\link{dist.phylo}}, \code{\link{discrete.dist}}, \code{\link{weight.taxo}}
+	\code{\link{cophenetic.phylo}}, \code{\link{discrete.dist}}, \code{\link{weight.taxo}}
 }
 \examples{
 ### This will draw the correlogram from Gittleman and Kot 1990

@@ -1,3 +1,38 @@
+		CHANGES IN APE VERSION 1.8-1
+
+
+NEW FEATURES
+
+    o There is a new plot method for lists of trees (objects of class
+      "multi.tree"): it calls plot.phylo() internally and is
+      documented on the same help page.
+
+
+BUG FIXES
+
+    o A bug was fixed in the C code that analyzes bipartitions: this
+      has impact on several functions like prop.part, prop.clades,
+      boot.phylo, or consensus.
+
+    o root() did not work correctly when the specified outgroup had
+      more than one element: this is fixed.
+
+    o dist.dna() sometimes returned a warning inappropriately: this
+      has been corrected.
+
+    o If the distance object given to nj() had no rownames, nj()
+      returned a tree with no tip labels: it now returns tips labelled
+      "1", "2", ..., corresponding to the row numbers.
+
+
+OTHER CHANGES
+
+    o nj() has been slightly changed so that tips with a zero distance
+      are first aggregated with zero-lengthed branches; the usual NJ
+      procedure is then performed on a distance matrix without 0's.
+
+
+
 		CHANGES IN APE VERSION 1.8
 
 

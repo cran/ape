@@ -122,7 +122,8 @@ read.tree <- function(file = "", format = "Newick", rooted = TRUE, text = NULL,
     x <- c(1, ind[-nb.tree] + 1)
     y <- ind - 1
     STRING <- list()
-    for (i in 1:nb.tree) STRING[[i]] <- paste(tsp[x[i]:y[i]], sep = "", collapse = "")
+    for (i in 1:nb.tree)
+      STRING[[i]] <- paste(tsp[x[i]:y[i]], sep = "", collapse = "")
     list.obj <- list()
     for (i in 1:nb.tree) {
         list.obj[[i]] <- if (length(grep(":", STRING[[i]]))) tree.build(STRING[[i]]) else clado.build(STRING[[i]])
@@ -140,13 +141,13 @@ read.tree <- function(file = "", format = "Newick", rooted = TRUE, text = NULL,
                 list.obj[[i]]$edge[j] <- as.character(as.numeric(list.obj[[i]]$edge[j]) + 1)
             ## Check a second time and if there is still a problem...!!!
             if(sum(list.obj[[i]]$edge[, 1] == "-1") == 1)
-              stop("There is apparently two root edges in your file:\cannot read tree file")
+              stop("There is apparently two root edges in your file:\ncannot read tree file")
         }
     }
     if (nb.tree == 1) list.obj <- list.obj[[1]] else {
         if (is.null(tree.names)) names(list.obj) <- paste("tree", 1:nb.tree, sep = "")
         else names(list.obj) <- tree.names
-        class(list.obj) <- c("phylo", "multi.tree")
+        class(list.obj) <- c("multi.tree", "phylo")
     }
     list.obj
 }

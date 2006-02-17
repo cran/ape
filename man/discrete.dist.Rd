@@ -18,7 +18,7 @@
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
 \seealso{
-	\code{\link{weight.taxo}} and \code{\link{dist.phylo}} for other distances.
+	\code{\link{weight.taxo}} and \code{\link{cophenetic.phylo}} for other distances.
   This function is used in \code{\link{correlogram.phylo}}.
 }
 \keyword{regression}

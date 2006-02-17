@@ -157,7 +157,7 @@ dist.dna(x, model = "K80", variance = FALSE,
 \seealso{
   \code{\link{read.GenBank}}, \code{\link{read.dna}},
   \code{\link{write.dna}}, \code{\link{dist.gene}},
-  \code{\link{dist.phylo}}, \code{\link[stats]{dist}}
+  \code{\link{cophenetic.phylo}}, \code{\link[stats]{dist}}
 }
 \keyword{manip}
 \keyword{multivariate}

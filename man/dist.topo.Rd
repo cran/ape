@@ -28,7 +28,7 @@ dist.topo(x, y, method = "PH85")
 
   Billera et al. (2001) developed a distance from the geometry of a tree
   space. The distance between two trees can be seen as the sum of the
-  branch lengths that need be erased to have to similar trees.
+  branch lengths that need be erased to have two similar trees.
 }
 \author{
   Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}
@@ -50,7 +50,7 @@ dist.topo(x, y, method = "PH85")
 }
 \seealso{
   \code{\link{read.tree}} to read tree files in Newick format,
-  \code{\link{dist.phylo}}, \code{\link{prop.part}}
+  \code{\link{cophenetic.phylo}}, \code{\link{prop.part}}
 }
 \examples{
 ta <- rtree(30)

@@ -1,8 +1,8 @@
-### root.R (2005-12-18)
+### root.R (2006-01-11)
 ###
 ###            Root of Phylogenetic Trees
 ###
-### Copyright 2004-2005 Emmanuel Paradis
+### Copyright 2004-2006 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -57,7 +57,7 @@ root <- function(phy, outgroup)
 {
     if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
     if (is.character(outgroup))
-      tip <- as.character(which(phy$tip.label == outgroup))
+      tip <- as.character(which(phy$tip.label %in% outgroup))
     if (is.numeric(outgroup)) tip <- as.character(outgroup)
     ## First check that the outgroup is monophyletic--
     ## unless there's only one tip specified of course

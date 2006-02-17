@@ -1,6 +1,6 @@
-/* bipartition.c */
+/* bipartition.c    2006-02-01 */
 
-/* Copyright 2005 Emmanuel Paradis */
+/* Copyright 2005-2006 Emmanuel Paradis */
 
 /* This file is part of the `ape' library for R and related languages. */
 /* It is made available under the terms of the GNU General Public */
@@ -33,9 +33,10 @@ SEXP seq_root2tip(SEXP edge1, SEXP edge2)
   nbedge = LENGTH(edge1);
 
   /* count the number of tips */
-  nbtip = 0;
+  if (x2[0] > 0) nbtip = 1; else nbtip = 0;
   /* count the number of nodes by finding the smallest element in 'edge1' */
   nbnode = x1[0];
+  /* start this loop on the 2nd edge */
   for (i = 1; i < nbedge; i++) {
     if (x2[i] > 0) nbtip++;
     if (x1[i] < nbnode) nbnode = x1[i];

@@ -1,8 +1,8 @@
-### is.ultrametric.R (2003-01-20)
+### is.ultrametric.R (2006-02-06)
 ###
 ###     Test if a Tree is Ultrametric
 ###
-### Copyright 2003 Emmanuel Paradis
+### Copyright 2003-2006 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -22,7 +22,10 @@
 
 is.ultrametric <- function(phy, tol = .Machine$double.eps^0.5)
 {
-    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
+    if (class(phy) != "phylo")
+      stop('object "phy" is not of class "phylo".')
+    if (is.null(phy$edge.length))
+      stop("the tree has no branch lengths.")
     tmp <- as.numeric(phy$edge)
     nb.tip <- max(tmp)
     nb.node <- -min(tmp)

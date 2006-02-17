@@ -1,8 +1,8 @@
-### plot.phylo.R (2005-12-18)
+### plot.phylo.R (2006-01-06)
 ###
 ###          Plot Phylogenies
 ###
-### Copyright 2002-2005 Emmanuel Paradis
+### Copyright 2002-2006 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -506,6 +506,18 @@ unrooted.xy <- function(nb.tip, nb.node, edge, edge.length)
     }
     M <- matrix(c(xx, yy), ncol = 2)
     rownames(M) <- names(xx)
-    axe[axe > pi] <- axe[axe > pi] - 2 * pi # insures that returned angles are in [-Pi, +PI]
+    axe[axe > pi] <- axe[axe > pi] - 2 * pi # insures that returned angles are in [-PI, +PI]
     list(M = M, axe = axe)
+}
+
+plot.multi.tree <- function(x, layout = 1, ...)
+{
+    if (layout > 1)
+      layout(matrix(1:layout, ceiling(sqrt(layout)), byrow = TRUE))
+    if (!par("ask")) {
+        changedpar <- TRUE
+        par(ask = TRUE)
+    }
+    for (i in x) plot(i, ...)
+    if (changedpar) par(ask = FALSE)
 }
