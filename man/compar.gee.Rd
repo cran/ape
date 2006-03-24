@@ -1,10 +1,12 @@
 \name{compar.gee}
 \alias{compar.gee}
 \alias{print.compar.gee}
+\alias{drop1.compar.gee}
 \title{Comparative Analysis with GEEs}
 \usage{
 compar.gee(formula, data = NULL, family = "gaussian", phy,
           scale.fix = FALSE, scale.value = 1)
+\method{drop1}{compar.gee}(object, scope, quiet = FALSE, ...)
 }
 \arguments{
   \item{formula}{a formula giving the model to be fitted.}
@@ -20,10 +22,19 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
     be fixed (TRUE) or estimated (FALSE, the default).}
   \item{scale.value}{if \code{scale.fix = TRUE}, gives the value for the
     scale (default: \code{scale.value = 1}).}
+  \item{object}{an object of class \code{"compar.gee"} resulting from
+    fitting \code{compar.gee}.}
+  \item{scope}{<unused>.}
+  \item{quiet}{a logical specifying whether to display a warning message
+    about eventual ``marginality principle violation''.}
+  \item{...}{further arguments to be passed to \code{drop1}.}
 }
 \description{
-  This function performs the comparative analysis using generalized
+  \code{compar.gee} performs the comparative analysis using generalized
   estimating equations as described by Paradis and Claude (2002).
+
+  \code{drop1} tests single effects of a fitted model output from
+  \code{compar.gee}.
 }
 \details{
   If a data frame is specified for the argument \code{data}, then its
@@ -32,14 +43,17 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
   perfectly match, so this operation may fail if there is a typing or
   syntax error. If both series of names do not match, the values in the
   data frame are taken to be in the same order than the tip labels of
-  \code{phy}, and a warning message is issued. 
+  \code{phy}, and a warning message is issued.
 
   If \code{data = NULL}, then it is assumed that the variables are in
   the same order than the tip labels of \code{phy}.
 }
 \value{
-  an object of class "compar.gee" with the following components:
+  \code{compar.gee} returns an object of class \code{"compar.gee"} with
+  the following components:
   \item{call}{the function call, including the formula.}
+  \code{effect.assign}{a vector of integers assigning the coefficients
+    to the effects (used by \code{drop1}).}
   \item{nobs}{the number of observations.}
   \item{coefficients}{the estimated coefficients (or regression parameters).}
   \item{residuals}{the regression residuals.}
@@ -49,6 +63,8 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
   \item{W}{the variance-covariance matrix of the estimated coefficients.}
   \item{dfP}{the phylogenetic degrees of freedom (see Paradis and Claude
     for details on this).}
+
+  \code{drop1} returns an object of class \code{"\link[stats]{anova}"}.
 }
 \references{
   Paradis, E. and Claude J. (2002) Analysis of comparative data using
@@ -59,7 +75,8 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 
 \seealso{
-  \code{\link{read.tree}}, \code{\link{pic}}, \code{\link{compar.lynch}}
+  \code{\link{read.tree}}, \code{\link{pic}},
+  \code{\link{compar.lynch}}, \code{\link[stats]{drop1}}
 }
 \examples{
 ### The example in Phylip 3.5c (originally from Lynch 1991)

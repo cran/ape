@@ -517,7 +517,7 @@ plot.multi.tree <- function(x, layout = 1, ...)
     if (!par("ask")) {
         changedpar <- TRUE
         par(ask = TRUE)
-    }
+    } else changedpar <- FALSE
     for (i in x) plot(i, ...)
     if (changedpar) par(ask = FALSE)
 }

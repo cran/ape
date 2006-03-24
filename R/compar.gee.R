@@ -1,8 +1,8 @@
-### compar.gee.R (2005-12-16)
+### compar.gee.R (2006-03-23)
 ###
 ###     Comparative Analysis with GEEs
 ###
-### Copyright 2002-2005 Emmanuel Paradis
+### Copyright 2002-2006 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -29,6 +29,7 @@ compar.gee <- function(formula, data = NULL, family = "gaussian", phy,
         else warning("the rownames of the data.frame and the names of the tip labels
 do not match: the former were ignored in the analysis.")
     }
+    effect.assign <- attr(model.matrix(formula, data = data), "assign")
     for (i in all.vars(formula)) {
         if (any(is.na(eval(parse(text = i), envir = data))))
           stop("the present method cannot (yet) be used directly with missing data: you may consider removing the species with missing data from your tree with the function `drop.tip'.")
@@ -57,6 +58,7 @@ do not match: the former were ignored in the analysis.")
     }
     dfP <- sum(phy$edge.length) * N / sum(xx[as.character(1:N)])
     obj <- list(call = geemod$call,
+                effect.assign = effect.assign,
                 nobs = N,
                 coefficients = geemod$coefficients,
                 residuals = geemod$residuals,
@@ -80,7 +82,10 @@ print.compar.gee <- function(x, ...)
     df <- x$dfP - dim(coef)[1]
     coef[, 2] <- sqrt(diag(x$W))
     coef[, 3] <- coef[, 1]/coef[, 2]
-    coef[, 4] <- 2 * (1 -  pt(abs(coef[, 3]), df))
+    if (df < 0) {
+        warning("not enough degrees of freedom to compute P-values.")
+        coef[, 4] <- NA
+    } else coef[, 4] <- 2 * (1 -  pt(abs(coef[, 3]), df))
     residu <- quantile(as.vector(x$residuals))
     names(residu) <- c("Min", "1Q", "Median", "3Q", "Max")
     cat("\nCall:\n")
@@ -99,4 +104,32 @@ print.compar.gee <- function(x, ...)
     print(coef)
     cat("\nEstimated Scale Parameter: ", x$scale)
     cat("\n\"Phylogenetic\" df (dfP): ", x$dfP, "\n")
+}
+
+drop1.compar.gee <- function(object, scope, quiet = FALSE, ...)
+{
+    fm <- formula(object$call)
+    trm <- terms(fm)
+    z <- attr(trm, "term.labels")
+    ind <- object$effect.assign
+    n <- length(z)
+    ans <- matrix(NA, n, 3)
+    for (i in 1:n) {
+        wh <- which(ind == i)
+        ans[i, 1] <- length(wh)
+        ans[i, 2] <- t(object$coefficients[wh]) %*%
+          solve(object$W[wh, wh]) %*% object$coefficients[wh]
+    }
+    df <- object$dfP - length(object$coefficients)
+    if (df < 0) warning("not enough degrees of freedom to compute P-values.")
+    else ans[, 3] <- pf(ans[, 2], ans[, 1], df, lower.tail = FALSE)
+    colnames(ans) <- c("df", "F", "Pr(>F)")
+    rownames(ans) <- z
+    if (any(attr(trm, "order") > 1) && !quiet)
+      warning("there is at least one interaction term in your model:
+you should be careful when interpreting the significance of the main effects.")
+    class(ans) <- "anova"
+    attr(ans, "heading") <- c("Single term deletions\n\nModel:\n",
+                              as.character(as.expression(fm)))
+    ans
 }

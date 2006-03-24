@@ -1,8 +1,8 @@
-### summary.phylo.R (2003-05-30)
+### summary.phylo.R (2006-03-24)
 ###
 ###       Print Summary of a Phylogeny
 ###
-### Copyright 2003 Emmanuel Paradis
+### Copyright 2003-2006 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -60,6 +60,18 @@ summary.phylo <- function(object, ...)
             cat("  First ten node labels:", object$node.label[1], "\n")
             cat(paste("                        ", object$node.label[2:10]), sep = "\n")
 
+        }
+    }
+    if (!is.null(attr(object, "loglik"))) {
+        cat("Phylogeny estimated by maximum likelihood.\n")
+        cat("  log-likelihood:", attr(object, "loglik"), "\n\n")
+        npart <- length(attr(object, "para"))
+        for (i in 1:npart) {
+            cat("partition ", i, ":\n", sep = "")
+            print(attr(object, "para")[[i]])
+            if (i == 1) next
+            else cat("  contrast parameter (xi):",
+                     attr(object, "xi")[i - 1], "\n")
         }
     }
 }

@@ -205,7 +205,7 @@ plot(bird.orders, type = "c", use.edge.length = FALSE,
      edge.width = rep(5, length(bird.orders$edge)/2))
 segments(rep(0, 6), 6.5:1.5, rep(2, 6), 6.5:1.5, lwd = 5, col = X)
 text(rep(2.5, 6), 6.5:1.5, paste(X, "..."), adj = 0)
-title("Character mapping is possible...")
+title("Character mapping...")
 plot(bird.orders, "u", font = 1, cex = 0.75)
 data(bird.families)
 plot(bird.families, "u", lab4ut = "axial", font = 1, cex = 0.5)

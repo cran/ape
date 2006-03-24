@@ -1,3 +1,30 @@
+		CHANGES IN APE VERSION 1.8-2
+
+
+NEW FEATURES
+
+    o The new function mlphylo() fits a phylogenetic tree by maximum
+      likelihood from DNA sequences. Its companion function DNAmodel()
+      is used to define the substitution model which may include
+      partitioning. There are methods for logLik(), deviance(), and
+      AIC(), and the summary() method has been extended to display in
+      a friendly way the results of this model fitting. Currently, the
+      functionality is limited to estimating the substitution and
+      associated parameters and computing the likelihood.
+
+    o The new function drop1.compar.gee (used as, e.g.,  drop1(m))
+      tests for single effects in GEE-based comparative method. A
+      warning message is printed if there is not enough degrees of
+      freedom.
+
+
+BUG FIXES
+
+    o An error message was sometimes issued by plot.multi.tree()
+      though with no consequence.
+
+
+
 		CHANGES IN APE VERSION 1.8-1
 
 

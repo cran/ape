@@ -39,6 +39,7 @@
 \alias{pos.move}
 \alias{BOTHlabels}
 \alias{chronopl.cv}
+\alias{prepare.dna}
 \title{Internal Ape Functions}
 \description{
   Internal ape functions.
