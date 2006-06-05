@@ -9,7 +9,7 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
           exclude = NULL, execname, path2exec = NULL)
 \method{print}{phymltest}(x, ...)
 \method{summary}{phymltest}(object, ...)
-\method{plot}{phymltest}(x, ...)
+\method{plot}{phymltest}(x, main = NULL, col = "blue", ...)
 }
 \arguments{
   \item{seqfile}{a character string giving the name of the file that
@@ -31,6 +31,11 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
     it is in the computer path, or it is in R's working directory).}
   \item{x}{an object of class \code{"phymltest"}.}
   \item{object}{an object of class \code{"phymltest"}.}
+  \item{main}{a title for the plot; if left \code{NULL}, a title is made
+    with the name of the object (use \code{main = ""} to have no
+    title).}
+  \item{col}{a colour used for the segments showing the AIC values (blue
+    by default).}
   \item{...}{further arguments passed to or from other methods.}
 }
 \description{
@@ -129,6 +134,7 @@ class(x) <- "phymltest"
 x
 summary(x)
 plot(x)
+plot(x, main = "", col = "red")
 ### This example needs PHYML, copy/paste or type the
 ### following commands if you want to try them, eventually
 ### changing setwd() and the options of phymltest()

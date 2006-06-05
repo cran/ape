@@ -1,8 +1,8 @@
-### ace.R  (2005-12-16)
+### ace.R  (2006-06-25)
 ###
 ###            Ancestral Character Estimation
 ###
-### Copyright 2005 Emmanuel Paradis
+### Copyright 2005-2006 Emmanuel Paradis and Ben Bolker
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -22,7 +22,7 @@
 
 ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
                 model = if (type == "continuous") "BM" else "ER",
-                scaled = TRUE, kappa = 1, corStruct = NULL)
+                scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1)
 {
     if (class(phy) != "phylo")
       stop('object "phy" is not of class "phylo".')
@@ -30,8 +30,7 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
     tmp <- as.numeric(phy$edge)
     nb.tip <- max(tmp)
     nb.node <- -min(tmp)
-    if (nb.node != nb.tip - 1)
-      stop('"phy" is not rooted AND fully dichotomous.')
+    if (nb.node != nb.tip - 1)      stop('"phy" is not rooted AND fully dichotomous.')
     if (length(x) != nb.tip)
       stop("length of phenotypic and of phylogenetic data do not match.")
     if (!is.null(names(x))) {
@@ -206,14 +205,18 @@ did not match: the former were ignored in the analysis.')
             if (output.liks) return(liks[-(1:nb.tip), ])
             - 2 * log(sum(liks["-1", ]))
         }
-        out <- nlm(function(p) dev(p), p = rep(0.1, np), hessian = TRUE)
+        out <- nlm(function(p) dev(p),
+                   p = rep(ip, length.out = np),
+                   hessian = TRUE)
         obj$loglik <- -out$minimum / 2
         obj$rates <- out$estimate
         if (any(out$gradient == 0))
           warning("The likelihood gradient seems flat in at least one dimension (null gradient):\ncannot compute the standard-errors of the transition rates.\n")
         else obj$se <- sqrt(diag(solve(out$hessian)))
+        obj$index.matrix <- rate
+        diag(obj$index.matrix) <- NA
         if (CI) {
-            lik.anc <- dev(obj$rate, TRUE)
+            lik.anc <- dev(obj$rates, TRUE)
             lik.anc <- lik.anc / rowSums(lik.anc)
             colnames(lik.anc) <- lvls
             obj$lik.anc <- lik.anc
@@ -221,4 +224,35 @@ did not match: the former were ignored in the analysis.')
     }
     obj$call <- match.call()
     obj
+}
+
+logLik.ace <- function(object, ...) object$loglik
+
+deviance.ace <- function(object, ...) -2*object$loglik
+
+AIC.ace <- function(object, ..., k = 2)
+{
+    if (is.null(object$loglik)) return(NULL)
+    ## Trivial test of "type"; may need to be improved
+    ## if other models are included in ace(type = "c")
+    np <- if (!is.null(object$sigma2)) 1 else length(object$rates)
+    -2*object$loglik + np*k
+}
+
+### by BB:
+anova.ace <- function(object, ...)
+{
+    X <- c(list(object), list(...))
+    df <- sapply(lapply(X, "[[", "rates"), length)
+    ll <- sapply(X, "[[", "loglik")
+    ## check if models are in correct order?
+    dev <- c(NA, 2*diff(ll))
+    ddf <- c(NA, diff(df))
+    table <- data.frame(ll, df, ddf, dev,
+                        pchisq(dev, df, lower.tail = FALSE))
+    dimnames(table) <- list(1:length(X), c("Log lik.", "Df",
+                                           "Df change", "Deviance",
+                                           "Pr(>|Chi|)"))
+    structure(table, heading = "Likelihood Ratio Test Table",
+              class = c("anova", "data.frame"))
 }

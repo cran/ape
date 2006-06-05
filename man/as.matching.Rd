@@ -4,8 +4,8 @@
 \alias{as.phylo.matching}
 \title{Conversion Between Phylo and Matching Objects}
 \description{
-  These functions convert objects between the classes "phylo" and
-  "matching".
+  These functions convert objects between the classes \code{"phylo"} and
+  \code{"matching"}.
 }
 \usage{
 as.matching(x, ...)
@@ -13,8 +13,8 @@ as.matching(x, ...)
 \method{as.phylo}{matching}(x, ...)
 }
 \arguments{
-  \item{x}{an object to convert as an object of class "matching" or of
-    class "phylo".}
+  \item{x}{an object to convert as an object of class \code{"matching"}
+    or of class \code{"phylo"}.}
   \item{labels}{a logical specifying whether the tip and node labels
     should be included in the returned matching.}
   \item{\dots}{further arguments to be passed to or from other methods.}
@@ -30,8 +30,8 @@ as.matching(x, ...)
   follow them in the present functions.
 }
 \value{
-  \code{as.matching} returns an object of class "matching" with the
-  following component:
+  \code{as.matching} returns an object of class \code{"matching"} with
+  the following component:
 
   \item{matching}{a three-columns numeric matrix where the first two
     columns represent the sibling pairs, and the third one the
@@ -47,7 +47,7 @@ as.matching(x, ...)
     element is the label of the node numbered i + n in \code{matching},
     with n the number of tips).}
 
-  \code{as.phylo.matching} returns an object of class "phylo".
+  \code{as.phylo.matching} returns an object of class \code{"phylo"}.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \references{

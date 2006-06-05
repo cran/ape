@@ -1,7 +1,7 @@
 ### birthdeath.R  (2005-03-23)
 ###
 ###       Estimation of Speciation and Extinction Rates
-###                 With Birth-Death Models
+###                 with Birth-Death Models
 ###
 ### birthdeath: standard model
 ### bd.ext: extended version
@@ -77,7 +77,7 @@ birthdeath <- function(phy)
 print.birthdeath <- function(x, ...)
 {
     cat("\nEstimation of Speciation and Extinction Rates\n")
-    cat("            With Birth-Death Models\n\n")
+    cat("            with Birth-Death Models\n\n")
     cat("     Phylogenetic tree:", x$tree, "\n")
     cat("        Number of tips:", x$N, "\n")
     cat("              Deviance:", x$dev, "\n")

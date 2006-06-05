@@ -1,4 +1,4 @@
-### plot.phylo.R (2006-01-06)
+### plot.phylo.R (2006-05-03)
 ###
 ###          Plot Phylogenies
 ###
@@ -35,6 +35,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     if (is.null(x$edge.length)) use.edge.length <- FALSE
     tmp <- as.numeric(x$edge)
     nb.tip <- max(tmp)
+    if (nb.tip == 1) stop("found only one tip in the tree!")
     nb.node <- -min(tmp)
     if (!show.tip.label) x$tip.label <- rep("", nb.tip)
     if (type == "unrooted" || !use.edge.length) root.edge <- FALSE

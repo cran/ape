@@ -19,7 +19,7 @@ DNAmodel(model = "K80", part.model = 1,
     inter-sites variation in substitution parameters (eventually
     recycled).}
   \item{invar}{a vector of logical values specifying whether there are
-    invaraints in each partition defined by \code{part.invar} (must be
+    invariants in each partition defined by \code{part.invar} (must be
     of the same length than \code{unique(part.invar)}).}
   \item{part.invar}{a vector of integers defining the partitions for the
     proportion of invariants (eventually recycled).}

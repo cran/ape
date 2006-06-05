@@ -1,4 +1,4 @@
-### root.R (2006-01-11)
+### root.R (2006-03-31)
 ###
 ###            Root of Phylogenetic Trees
 ###
@@ -89,6 +89,9 @@ root <- function(phy, outgroup)
         ## Then check that all descendants of this node
         ## are included in the outgroup
         desc <- names(unlist(lapply(seq.nod, function(x) which(x == newroot))))
+        ## First, if all descendants are all the tips of the tree, then
+        ## the outgroup is already outgroup (just return the tree):
+        if (length(desc) == nb.tip) return(phy)
         if (length(tip) != length(desc)) stop(msg)
         if (!all(sort(tip) == sort(desc))) stop(msg)
 

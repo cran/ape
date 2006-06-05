@@ -11,11 +11,6 @@ nj(X)
 \arguments{
   \item{X}{a distance matrix; may be an object of class ``dist''.}
 }
-\details{
-  The argument may be a square matrix (e.g. as estimated by
-  \code{\link{dist.dna}}), a \code{dist} object (estimated by
-  \code{\link[stats]{dist}}).
-}
 \value{
   an object of class \code{"phylo"}.
 }

@@ -40,6 +40,7 @@
 \alias{BOTHlabels}
 \alias{chronopl.cv}
 \alias{prepare.dna}
+\alias{floating.pie.asp}
 \title{Internal Ape Functions}
 \description{
   Internal ape functions.

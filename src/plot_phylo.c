@@ -21,13 +21,13 @@
 void node_depth_edgelength(int *ntip, int *nnode, int *edge1, int *edge2,
 			   int *nms, double *edge_length, double *xx)
 {
-  int i, j, k;
+    int i, j, k;
 
-  for (i = 1; i < *ntip + *nnode; i++) {
-    j = 0;
-    while (edge2[j] != nms[i]) j++;
-    if (edge1[j] < 0) k = -edge1[j] - 1;
-    else k = nnode + edge1[j] - 1;
-    xx[i] = xx[k] + edge_length[j];
-  }
+    for (i = 1; i < *ntip + *nnode; i++) {
+        j = 0;
+	while (edge2[j] != nms[i]) j++;
+	if (edge1[j] < 0) k = -edge1[j] - 1;
+	else k = nnode + edge1[j] - 1;
+	xx[i] = xx[k] + edge_length[j];
+    }
 }

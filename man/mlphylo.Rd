@@ -31,8 +31,8 @@ mlphylo(model = DNAmodel(), x, phy, search.tree = FALSE)
   the function \code{\link{DNAmodel}}.
 
   \code{logLik}, \code{deviance}, and \code{AIC} are generic functions
-  used to extract the log-likelihood, the deviance (-2*log-likelihood),
-  or the Akaike information criterion of a tree. If no such values are
+  used to extract the log-likelihood, the deviance (-2*logLik), or the
+  Akaike information criterion of a tree. If no such values are
   available, \code{NULL} is returned.
 }
 \details{
@@ -49,8 +49,8 @@ mlphylo(model = DNAmodel(), x, phy, search.tree = FALSE)
 
   The difference among partitions is parametrized with a contrast
   parameter (denoted \eqn{\xi}{xi}) that specifies the contrast in mean
-  susbtitution rate among the partitions. This methodology will be
-  detailed in a forthcoming paper.
+  susbtitution rate among the partitions. This methodology is inspired
+  from one introduced by Yang (1996).
 
   The substitution rates are indexed column-wise in the rate matrix: the
   first rate is set to one.
@@ -82,6 +82,10 @@ mlphylo(model = DNAmodel(), x, phy, search.tree = FALSE)
   Yang, Z. (1994) Maximum likelihood phylogenetic estimation from DNA
   sequences with variable rates over sites: approximate methods.
   \emph{Journal of Molecular Evolution}, \bold{39}, 306--314.
+
+  Yang, Z. (1996) Maximum-likelihood models for combined analyses of
+  multiple sequence data. \emph{Journal of Molecular Evolution},
+  \bold{42}, 587--596.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{

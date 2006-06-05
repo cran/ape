@@ -1,4 +1,52 @@
-		CHANGES IN APE VERSION 1.8-2
+		CHANGES IN APE VERSION 1.8-3
+
+
+NEW FEATURES
+
+    o There are four new `method' functions to be used with the
+      results of ace(): logLik(), deviance(), AIC(), and anova().
+
+    o The plot method of phymltest has two new arguments: `main' to
+      change the title, and `col' to control the colour of the
+      segments showing the AIC values.
+
+    o ace() has a new argument `ip' that gives the initial values used
+      the ML estimation with discrete characters (see the examples in
+      ?ace). This function now returns a matrix giving the indices of
+      the estimated rates when analysing discrete parameters
+
+    o nodelabels() and tiplabels() have a new argument `pie' to
+      represent proportions, with any number of categories, as
+      piecharts. The use of the option `thermo' has been improved:
+      there is now no limitation on the number of categories.
+
+
+BUG FIXES
+
+    o mlphylo() did not work with more than two partitions: this is
+      fixed.
+
+    o root() failed if the proposed outgroup was already an outgroup
+      in the tree: this is fixed.
+
+    o The `col' argument in nodelabels() and tiplabels() was not
+      correctly passed when `text' was used: this is fixed.
+
+    o Two bugs were fixed in mlphylo(): parameters were not always
+      correctly output, and the estimation failed in some cases.
+
+    o plot.phylo() was stuck when given a tree with a single tip: this
+      is fixed and a message error is now returned.
+
+    o An error was corrected in the help page of gammaStat regarding
+      the calculation of P-values.
+
+    o Using gls() could crash R when the number of species in the tree
+      and in the variables were different: this is fixed.
+
+
+
+    		CHANGES IN APE VERSION 1.8-2
 
 
 NEW FEATURES
@@ -12,7 +60,7 @@ NEW FEATURES
       functionality is limited to estimating the substitution and
       associated parameters and computing the likelihood.
 
-    o The new function drop1.compar.gee (used as, e.g.,  drop1(m))
+    o The new function drop1.compar.gee (used as, e.g., drop1(m))
       tests for single effects in GEE-based comparative method. A
       warning message is printed if there is not enough degrees of
       freedom.
@@ -20,7 +68,7 @@ NEW FEATURES
 
 BUG FIXES
 
-    o An error message was sometimes issued by plot.multi.tree()
+    o An error message was sometimes issued by plot.multi.tree(),
       though with no consequence.
 
 

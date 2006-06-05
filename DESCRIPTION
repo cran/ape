@@ -1,6 +1,6 @@
 Package: ape
-Version: 1.8-2
-Date: 2006-03-24
+Version: 1.8-3
+Date: 2006-06-05
 Title: Analyses of Phylogenetics and Evolution
 Author: Emmanuel Paradis <paradis@isem.univ-montp2.fr>,
         Korbinian Strimmer <strimmer@stat.uni-muenchen.de>,
@@ -9,7 +9,8 @@ Author: Emmanuel Paradis <paradis@isem.univ-montp2.fr>,
         Rainer Opgen-Rhein <opgen@stat.uni-muenchen.de>,
         Julien Dutheil <julien.dutheil@univ-montp2.fr>,
         Yvonnick Noel <noel@univ-lille3.fr>,
-        Ben Bolker <bolker@zoo.ufl.edu>
+        Ben Bolker <bolker@zoo.ufl.edu>,
+        Jim Lemon <jim@bitwrit.com.au>
 Maintainer: Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 Depends: R (>= 2.0.0)
 Suggests: gee, nlme, lattice
@@ -27,4 +28,4 @@ Description: Ape provides functions for reading, writing, plotting,
   trees using the Klastorin-Misawa-Tajima approach. Phylogeny estimation
   can be done with the NJ and ML methods.
 License: GPL version 2 or newer
-Packaged: Fri Mar 24 03:42:08 2006; paradis
+Packaged: Mon Jun  5 11:03:56 2006; paradis

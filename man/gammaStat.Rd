@@ -23,8 +23,8 @@ gammaStat(phy)
   that the clade diversified with constant rates, a normal distribution
   with mean zero and standard-deviation unity (Pybus and Harvey
   2000). Thus, the null hypothesis that the clade diversified with
-  constant rates may be tested with \code{1 -
-    2*pnorm(abs(gammaStat(phy)))} for a two-tailed test, or \code{1 -
+  constant rates may be tested with \code{2*(1 -
+    pnorm(abs(gammaStat(phy))))} for a two-tailed test, or \code{1 -
     pnorm(abs(gammaStat(phy)))} for a one-tailed test, both returning
   the corresponding P-value.
 }

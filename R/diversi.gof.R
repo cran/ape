@@ -42,7 +42,7 @@ diversi.gof <- function(x, null = "exponential", z = NULL)
     cat("Null model: ")
     if (null == "exponential") cat("exponential\n\n")
     else cat(deparse(substitute(z)), "(user-specified)\n\n")
-    cat("Cramér-von Mises test: W2 =", round(W2, 3))
+    cat("Cramer-von Mises test: W2 =", round(W2, 3))
     if (null == "exponential") {
         if (W2 < 0.177) cat("   P > 0.1\n")
         if (W2 >= 0.177 && W2 < 0.224) cat("   0.05 < P < 0.1\n")

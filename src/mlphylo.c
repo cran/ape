@@ -1,4 +1,4 @@
-/* mlphylo.c       2006-03-23 */
+/* mlphylo.c       2006-04-15 */
 
 /* Copyright 2006 Emmanuel Paradis
 
@@ -704,9 +704,12 @@ optimize the contrast parameter(s) xi
     infptr = &INFO;
     INFO.D = D;
 
+    /* In the following, the range of the search algo was changed from */
+    /* 0-1000 to 0-100 to avoid infinite looping. (2006-04-15) */
+
     for(i = 0; i < N; i++) {
         infptr->i = i;
-	XI = Brent_fmin(0.0, 1.e3,
+	XI = Brent_fmin(0.0, 1.e2,
 		       (double (*)(double, void*)) fcn_mlphylo_xi,
 		       infptr, 1.e-6);
 	D->partition.xi[i] = XI;

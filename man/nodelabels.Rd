@@ -8,11 +8,11 @@
 }
 \usage{
 nodelabels(text, node, adj = c(0.5, 0.5), frame = "rect",
-           pch = NULL, thermo = NULL, col = "black",
-           bg = "lightblue", ...)
+           pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
+           col = "black", bg = "lightblue", ...)
 tiplabels(text, tip, adj = c(0.5, 0.5), frame = "rect",
-          pch = NULL, thermo = NULL, col = "black",
-          bg = "yellow", ...)
+          pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
+          col = "black", bg = "yellow", ...)
 }
 \arguments{
   \item{text}{a vector of mode character giving the text to be
@@ -32,12 +32,15 @@ tiplabels(text, tip, adj = c(0.5, 0.5), frame = "rect",
     this is eventually recycled. See \code{\link[graphics]{par}} for R's
     plotting symbols. If \code{pch} is used, then \code{text} is
     ignored.}
-  \item{thermo}{a numeric vector giving some proportions for each node
-    (the thermometers are filled up to this level), or a two-column
-    matrix giving two proportions (the thermometers are filled between
-    these two levels).}
+  \item{thermo}{a numeric vector giving some proportions (values between
+    0 and 1) for each node, or a numeric matrix giving some proportions
+    (the rows must sum to one).}
+  \item{pie}{same than \code{thermo}.}
+  \item{piecol}{a list of colours (given as a character vector) to be
+    used by \code{thermo} or \code{pie}; if left \code{NULL}, a series
+    of colours given by the function \code{rainbow} is used.}
   \item{col}{a character string giving the color to be used for the
-    plotting symbols; this is eventually recycled.}
+    text or the plotting symbols; this is eventually recycled.}
   \item{bg}{a character string giving the color to be used for the
     background of the text frames or of the plotting symbols if it
     applies; this is eventually recycled.}
@@ -57,16 +60,19 @@ tiplabels(text, tip, adj = c(0.5, 0.5), frame = "rect",
   If \code{node} (or \code{tip}) is missing, then the text or the
   symbols are printed on all nodes (or tips).
 
-  A simple call of these functions with no arguments
-  (e.g., \code{nodelabels()}) prints the numbers of all nodes (or
-  tips).
+  The option \code{cex} can be used to change the size of all types of
+  labels.
+
+  A simple call of these functions with no arguments (e.g.,
+  \code{nodelabels()}) prints the numbers of all nodes (or tips).
 
   In the case of \code{tiplabels}, it will be useful to play with the
   options \code{x.lim} and \code{label.offset} (and possibly
   \code{show.tip.label}) of \code{plot.phylo} in most cases (see the
   examples).
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}, Ben Bolker
+  \email{bolker@zoo.ufl.edu}, and Jim Lemon}
 \seealso{
   \code{\link{plot.phylo}}
 }
@@ -108,5 +114,19 @@ plot(bird.orders, "c", FALSE, font = 1, label.offset = 3,
      x.lim = 31, no.margin = TRUE)
 tiplabels(pch = 21, bg = gray(1:23/23), cex = 2, adj = 1.4)
 tiplabels(pch = 19, col = c("yellow", "red", "blue"), adj = 2.5, cex = 2)
+### Some random data to compare piecharts and thermometres:
+tr <- rcoal(15)
+x <- runif(14, 0, 0.33)
+y <- runif(14, 0, 0.33)
+z <- runif(14, 0, 0.33)
+x <- cbind(x, y, z, 1 - x - y - z)
+layout(matrix(1:2, 1, 2))
+plot(tr, "c", FALSE, no.margin = TRUE)
+nodelabels(pie = x, cex = 1.3)
+text(4.5, 15, "Are you \"pie\"...", font = 4, cex = 1.5)
+plot(tr, "c", FALSE, no.margin = TRUE)
+nodelabels(thermo = x, col = rainbow(4), cex = 1.3)
+text(4.5, 15, "... or \"thermo\"?", font = 4, cex = 1.5)
+layout(matrix(1))
 }
 \keyword{aplot}

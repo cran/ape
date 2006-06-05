@@ -82,6 +82,10 @@ Initialize.corPhyl <- function(object, data, ...)
   phy <- attr(object, "tree")
   if (is.null(data))
     data <- parent.frame()
+  ## Added by EP 29 May 2006:
+  if (nrow(data) != length(phy$tip.label))
+    stop("number of observations and number of tips in the tree are not equal.")
+  ## End of addition by EP.
   if(is.null(rownames(data))) {
     warning("No row names supplied in dataframe, data taken to be in the same order as in tree.")
     attr(object, "index") <- 1:dim(data)[1]

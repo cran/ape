@@ -139,19 +139,20 @@ summary.phymltest <- function(object, ...)
     data.frame(model1, model2, chi2, df, P.val = round(P.val, 4))
 }
 
-plot.phymltest <- function(x, ...)
+plot.phymltest <- function(x, main = NULL, col = "blue", ...)
 {
     nfp <- .phymltest.nfp[.phymltest.model %in% names(x)]
     N <- length(x)
     aic <- 2 * (nfp - x)
+    if (is.null(main))
+      main <- paste("Akaike information criterion for",
+                    deparse(substitute(x)))
     plot(rep(1, N), aic, bty = "n", xaxt = "n", yaxt = "n",
-         type = "n", xlab = "", ylab = "",
-         main = paste("Akaike information criterion for", deparse(substitute(x))),
-         ...)
+         type = "n", xlab = "", ylab = "", main = main, ...)
     axis(side = 2, pos = 0.85, las = 2)
     abline(v = 0.85)
     y.lab <- seq(min(aic), max(aic), length = N)
-    segments(0.85, sort(aic), 1.1, y.lab, col = "blue")
+    segments(0.85, sort(aic), 1.1, y.lab, col = col)
     text(1.1, y.lab,
          parse(text = sub("\\+G", "\\+Gamma", names(sort(aic)))),
          adj = 0)

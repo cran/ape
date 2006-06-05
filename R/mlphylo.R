@@ -1,4 +1,4 @@
-### mlphylo.R  (2006-03-23)
+### mlphylo.R  (2006-05-20)
 ###
 ###        Estimating Phylogenies by Maximum Likelihood
 ###
@@ -79,15 +79,18 @@ mlphylo <- function(model = DNAmodel(), x, phy, search.tree = FALSE)
     }
     match$matching[nr, 3] <- 0
 
-    para <- if (Y$npara) rep(1, Y$npara) else 0
-    if (!Y$npara) Y$pim.para <- 0
-    alpha <- if (Y$nalpha) rep(.5, Y$nalpha) else 0
-    if (!Y$nalpha) {
+    if (Y$npara) para <- rep(1, Y$npara)
+    else Y$pim.para <- para <- 0
+
+    if (Y$nalpha) alpha <- rep(.5, Y$nalpha)
+    else {
         Y$ncat <- rep(1, npart)
-        Y$pim.alpha <- 0
+        alpha <- Y$pim.alpha <- 0
     }
-    if (Y$ninvar == 0) Y$pim.invar <- 0
-    invar <- if (Y$ninvar) rep(0.5, Y$ninvar) else 0
+
+    if (Y$ninvar) invar <- rep(0.5, Y$ninvar)
+    else invar <- Y$pim.invar <- 0
+
     loglik <- 0
 
     cat("Fitting in progress... ")
@@ -117,17 +120,17 @@ mlphylo <- function(model = DNAmodel(), x, phy, search.tree = FALSE)
     for (i in 1:npart) {
         l <- list(.subst.model[ans[[14]]][i])
         names(l) <- "substitution model"
-        if (Y$npara && Y$pim.para[, i]) {
+        if (Y$npara && sum(Y$pim.para[, i])) {
             tmp <- list(ans[[16]][as.logical(Y$pim.para[, i])])
             names(tmp) <- "substitution rates"
             l <- c(l, tmp)
         }
-        if (Y$nalpha && Y$pim.alpha[, i]) {
+        if (Y$nalpha && sum(Y$pim.alpha[, i])) {
             tmp <- list(ans[[19]][as.logical(Y$pim.alpha[, i])])
             names(tmp) <- "alpha"
             l <- c(l, tmp)
         }
-        if (Y$ninvar && Y$pim.invar[, i]) {
+        if (Y$ninvar && sum(Y$pim.invar[, i])) {
             tmp <- list(ans[[23]][as.logical(Y$pim.invar[, i])])
             names(tmp) <- "invariants rate"
             l <- c(l, tmp)
@@ -274,6 +277,7 @@ prepare.dna <- function(X, DNAmodel)
         XC <- cbind(XC, xc)
         XG <- cbind(XG, xg)
         XT <- cbind(XT, xt)
+        part <- c(part, dim(xa)[2])
     }
     ## Here we add rows to these matrices for the nodes:
     tmp <- matrix(1, nrow(XA) - 2, ncol(XA))
@@ -281,7 +285,6 @@ prepare.dna <- function(X, DNAmodel)
     XC <- rbind(XC, tmp)
     XG <- rbind(XG, tmp)
     XT <- rbind(XT, tmp)
-    part <- c(part, dim(xa)[2])
     ## 'partition' gives the start and end of each partition:
     partition <- matrix(1, 2, npart)
     partition[2, ] <- cumsum(part)

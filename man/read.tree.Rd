@@ -35,7 +35,7 @@ read.tree(file = "", format = "Newick", rooted = TRUE, text = NULL,
 }
 \description{
   This function reads a file which contains one or several trees in
-  parenthetic format known as the Newick or New Hampshire format. 
+  parenthetic format known as the Newick or New Hampshire format.
 }
 \details{
   The default option for \code{file} allows to type directly the tree on
@@ -68,7 +68,7 @@ read.tree(file = "", format = "Newick", rooted = TRUE, text = NULL,
   \item{node.label}{(optional) a vector of mode character giving the
     names of the nodes (set to \code{NULL} if not available in the file).}
   \item{root.edge}{(optional) a numeric value giving the length of the
-    branch at the root is it exists (\code{NULL} otherwise).}
+    branch at the root if it exists (\code{NULL} otherwise).}
 
   If several trees are read in the file, the returned object is of class
   \code{c("multi.tree", "phylo")}, and is a list of objects of class
