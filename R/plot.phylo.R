@@ -1,4 +1,4 @@
-### plot.phylo.R (2006-05-03)
+### plot.phylo.R (2006-07-15)
 ###
 ###          Plot Phylogenies
 ###
@@ -23,12 +23,15 @@
 plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                        node.pos = NULL, show.tip.label = TRUE,
                        show.node.label = FALSE, edge.color = "black",
-                       edge.width = 1, font = 3,cex = par("cex"),
+                       edge.width = 1, font = 3, cex = par("cex"),
                        adj = NULL, srt = 0, no.margin = FALSE,
                        root.edge = FALSE, label.offset = 0, underscore = FALSE,
                        x.lim = NULL, y.lim = NULL, direction = "rightwards",
-                       lab4ut = "horizontal", ...)
+                       lab4ut = "horizontal", tip.color = "black", ...)
 {
+    if (any(table(x$edge[, 1]) == 1))
+      stop("there are single (non-splitting) nodes in your tree;
+you may need to use collapse.singles().")
     type <- match.arg(type, c("phylogram", "cladogram", "unrooted", "radial"))
     direction <- match.arg(direction, c("rightwards", "leftwards",
                                         "upwards", "downwards"))
@@ -209,7 +212,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     if (!underscore) x$tip.label <- gsub("_", " ", x$tip.label)
     if (type %in% c("phylogram", "cladogram")) {
         text(xx[as.character(1:nb.tip)] + lox, yy[as.character(1:nb.tip)] + loy,
-             x$tip.label, adj = adj, font = font, srt = srt, cex = cex)
+             x$tip.label, adj = adj, font = font, srt = srt, cex = cex, col = tip.color)
     }
     if (type == "unrooted") {
         if (lab4ut == "horizontal") {
@@ -223,14 +226,16 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
             sel <- XY$axe < -pi / 4 & XY$axe > -0.75 * pi
             y.adj[sel] <- -strheight(x$tip.label)[sel] * 0.75
             text(xx[as.character(1:nb.tip)] + x.adj, yy[as.character(1:nb.tip)] + y.adj,
-                 x$tip.label, adj = c(adj, 0), font = font, srt = srt, cex = cex)
+                 x$tip.label, adj = c(adj, 0), font = font, srt = srt, cex = cex,
+                 col = tip.color)
         } else { # if lab4ut == "axial"
             adj <- as.numeric(abs(XY$axe) > pi / 2)
             srt <- 180 * XY$axe / pi
             srt[as.logical(adj)] <- srt[as.logical(adj)] - 180
             for (i in 1:nb.tip)
               text(xx[as.character(i)], yy[as.character(i)], cex = cex,
-                   x$tip.label[i], adj = adj[i], font = font, srt = srt[i])
+                   x$tip.label[i], adj = adj[i], font = font, srt = srt[i],
+                   col = tip.color)
         }
     }
     if (type == "radial") {
@@ -245,7 +250,8 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
         adj[xx[as.character(1:nb.tip)] < 0] <- 1
         for (i in 1:nb.tip)
           text(xx[as.character(i)], yy[as.character(i)], x$tip.label[i],
-               font = font, cex = cex, srt = angle[i], adj = adj[i])
+               font = font, cex = cex, srt = angle[i], adj = adj[i],
+               col = tip.color)
     }
     if (show.node.label) text(xx[as.character(-(1:nb.node))] + label.offset,
                               yy[as.character(-(1:nb.node))], x$node.label,
@@ -256,7 +262,8 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
               edge.color = edge.color, edge.width = edge.width,
               font = font, cex = cex, adj = adj, srt = srt,
               no.margin = no.margin, label.offset = label.offset,
-              x.lim = x.lim, y.lim = y.lim, direction = direction)
+              x.lim = x.lim, y.lim = y.lim, direction = direction,
+              tip.color = tip.color)
     .last_plot.phylo <<- c(L, list(xx = xx, yy = yy))
     invisible(L)
 }

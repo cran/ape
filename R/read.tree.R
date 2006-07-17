@@ -121,9 +121,13 @@ read.tree <- function(file = "", format = "Newick", rooted = TRUE, text = NULL,
     nb.tree <- length(ind)
     x <- c(1, ind[-nb.tree] + 1)
     y <- ind - 1
-    STRING <- list()
-    for (i in 1:nb.tree)
-      STRING[[i]] <- paste(tsp[x[i]:y[i]], sep = "", collapse = "")
+    ## Suggestion from Olivier François (added 2006-07-15):
+    if (is.na(y[1])) return(NULL)
+    else {
+        STRING <- list()
+        for (i in 1:nb.tree)
+          STRING[[i]] <- paste(tsp[x[i]:y[i]], sep = "", collapse = "")
+    }
     list.obj <- list()
     for (i in 1:nb.tree) {
         list.obj[[i]] <- if (length(grep(":", STRING[[i]]))) tree.build(STRING[[i]]) else clado.build(STRING[[i]])

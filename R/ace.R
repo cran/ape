@@ -1,4 +1,4 @@
-### ace.R  (2006-06-25)
+### ace.R  (2006-06-27)
 ###
 ###            Ancestral Character Estimation
 ###
@@ -223,6 +223,7 @@ did not match: the former were ignored in the analysis.')
         }
     }
     obj$call <- match.call()
+    class(obj) <- "ace"
     obj
 }
 
@@ -249,7 +250,7 @@ anova.ace <- function(object, ...)
     dev <- c(NA, 2*diff(ll))
     ddf <- c(NA, diff(df))
     table <- data.frame(ll, df, ddf, dev,
-                        pchisq(dev, df, lower.tail = FALSE))
+                        pchisq(dev, ddf, lower.tail = FALSE))
     dimnames(table) <- list(1:length(X), c("Log lik.", "Df",
                                            "Df change", "Deviance",
                                            "Pr(>|Chi|)"))

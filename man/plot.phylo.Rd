@@ -9,7 +9,7 @@
     cex = par("cex"), adj = NULL, srt = 0, no.margin = FALSE,
     root.edge = FALSE, label.offset = 0, underscore = FALSE,
     x.lim = NULL, y.lim = NULL, direction = "rightwards",
-    lab4ut = "horizontal", ...)
+    lab4ut = "horizontal", tip.color = "black", ...)
 \method{plot}{multi.tree}(x, layout = 1, ...)
 }
 \arguments{
@@ -85,6 +85,8 @@
     or \code{"axial"} where the labels are displayed in the axis of the
     corresponding terminal branches. This option has an effect only if
     \code{type = "unrooted"}.}
+  \item{tip.color}{the colours used for the tip labels, eventually
+    recycled (see examples).}
   \item{layout}{the number of trees to be plotted simultaneously.}
   \item{...}{further arguments to be passed to \code{plot} or to
     \code{plot.phylo}.}
@@ -151,6 +153,7 @@
   \item{x.lim}
   \item{y.lim}
   \item{direction}
+  \item{tip.color}
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
@@ -222,5 +225,11 @@ plot(bird.orders, "c", FALSE, adj = 0.5, no.margin = TRUE, label.offset = 0.8,
 text(7.5, 23, "Facing trees with\ndifferent informations", font = 2)
 plot(tr, "p", direction = "l", no.margin = TRUE,
      edge.width = sample(1:10, length(bird.orders$edge)/2, replace = TRUE))
+### Recycling of arguments gives a lot of possibilities
+### for tip labels:
+plot(bird.orders, tip.col = c(rep("red", 5), rep("blue", 18)),
+     font = c(rep(3, 5), rep(2, 17), 1))
+plot(bird.orders, tip.col = c("blue", "green"),
+     cex = 23:1/23 + .3, font = 1:3)
 }
 \keyword{hplot}

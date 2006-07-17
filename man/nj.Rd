@@ -22,7 +22,7 @@ nj(X)
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{write.tree}}, \code{\link{read.tree}},
-  \code{\link{dist.dna}}
+  \code{\link{dist.dna}}, \code{\link{mlphylo}}
 }
 \examples{
 ### From Saitou and Nei (1987, Table 1):

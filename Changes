@@ -1,3 +1,48 @@
+		CHANGES IN APE VERSION 1.8-4
+
+
+NEW FEATURES
+
+    o The new function sh.test() computes the Shimodaira-
+      Hasegawa test.
+
+    o The new function collapse.singles() removes the nodes with a
+      single descendant from a tree.
+
+    o plot.phylo() has a new argument `tip.color' to specify the
+      colours of the tips.
+
+    o mlphylo() has now an option `quiet' to control the display of
+      the progress of the analysis (the default is FALSE).
+
+
+BUG FIXES
+
+    o read.dna() did not read correctly sequences in sequential format
+      with leading alignment gaps "-": this is fixed.
+
+    o ace() returned a list with no class so that the generic
+      functions (anova, logLik, ...) could not be used directly. This
+      is fixed as ace() now returns an object of class "ace".
+
+    o anova.ace() had a small bug when computing the number of degrees
+      of freedom: this is fixed.
+
+    o mlphylo() did not work when the sequences were in a matrix or
+      a data frame: this is fixed.
+
+    o rtree() did not work correctly when trying to simulate an
+      unrooted tree with two tips: an error message is now issued.
+
+
+OTHER CHANGES
+
+    o The algorithm of rtree() has been changed: it is now about 40,
+      100, and 130 times faster for 10, 100, and 1000 tips,
+      respectively.
+
+
+
 		CHANGES IN APE VERSION 1.8-3
 
 

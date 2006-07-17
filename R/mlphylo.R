@@ -1,4 +1,4 @@
-### mlphylo.R  (2006-05-20)
+### mlphylo.R  (2006-07-05)
 ###
 ###        Estimating Phylogenies by Maximum Likelihood
 ###
@@ -44,24 +44,25 @@ AIC.phylo <- function(object, ..., k = 2)
 .subst.model <- c("JC69", "K80", "F81", "F84",
                   "HKY85", "T92", "TN93", "GTR")
 
-mlphylo <- function(model = DNAmodel(), x, phy, search.tree = FALSE)
+mlphylo <- function(model = DNAmodel(), x, phy, search.tree = FALSE,
+                    quiet = FALSE)
 {
     if (!is.binary.tree(phy)) stop("the initial tree must be dichotomous.")
     if (is.rooted(phy))
       warning("the initial tree is rooted: it will be unrooted.")
     if (is.null(phy$edge.length))
       stop("the initial tree must have branch lengths.")
-    cat("Preparing the sequences...\n")
+    if (!quiet) cat("Preparing the sequences...\n")
     BF <- base.freq(x)
     ## <FIXME> Will need to do the usual checks of names...
-    x <- x[phy$tip.label]
+    x <- if (is.list(x)) x[phy$tip.label] else x[phy$tip.label, ]
     ## </FIXME>
     Y <- prepare.dna(x, model)
     S <- length(Y$weight)
     npart <- dim(Y$partition)[2] # the number of overall partitions
 
     ## prepare the tree:
-    cat("Preparing the tree...\n")
+    if (!quiet) cat("Preparing the tree...\n")
     if (!is.rooted(phy)) phy <- multi2di(phy, random = FALSE)
 
     ## in case NJ returns negative branch lengths:
@@ -93,7 +94,7 @@ mlphylo <- function(model = DNAmodel(), x, phy, search.tree = FALSE)
 
     loglik <- 0
 
-    cat("Fitting in progress... ")
+    if (!quiet) cat("Fitting in progress... ")
     ans <- .C("mlphylo_DNAmodel", as.integer(nb.tip), as.integer(S),
               as.double(Y$XA), as.double(Y$XC), as.double(Y$XG), as.double(Y$XT),
               as.double(Y$w), as.integer(match$matching[, 1]),
@@ -106,7 +107,7 @@ mlphylo <- function(model = DNAmodel(), x, phy, search.tree = FALSE)
               as.double(invar), as.integer(Y$ninvar),
               as.integer(Y$pim.invar), as.double(BF), as.integer(search.tree),
               as.double(loglik), NAOK = TRUE, PACKAGE = "ape")
-    cat("DONE!\n")
+    if (!quiet) cat("DONE!\n")
     tree <- list(matching = cbind(ans[[8]], ans[[9]], ans[[10]]),
                  edge.length = ans[[11]], tip.label = phy$tip.label)
     class(tree) <- "matching"

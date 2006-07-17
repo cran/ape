@@ -5,7 +5,7 @@
 \alias{AIC.phylo}
 \title{Estimating Phylogenies by Maximum Likelihood}
 \usage{
-mlphylo(model = DNAmodel(), x, phy, search.tree = FALSE)
+mlphylo(model = DNAmodel(), x, phy, search.tree = FALSE, quiet = FALSE)
 \method{logLik}{phylo}(object, ...)
 \method{deviance}{phylo}(object, ...)
 \method{AIC}{phylo}(object, ..., k = 2)
@@ -19,6 +19,8 @@ mlphylo(model = DNAmodel(), x, phy, search.tree = FALSE)
     tree.}
   \item{search.tree}{a logical specifying whether to search for the best
     tree (defaults to FALSE) (not functional for the moment).}
+  \item{quiet}{a logical specifying whether to display the progress of
+    the analysis.}
   \item{object}{an object of class \code{"phylo"}.}
   \item{k}{a numeric value giving the penalty per estimated parameter;
     the default is \code{k = 2} which is the classical Akaike
