@@ -1,8 +1,8 @@
-### read.nexus.R (2004-08-31)
+### read.nexus.R (2006-08-09)
 ###
 ###     Read Tree File in Nexus Format
 ###
-### Copyright 2003-2004 Emmanuel Paradis
+### Copyright 2003-2006 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -40,6 +40,14 @@ clado.build <- function(tp) {
         node.label[-current.node] <<- tpc[k]
         k <<- k + 1
         current.node <<- edge[l, 1]
+    }
+    if (!length(grep(",", tp))) {
+        obj <- list(edge = matrix(c("-1", "1"), 1, 2))
+        tp <- unlist(strsplit(tp, "[\\(\\);]"))
+        obj$tip.label <- tp[2]
+        if (length(tp) == 3) obj$node.label <- tp[3]
+        class(obj) <- "phylo"
+        return(obj)
     }
     tsp <- unlist(strsplit(tp, NULL))
     tp <- gsub(")", ")NA", tp)
@@ -147,7 +155,7 @@ read.nexus <- function(file, tree.names = NULL)
         ## Check here that the root edge is not incorrectly represented
         ## in the object of class "phylo" by simply checking that there
         ## is a bifurcation at the root (node "-1")
-        if(sum(trees[[i]]$edge[, 1] == "-1") == 1) {
+        if (sum(trees[[i]]$edge[, 1] == "-1") == 1 && dim(trees[[i]]$edge)[1] > 1) {
             warning("The root edge is apparently not correctly represented\nin your tree: this may be due to an extra pair of\nparentheses in your file; the returned object has been\ncorrected but your file may not be in a valid Newick\nformat")
             ind <- which(trees[[i]]$edge[, 1] == "-1")
             trees[[i]]$root.edge <- trees[[i]]$edge.length[ind]

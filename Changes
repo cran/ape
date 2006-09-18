@@ -1,3 +1,37 @@
+		CHANGES IN APE VERSION 1.8-5
+
+
+NEW FEATURES
+
+    o Two new functions read.nexus.data() and write.nexus.data(),
+      contributed by Johan Nylander, allow to read and write molecular
+      sequences in NEXUS files.
+
+    o The new function reorder.phylo() reorders the internal structure
+      of a tree of class "phylo". It is used as the generic, e.g.,
+      reorder(tr).
+
+    o read.tree() and read.nexus() can now read trees with a single
+      edge.
+
+    o The new data set `cynipids' supplies a set of protein sequences
+      in NEXUS format.
+
+
+BUG FIXES
+
+    o The code of all.equal.phylo() has been completely rewritten
+      (thanks to Benoît Durand) which fixes several bugs.
+
+    o read.tree() and read.nexus() now checks the labels of the tree
+      to remove or substitute any characters that are illegal in the
+      Newick format (parentheses, etc.)
+
+    o A negative P-value could be returned by mantel.test(): this is
+      now fixed.
+
+
+
 		CHANGES IN APE VERSION 1.8-4
 
 
@@ -56,9 +90,9 @@ NEW FEATURES
       segments showing the AIC values.
 
     o ace() has a new argument `ip' that gives the initial values used
-      the ML estimation with discrete characters (see the examples in
-      ?ace). This function now returns a matrix giving the indices of
-      the estimated rates when analysing discrete parameters
+      in the ML estimation with discrete characters (see the examples
+      in ?ace). This function now returns a matrix giving the indices
+      of the estimated rates when analysing discrete characters.
 
     o nodelabels() and tiplabels() have a new argument `pie' to
       represent proportions, with any number of categories, as

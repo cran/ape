@@ -68,7 +68,8 @@ read.nexus(file, tree.names = NULL)
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{read.tree}}, \code{\link{write.nexus}},
-  \code{\link{write.tree}}
+  \code{\link{write.tree}}, \code{\link{read.nexus.data}},
+  \code{\link{write.nexus.data}}
 }
 \keyword{manip}
 \keyword{IO}

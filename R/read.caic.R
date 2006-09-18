@@ -81,7 +81,7 @@ read.caic <- function(file, brlen=NULL, skip = 0, comment.char="#", ...)
 				if(c-i < 2) stop("Unvalid format.")
 				p <- paste(p, ")", sep="")
 				nodes[i]   <- p
-				patterns[i]<- substr(patterns[i],1,nchar(patterns[i])-1,)
+				patterns[i]<- substr(patterns[i],1,nchar(patterns[i])-1)
 				lengths[i] <- lengths[i]-1
 				nodes      <- nodes   [-((i+1):(c-1))]
 				lengths    <- lengths [-((i+1):(c-1))]

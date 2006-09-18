@@ -303,67 +303,67 @@ void PMAT_GTR(double t, double a, double b, double c, double d, double e,
 	}                                                         \
     }
 
-#define LOOP_THROUGH_SITES                                                  \
-    for(j = start; j < end; j++) {                                          \
-        i1 = d1 + j*nr;                                                  \
-        i2 = d2 + j*nr;                                                  \
-        tmp[0] = tmp[1] = tmp[2] = tmp[3] = 0.0;                            \
-	for(i = 0; i < ncat; i++) {                                         \
-	    switch(model) {                                                 \
-	    case 1 : PMAT_JC69(l1, coef_gamma[i], P1); \
-                     PMAT_JC69(l2, coef_gamma[i], P2); break;                 \
-	    case 2 : PMAT_K80(l1, coef_gamma[i], u[0], P1); \
-PMAT_K80(l2, coef_gamma[i], u[0], P2); break;            \
-	    case 3 : PMAT_F81(l1, coef_gamma[i], BF, P1);  \
-PMAT_F81(l2, coef_gamma[i], BF, P2); break;              \
-	    case 4 : PMAT_F84(l1, coef_gamma[i], u[0], BF, P1); \
-PMAT_F84(l2, coef_gamma[i], u[0], BF, P2); break;        \
-	    case 5 : PMAT_HKY85(l1, coef_gamma[i], u[0], BF, P1); \
-PMAT_HKY85(l2, coef_gamma[i], u[0], BF, P2); break;      \
-	    case 6 : PMAT_T92(l1, coef_gamma[i], u[0], BF, P1); \
-PMAT_T92(l2, coef_gamma[i], u[0], BF, P2); break;        \
+#define LOOP_THROUGH_SITES                                             \
+    for(j = start; j < end; j++) {                                     \
+        i1 = d1 + j*nr;                                                \
+        i2 = d2 + j*nr;                                                \
+        tmp[0] = tmp[1] = tmp[2] = tmp[3] = 0.0;                       \
+	for(i = 0; i < ncat; i++) {                                    \
+	    switch(model) {                                            \
+	    case 1 : PMAT_JC69(l1, coef_gamma[i], P1);                 \
+                     PMAT_JC69(l2, coef_gamma[i], P2); break;          \
+	    case 2 : PMAT_K80(l1, coef_gamma[i], u[0], P1);            \
+PMAT_K80(l2, coef_gamma[i], u[0], P2); break;                          \
+	    case 3 : PMAT_F81(l1, coef_gamma[i], BF, P1);              \
+PMAT_F81(l2, coef_gamma[i], BF, P2); break;                            \
+	    case 4 : PMAT_F84(l1, coef_gamma[i], u[0], BF, P1);        \
+PMAT_F84(l2, coef_gamma[i], u[0], BF, P2); break;                      \
+	    case 5 : PMAT_HKY85(l1, coef_gamma[i], u[0], BF, P1);      \
+PMAT_HKY85(l2, coef_gamma[i], u[0], BF, P2); break;                    \
+	    case 6 : PMAT_T92(l1, coef_gamma[i], u[0], BF, P1);        \
+PMAT_T92(l2, coef_gamma[i], u[0], BF, P2); break;                      \
 	    case 7 : PMAT_TN93(l1, coef_gamma[i], u[0], u[1], BF, P1); \
-PMAT_TN93(l2, coef_gamma[i], u[0], u[1], BF, P2); break; \
-	    case 8 : PMAT_GTR(l1, coef_gamma[i], u[0], u[1],                 \
-			      u[2], u[3], u[4], BF, P1); \
-PMAT_GTR(l2, coef_gamma[i], u[0], u[1],                 \
-			      u[2], u[3], u[4], BF, P2); break;              \
-	    }                                                               \
-	    tmp[0] += (X.A[i1] * P1[0] + X.C[i1] * P1[1] +                   \
-		      X.G[i1] * P1[2] + X.T[i1] * P1[3]) *                  \
-                     (X.A[i2] * P2[0] + X.C[i2] * P2[1] +                   \
-		      X.G[i2] * P2[2] + X.T[i2] * P2[3]);                   \
-	    tmp[1] += (X.A[i1] * P1[4] + X.C[i1] * P1[5] +                   \
-		      X.G[i1] * P1[6] + X.T[i1] * P1[7]) *                  \
-                     (X.A[i2] * P2[4] + X.C[i2] * P2[5] +                   \
-		      X.G[i2] * P2[6] + X.T[i2] * P2[7]);                   \
-	    tmp[2] += (X.A[i1] * P1[8] + X.C[i1] * P1[9] +                   \
-		      X.G[i1] * P1[10] + X.T[i1] * P1[11]) *                \
-                     (X.A[i2] * P2[8] + X.C[i2] * P2[9] +                   \
-		      X.G[i2] * P2[10] + X.T[i2] * P2[11]);                 \
-	    tmp[3] += (X.A[i1] * P1[12] + X.C[i1] * P1[13] +                 \
-		      X.G[i1] * P1[14] + X.T[i1] * P1[15]) *                \
-                     (X.A[i2] * P2[12] + X.C[i2] * P2[13] +                 \
-		      X.G[i2] * P2[14] + X.T[i2] * P2[15]);                 \
-	}                                                                   \
-        if (ncat > 1) {                                                     \
-            tmp[0] /= ncat;                                                 \
-            tmp[1] /= ncat;                                                 \
-            tmp[2] /= ncat;                                                 \
-            tmp[3] /= ncat;                                                 \
-        }                                                                   \
-	if (I > 0) { /* maybe use a better comparison */                    \
-	    V = 1. - I;                                                     \
-            tmp[0] = V * tmp[0] + I * X.A[ind];                             \
-            tmp[1] = V * tmp[1] + I * X.C[ind];                             \
-            tmp[2] = V * tmp[2] + I * X.G[ind];                             \
-            tmp[3] = V * tmp[3] + I * X.T[ind];                             \
-	}                                                                   \
-        ind = anc + j*nr;                                                   \
-        X.A[ind] = tmp[0];                                                  \
-        X.C[ind] = tmp[1];                                                  \
-        X.G[ind] = tmp[2];                                                  \
-        X.T[ind] = tmp[3];                                                  \
+PMAT_TN93(l2, coef_gamma[i], u[0], u[1], BF, P2); break;               \
+	    case 8 : PMAT_GTR(l1, coef_gamma[i], u[0], u[1],           \
+			      u[2], u[3], u[4], BF, P1);               \
+PMAT_GTR(l2, coef_gamma[i], u[0], u[1],                                \
+			      u[2], u[3], u[4], BF, P2); break;        \
+	    }                                                          \
+	    tmp[0] += (X.A[i1] * P1[0] + X.C[i1] * P1[1] +             \
+		      X.G[i1] * P1[2] + X.T[i1] * P1[3]) *             \
+                     (X.A[i2] * P2[0] + X.C[i2] * P2[1] +              \
+		      X.G[i2] * P2[2] + X.T[i2] * P2[3]);              \
+	    tmp[1] += (X.A[i1] * P1[4] + X.C[i1] * P1[5] +             \
+		      X.G[i1] * P1[6] + X.T[i1] * P1[7]) *             \
+                     (X.A[i2] * P2[4] + X.C[i2] * P2[5] +              \
+		      X.G[i2] * P2[6] + X.T[i2] * P2[7]);              \
+	    tmp[2] += (X.A[i1] * P1[8] + X.C[i1] * P1[9] +             \
+		      X.G[i1] * P1[10] + X.T[i1] * P1[11]) *           \
+                     (X.A[i2] * P2[8] + X.C[i2] * P2[9] +              \
+		      X.G[i2] * P2[10] + X.T[i2] * P2[11]);            \
+	    tmp[3] += (X.A[i1] * P1[12] + X.C[i1] * P1[13] +           \
+		      X.G[i1] * P1[14] + X.T[i1] * P1[15]) *           \
+                     (X.A[i2] * P2[12] + X.C[i2] * P2[13] +            \
+		      X.G[i2] * P2[14] + X.T[i2] * P2[15]);            \
+	}                                                              \
+        if (ncat > 1) {                                                \
+            tmp[0] /= ncat;                                            \
+            tmp[1] /= ncat;                                            \
+            tmp[2] /= ncat;                                            \
+            tmp[3] /= ncat;                                            \
+        }                                                              \
+	if (I > 0) { /* maybe use a better comparison */               \
+	    V = 1. - I;                                                \
+            tmp[0] = V * tmp[0] + I * X.A[ind];                        \
+            tmp[1] = V * tmp[1] + I * X.C[ind];                        \
+            tmp[2] = V * tmp[2] + I * X.G[ind];                        \
+            tmp[3] = V * tmp[3] + I * X.T[ind];                        \
+	}                                                              \
+        ind = anc + j*nr;                                              \
+        X.A[ind] = tmp[0];                                             \
+        X.C[ind] = tmp[1];                                             \
+        X.G[ind] = tmp[2];                                             \
+        X.T[ind] = tmp[3];                                             \
     }
 
 void lik_dna_node(dna_matrix X, int d1, int d2, int anc,

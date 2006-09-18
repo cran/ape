@@ -115,7 +115,7 @@ print.prop.part <- function(x, ...)
     }
 }
 
-summary.prop.part <- function(object, ...) attr(x, "number")
+summary.prop.part <- function(object, ...) attr(object, "number")
 
 prop.clades <- function(phy, ..., part = NULL)
 {

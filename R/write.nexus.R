@@ -1,8 +1,8 @@
-### write.nexus.R (2005-12-18)
+### write.nexus.R (2006-09-09)
 ###
 ###          Write Tree File in Nexus Format
 ###
-### Copyright 2003-2005 Emmanuel Paradis
+### Copyright 2003-2006 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -73,7 +73,8 @@ the original data won't be written with the tree."))
         ## We take arbitrarily the labels of the first tree, and
         ## translate them as "1", "2", "3", ...
         cat("\tTRANSLATE\n", file = file, append = TRUE)
-        X <- paste("\t\t", 1:N, "\t", obj[[1]]$tip.label, ",", sep = "")
+        tmp <- checkLabel(obj[[1]]$tip.label)
+        X <- paste("\t\t", 1:N, "\t", tmp, ",", sep = "")
         ## We remove the last comma:
         X[length(X)] <- gsub(",", "", X[length(X)])
         cat(X, file = file, append = TRUE, sep = "\n")
@@ -84,6 +85,9 @@ the original data won't be written with the tree."))
         if (ntree > 1)
           for (i in 2:ntree)
             obj[[i]]$tip.label <- token[obj[[i]]$tip.label]
+    } else {
+        for (i in 1:ntree)
+          obj[[i]]$tip.label <- checkLabel(obj[[i]]$tip.label)
     }
     for (i in 1:ntree) {
         if (class(obj[[i]]) != "phylo") next

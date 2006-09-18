@@ -1,8 +1,8 @@
-### read.tree.R (2005-08-18)
+### read.tree.R (2006-08-09)
 ###
 ###     Read Tree File in Parenthetic Format
 ###
-### Copyright 2002-2005 Emmanuel Paradis
+### Copyright 2002-2006 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -20,7 +20,8 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
-tree.build <- function(tp) {
+tree.build <- function(tp)
+{
     add.internal <- function() {
         edge[j, 1] <<- current.node
         node <<- node - 1
@@ -44,6 +45,15 @@ tree.build <- function(tp) {
         edge.length[l] <<- as.numeric(X[2])
         k <<- k + 1
         current.node <<- edge[l, 1]
+    }
+    if (!length(grep(",", tp))) {
+        obj <- list(edge = matrix(c("-1", "1"), 1, 2))
+        tp <- unlist(strsplit(tp, "[\\(\\):;]"))
+        obj$edge.length <- as.numeric(tp[3])
+        obj$tip.label <- tp[2]
+        if (length(tp) == 4) obj$node.label <- tp[4]
+        class(obj) <- "phylo"
+        return(obj)
     }
     tsp <- unlist(strsplit(tp, NULL))
     tpc <- unlist(strsplit(tp, "[\\(\\),;]"))
@@ -129,12 +139,13 @@ read.tree <- function(file = "", format = "Newick", rooted = TRUE, text = NULL,
           STRING[[i]] <- paste(tsp[x[i]:y[i]], sep = "", collapse = "")
     }
     list.obj <- list()
+    length(list.obj) <- nb.tree
     for (i in 1:nb.tree) {
         list.obj[[i]] <- if (length(grep(":", STRING[[i]]))) tree.build(STRING[[i]]) else clado.build(STRING[[i]])
         ## Check here that the root edge is not incorrectly represented
         ## in the object of class "phylo" by simply checking that there
         ## is a bifurcation at the root (node "-1")
-        if(sum(list.obj[[i]]$edge[, 1] == "-1") == 1) {
+        if(sum(list.obj[[i]]$edge[, 1] == "-1") == 1 && dim(list.obj[[i]]$edge)[1] > 1) {
             warning("The root edge is apparently not correctly represented\nin your tree: this may be due to an extra pair of\nparentheses in your file; the returned object has been\ncorrected but your file may not be in a valid Newick\nformat")
             ind <- which(list.obj[[i]]$edge[, 1] == "-1")
             list.obj[[i]]$root.edge <- list.obj[[i]]$edge.length[ind]

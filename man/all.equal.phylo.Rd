@@ -2,11 +2,24 @@
 \alias{all.equal.phylo}
 \title{Global Comparison of two Phylogenies}
 \usage{
-\method{all.equal}{phylo}(target, current, \dots)
+\method{all.equal}{phylo}(target, current, use.edge.length = TRUE,
+                          use.tip.label = TRUE, index.return = FALSE,
+                          tolerance = .Machine$double.eps ^ 0.5,
+                          scale = NULL, \dots)
 }
 \arguments{
   \item{target}{an object of class \code{"phylo"}.}
   \item{current}{an object of class \code{"phylo"}.}
+  \item{use.edge.length}{if \code{FALSE} only the topologies are
+    compared; the default is \code{TRUE}.}
+  \item{use.tip.label}{if \code{FALSE} the unlabelled trees are
+    compared; the default is \code{TRUE}.}
+  \item{index.return}{if \code{TRUE} the function returns a two-column
+    matrix giving the correspondence between the nodes of both trees.}
+  \item{tolerance}{the numeric tolerance used to compare the branch
+    lengths.}
+  \item{scale}{a positive number, comparison of branch lengths is made
+    after scaling (i.e., dividing) them by this number.}
   \item{...}{further arguments passed to or from other methods.}
 }
 \description{
@@ -25,12 +38,9 @@
   considered.
 }
 \value{
-  If both trees are strictly similar, the logical \code{TRUE} is
-  returned. Otherwise, the different elements of the trees (numbers of
-  tips, numbers of nodes, tip labels, tree topologies) are compared, and
-  the results of these comparisons are printed.
+  A logical value, or a two-column matrix.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Benoît Durand \email{b.durand@alfort.AFSSA.FR}}
 \seealso{
   \code{\link[base]{all.equal}} for the generic R function
 }

@@ -43,8 +43,8 @@ write.nexus(..., file = "", translate = TRUE, original.data = TRUE)
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{read.nexus}}, \code{\link{read.tree}},
-  \code{\link{write.tree}}
-
+  \code{\link{write.tree}}, \code{\link{read.nexus.data}},
+  \code{\link{write.nexus.data}}
 }
 \keyword{manip}
 \keyword{IO}

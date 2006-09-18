@@ -45,8 +45,7 @@ coalescent.intervals.phylo <- function(x)
      lineages=l,
      interval.length=w,
      interval.count=lt,
-     total.depth =sum(w),
-    )
+     total.depth =sum(w))
     class(obj) <- "coalescentIntervals"
     return(obj)
 }
@@ -65,8 +64,7 @@ coalescent.intervals.default <- function(x)
      lineages=l,
      interval.length=x,
      interval.count=lt,
-     total.depth =sum(x),
-    )
+     total.depth =sum(x))
     class(obj) <- "coalescentIntervals"
     return(obj)
 }

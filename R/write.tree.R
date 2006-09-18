@@ -1,8 +1,8 @@
-### write.tree.R (2005-08-17)
+### write.tree.R (2006-09-09)
 ###
 ###     Write Tree File in Parenthetic Format
 ###
-### Copyright 2002-2005 Emmanuel Paradis
+### Copyright 2002-2006 Emmanuel Paradis
 ###
 ### This file is part of the `ape' library for R and related languages.
 ### It is made available under the terms of the GNU General Public
@@ -20,15 +20,41 @@
 ### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
 ### MA 02111-1307, USA
 
+checkLabel <- function(x, ...)
+{
+    ## delete all leading and trailing spaces and tabs, and
+    ## the leading left and trailing right parentheses:
+    ## (the syntax will work with any mix of these characters,
+    ##  e.g., "    ( ( ((  " will correctly be deleted)
+    x <- gsub("^[[:space:]\\(]+", "", x)
+    x <- gsub("[[:space:]\\)]+$", "", x)
+    ## replace all spaces and tabs by underscores:
+    x <- gsub("[[:space:]]", "_", x)
+    ## remove all commas, colons, and semicolons
+    x <- gsub("[,:;]", "", x)
+    ## replace left and right parentheses with dashes:
+    x <- gsub("[\\(\\)]", "-", x)
+    ## delete extra underscores and extra dashes:
+    x <- gsub("_{2,}", "_", x)
+    x <- gsub("-{2,}", "-", x)
+    x
+}
+
 write.tree <- function(phy, file = "", append = FALSE, format = "Newick",
                        multi.line = TRUE, digits = 10)
 {
+    if (class(phy) != "phylo")
+      stop(paste("object ", deparse(substitute(phy)),
+                 " is not of class \"phylo\""), sep = "")
+
     brl <- !is.null(phy$edge.length)
     nodelab <- !is.null(phy$node.label)
+    phy$tip.label <- checkLabel(phy$tip.label)
+    if (!is.null(nodelab))
+      phy$node.label <- checkLabel(phy$node.label)
 
     cp <- function(s) STRING <<- paste(STRING, s, sep = "")
-    add.internal <- function(i)
-    {
+    add.internal <- function(i) {
         cp("(")
         br <- which(phy$edge[, 1] == i)
         for (j in br) {
@@ -44,17 +70,13 @@ write.tree <- function(phy, file = "", append = FALSE, format = "Newick",
                        format = "f", digits = digits))
         }
     }
-    add.terminal <- function(i)
-    {
+    add.terminal <- function(i) {
         cp(phy$tip.label[phy$edge[i, 2]])
         if (brl) {
             cp(":")
             cp(formatC(phy$edge.length[i], format = "f", digits = digits))
         }
     }
-    if (class(phy) != "phylo")
-      stop(paste("object \"", deparse(substitute(phy)),
-                 "\" is not of class \"phylo\""), sep = "")
     mode(phy$edge) <- "numeric"
     nb.node <- -min(phy$edge)
     STRING <- "("

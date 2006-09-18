@@ -28,7 +28,7 @@ is.rooted(phy)
   in the second case the numbers of these labels in the vector
   \code{phy$tip.label} are given.
 
-  If \code{outgroup} is of length one (i.e. a single value), then the
+  If \code{outgroup} is of length one (i.e., a single value), then the
   tree is rerooted using the node below this tip as the new root.
 
   If \code{outgroup} is of length two or more, the most recent common
@@ -56,15 +56,15 @@ data(bird.orders)
 plot(root(bird.orders, 1))
 plot(root(bird.orders, 1:5))
 
-is.rooted(bird.orders) # yes!
-is.rooted(root(bird.orders, 1)) # no!
-### This is because the tree has been unrooted first before re-rooting.
-### You can delete the outgroup...
-is.rooted(drop.tip(root(bird.orders, 1), "Struthioniformes"))
-### ... or resolve the basal trichotomy:
-is.rooted(multi2di(root(bird.orders, 1)))
-### To keep the basal trichotomy but forcing the tree as rooted:
 tr <- root(bird.orders, 1)
+is.rooted(bird.orders) # yes!
+is.rooted(tr)          # no!
+### This is because the tree has been unrooted first before rerooting.
+### You can delete the outgroup...
+is.rooted(drop.tip(tr, "Struthioniformes"))
+### ... or resolve the basal trichotomy:
+is.rooted(multi2di(tr))
+### To keep the basal trichotomy but forcing the tree as rooted:
 tr$root.edge <- 0
 is.rooted(tr)
 }

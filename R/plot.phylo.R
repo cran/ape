@@ -1,4 +1,4 @@
-### plot.phylo.R (2006-07-15)
+### plot.phylo.R (2006-08-12)
 ###
 ###          Plot Phylogenies
 ###
@@ -29,7 +29,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                        x.lim = NULL, y.lim = NULL, direction = "rightwards",
                        lab4ut = "horizontal", tip.color = "black", ...)
 {
-    if (any(table(x$edge[, 1]) == 1))
+    if (any(table(x$edge[, 1]) == 1) && dim(x$edge)[1] > 1)
       stop("there are single (non-splitting) nodes in your tree;
 you may need to use collapse.singles().")
     type <- match.arg(type, c("phylogram", "cladogram", "unrooted", "radial"))
@@ -523,9 +523,8 @@ plot.multi.tree <- function(x, layout = 1, ...)
     if (layout > 1)
       layout(matrix(1:layout, ceiling(sqrt(layout)), byrow = TRUE))
     if (!par("ask")) {
-        changedpar <- TRUE
         par(ask = TRUE)
-    } else changedpar <- FALSE
+        on.exit(par(ask = FALSE))
+    }
     for (i in x) plot(i, ...)
-    if (changedpar) par(ask = FALSE)
 }
