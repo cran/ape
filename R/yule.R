@@ -1,27 +1,14 @@
-### yule.R  (2005-12-07)
+### yule.R (2006-10-04)
 ###
 ###     Fits Yule Model to a Phylogenetic Tree
 ###
 ### yule: standard Yule model (constant birth rate)
 ### yule.cov: Yule model with covariates
 ###
-### Copyright 2003-2005 Emmanuel Paradis
+### Copyright 2003-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 yule <- function(phy)
 {
@@ -30,16 +17,16 @@ yule <- function(phy)
     bt <- rev(sort(branching.times(phy))) # branching times from past to present
     ni <- cumsum(rev(table(bt))) + 1
     X <- sum(phy$edge.length)
-    nb.node <- -min(as.numeric(phy$edge))
+    nb.node <- phy$Nnode
     if (is.null(phy$root.edge)) {
         nb.node <- nb.node - 1
     } else {
         X <- X + phy$root.edge
         ni <- c(1, ni)
     }
-    lambda <- nb.node / X
-    se <- lambda / sqrt(nb.node)
-    loglik <- -lambda * X + sum(log(ni[-length(ni)])) + nb.node * log(lambda)
+    lambda <- nb.node/X
+    se <- lambda/sqrt(nb.node)
+    loglik <- -lambda*X + sum(log(ni[-length(ni)])) + nb.node*log(lambda)
     obj <- list(lambda = lambda, se = se, loglik = loglik)
     class(obj) <- "yule"
     obj
@@ -48,26 +35,23 @@ yule <- function(phy)
 yule.cov <- function(phy, formula, data = NULL)
 {
     if (is.null(data)) data <- parent.frame()
-    tmp <- as.numeric(phy$edge)
-    nb.tip <- max(tmp)
-    nb.node <- -min(tmp)
+    n <- length(phy$tip.label)
+    nb.node <- phy$Nnode
     if (!is.null(phy$node.label)) phy$node.label <- NULL
     bt <- sort(branching.times(phy)) # branching times (from present to past)
     bt <- rev(bt) # branching times from past to present
     ni <- cumsum(rev(table(bt))) + 1
     X <- model.matrix(formula, data)
-    rownames(X) <- as.character(c(1:nb.tip, -(1:nb.node)))
     Xi <- X[phy$edge[, 1], ]
     Xj <- X[phy$edge[, 2], ]
     dev <- function(b) {
-        2 * sum(((1 / (1 + exp(-(Xi %*% b)))) +
-                 (1 / (1 + exp(-(Xj %*% b)))))
-                * phy$edge.length / 2) -
+        2 * sum(((1/(1 + exp(-(Xi %*% b)))) +
+                 (1/(1 + exp(-(Xj %*% b)))))
+                * phy$edge.length/2) -
          2 * (sum(log(ni[-length(ni)])) +
-              sum(log((1 / (1 + exp(-(X[as.numeric(rownames(X)) < -1, ] %*% b)))))))
+              sum(log((1/(1 + exp(-(X[-(1:(n + 1)), ] %*% b)))))))
     }
-    out <- nlm(function(p) dev(p),
-               p = c(rep(0, ncol(X) - 1), -1),
+    out <- nlm(function(p) dev(p), p = c(rep(0, ncol(X) - 1), -1),
                hessian = TRUE)
     Dev <- out$minimum
     para <- matrix(NA, ncol(X), 2)
@@ -79,7 +63,7 @@ yule.cov <- function(phy, formula, data = NULL)
     colnames(para) <- c("Estimate", "StdErr")
     cat("\n---- Yule Model with Covariates ----\n\n")
     cat("    Phylogenetic tree:", deparse(substitute(phy)), "\n")
-    cat("       Number of tips:", nb.tip, "\n")
+    cat("       Number of tips:", n, "\n")
     cat("      Number of nodes:", nb.node, "\n")
     cat("             Deviance:", Dev, "\n")
     cat("       Log-likelihood:", -Dev/2, "\n\n")

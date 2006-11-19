@@ -25,7 +25,7 @@ axisPhylo(side = 1, ...)
 }
 \examples{
 tr <- rtree(30)
-ch <- chronogram(tr)
+ch <- rcoal(30)
 plot(ch)
 axisPhylo()
 plot(tr, "c", FALSE, direction = "u")

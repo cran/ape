@@ -1,24 +1,11 @@
-### evolve.tree.R  (2005-12-04)
+### evolve.tree.R (2005-12-04)
 ###
-###     Character Simulation under a Brownian Model
+###   Character Simulation under a Brownian Model
 ###
-### Copyright 2005 Julien Dutheil <julien.dutheil@univ-montp2.fr>
+### Copyright 2005 Julien Dutheil
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 evolve.phylo <- function(phy, value, var) {
   if (!("phylo" %in% class(phy)))
@@ -30,6 +17,9 @@ evolve.phylo <- function(phy, value, var) {
   var   <- rep(var,   length=nchar)
   char.names <- names(value);
 
+  ## added by EP for the new coding of "phylo" (2006-10-04):
+  phy <- new2old.phylo(phy)
+  ## End
   edges <- phy$edge
   nodes <- unique(as.vector(edges))
   n <- length(nodes) # Number of nodes
@@ -69,5 +59,8 @@ evolve.phylo <- function(phy, value, var) {
   phy[["node.character"]] <- nodes.states;
   phy[["tip.character"]]  <- leaves.states;
   if(! "ancestral" %in% class(phy)) class(phy) <- c("ancestral", class(phy));
+  ## added by EP for the new coding of "phylo" (2006-10-04):
+  phy <- old2new.phylo(phy)
+  ## End
   return(phy)
 }

@@ -1,69 +1,55 @@
-### vcv.phylo.R (2005-09-08)
+### vcv.phylo.R (2006-10-04)
 ###
-###     Phylogenetic Variance-covariance or Correlation Matrix
+###    Phylogenetic Variance-Covariance or Correlation Matrix
 ###
-### Copyright 2002-2005 Emmanuel Paradis
+### Copyright 2002-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 vcv.phylo <- function(phy, model = "Brownian", cor = FALSE)
 {
-    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
-    tmp <- as.numeric(phy$edge)
-    nb.tip <- max(tmp)
-    nb.node <- -min(tmp)
-    ## xx: vecteur donnant la distance d'un noeud ou tip à partir de la racine
-    xx <- as.numeric(rep(NA, nb.tip + nb.node))
-    names(xx) <- as.character(c(-(1:nb.node), 1:nb.tip))
-    xx["-1"] <- 0
-    for (i in 2:length(xx)) {
-        nod <- names(xx[i])
-        ind <- which(phy$edge[, 2] == nod)
-        base <- phy$edge[ind, 1]
-        xx[i] <- xx[base] + phy$edge.length[ind]
-    }
-    ## seq.nod (liste de vecteurs): séquence des
-    ## noeuds allant de chaque tip vers la racine
-    seq.nod <- list()
-    for (i in as.character(1:nb.tip)) {
-        vec <- i
-        j <- i
-        while (j != "-1") {
-            ind <- which(phy$edge[, 2] == j)
-            j <- phy$edge[ind, 1]
-            vec <- c(vec, j)
-        }
-        seq.nod[[i]] <- vec
-    }
-    vcv <- diag(xx[as.character(1:nb.tip)])
-    for (i in as.character(1:(nb.tip - 1))) {
-        for (j in as.character(2:nb.tip)) {
-            ind <- min(match(seq.nod[[i]], seq.nod[[j]]), na.rm = TRUE)
-            k <- as.numeric(i)
-            l <- as.numeric(j)
-            vcv[k, l] <- vcv[l, k] <- xx[seq.nod[[j]][ind]]
+    if (class(phy) != "phylo")
+      stop('object "phy" is not of class "phylo"')
+    if (is.null(phy$edge.length))
+      stop("the tree has no branch lengths")
+
+    foo <- function(node, var, endofclade) {
+        ## First, get the extent of clade descending
+        ## from `node' in the matrix `edge':
+        from <- which(phy$edge[, 1] == node)
+        to <- c(from[-1] - 1, endofclade)
+        ## Get the #'s of the descendants of `node':
+        desc <- phy$edge[from, 2]
+        ## The variance of each of these is easy:
+        vcv[desc, desc] <<- var + phy$edge.length[from]
+        nd <- length(desc)
+        ## The variance of `node' is equal to the covariance of
+        ## each possible pair among its descendant clades.
+        for (i in 1:(nd - 1))
+          for (j in (i + 1):nd)
+            for (k in phy$edge[from[i]:to[i], 2])
+              for (l in phy$edge[from[j]:to[j], 2])
+                vcv[k, l] <<- vcv[l, k] <<- var
+        for (i in 1:nd) {
+            if (desc[i] <= n) next
+            foo(desc[i], vcv[desc[i], desc[i]], to[i])
         }
     }
+
+    n <- length(phy$tip.label)
+    n.node <- phy$Nnode
+    N <- n.node + n
+    vcv <- matrix(0, N, N)
+    foo(n + 1, 0, dim(phy$edge)[1])
+
+    vcv <- vcv[1:n, 1:n]
     if (cor) {
         ## This is inspired from the code of `cov2cor' (2005-09-08):
         M <- vcv
-        Is <- sqrt(1/diag(M))
-        vcv[] <- Is * M * rep(Is, each = nb.tip)
-        vcv[cbind(1:nb.tip, 1:nb.tip)] <- 1
+        Is <- sqrt(1/M[1 + 0:(n - 1)*(n + 1)])
+        vcv[] <- Is * M * rep(Is, each = n)
+        vcv[1 + 0:(n - 1)*(n + 1)] <- 1
     }
     rownames(vcv) <- colnames(vcv) <- phy$tip.label
     vcv

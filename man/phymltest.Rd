@@ -127,7 +127,7 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
 \examples{
 ### A `fake' example with random likelihood values: it does not
 ### make sense, but does not need PHYML and gives you a flavour
-### of how the output looks like:
+### of what the output looks like:
 x <- runif(28, -100, -50)
 names(x) <- .phymltest.model
 class(x) <- "phymltest"

@@ -1,40 +1,24 @@
-### mrca.R  (2005-09-17)
+### mrca.R (2006-10-12)
 ###
 ###    Find Most Recent Common Ancestors Between Pairs
 ###
-### Copyright 2005 Emmanuel Paradis
+### Copyright 2005-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
-mrca <- function(phy, full = FALSE, as.numeric = FALSE)
+mrca <- function(phy, full = FALSE)
 {
     if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
 ###    if (!is.rooted(phy)) stop("the tree must be rooted.")
     ## Get all clades:
-    BP <- .Call("bipartition", as.integer(phy$edge[, 1]),
-                as.integer(phy$edge[, 2]), PACKAGE = "ape")
-    mode(phy$edge) <- "numeric"
-    nb.tip <- max(phy$edge)
-    nb.node <- -min(phy$edge)
+    BP <- .Call("bipartition", phy$edge[, 1], phy$edge[, 2],
+                length(phy$tip.label), phy$Nnode,
+                PACKAGE = "ape")
+    nb.tip <- length(phy$tip.label)
+    nb.node <- phy$Nnode
     N <- nb.tip + nb.node
     ROOT <- nb.tip + 1
-    ## Here we change all node numbers {-1, -2, ...} to
-    ## {nb.tip + 1, nb.tip + 2, ...}:
-    phy$edge[phy$edge < 0] <- nb.tip - phy$edge[phy$edge < 0]
     ## In the following matrix, numeric indexing will be used:
     M <- numeric(N * N)
     dim(M) <- c(N, N)
@@ -97,10 +81,8 @@ mrca <- function(phy, full = FALSE, as.numeric = FALSE)
         next.node <- tmp
     }
     M[cbind(1:N, 1:N)] <- 1:N
-    M[M > nb.tip] <- -(M[M > nb.tip] - nb.tip)
-    if (!as.numeric) mode(M) <- "character"
     if (full)
-      dimnames(M)[1:2] <- list(as.character(c(1:nb.tip, -(1:nb.node))))
+      dimnames(M)[1:2] <- list(as.character(1:N))
     else {
         M <- M[1:nb.tip, 1:nb.tip]
         dimnames(M)[1:2] <- list(phy$tip.label)

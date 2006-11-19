@@ -58,7 +58,6 @@
 ### This will draw the correlogram from Gittleman and Kot 1990
 ### This is only for example, consider function plot.correlogram()
 ### to draw correlograms.
-library(ape)
 data(carnivora)
 attach(carnivora)
 # Compute distance matrix for each taxonomic level:

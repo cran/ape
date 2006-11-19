@@ -1,44 +1,28 @@
-### branching.times.R  (2004-04-23)
+### branching.times.R (2006-10-04)
 ###
-###     Branching Times of a Phylogenetic Tree
+###    Branching Times of a Phylogenetic Tree
 ###
-### Copyright 2002-2004 Emmanuel Paradis
+### Copyright 2002-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 branching.times <- function(phy)
 {
+### the tree must be in cladewise order
     if (class(phy) != "phylo")
-      stop("object \"phy\" is not of class \"phylo\"")
-    tmp <- as.numeric(phy$edge)
-    nb.tip <- max(tmp)
-    nb.node <- -min(tmp)
-    xx <- as.numeric(rep(NA, 1 + nb.node))
-    names(xx) <- as.character(c(-(1:nb.node), 1))
-    xx["-1"] <- 0
-    for (i in 2:length(xx)) {
-        nod <- names(xx[i])
-        ind <- which(phy$edge[, 2] == nod)
-        base <- phy$edge[ind, 1]
-        xx[i] <- xx[base] + phy$edge.length[ind]
-    }
-    depth <- xx[length(xx)]
-    branching.times <- depth - xx[-length(xx)]
-    if (!is.null(phy$node.label))
-      names(branching.times) <- phy$node.label
-    branching.times
+      stop('object "phy" is not of class "phylo"')
+    n <- length(phy$tip.label)
+    N <- dim(phy$edge)[1]
+    xx <- numeric(phy$Nnode)
+    interns <- which(phy$edge[, 2] > n)
+    ## we loop only on the internal edges, this assumes
+    ## that `xx' is already set with 0
+    for (i in interns)
+      xx[phy$edge[i, 2] - n] <- xx[phy$edge[i, 1] - n] + phy$edge.length[i]
+    depth <- xx[phy$edge[N, 1] - n] + phy$edge.length[N]
+    xx <- depth - xx
+    names(xx) <-
+      if (is.null(phy$node.label)) (n + 1):(n + phy$Nnode) else phy$node.label
+    xx
 }

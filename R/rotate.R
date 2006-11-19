@@ -1,72 +1,51 @@
-### rotate.R  (2005-06-13)
+### rotate.R (2006-10-05)
 ###
 ###     Rotate an Internal Branch of a Tree
 ###
-### Copyright 2004-2005 Emmanuel Paradis
+### Copyright 2004-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 rotate <- function(phy, group)
 {
     if (class(phy) != "phylo")
       stop("object \"phy\" is not of class \"phylo\"")
-    if (length(group) == 1) if (group == "all") {
-        ind <- which(as.numeric(phy$edge[, 2]) > 0)
-        phy$edge[ind, 2] <- phy$edge[rev(ind), 2]
-        phy$tip.label <- rev(phy$tip.label)
+    nb.tip <- length(phy$tip.label)
+    if (length(group) == 1) {
+        if (group == "all") {
+            ind <- which(phy$edge[, 2] <= nb.tip)
+            phy$edge[ind, 2] <- phy$edge[rev(ind), 2]
+            phy$tip.label <- rev(phy$tip.label)
+        }
         return(phy)
     }
-    group <- sort(group)
-    if (is.character(group))
-      tip <- as.character(which(phy$tip.label %in% group))
-    if (is.numeric(group)) tip <- as.character(group)
+    group <-
+      if (is.numeric(group)) sort(group) else which(phy$tip.label %in% group)
     ## Check that the group is monophyletic
     msg <- "the specified group is not monophyletic!"
-    if (!all(diff(as.numeric(tip)) == 1)) stop(msg)
-    ## Find the MRCA of the tips given as outgroup
-    ## The following loop is `borrowed' from vcv.phylo()
-    seq.nod <- list()
-    nb.tip <- max(as.numeric(phy$edge))
-    for (i in as.character(1:nb.tip)) {
-        vec <- i
-        j <- i
-        while (j != "-1") {
-            ind <- which(phy$edge[, 2] == j)
-            j <- phy$edge[ind, 1]
-            vec <- c(vec, j)
-        }
-        seq.nod[[i]] <- vec
+    if (!all(diff(group) == 1)) stop(msg)
+    ## Find the MRCA of the tips given as group
+    ## (see `root.R' for comments on the code)
+    seq.nod <- .Call("seq_root2tip", phy$edge[, 1], phy$edge[, 2],
+                     nb.tip, phy$Nnode, PACKAGE = "ape")
+    sn <- seq.nod[group]
+    MRCA <- nb.tip + 1
+    i <- 2
+    repeat {
+        x <- unique(unlist(lapply(sn, "[", i)))
+        if (length(x) != 1) break
+        MRCA <- x
+        i <- i + 1
     }
-    sn <- lapply(seq.nod[tip], rev)
-    i <- 1
-    x <- unlist(lapply(sn, function(x) x[i]))
-    while (length(unique(x)) == 1) {
-        x <- unlist(lapply(sn, function(x) x[i]))
-        i <-  i + 1
-    }
-    MRCA <- sn[[1]][i - 2]
-    ## Then check that all descendants of this node
+    ## Check that all descendants of this node
     ## are included in the outgroup
-    desc <- names(unlist(lapply(seq.nod, function(x) which(x == MRCA))))
-    if (length(tip) != length(desc)) stop(msg)
-    if (!all(sort(tip) == sort(desc))) stop(msg)
-    ind <- which(phy$edge[, 2] %in% tip)
+    desc <- which(unlist(lapply(seq.nod,
+                                function(x) any(x %in% MRCA))))
+    if (length(group) != length(desc)) stop(msg)
+    if (!all(sort(group) == sort(desc))) stop(msg)
+    ind <- which(phy$edge[, 2] %in% group)
     phy$edge[ind, 2] <- phy$edge[rev(ind), 2]
-    ind <- as.numeric(tip)
-    phy$tip.label[ind] <- phy$tip.label[rev(ind)]
+    phy$tip.label[group] <- phy$tip.label[rev(group)]
     phy
 }

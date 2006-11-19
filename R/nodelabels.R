@@ -1,24 +1,11 @@
-### nodelabels.R (2006-05-31)
+### nodelabels.R (2006-10-03)
 ###
 ###        Labelling the Nodes and the Tips of a Tree
 ###
 ### Copyright 2004-2006 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 ### from JL:
 ## floating.pie() from plotrix with two changes: (1) aspect ratio fixed, so pies
@@ -64,7 +51,7 @@ BOTHlabels <- function(text, sel, adj, frame, pch, thermo,
     if (missing(text)) text <- NULL
     if (length(adj) == 1) adj <- c(adj, 0.5)
     if (is.null(text) && is.null(pch) && is.null(thermo) && is.null(pie))
-      text <- sel
+      text <- as.character(sel)
     frame <- match.arg(frame, c("rect", "circle", "none"))
     args <- list(...)
     CEX <- if ("cex" %in% names(args)) args$cex else par("cex")
@@ -126,9 +113,10 @@ nodelabels <- function(text, node, adj = c(0.5, 0.5), frame = "rect",
                        pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
                        col = "black", bg = "lightblue", ...)
 {
-    sel <- if (missing(node))
-      names(.last_plot.phylo$xx)[as.numeric(names(.last_plot.phylo$xx)) < 0]
-    else as.character(-abs(as.numeric(node)))
+    sel <-
+      if (missing(node))
+        (.last_plot.phylo$Ntip + 1):length(.last_plot.phylo$xx)
+      else node
     BOTHlabels(text, sel, adj, frame, pch, thermo, pie, piecol, col, bg, ...)
 }
 
@@ -136,8 +124,6 @@ tiplabels <- function(text, tip, adj = c(0.5, 0.5), frame = "rect",
                       pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
                       col = "black", bg = "yellow", ...)
 {
-    sel <- if (missing(tip))
-      names(.last_plot.phylo$xx)[as.numeric(names(.last_plot.phylo$xx)) > 0]
-    else tip
+    sel <- if (missing(tip)) 1:.last_plot.phylo$Ntip else tip
     BOTHlabels(text, sel, adj, frame, pch, thermo, pie, piecol, col, bg, ...)
 }

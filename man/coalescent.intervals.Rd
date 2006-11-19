@@ -37,8 +37,6 @@ An object of class \code{"coalescentIntervals"} with the following entries:
 \author{Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})}
 
 \examples{
-library(ape)
-
 data("hivtree.newick") # example tree in NH format
 tree.hiv <- read.tree(text = hivtree.newick) # load tree
 

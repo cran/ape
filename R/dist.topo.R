@@ -1,35 +1,23 @@
-### dist.topo.R  (2005-08-15)
+### dist.topo.R (2006-10-11)
 ###
-###        Topological Distances, Tree Bipartition,
-###     Consensus Trees, and Bootstrapping Phylogenies
+###      Topological Distances, Tree Bipartitions,
+###   Consensus Trees, and Bootstrapping Phylogenies
 ###
-### Copyright 2005 Emmanuel Paradis
+### Copyright 2005-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 dist.topo <- function(x, y, method = "PH85")
 {
     if (method == "BHV01" && (is.null(x$edge.length) || is.null(y$edge.length)))
       stop("trees must have branch lengths for Billera et al.'s distance.")
-    bp1 <- .Call("bipartition", as.integer(x$edge[, 1]),
-                 as.integer(x$edge[, 2]), PACKAGE = "ape")
+    n <- length(x$tip.label)
+    bp1 <- .Call("bipartition", x$edge[, 1], x$edge[, 2],
+                  n, x$Nnode, PACKAGE = "ape")
     bp1 <- lapply(bp1, function(xx) sort(x$tip.label[xx]))
-    bp2 <- .Call("bipartition", as.integer(y$edge[, 1]),
-                 as.integer(y$edge[, 2]), PACKAGE = "ape")
+    bp2 <- .Call("bipartition", y$edge[, 1], y$edge[, 2],
+                 n, y$Nnode, PACKAGE = "ape")
     bp2 <- lapply(bp2, function(xx) sort(y$tip.label[xx]))
     q1 <- length(bp1)
     q2 <- length(bp2)
@@ -43,7 +31,7 @@ dist.topo <- function(x, y, method = "PH85")
                 }
             }
         }
-        dT <- if (q1 == q2) 2 * (q1 - p) else 2 * (min(q1, q2) - p) + abs(q1 - q2)
+        dT <- if (q1 == q2) 2*(q1 - p) else 2*(min(q1, q2) - p) + abs(q1 - q2)
     }
     if (method == "BHV01") {
         dT <- 0
@@ -53,8 +41,8 @@ dist.topo <- function(x, y, method = "PH85")
             for (j in 1:q2) {
                 if (identical(all.equal(bp1[[i]], bp2[[j]]), TRUE)) {
                     if (i != 1 || j != 1)
-                      dT <- dT + x$edge.length[which(as.numeric(x$edge[, 2]) == -i)] -
-                               y$edge.length[which(as.numeric(x$edge[, 2]) == -j)]
+                      dT <- dT + x$edge.length[which(x$edge[, 2] == n + i)] -
+                               y$edge.length[which(x$edge[, 2] == n + j)]
                     found1 <- found2[j] <- TRUE
                     break
                 }
@@ -62,10 +50,10 @@ dist.topo <- function(x, y, method = "PH85")
             if (found1) {
                 found1 <- FALSE
                 next
-            } else dT <- dT + x$edge.length[which(as.numeric(x$edge[, 2]) == -j)]
+            } else dT <- dT + x$edge.length[which(x$edge[, 2] == n + j)]
         }
         if (any(!found2))
-          dT <- dT + sum(y$edge.length[as.numeric(y$edge[, 2]) %in% -which(!found2)])
+          dT <- dT + sum(y$edge.length[y$edge[, 2] %in% -which(!found2)])
     }
     dT
 }
@@ -76,15 +64,17 @@ prop.part <- function(...)
     if (length(obj) == 1 && class(obj[[1]]) != "phylo")
       obj <- unlist(obj, recursive = FALSE)
     ntree <- length(obj)
-    bp <- .Call("bipartition", as.integer(obj[[1]]$edge[, 1]),
-                as.integer(obj[[1]]$edge[, 2]), PACKAGE = "ape")
+    bp <- .Call("bipartition", obj[[1]]$edge[, 1], obj[[1]]$edge[, 2],
+                length(obj[[1]]$tip.label), obj[[1]]$Nnode,
+                PACKAGE = "ape")
     clades <- lapply(bp, function(xx) sort(obj[[1]]$tip.label[xx]))
     no <- rep(1, length(clades))
 
     if (ntree > 1) {
         for (k in 2:ntree) {
-            bp <- .Call("bipartition", as.integer(obj[[k]]$edge[, 1]),
-                        as.integer(obj[[k]]$edge[, 2]), PACKAGE = "ape")
+            bp <- .Call("bipartition", obj[[k]]$edge[, 1], obj[[k]]$edge[, 2],
+                        length(obj[[k]]$tip.label), obj[[k]]$Nnode,
+                        PACKAGE = "ape")
             bp <- lapply(bp, function(xx) sort(obj[[k]]$tip.label[xx]))
             for (i in 1:length(bp)) {
                 done <- FALSE
@@ -125,8 +115,9 @@ prop.clades <- function(phy, ..., part = NULL)
           obj <- unlist(obj, recursive = FALSE)
         part <- prop.part(obj)
     }
-    bp <- .Call("bipartition", as.integer(phy$edge[, 1]),
-                as.integer(phy$edge[, 2]), PACKAGE = "ape")
+    bp <- .Call("bipartition", phy$edge[, 1], phy$edge[, 2],
+                length(phy$tip.label), phy$Nnode,
+                PACKAGE = "ape")
     bp <- lapply(bp, function(xx) sort(phy$tip.label[xx]))
     n <- numeric(length(bp))
     for (i in 1:length(bp)) {

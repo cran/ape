@@ -97,8 +97,6 @@ lines.popsize(x, show.median=TRUE,show.years=FALSE, subst.rate, present.year, ..
   6.
 }
 \examples{
-library(ape)
-
 # get tree
 data("hivtree.newick") # example tree in NH format
 tree.hiv <- read.tree(text = hivtree.newick) # load tree

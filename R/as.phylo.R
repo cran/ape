@@ -1,36 +1,43 @@
-### as.phylo.R  (2005-03-07)
+### as.phylo.R (2006-10-13)
 ###
-###           Conversion Among Tree Objects
+###     Conversion Among Tree Objects
 ###
-### Copyright 2005 Emmanuel Paradis
+### Copyright 2005-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
+
+old2new.phylo <- function(phy)
+{
+    mode(phy$edge) <- "numeric"
+    n <- length(phy$tip.label)
+    NODES <- phy$edge < 0
+    phy$edge[NODES] <- n - phy$edge[NODES]
+    phy$Nnode <- sum(NODES)
+    phy
+}
+
+new2old.phylo <- function(phy)
+{
+    NTIP <- length(phy$tip.label)
+    NODES <- phy$edge > NTIP
+    phy$edge[NODES] <- NTIP - phy$edge[NODES]
+    mode(phy$edge) <- "character"
+    phy$Nnode <- NULL
+    phy
+}
 
 as.phylo <- function (x, ...) UseMethod("as.phylo")
 
 as.phylo.hclust <- function(x, ...)
 {
     N <- dim(x$merge)[1]
-    edge <- matrix(NA, 2 * N, 2)
-    edge.length <- numeric(2 * N)
+    edge <- matrix(NA, 2*N, 2)
+    edge.length <- numeric(2*N)
     ## `node' gives the number of the node for the i-th row of x$merge
     node <- numeric(N)
-    node[N] <- -1
-    cur.nod <- -2
+    node[N] <- N + 2
+    cur.nod <- N + 3
     j <- 1
     for (i in N:1) {
         edge[j:(j + 1), 1] <- node[i]
@@ -38,7 +45,7 @@ as.phylo.hclust <- function(x, ...)
             k <- j + l - 1
             if (x$merge[i, l] > 0) {
                 edge[k, 2] <- node[x$merge[i, l]] <- cur.nod
-                cur.nod <- cur.nod - 1
+                cur.nod <- cur.nod + 1
                 edge.length[k] <- x$height[i] - x$height[x$merge[i, l]]
             } else {
                 edge[k, 2] <- -x$merge[i, l]
@@ -47,31 +54,25 @@ as.phylo.hclust <- function(x, ...)
         }
         j <- j + 2
     }
-    mode(edge) <- "character"
-    obj <- list(edge = edge, edge.length = edge.length, tip.label = x$labels)
+    obj <- list(edge = edge, edge.length = edge.length,
+                tip.label = x$labels, Nnode = N)
     class(obj) <- "phylo"
-    ## the following manipulation is in case there are parentheses
-    ## or other special characters in the tip labels:
-    tmp <- obj$tip.label
-    obj$tip.label <- as.character(1:length(obj$tip.label))
-    obj <- read.tree(text = write.tree(obj, multi.line = FALSE))
-    obj$tip.label <- tmp[as.numeric(obj$tip.label)]
-    obj
+    reorder(obj)
 }
 
 as.phylo.phylog <- function(x, ...)
 {
     tr <- read.tree(text = x$tre)
+    n <- length(tr$tip.label)
     edge.length <- numeric(dim(tr$edge)[1])
-    term  <- which(as.numeric(tr$edge[, 2]) > 0)
-    inte  <- which(as.numeric(tr$edge[, 2]) < 0)
+    term  <- which(tr$edge[, 2] <= n)
+    inte  <- which(tr$edge[, 2] > n)
     edge.length[term] <- x$leaves[tr$tip.label]
     edge.length[inte] <- x$nodes[tr$node.label][-1]
     tr$edge.length <- edge.length
     if (x$nodes["Root"] != 0) {
-        edge.root <- x$nodes["Root"]
-        names(edge.root) <- NULL
-        tr$edge.root <- edge.root
+        tr$edge.root <- x$nodes["Root"]
+        names(tr$edge.root) <- NULL
     }
     tr
 }
@@ -80,17 +81,16 @@ as.hclust.phylo <- function(x, ...)
 {
     if (!is.ultrametric(x)) stop("the tree is not ultrametric")
     if (!is.binary.tree(x)) stop("the tree is not binary")
+    n <- length(x$tip.label)
     bt <- rev(branching.times(x))
     N <- length(bt)
-    tmp <- x$edge
-    mode(tmp) <- "numeric"
     nm <- as.numeric(names(bt))
     merge <- matrix(NA, N, 2)
     for (i in 1:N) {
-        ind <- which(tmp[, 1] == nm[i])
+        ind <- which(x$edge[, 1] == nm[i])
         for (k in 1:2)
-          merge[i, k] <- if (tmp[ind[k], 2] > 0) -tmp[ind[k], 2]
-          else which(nm == tmp[ind[k], 2])
+          merge[i, k] <- if (x$edge[ind[k], 2] <= n) -x$edge[ind[k], 2]
+          else which(nm == x$edge[ind[k], 2])
     }
     names(bt) <- NULL
     obj <- list(merge = merge, height = bt, order = 1:(N + 1),

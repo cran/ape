@@ -1,26 +1,11 @@
-### mst.R (2005-09-09)
+### mst.R (2006-11-08)
 ###
 ###     Minimum Spanning Tree
 ###
-### Copyright 2002-2005 Yvonnick Noel <noel@univ-lille3.fr>,
-###     Julien Claude <claude@isem.univ-montp2.fr> and
-###     Emmanuel Paradis <paradis@isem.univ-montp2.fr>
+### Copyright 2002-2006 Yvonnick Noel, Julien Claude, and Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 mst <- function(X)
 {
@@ -35,8 +20,8 @@ mst <- function(X)
     for (i in 1:(n - 1)) {
         tree <- c(tree, index.i)
         m <- apply(as.matrix(X[, tree]), 2, min)  #calcul les minimum par colonne
-        a <- sort.index(X[, tree])[1, ]
-        b <- sort.index(m)[1]
+        a <- sortIndex(X[, tree])[1, ]
+        b <- sortIndex(m)[1]
         index.j <- tree[b]
         index.i <- a[b]
 
@@ -54,7 +39,7 @@ mst <- function(X)
 }
 
 ### Function returning an index matrix for an increasing sort
-sort.index <- function(X)
+sortIndex <- function(X)
 {
     if(length(X) == 1) return(1)                  # sorting a scalar?
     if(!is.matrix(X)) X <- as.matrix(X)           # force vector into matrix

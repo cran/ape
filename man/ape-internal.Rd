@@ -2,7 +2,7 @@
 \alias{tree.build}
 \alias{f.cherry.yule}
 \alias{f.cherry.uniform}
-\alias{sort.index}
+\alias{sortIndex}
 \alias{nsca}
 \alias{perm.rowscols}
 \alias{mant.zstat}
@@ -42,6 +42,7 @@
 \alias{prepare.dna}
 \alias{floating.pie.asp}
 \alias{checkLabel}
+\alias{getMRCA}
 \title{Internal Ape Functions}
 \description{
   Internal ape functions.

@@ -1,32 +1,19 @@
-### is.binary.tree.R  (2002-09-12) [modified by EP 2005-05-31, 2005-08-18]
+### is.binary.tree.R (2002-09-12) [modified by EP 2005-05-31, 2005-08-18,
+###                                2006-10-04]
 ###
-###     Tests whether a given phylogenetic tree is binary
+###    Tests whether a given phylogenetic tree is binary
 ###
-### Copyright 2002 Korbinian Strimmer <strimmer@stat.uni-muenchen.de>
+### Copyright 2002 Korbinian Strimmer
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 is.binary.tree <- function(phy)
 {
-    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
+    if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
     ## modified by EP so that it works without edge lengths too (2005-05-31):
-    tmp <- as.numeric(phy$edge)
-    nb.tip <- max(tmp)
-    nb.node <- -min(tmp)
+    nb.tip <- length(phy$tip.label)
+    nb.node <- phy$Nnode
     ## modified by EP so that it works with both rooted and unrooted
     ## trees (2005-08-18):
     if (is.rooted(phy)) {

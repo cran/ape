@@ -116,7 +116,7 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   information into the analysis of interspecific data. \emph{American
     Naturalist}, \bold{149}, 646--667.
 
-  Pagel, M (1994) Detecting correlated evolution on phylogenies: a
+  Pagel, M. (1994) Detecting correlated evolution on phylogenies: a
   general method for the comparative analysis of discrete
   characters. \emph{Proceedings of the Royal Society of London. Series
     B. Biological Sciences}, \bold{255}, 37--445.
@@ -142,11 +142,14 @@ ace(x, bird.orders, method = "pic")
 ace(x, bird.orders, method = "GLS",
     corStruct = corBrownian(1, bird.orders))
 ### For discrete characters:
-ans <- ace(c(rep(0, 5), rep(1, 18)), bird.orders, type = "d")
-#### Showing the likelihood of state "1" on each node:
-plot(bird.orders, type = "c", FALSE)
-nodelabels(thermo = ans$lik.anc[, 2], cex = 0.75)
-### A example of the use of the argument `ip':
+x <- factor(c(rep(0, 5), rep(1, 18)))
+ans <- ace(x, bird.orders, type = "d")
+#### Showing the likelihoods on each node:
+plot(bird.orders, type = "c", FALSE, label.offset = 1)
+co <- c("blue", "yellow")
+tiplabels(pch = 22, bg = co[as.numeric(x)], cex = 2, adj = 1)
+nodelabels(thermo = ans$lik.anc, piecol = co, cex = 0.75)
+### An example of the use of the argument `ip':
 tr <- character(4)
 tr[1] <- "((((t10:5.03,t2:5.03):2.74,(t9:4.17,"
 tr[2] <- "t5:4.17):3.60):2.80,(t3:4.05,t7:"
@@ -155,9 +158,7 @@ tr[4] <- "2.18,(t8:2.17,t4:2.17):4.39):6.33);"
 tr <- read.tree(text = paste(tr, collapse = ""))
 y <- c(rep(1, 6), rep(2, 4))
 ### The default `ip = 0.1' makes ace fails:
-\dontrun{
 ace(y, tr, type = "d")
-}
 ace(y, tr, type = "d", ip = 0.01)
 ### Surprisingly, using an initial value farther to the
 ### MLE than the default one works:

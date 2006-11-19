@@ -1,24 +1,11 @@
-### compar.lynch.R  (2002-08-28)
+### compar.lynch.R (2002-08-28)
 ###
-###     Lynch's Comparative Method
+###    Lynch's Comparative Method
 ###
-### Copyright 2002 Julien Claude <claude@isem.univ-montp2.fr>
+### Copyright 2002 Julien Claude
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 compar.lynch <- function(x, G, eps = 1e-4)
 {
@@ -82,10 +69,6 @@ compar.lynch <- function(x, G, eps = 1e-4)
         A0 <- vara
         u0 <- newu
     }
-    list(vare = vare,
-         vara = vara,
-         A = mnewa,
-         E = mnewe,
-         u = newu,
-         lik = log(p))
+    dimnames(vare) <- dimnames(vara)
+    list(vare = vare, vara = vara, A = mnewa, E = mnewe, u = newu, lik = log(p))
 }

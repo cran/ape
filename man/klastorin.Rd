@@ -32,8 +32,6 @@ A vector indication the class affiliation for each sequence/taxon in the tree.
 }
 \author{Gangolf Jobb (\url{http://www.treefinder.de})}
 \examples{
-library(ape)
-
 # find groups in landplant tree
 data("landplants.newick")
 tree1 <- read.tree(text = landplants.newick)

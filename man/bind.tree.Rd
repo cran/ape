@@ -2,34 +2,37 @@
 \alias{bind.tree}
 \title{Binds Trees}
 \usage{
-bind.tree(x, y, node = -1, branch = NULL, position = NULL)
+bind.tree(x, y, where = "root", position = 0)
 }
 \arguments{
   \item{x}{an object of class \code{"phylo"}.}
   \item{y}{an object of class \code{"phylo"}.}
-  \item{node}{a negative integer giving the node number of the tree
-    \code{x} where the tree \code{y} is binded (by default -1, i.e. the
-    root).}
-  \item{branch}{an integer; if specified this gives the number of a tip
-    or of a label of the tree \code{x} below which the tree \code{y} is
-    binded.}
+  \item{where}{an) integer giving the number of the node or tip of the
+    tree \code{x} where the tree \code{y} is binded (\code{"root"} is a
+    short-cut for the root).}
   \item{position}{a numeric value giving the position from the tip or
-    node given by \code{branch} where the tree \code{y} is binded.}
+    node given by \code{node} where the tree \code{y} is binded;
+    negative values are ignored.}
 }
 \description{
-  This function binds together two phylogenetic trees to result in a
-  single object of class \code{"phylo"}.
+  This function binds together two phylogenetic trees to give a single
+  object of class \code{"phylo"}.
 }
 \details{
-  The argument \code{node} is ignored if \code{branch} is given. The
-  argument \code{x} can be seen as the receptor tree, whereas \code{y}
-  is the donor tree. The root of \code{y} is then sticked on a location
-  of \code{x} specified by either the argument \code{node}, or the
-  arguments \code{branch} and \code{position}. If \code{y} has a root
-  edge, this is added as in internal branch in the resulting tree.
+  The argument \code{x} can be seen as the receptor tree, whereas
+  \code{y} is the donor tree. The root of \code{y} is then sticked on a
+  location of \code{x} specified by \code{where} and, possibly,
+  \code{position}. If \code{y} has a root edge, this is added as in
+  internal branch in the resulting tree.
 }
 \value{
   an object of class \code{"phylo"}.
+}
+\note{
+  For the moment, this function handles only trees with branch lengths,
+  and does not handle node labels.
+
+  Further testing/improvements may be needed.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
@@ -52,7 +55,7 @@ cat("(Turniciformes:27.0,(Piciformes:26.3,((Galbuliformes:24.4,",
 tree.bird1 <- read.tree("ex1.tre")
 tree.bird2 <- read.tree("ex2.tre")
 unlink(c("ex1.tre", "ex2.tre")) # clean-up
-birds <- bind.tree(tree.bird1, tree.bird2, branch = -1,
+birds <- bind.tree(tree.bird1, tree.bird2, where = "root",
                    position = tree.bird1$root.edge)
 birds
 layout(matrix(c(1, 2, 3, 3), 2, 2))

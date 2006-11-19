@@ -1,22 +1,9 @@
-/* nj.c       2006-01-13 */
+/* nj.c       2006-11-13 */
 
 /* Copyright 2006 Emmanuel Paradis
 
-/* This file is part of the `ape' library for R and related languages. */
-/* It is made available under the terms of the GNU General Public */
-/* License, version 2, or at your option, any later version, */
-/* incorporated herein by reference. */
-
-/* This program is distributed in the hope that it will be */
-/* useful, but WITHOUT ANY WARRANTY; without even the implied */
-/* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR */
-/* PURPOSE.  See the GNU General Public License for more */
-/* details. */
-
-/* You should have received a copy of the GNU General Public */
-/* License along with this program; if not, write to the Free */
-/* Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, */
-/* MA 02111-1307, USA */
+/* This file is part of the R-package `ape'. */
+/* See the file ../COPYING for licensing issues. */
 
 #include <R.h>
 
@@ -26,7 +13,7 @@ int give_index(int i, int j, int n)
 {
     if (i > j) return(DINDEX(j, i));
     else return(DINDEX(i, j));
-} /* EOF give_index */
+}
 
 double sum_dist_to_i(int n, double *D, int i)
 /* returns the sum of all distances D_ij between i and j
@@ -48,7 +35,7 @@ double sum_dist_to_i(int n, double *D, int i)
     }
 
     return(sum);
-} /* EOF sum_dist_to_i */
+}
 
 #define GET_I_AND_J                                               \
 /* Find the 'R' indices of the two corresponding OTUs */          \
@@ -81,7 +68,7 @@ void nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
     DI = &d_i;
 
     n = *N;
-    cur_nod = 2 - n;
+    cur_nod = 2*n - 2;
 
     S = (double*)R_alloc(n*(n - 1)/2, sizeof(double));
     new_dist = (double*)R_alloc(n*(n - 1)/2, sizeof(double));
@@ -91,7 +78,7 @@ void nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
     for (i = 0; i < n; i++) otu_label[i] = i + 1;
     k = 0;
 
-    /* First, look if there are any distances equal to 0. */
+    /* First, look if there are distances equal to 0. */
     /* Since there may be multichotomies, we loop
        through the OTUs instead of the distances. */
 
@@ -105,7 +92,6 @@ void nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
 		k = k + 2;
 
 		/* update */
-
 		/* We remove the second tip label: */
 		if (OTU2 < n) {
   		    for (i = OTU2; i < n; i++)
@@ -126,8 +112,8 @@ void nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
 
 		otu_label[OTU1 - 1] = cur_nod;
 		/* to avoid adjusting the internal branch at the end: */
-		DI[-cur_nod - 1] = 0;
-		cur_nod++;
+		DI[cur_nod - *N - 1] = 0;
+		cur_nod--;
 	    } else OTU2++;
 	}
 	OTU1++;
@@ -176,7 +162,7 @@ void nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
         B /= n - 2;
         edge_length[k] = (D[smallest] + A - B)/2;
         edge_length[k + 1] = (D[smallest] + B - A)/2;
-        DI[-cur_nod - 1] = D[smallest];
+        DI[cur_nod - *N - 1] = D[smallest];
 
         /* update before the next loop */
         if (OTU1 > OTU2) { /* make sure that OTU1 < OTU2 */
@@ -202,7 +188,7 @@ void nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
 	n--;
 	for (i = 0; i < n*(n - 1)/2; i++) D[i] = new_dist[i];
 
-	cur_nod = cur_nod + 1;
+	cur_nod--;
 	k = k + 2;
     }
 
@@ -216,9 +202,9 @@ void nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
     edge_length[*N*2 - 6] = (D[2] + D[1] - D[0])/2;
 
     for (i = 0; i < *N*2 - 3; i++) {
-        if (edge2[i] > 0) continue;
+        if (edge2[i] <= *N) continue;
 	/* In case there are zero branch lengths (see above): */
-	if (DI[-edge2[i] - 1] == 0) continue;
-	edge_length[i] -= DI[-edge2[i] - 1]/2;
+	if (DI[edge2[i] - *N - 1] == 0) continue;
+	edge_length[i] -= DI[edge2[i] - *N - 1]/2;
     }
-} /* EOF nj */
+}

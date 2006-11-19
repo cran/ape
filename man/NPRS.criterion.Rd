@@ -43,8 +43,6 @@ NPRS.criterion(phy, chrono, expo = 2, minEdgeLength = 1e-06)
     Biology and Evolution}, \bold{14}, 1218--1231.
 }
 \examples{
-library(ape)
-
 # get tree
 data("landplants.newick") # example tree in NH format
 tree.landplants <- read.tree(text = landplants.newick)
@@ -56,9 +54,8 @@ plot(tree.landplants, label.offset = 0.001)
 # estimate chronogram
 chrono.plants <- chronogram(tree.landplants)
 
-# plot and write to file
+# plot
 plot(chrono.plants, label.offset = 0.001)
-write.tree(chrono.plants, file = "chronogram.phy")
 
 # value of NPRS function for our estimated chronogram
 NPRS.criterion(tree.landplants, chrono.plants)

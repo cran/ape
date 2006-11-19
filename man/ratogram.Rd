@@ -35,12 +35,10 @@ Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})
 }
 \references{
   Sanderson, M. J. (1997) A nonparametric approach to estimating
-    divergence times in the absence of rate constancy. \emph{Molecular
+  divergence times in the absence of rate constancy. \emph{Molecular
     Biology and Evolution}, \bold{14}, 1218--1231.
 }
 \examples{
-library(ape)
-
 # get tree
 data("landplants.newick") # example tree in NH format
 tree.landplants <- read.tree(text = landplants.newick)
@@ -52,8 +50,7 @@ plot(tree.landplants, label.offset = 0.001)
 # estimate ratogram
 rato.plants <- ratogram(tree.landplants)
 
-# plot and write to file
+# plot
 plot(rato.plants, label.offset = 0.001)
-write.tree(rato.plants, file = "ratogram.phy")
 }
 \keyword{manip}

@@ -1,24 +1,12 @@
-### all.equal.phylo.R  (2006-09-12)
+### all.equal.phylo.R (2006-09-12)
 ###
 ###     Global Comparison of two Phylogenies
 ###
 ### Copyright 2006 Benoît Durand
+###    modified by EP for the new coding of "phylo" (2006-10-04)
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 ### Recherche de la correspondance entre deux arbres
 ### Parcours en profondeur et en parallèle des deux arbres (current et target)
@@ -40,14 +28,12 @@ all.equal.phylo <- function(target, current,
                         scale = NULL, ...) {
 
 	same.node <- function(i, j) {
-		ni <- as.numeric(i)
-		nj <- as.numeric(j)
 		# Comparaison de un noeud et une feuille
-		if (sign(ni) != sign(nj)) return(NULL)
+		if (xor(i > Ntip1, j > Ntip2)) return(NULL)
 		# Comparaison de deux feuilles
-		if (sign(ni) == 1) {
+		if (i <= Ntip1) {
 			if (!use.tip.label) return(c(i, j))
-			if (current$tip.label[ni] == target$tip.label[nj])
+			if (current$tip.label[i] == target$tip.label[j])
 				return(c(i, j))
 			return(NULL)
   		}
@@ -60,12 +46,12 @@ all.equal.phylo <- function(target, current,
 			corresp <- NULL
 			for (j.child in j.children) {
 				if (!use.edge.length ||
-					isTRUE(all.equal(current$edge.length[i.child],
-							     target$edge.length[j.child],
-							     tolerance = tolerance,
-							     scale = scale)))
-					corresp <- same.node(current$edge[i.child, 2],
-								   target$edge[j.child, 2])
+                                    isTRUE(all.equal(current$edge.length[i.child],
+                                                     target$edge.length[j.child],
+                                                     tolerance = tolerance,
+                                                     scale = scale)))
+                                    corresp <- same.node(current$edge[i.child, 2],
+                                                         target$edge[j.child, 2])
 				if (!is.null(corresp)) break
 			}
 			if (is.null(corresp)) return(NULL)
@@ -75,7 +61,12 @@ all.equal.phylo <- function(target, current,
 		return(correspondance)
 	}
 
-	result <- same.node('-1','-1')
+        Ntip1 <- length(target$tip.label)
+        Ntip2 <- length(current$tip.label)
+        root1 <- Ntip1 + 1
+        root2 <- Ntip2 + 1
+        if (root1 != root2) return(FALSE)
+	result <- same.node(root1, root2)
 	if (!isTRUE(index.return)) return(!is.null(result))
 	if (is.null(result)) return(result)
 	result <- t(matrix(result, nrow = 2))

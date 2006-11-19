@@ -26,7 +26,6 @@ data(xenarthra)
 }
 \examples{
 data(xenarthra)
-\dontrun{par(ask = TRUE)}
 plot(xenarthra)
 ### remove the margins...
 plot(xenarthra, no.margin = TRUE)

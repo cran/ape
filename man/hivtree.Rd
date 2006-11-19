@@ -32,8 +32,6 @@ data(hivtree.table)
 }
 
 \examples{
-library(ape)
-
 # example tree in NH format (a string)
 data("hivtree.newick") 
 hivtree.newick

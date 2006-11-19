@@ -26,8 +26,6 @@ data(landplants.newick)
     Biology and Evolution}, \bold{14}, 1218--1231.
 }
 \examples{
-library(ape)
-
 # example tree in NH format (a string)
 data("landplants.newick")
 landplants.newick

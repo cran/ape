@@ -1,31 +1,17 @@
-### read.tree.R (2006-08-09)
+### read.tree.R (2006-10-17)
 ###
-###     Read Tree File in Parenthetic Format
+###    Read Tree Files in Parenthetic Format
 ###
 ### Copyright 2002-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 tree.build <- function(tp)
 {
     add.internal <- function() {
         edge[j, 1] <<- current.node
-        node <<- node - 1
-        edge[j, 2] <<- current.node <<- node
+        edge[j, 2] <<- current.node <<- node <<- node + 1
         j <<- j + 1
     }
     add.terminal <- function() {
@@ -41,13 +27,13 @@ tree.build <- function(tp)
     go.down <- function() {
         l <- which(edge[, 2] == current.node)
         X <- unlist(strsplit(tpc[k], ":"))
-        node.label[-current.node] <<- X[1]
+        node.label[current.node - nb.tip] <<- X[1]
         edge.length[l] <<- as.numeric(X[2])
         k <<- k + 1
         current.node <<- edge[l, 1]
     }
     if (!length(grep(",", tp))) {
-        obj <- list(edge = matrix(c("-1", "1"), 1, 2))
+        obj <- list(edge = matrix(c(2, 1), 1, 2))
         tp <- unlist(strsplit(tp, "[\\(\\):;]"))
         obj$edge.length <- as.numeric(tp[3])
         obj$tip.label <- tp[2]
@@ -60,8 +46,8 @@ tree.build <- function(tp)
     tpc <- tpc[tpc != ""]
     skeleton <- tsp[tsp == "(" | tsp == ")" | tsp == "," | tsp == ";"]
     nsk <- length(skeleton)
-    nb.node <- length(skeleton[skeleton == ")"])
-    nb.tip <- length(skeleton[skeleton == ","]) + 1
+    nb.node <- sum(skeleton == ")")
+    nb.tip <- sum(skeleton == ",") + 1
     ## We will assume there is an edge at the root;
     ## if so, it will be removed and put into a vector
     nb.edge <- nb.node + nb.tip
@@ -70,36 +56,34 @@ tree.build <- function(tp)
 
     edge.length <- numeric(nb.edge)
     edge <- matrix(NA, nb.edge, 2)
-    edge[nb.edge, 1] <- 0  # see comment above
-    edge[nb.edge, 2] <- -1 #
-    node <- -1                              # node number
-    current.node <- node
-    j <- 1                                  # index of the line number of edge
-    k <- 1                                  # index of the line number of tpc
-    tip <- 1                                # tip number
+    current.node <- node <- nb.tip + 1 # node number
+    edge[nb.edge, 1] <- 0    # see comment above
+    edge[nb.edge, 2] <- node #
+
+    ## j: index of the line number of edge
+    ## k: index of the line number of tpc
+    ## tip: tip number
+    j <- k <- tip <- 1
 
     for (i in 2:nsk) {
-        if (skeleton[i] == "(") add.internal()      # add an internal branch (on top)
+        if (skeleton[i] == "(") add.internal() # add an internal branch (on top)
         if (skeleton[i] == ",") {
-            if (skeleton[i - 1] != ")") add.terminal()   # add a terminal branch
+            if (skeleton[i - 1] != ")") add.terminal() # add a terminal branch
         }
         if (skeleton[i] == ")") {
-            if (skeleton[i - 1] == ",") {   # add a terminal branch and go down one level
+            if (skeleton[i - 1] == ",") { # add a terminal branch and go down one level
                 add.terminal()
                 go.down()
             }
-            if (skeleton[i - 1] == ")") go.down()   # go down one level
+            if (skeleton[i - 1] == ")") go.down() # go down one level
         }
     }
     if (is.na(node.label[1])) node.label[1] <- ""
     edge <- edge[-nb.edge, ]
-    mode(edge) <- "character"
     root.edge <- edge.length[nb.edge]
     edge.length <- edge.length[-nb.edge]
-    obj <- list(edge = edge,
-                edge.length = edge.length,
-                tip.label = tip.label,
-                node.label = node.label,
+    obj <- list(edge = edge, edge.length = edge.length, Nnode = nb.node,
+                tip.label = tip.label, node.label = node.label,
                 root.edge = root.edge)
     if (all(obj$node.label == "")) obj$node.label <- NULL
     if (is.na(obj$root.edge)) obj$root.edge <- NULL
@@ -108,8 +92,8 @@ tree.build <- function(tp)
     obj
 }
 
-read.tree <- function(file = "", format = "Newick", rooted = TRUE, text = NULL,
-                      tree.names = NULL, skip = 0, comment.char = "#", ...)
+read.tree <- function(file = "", text = NULL, tree.names = NULL,
+                      skip = 0, comment.char = "#", ...)
 {
     if (!is.null(text)) {
         if (!is.character(text))
@@ -156,12 +140,12 @@ read.tree <- function(file = "", format = "Newick", rooted = TRUE, text = NULL,
                 list.obj[[i]]$edge[j] <- as.character(as.numeric(list.obj[[i]]$edge[j]) + 1)
             ## Check a second time and if there is still a problem...!!!
             if(sum(list.obj[[i]]$edge[, 1] == "-1") == 1)
-              stop("There is apparently two root edges in your file:\ncannot read tree file")
+              stop("There is apparently two root edges in your file: cannot read tree file")
         }
     }
     if (nb.tree == 1) list.obj <- list.obj[[1]] else {
-        if (is.null(tree.names)) names(list.obj) <- paste("tree", 1:nb.tree, sep = "")
-        else names(list.obj) <- tree.names
+        names(list.obj) <-
+          if (is.null(tree.names)) paste("tree", 1:nb.tree, sep = "") else tree.names
         class(list.obj) <- c("multi.tree", "phylo")
     }
     list.obj

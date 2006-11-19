@@ -53,7 +53,6 @@
   \code{\link{plot.correlogram}, \link{plot.correlogramList}}
 }
 \examples{
-  library(ape)
   data(carnivora)
   ### Using the formula interface:
   co <- correlogram.formula(

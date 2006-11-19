@@ -1,6 +1,5 @@
 \name{cophenetic.phylo}
 \alias{cophenetic.phylo}
-\alias{dist.phylo}
 \title{Pairwise Distances from a Phylogenetic Tree}
 \usage{
 \method{cophenetic}{phylo}(x, full = FALSE)
@@ -21,10 +20,7 @@
   argument \code{phy}), or, if \code{full = TRUE}, the numbers of the
   tips and the nodes (as given by the element \code{edge}).
 }
-\author{
-  Julien Claude \email{claude@isem.univ-montp2.fr} and
-  Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}
-}
+\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{read.tree}} to read tree files in Newick format,
   \code{\link[stats]{cophenetic}} for the generic function

@@ -1,18 +1,11 @@
 Package: ape
-Version: 1.8-5
-Date: 2006-09-18
+Version: 1.9
+Date: 2006-11-19
 Title: Analyses of Phylogenetics and Evolution
-Author: Emmanuel Paradis <paradis@isem.univ-montp2.fr>,
-        Korbinian Strimmer <strimmer@stat.uni-muenchen.de>,
-        Julien Claude <claude@isem.univ-montp2.fr>,
-        Gangolf Jobb <gangolf.deletethis@treefinder.de>,
-        Rainer Opgen-Rhein <opgen@stat.uni-muenchen.de>,
-        Julien Dutheil <julien.dutheil@univ-montp2.fr>,
-        Yvonnick Noel <noel@univ-lille3.fr>,
-        Ben Bolker <bolker@zoo.ufl.edu>,
-        Jim Lemon <jim@bitwrit.com.au>,
-        Benoît Durand <b.durand@alfort.AFSSA.FR>,
-        Johan Nylander <nylander@scs.fsu.edu>
+Author: Ben Bolker, Julien Claude, Benoît Durand,
+  Julien Dutheil, Gangolf Jobb, Jim Lemon, Yvonnick Noël,
+  Johan Nylander, Rainer Opgen-Rhein, Emmanuel Paradis,
+  Korbinian Strimmer
 Maintainer: Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 Depends: R (>= 2.0.0)
 Suggests: gee, nlme, lattice
@@ -25,9 +18,8 @@ Description: Ape provides functions for reading, writing, plotting,
   Mantel's test, computation of minimum spanning tree, the population
   parameter theta based on various approaches, nucleotide diversity,
   generalized skyline plots, estimation of absolute evolutionary rates
-  and clock-like trees using non-parametric rate smoothing, conversion
-  of APE trees to and from hclust objects and for classifying genes in
-  trees using the Klastorin-Misawa-Tajima approach. Phylogeny estimation
-  can be done with the NJ and ML methods.
+  and clock-like trees using non-parametric rate smoothing and penalized
+  likelihood, classifying genes in trees using the Klastorin-Misawa-Tajima
+  approach. Phylogeny estimation can be done with the NJ and ML methods.
 License: GPL version 2 or newer
-Packaged: Mon Sep 18 15:43:34 2006; paradis
+Packaged: Sun Nov 19 22:40:10 2006; paradis

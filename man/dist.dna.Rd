@@ -1,5 +1,8 @@
 \name{dist.dna}
 \alias{dist.dna}
+\alias{dist.dna.BH87}
+\alias{dist.dna.logdet}
+\alias{dist.dna.paralin}
 \title{Pairwise Distances from DNA Sequences}
 \usage{
 dist.dna(x, model = "K80", variance = FALSE,
@@ -12,8 +15,9 @@ dist.dna(x, model = "K80", variance = FALSE,
     \code{\link{read.GenBank}}).}
   \item{model}{a character string specifying the evlutionary model to be
     used; must be one of \code{"raw"}, \code{"JC69"}, \code{"K80"} (the
-    default), \code{"F81"}, \code{"K81"}, \code{"F84"}, \code{"T92"},
-    \code{"TN93"}, or \code{"GG95"}.}
+    default), \code{"F81"}, \code{"K81"}, \code{"F84"}, \code{"BH87"},
+    \code{"T92"}, \code{"TN93"}, \code{"GG95"}, \code{"logdet"}, or
+    \code{"paralin"}.}
   \item{variance}{a logical indicating whether to compute the variances
     of the distances; defaults to \code{FALSE} so the variances are not
     computed.}
@@ -83,11 +87,15 @@ dist.dna(x, model = "K80", variance = FALSE,
     what Kimura called his ``three substitution types model'' (3ST), and
     is sometimes referred to as ``Kimura's 3-parameters distance''}.
 
-  \item{``F84''}{This model generalizes ``K80'' by relaxing the
-    assumption of equal base frequencies. It was first introduced by
-    Felsenstein in 1984 in Phylip, and is fully described by Felsenstein
-    and Churchill (1996). The formulae used in this function were taken
-    from McGuire et al. (1999)}.
+  \item{``F84''}{This model generalizes K80 by relaxing the assumption
+    of equal base frequencies. It was first introduced by Felsenstein in
+    1984 in Phylip, and is fully described by Felsenstein and Churchill
+    (1996). The formulae used in this function were taken from McGuire
+    et al. (1999)}.
+
+  \item{``BH87''}{Barry and Hartigan (1987) developed a distance based
+    on the observed proportions of changes among the four bases. This
+    distance is not symmetric.}
 
   \item{``T92''}{Tamura (1992) generalized the Kimura model by relaxing
     the assumption of equal base frequencies. This is done by taking
@@ -104,15 +112,26 @@ dist.dna(x, model = "K80", variance = FALSE,
   \item{``GG95''}{Galtier and Gouy (1995) introduced a model where the
     G+C content may change through time. Different rates are assumed for
     transitons and transversions.}
+
+  \item{``logdet''}{The Log-Det distance, developed by Lockhart et
+    al. (1994), is related to BH87. However, this distance is symetric.}
+
+  \item{``paralin''}{Lake (1994) developed the paralinear distance which
+    can be viewed as another variant of the Barry--Hartigan distance.}
 }
 \value{
   an object of class \link[stats]{dist} (by default), or a numeric
-  matrix if \code{as.matrix = TRUE}.
+  matrix if \code{as.matrix = TRUE}. If \code{model = "BH87"}, a numeric
+  matrix is returned because the Barry--Hartigan distance is not
+  symmetric.
 
   If \code{variance = TRUE} an attribute called \code{"variance"} is
   given to the returned object.
 }
 \references{
+  Barry, D. and Hartigan, J. A. (1987) Asynchronous distance between
+  homologous DNA sequences. \emph{Biometrics}, \bold{43}, 261--276.
+
   Felsenstein, J. (1981) Evolutionary trees from DNA sequences: a
   maximum likelihood approach. \emph{Journal of Molecular Evolution},
   \bold{17}, 368--376.
@@ -140,6 +159,15 @@ dist.dna(x, model = "K80", variance = FALSE,
   Jin, L. and Nei, M. (1990) Limitations of the evolutionary parsimony
   method of phylogenetic analysis. \emph{Molecular Biology and
     Evolution}, \bold{7}, 82--102.
+
+  Lake, J. A. (1994) Reconstructing evolutionary trees from DNA and
+  protein sequences: paralinear distances. \emph{Proceedings of the
+    National Academy of Sciences USA}, \bold{91}, 1455--1459.
+
+  Lockhart, P. J., Steel, M. A., Hendy, M. D. and Penny, D. (1994)
+  Recovering evolutionary trees under a more realistic model of sequence
+  evolution. \emph{Molecular Biology and Evolution}, \bold{11},
+  605--602.
 
   McGuire, G., Prentice, M. J. and Wright, F. (1999). Improved error
   bounds for genetic distances from DNA sequences. \emph{Biometrics},

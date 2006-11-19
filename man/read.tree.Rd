@@ -2,21 +2,14 @@
 \alias{read.tree}
 \title{Read Tree File in Parenthetic Format}
 \usage{
-read.tree(file = "", format = "Newick", rooted = TRUE, text = NULL,
-          tree.names = NULL, skip = 0, comment.char = "#", ...)
+read.tree(file = "", text = NULL, tree.names = NULL,
+          skip = 0, comment.char = "#", ...)
 }
 \arguments{
   \item{file}{a file name specified by either a variable of mode character,
     or a double-quoted string; if \code{file = ""} (the default) then the
     tree is input on the keyboard, the entry being terminated with a
     blank line.}
-  \item{format}{a character giving the format of the tree file; by
-    default \code{"Newick"}. Currently only the Newick format is
-    available (see \code{\link{read.nexus}} to read trees in Nexus
-    files).}
-  \item{rooted}{a logical indicating whether the tree is rooted or not;
-    defaults to \code{TRUE}. This is currently not implemented, meaning
-    that all trees are read as rooted.}
   \item{text}{alternatively, the name of a variable of mode character
     which contains the tree(s) in parenthetic format. By default, this
     is ignored (set to \code{NULL}, meaning that the tree is read in a
@@ -52,23 +45,21 @@ read.tree(file = "", format = "Newick", rooted = TRUE, text = NULL,
 }
 \value{
   an object of class \code{"phylo"} with the following components:
-  \item{edge}{a two-column matrix of mode character where each row
+  \item{edge}{a two-column matrix of mode numeric where each row
     represents an edge of the tree; the nodes and the tips are
-    symbolized with numbers (these numbers are not treated as numeric,
-    hence the mode character); the nodes are represented with negative
-    numbers (the root being \code{"-1"}), and the tips are represented with
-    positive numbers. For each row, the first column gives the
-    ancestor. This representation allows an easy manipulation of the
-    tree, particularly if it is rooted.}
+    symbolized with numbers; the tips are numbered 1, 2, \dots, and the
+    nodes are numbered after the tips. For each row, the first column
+    gives the ancestor.}
   \item{edge.length}{(optional) a numeric vector giving the lengths of the
     branches given by \code{edge}.}
   \item{tip.label}{a vector of mode character giving the names of the
     tips; the order of the names in this vector corresponds to the
     (positive) number in \code{edge}.}
+  \item{Nnode}{the number of (internal) nodes.}
   \item{node.label}{(optional) a vector of mode character giving the
-    names of the nodes (set to \code{NULL} if not available in the file).}
+    names of the nodes.}
   \item{root.edge}{(optional) a numeric value giving the length of the
-    branch at the root if it exists (\code{NULL} otherwise).}
+    branch at the root if it exists.}
 
   If several trees are read in the file, the returned object is of class
   \code{c("multi.tree", "phylo")}, and is a list of objects of class

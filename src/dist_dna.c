@@ -1,22 +1,9 @@
-/* dist_dna.c       2005-09-12 */
+/* dist_dna.c       2006-10-23 */
 
-/* Copyright 2005 Emmanuel Paradis
+/* Copyright 2005-2006 Emmanuel Paradis
 
-/* This file is part of the `ape' library for R and related languages. */
-/* It is made available under the terms of the GNU General Public */
-/* License, version 2, or at your option, any later version, */
-/* incorporated herein by reference. */
-
-/* This program is distributed in the hope that it will be */
-/* useful, but WITHOUT ANY WARRANTY; without even the implied */
-/* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR */
-/* PURPOSE.  See the GNU General Public License for more */
-/* details. */
-
-/* You should have received a copy of the GNU General Public */
-/* License along with this program; if not, write to the Free */
-/* Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, */
-/* MA 02111-1307, USA */
+/* This file is part of the R-package `ape'. */
+/* See the file ../COPYING for licensing issues. */
 
 /* THE CODES IN THIS FILE CAN BE GREATLY IMPROVED; SEE, E.G.,: */
 /* R-2.2.0/src/library/stats/src/distance.c */
@@ -30,9 +17,9 @@ void dist_dna_raw(char **x, int *n, int *s, double *d, int *pairdel)
 {
   int i, j, k, s1, s2, target, Nd, L;
 
+  target = 0;
   for (i = 0; i < *n - 1; i++) {
     for (j = i + 1; j < *n; j++) {
-      target = *n * i - i*(i + 1)/2 + j - i - 1;
       Nd = 0;
       L = 0;
       for (k = 0; k < *s; k++) {
@@ -46,6 +33,7 @@ void dist_dna_raw(char **x, int *n, int *s, double *d, int *pairdel)
       }
       if (!*pairdel) L = *s;
       d[target] = ((double) Nd/L);
+      target++;
     }
   }
 }

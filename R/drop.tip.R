@@ -1,29 +1,17 @@
-### drop.tip.R (2005-04-14)
+### drop.tip.R (2006-10-12)
 ###
 ###     Remove Tips in a Phylogenetic Tree
 ###
-### Copyright 2003-2005 Emmanuel Paradis
+### Copyright 2003-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 drop.tip <- function(phy, tip, trim.internal = TRUE, subtree = FALSE,
                      root.edge = 0)
 {
     if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
+    phy <- new2old.phylo(phy)
     if (subtree) {
         trim.internal <- TRUE
         edge.bak <- phy$edge
@@ -161,6 +149,7 @@ drop.tip <- function(phy, tip, trim.internal = TRUE, subtree = FALSE,
     dim(tmp) <- c(n / 2, 2)
     mode(tmp) <- "character"
     phy$edge <- tmp
+    phy <- old2new.phylo(phy)
     if (!trim.internal || subtree) {
         S <- write.tree(phy, multi.line = FALSE)
         phy <- if (nobr) clado.build(S) else tree.build(S)

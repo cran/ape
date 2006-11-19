@@ -21,4 +21,7 @@ branching.times(phy)
   matrix \code{edge} of \code{phy} are used as names.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\seealso{
+\code{\link{is.ultrametric}}
+}
 \keyword{manip}

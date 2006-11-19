@@ -1,56 +1,32 @@
-### balance.R  (2002-08-28)
+### balance.R (2006-10-04)
 ###
-###     Balance of a Dichotomous Phylogenetic Tree
+###    Balance of a Dichotomous Phylogenetic Tree
 ###
-### Copyright 2002 Emmanuel Paradis
+### Copyright 2002-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 balance <- function(phy)
 {
-    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
-    tmp <- as.numeric(phy$edge)
-    nb.tip <- max(tmp)
-    nb.node <- -min(tmp)
-    if (nb.node != nb.tip - 1) stop("\"phy\" is not fully dichotomous")
-    balance <- matrix(NA, nb.tip + nb.node, 2)
-    balance[1:nb.tip, ] <- 0.5
-
-    rownames(balance) <- as.character(c(1:nb.tip, -(1:nb.node)))
-    ## `unused' says if the tip or node has NOT been used
-    ## to compute balance at a lower level...
-    unused <- rep(TRUE, nb.tip + nb.node)
-    names(unused) <- rownames(balance)
-
-    while(sum(unused) > 1) {
-        term <- names(balance[, 1][!is.na(balance[, 1]) & unused])
-        ind <- as.logical(match(phy$edge[, 2], term))
-        ind[is.na(ind)] <- FALSE
-        term.br <- matrix(phy$edge[ind], length(term), 2)
-        ## extract the nodes with 2 branches above
-        basal <- names(which(table(term.br[, 1]) == 2))
-        for (nod in basal) {
-            pair.ind <- which(phy$edge[, 1] == nod)
-            pair <- phy$edge[pair.ind, 2]
-            balance[nod, ] <- c(sum(balance[pair[1], ]), sum(balance[pair[2], ]))
-            unused[pair] <- FALSE
-        }
+### the tree must be in cladewise order
+    if (class(phy) != "phylo")
+      stop('object "phy" is not of class "phylo"')
+    N <- length(phy$tip.label)
+    nb.node <- phy$Nnode
+    if (nb.node != N - 1)
+      stop('"phy" is not rooted and fully dichotomous')
+    ans <- matrix(NA, nb.node, 2)
+    foo <- function(node, n) {
+        s <- which(phy$edge[, 1] == node)
+        desc <- phy$edge[s, 2]
+        ans[node - N, 1] <<- n1 <- (s[2] - s[1] + 1)/2
+        ans[node - N, 2] <<- n2 <- n - n1
+        if (desc[1] > N) foo(desc[1], n1)
+        if (desc[2] > N) foo(desc[2], n2)
     }
-    balance <- balance[-(1:nb.tip), ]
-    if (!is.null(phy$node.label)) rownames(balance) <- phy$node.label
-    balance
+    foo(N + 1, N)
+    rownames(ans) <-
+      if (is.null(phy$node.label)) N + 1:nb.node else phy$node.label
+    ans
 }

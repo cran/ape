@@ -1,69 +1,50 @@
-/* bipartition.c    2006-02-01 */
+/* bipartition.c    2006-10-06 */
 
 /* Copyright 2005-2006 Emmanuel Paradis */
 
-/* This file is part of the `ape' library for R and related languages. */
-/* It is made available under the terms of the GNU General Public */
-/* License, version 2, or at your option, any later version, */
-/* incorporated herein by reference. */
-
-/* This program is distributed in the hope that it will be */
-/* useful, but WITHOUT ANY WARRANTY; without even the implied */
-/* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR */
-/* PURPOSE.  See the GNU General Public License for more */
-/* details. */
-
-/* You should have received a copy of the GNU General Public */
-/* License along with this program; if not, write to the Free */
-/* Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, */
-/* MA 02111-1307, USA */
+/* This file is part of the R-package `ape'. */
+/* See the file ../COPYING for licensing issues. */
 
 #include <R.h>
 #include <Rinternals.h>
 
-SEXP seq_root2tip(SEXP edge1, SEXP edge2)
+SEXP seq_root2tip(SEXP edge1, SEXP edge2, SEXP nbtip, SEXP nbnode)
 {
-    int i, j, k, nbedge, nbtip, nbnode, *x1, *x2, *done, dn, sumdone, lt;
+    int i, j, k, nbedge, *x1, *x2, *done, dn, sumdone, lt, ROOT, Ntip, Nnode;
     SEXP ans, seqnod, tmp_vec;
 
     PROTECT(edge1 = coerceVector(edge1, INTSXP));
     PROTECT(edge2 = coerceVector(edge2, INTSXP));
+    PROTECT(nbtip = coerceVector(nbtip, INTSXP));
+    PROTECT(nbnode = coerceVector(nbnode, INTSXP));
     x1 = INTEGER(edge1);
     x2 = INTEGER(edge2);
+    Ntip = *INTEGER(nbtip);
+    Nnode = *INTEGER(nbnode);
     nbedge = LENGTH(edge1);
+    ROOT = Ntip + 1; /* check that "*" is needed here */
 
-    /* count the number of tips */
-    if (x2[0] > 0) nbtip = 1; else nbtip = 0;
-    /* count the number of nodes by finding the smallest element in 'edge1' */
-    nbnode = x1[0];
-    /* start this loop on the 2nd edge */
-    for (i = 1; i < nbedge; i++) {
-        if (x2[i] > 0) nbtip++;
-	if (x1[i] < nbnode) nbnode = x1[i];
-    }
-    nbnode = -nbnode;
-
-    PROTECT(ans = allocVector(VECSXP, nbtip));
-    PROTECT(seqnod = allocVector(VECSXP, nbnode));
+    PROTECT(ans = allocVector(VECSXP, Ntip));
+    PROTECT(seqnod = allocVector(VECSXP, Nnode));
 
     done = &dn;
-    done = (int*)R_alloc(nbnode, sizeof(int));
-    for (i = 0; i < nbnode; i++) done[i] = 0;
+    done = (int*)R_alloc(Nnode, sizeof(int));
+    for (i = 0; i < Nnode; i++) done[i] = 0;
 
     tmp_vec = allocVector(INTSXP, 1);
-    INTEGER(tmp_vec)[0] = -1;
+    INTEGER(tmp_vec)[0] = ROOT; /* sure ? */
     SET_VECTOR_ELT(seqnod, 0, tmp_vec);
     sumdone = 0;
 
-    while (sumdone < nbnode) {
-        for (i = 0; i < nbnode; i++) { /* loop through all nodes */
+    while (sumdone < Nnode) {
+        for (i = 0; i < Nnode; i++) { /* loop through all nodes */
 	    /* if the vector is not empty and its */
 	    /* descendants are not yet found */
 	    if (VECTOR_ELT(seqnod, i) == R_NilValue || done[i]) continue;
 	    /* look for the descendants in 'edge': */
 	    for (j = 0; j < nbedge; j++) {
 	        /* skip the terminal edges, we look only for nodes now */
-	        if (-x1[j] != i + 1 || x2[j] > 0) continue;
+	        if (x1[j] - Ntip != i + 1 || x2[j] <= Ntip) continue;
 		/* can now make the sequence from */
 		/* the root to the current node */
 		lt = LENGTH(VECTOR_ELT(seqnod, i));
@@ -71,7 +52,7 @@ SEXP seq_root2tip(SEXP edge1, SEXP edge2)
 		for (k = 0; k < lt; k++)
 		  INTEGER(tmp_vec)[k] = INTEGER(VECTOR_ELT(seqnod, i))[k];
 		INTEGER(tmp_vec)[lt] = x2[j];
-		SET_VECTOR_ELT(seqnod, -x2[j] - 1, tmp_vec);
+		SET_VECTOR_ELT(seqnod, x2[j] - Ntip - 1, tmp_vec);
 	    }
 	    done[i] = 1;
 	    sumdone++;
@@ -82,44 +63,42 @@ SEXP seq_root2tip(SEXP edge1, SEXP edge2)
     /* by simply looping through 'edge' */
     for (i = 0; i < nbedge; i++) {
         /* skip the internal edges */
-        if (x2[i] < 0) continue;
-	lt = LENGTH(VECTOR_ELT(seqnod, -x1[i] - 1));
+        if (x2[i] > Ntip) continue;
+	lt = LENGTH(VECTOR_ELT(seqnod, x1[i] - Ntip - 1));
 	tmp_vec = allocVector(INTSXP, lt + 1);
 	for (j = 0; j < lt; j++)
-	  INTEGER(tmp_vec)[j] = INTEGER(VECTOR_ELT(seqnod, -x1[i] - 1))[j];
+	  INTEGER(tmp_vec)[j] = INTEGER(VECTOR_ELT(seqnod, x1[i] - Ntip - 1))[j];
 	INTEGER(tmp_vec)[lt] = x2[i];
 	SET_VECTOR_ELT(ans, x2[i] - 1, tmp_vec);
     }
 
-    UNPROTECT(4);
-    return(ans);
-} /* seq_root2tip */
+    UNPROTECT(6);
+    return ans;
+} /* EOF seq_root2tip */
 
-SEXP bipartition(SEXP edge1, SEXP edge2)
+SEXP bipartition(SEXP edge1, SEXP edge2, SEXP nbtip, SEXP nbnode)
 {
-    int i, j, k, nbnode, nbedge, *x1, *x2, lt, lt2, inod;
+    int i, j, k, nbedge, *x1, *x2, lt, lt2, inod, Ntip, Nnode;
     SEXP ans, seqnod, tmp_vec;
 
     PROTECT(edge1 = coerceVector(edge1, INTSXP));
     PROTECT(edge2 = coerceVector(edge2, INTSXP));
+    PROTECT(nbtip = coerceVector(nbtip, INTSXP));
+    PROTECT(nbnode = coerceVector(nbnode, INTSXP));
     x1 = INTEGER(edge1);
     x2 = INTEGER(edge2);
+    Ntip = *INTEGER(nbtip);
+    Nnode = *INTEGER(nbnode);
     nbedge = LENGTH(edge1);
 
-    /* count the number of nodes by finding the smallest element in 'edge1' */
-    nbnode = x1[0];
-    for (i = 1; i < nbedge; i++)
-      if (x1[i] < nbnode) nbnode = x1[i];
-    nbnode = -nbnode;
+    PROTECT(ans = allocVector(VECSXP, Nnode));
 
-    PROTECT(ans = allocVector(VECSXP, nbnode));
-
-    seqnod = seq_root2tip(edge1, edge2);
+    seqnod = seq_root2tip(edge1, edge2, nbtip, nbnode);
 
     for (i = 0; i < LENGTH(seqnod); i++) { /* for each tip */
         lt = LENGTH(VECTOR_ELT(seqnod, i));
 	for (j = 0; j < lt - 1; j++) {
-	    inod = -1 - INTEGER(VECTOR_ELT(seqnod, i))[j];
+	    inod = INTEGER(VECTOR_ELT(seqnod, i))[j] - Ntip - 1;
 	    if (VECTOR_ELT(ans, inod) == R_NilValue) {
 	        tmp_vec = allocVector(INTSXP, 1);
 		INTEGER(tmp_vec)[0] = i + 1;
@@ -134,6 +113,6 @@ SEXP bipartition(SEXP edge1, SEXP edge2)
 	}
     }
 
-    UNPROTECT(3);
-    return(ans);
+    UNPROTECT(5);
+    return ans;
 } /* bipartition */

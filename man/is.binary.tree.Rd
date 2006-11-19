@@ -23,8 +23,6 @@ is.binary.tree(phy)
 \author{Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})}
 
 \examples{
-library(ape)
-
 data("hivtree.newick") # example tree in NH format
 tree.hiv <- read.tree(text = hivtree.newick) # load tree
 

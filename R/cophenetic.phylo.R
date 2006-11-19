@@ -1,101 +1,66 @@
-### cophenetic.phylo.R  (2005-09-14)
+### cophenetic.phylo.R (2006-10-04)
 ###
-###     Pairwise Distances from a Phylogenetic Tree
+###   Pairwise Distances from a Phylogenetic Tree
 ###
-### Copyright 2002-2005 Emmanuel Paradis
+### Copyright 2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
-
-dist.phylo <- function(phy, full = FALSE)
-{
-    warning("the function `dist.phylo' is deprecated: \cophenetic' has been used instead.\n`dist.phylo' will soon be removed: update your code!")
-    cophenetic.phylo(phy, full = FALSE)
-
-}
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 cophenetic.phylo <- function(x, full = FALSE)
 {
     if (is.null(x$edge.length))
-      stop("your tree has no branch lengths defined")
-    tmp <- as.numeric(x$edge)
-    nb.tip <- max(tmp)
-    nb.node <- -min(tmp)
-    N <- nb.tip + nb.node
+      stop("your tree has no branch lengths")
 
-    ans <- matrix(NA, N, N)
-    mode(ans) <- "numeric"
-    ans[cbind(1:N, 1:N)] <- 0
-    dimnames(ans)[1:2] <- list(as.character(c(1:nb.tip, -(1:nb.node))))
+    n <- length(x$tip.label)
+    n.node <- x$Nnode
+    N <- n + n.node
 
-    for (i in 1:dim(x$edge)[1])
-      ans[x$edge[i, 2], x$edge[i, 1]] <-
-        ans[x$edge[i, 1], x$edge[i, 2]] <- x$edge.length[i]
+    if (!is.binary.tree(x)) x <- multi2di(x, random = FALSE)
+    x <- reorder(x, order = "pruningwise")
 
-    ok <- c(rep(TRUE, nb.tip), rep(FALSE, nb.node))
-    names(ok) <- dimnames(ans)[[1]]
+    res <- matrix(NA, N, N)
+    res[cbind(1:N, 1:N)] <- 0 # implicit mode conversion
 
-    basal <- ""
-    while(!identical(basal, "-1")) {
-        term <- names(ok[ok])
-        ind <- x$edge[, 2] %in% term
-        basal <- names(which(table(x$edge[ind, 1]) > 1))
-        for (nod in basal) {
-            i.anc <- which(x$edge[, 2] == nod)
-            l <- x$edge.length[i.anc]
-            anc <- x$edge[i.anc, 1]
+    ## I like the simplicity of this one:
+    res[x$edge] <- res[x$edge[, 2:1]] <- x$edge.length
 
-            desc <- x$edge[which(x$edge[, 1] == nod), 2]
-            ## Here we need to check that all the branches found in the next
-            ## few lines just above are `available' for `clustering'; this may
-            ## not be the case if other sister-branches have daughter-branches
-            ## which are not yet defined, for instance if there is a multichotomy.
-            if (all(desc %in% term)) {
-                ## compute the distances ...
-                for (i in 1:(length(desc) - 1)) {
-                    if (as.numeric(desc[i]) > 0) d1 <- desc[i] else {
-                        ## lin <- ans[desc[i], 1:nb.tip]
-                        lin <- ans[desc[i], ]
-                        d1 <- names(lin[!is.na(lin)])
-                    }
-                    for (j in (i + 1):length(desc)) {
-                        if (as.numeric(desc[j]) > 0) d2 <- desc[j] else {
-                            ## lin <- ans[desc[j], 1:nb.tip]
-                            lin <- ans[desc[j], ]
-                            d2 <- names(lin[!is.na(lin)])
-                        }
-                        for (y in d1)
-                          for (z in d2)
-                            ans[y, z] <- ans[z, y] <- ans[nod, y] + ans[nod, z]
-                        ## compute the distances between the tips in `d2'
-                        ## and the ancestor of the current node
-                        ans[d2, anc] <- ans[anc, d2] <- ans[nod, d2] + l
-                    }
-                    ## compute the distances between the tips in `d1'
-                    ## and the ancestor of the current node
-                    ans[d1, anc] <- ans[anc, d1] <- ans[nod, d1] + l
-                }
-                ok[desc] <- FALSE
-                ok[nod] <- TRUE
-            }
+    ## compute the distances ...
+    for (i in seq(from = 1, by = 2, length.out = n.node)) {
+        j <- i + 1
+        anc <- x$edge[i, 1]
+        des1 <- x$edge[i, 2]
+        des2 <- x$edge[j, 2]
+
+        ## If `des1' is a node, we look for the nodes and tips for
+        ## which the distance up to `des1' has already been
+        ## computed, including `des1' itself. For all these, we can
+        ## compute the distance up to `anc' and all node(s) and
+        ## tip(s) in `des2'.
+        if (des1 > n) des1 <- which(!is.na(res[des1, ]))
+
+        ## id. for `des2'
+        if (des2 > n) des2 <- which(!is.na(res[des2, ]))
+
+        ## The following expression is vectorized only on `des2' and
+        ## not on `des1' because they may be of different lengths.
+        for (y in des1)
+          res[y, des2] <- res[des2, y] <- res[anc, y] + res[anc, des2]
+        ## compute the distances between the tip(s) and node(s)
+        ## in `des2' and the ancestor of `anc'; id. for `des2'
+        ## (only if it is not the root)
+        if (anc != n + 1) {
+            ind <- which(x$edge[, 2] == anc)
+            nod <- x$edge[ind, 1] # the ancestor of `anc'
+            l <- x$edge.length[ind]
+            res[des2, nod] <- res[nod, des2] <- res[anc, des2] + l
+            res[des1, nod] <- res[nod, des1] <- res[anc, des1] + l
         }
     }
+
     if (!full) {
-        ans <- ans[1:nb.tip, 1:nb.tip]
-        dimnames(ans)[1:2] <- list(x$tip.label)
-    }
-    ans
+        res <- res[1:n, 1:n]
+        dimnames(res)[1:2] <- list(x$tip.label)
+    } else dimnames(res)[1:2] <- list(as.character(1:N))
+    res
 }

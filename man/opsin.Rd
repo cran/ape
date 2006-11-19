@@ -25,8 +25,6 @@ data(opsin.newick)
     Biology and Evolution}, \bold{17}, 1879--1884.
 }
 \examples{
-library(ape)
-
 # example tree in NH format (a string)
 data("opsin.newick")
 opsin.newick

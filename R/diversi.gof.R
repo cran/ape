@@ -1,24 +1,11 @@
-### diversi.gof.R  (2005-06-16)
+### diversi.gof.R (2006-10-16)
 ###
-###     Tests of Constant Diversification Rates
+###    Tests of Constant Diversification Rates
 ###
-### Copyright 2002-2005 Emmanuel Paradis
+### Copyright 2002-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 diversi.gof <- function(x, null = "exponential", z = NULL)
 {
@@ -27,21 +14,24 @@ diversi.gof <- function(x, null = "exponential", z = NULL)
         delta <- n/sum(x)
         z <- 1 - exp(-delta * sort(x))
     }
-    else z <- sort(z) # utile ???
-    i <- 1:n
-    W2 <- sum((z - (2 * i - 1) / (2 * n))^2) + 1 / 12 * n
-    A2 <- -sum((2 * i - 1) * (log(z) + log(1 - rev(z)))) / n - n
-    if (null == "exponential") {
-        W2 <- W2 * (1 - 0.16 / n)
-        A2 <- A2 * (1 + 0.6 / n)
+    else {
+        nmsz <- deparse(substitute(z))
+        z <- sort(z) # utile ???
     }
-    else W2 <- (W2 - 0.4 / n + 0.6 / n^2) / (1 + 1 / n)
+    i <- 1:n
+    W2 <- sum((z - (2*i - 1)/(2*n))^2) + 1/12*n
+    A2 <- -sum((2*i - 1)*(log(z) + log(1 - rev(z))))/n - n
+    if (null == "exponential") {
+        W2 <- W2*(1 - 0.16/n)
+        A2 <- A2*(1 + 0.6/n)
+    }
+    else W2 <- (W2 - 0.4/n + 0.6/n^2)/(1 + 1/n)
     cat("\nTests of Constant Diversification Rates\n\n")
     cat("Data:", deparse(substitute(x)), "\n")
     cat("Number of branching times:", n, "\n")
     cat("Null model: ")
     if (null == "exponential") cat("exponential\n\n")
-    else cat(deparse(substitute(z)), "(user-specified)\n\n")
+    else cat(nmsz, "(user-specified)\n\n")
     cat("Cramer-von Mises test: W2 =", round(W2, 3))
     if (null == "exponential") {
         if (W2 < 0.177) cat("   P > 0.1\n")

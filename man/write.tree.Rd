@@ -2,7 +2,7 @@
 \alias{write.tree}
 \title{Write Tree File in Parenthetic Format}
 \usage{
-write.tree(phy, file = "", append = FALSE, format = "Newick",
+write.tree(phy, file = "", append = FALSE,
            multi.line = TRUE, digits = 10)
 }
 \arguments{
@@ -13,9 +13,6 @@ write.tree(phy, file = "", append = FALSE, format = "Newick",
   \item{append}{a logical, if \code{TRUE} the tree is appended to the file
     without erasing the data possibly existing in the file, otherwise
     the file (if it exists) is overwritten (\code{FALSE} the default).}
-  \item{format}{a character giving the format of the tree file; by
-    default \code{"Newick"}. Currently only \code{"Newick"} is
-    available.}
   \item{multi.line}{a logical, if \code{TRUE} (the default) line breaks
     are introduced in the tree in parenthetic form.}
   \item{digits}{a numeric giving the number of digits used for printing

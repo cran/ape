@@ -1,3 +1,76 @@
+		CHANGES IN APE VERSION 1.9
+
+
+NEW FEATURES
+
+    o There are two new print `methods' for trees of class "phylo" and
+      lists of trees of class "multi.tree", so that they are now
+      displayed in a compact and informative way.
+
+    o There are two new functions, old2new.phylo and new2old.phylo,
+      for converting between the old and new coding of the class
+      "phylo".
+
+    o dist.dna() has three new models: Barry and Hartigan ("BH87"),
+      LogDet ("logdet"), and paralinear ("paralin").
+
+    o compute.brlen() has been extended: several methods are now
+      available to compute branch lengths.
+
+    o write.dna() can now handle matrices as well as lists.
+
+
+BUG FIXES
+
+    o cophenetic.phylo() sometimes returned a wrong result with
+      multichotomous trees: this is fixed.
+
+    o rotate() failed when a single tip was specified: the tree is now
+      returned unchanged.
+
+    o ace() did not return the correct index matrix with custom
+      models: this is fixed.
+
+    o multi2di() did not work correctly when resolving multichotomies
+      randomly: the topology was always the same, only the arrangement
+      of clades was randomized: this is fixed. This function now
+      accepts trees with no branch lengths.
+
+    o The output of diversi.gof() was blurred by useless prints when a
+      user distribution was specified. This has been corrected, and
+      the help page of this function has been expanded.
+
+
+OTHER CHANGES
+
+    o The internal structure of the class "phylo" has been changed:
+      see the document "Definition of Formats for Coding Phylogenetic
+      Trees in R" for the details. In addition, the code of most
+      functions has been improved.
+
+    o Several functions have been improved by replacing some R codes
+      by C codes: pic, plot.phylo, and reorder.phylo.
+
+    o There is now a citation information: see citation("ape") in R.
+
+    o write.tree() now does not add extra 0's to branch lengths so
+      that 1.23 is printed "1.23" by default, not "1.2300000000".
+
+    o The syntax of bind.tree() has been simplified. This function now
+      accepts trees with no branch lengths, and handles correctly node
+      labels.
+
+    o The option `as.numeric' of mrca() has been removed.
+
+    o The unused options `format' and `rooted' of read.tree() have
+      been removed.
+
+    o The unused option `format' of write.tree() has been removed.
+
+    o The use of node.depth() has been simplified.
+
+
+
 		CHANGES IN APE VERSION 1.8-5
 
 

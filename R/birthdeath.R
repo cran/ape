@@ -1,33 +1,20 @@
-### birthdeath.R  (2005-03-23)
+### birthdeath.R (2006-10-04)
 ###
-###       Estimation of Speciation and Extinction Rates
-###                 with Birth-Death Models
+###   Estimation of Speciation and Extinction Rates
+###             with Birth-Death Models
 ###
 ### birthdeath: standard model
 ### bd.ext: extended version
 ###
-### Copyright 2002-2005 Emmanuel Paradis
+### Copyright 2002-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 birthdeath <- function(phy)
 {
-    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
-    N <- max(as.numeric(phy$edge))
+    if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
+    N <- length(phy$tip.label)
     x <- c(NA, branching.times(phy))
     dev <- function(a, r) {
         -2 * (sum(log((N - 1):1))
@@ -93,16 +80,16 @@ print.birthdeath <- function(x, ...)
 
 bd.ext <- function(phy, S)
 {
-    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
+    if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
     if (!is.null(names(S))) {
-        if(!any(is.na(match(names(S), phy$tip.label)))) S <- S[phy$tip.label]
-        else warning("the names of argument \"S\" and the names of the tip labels
-did not match: the former were ignored in the analysis.")
+        if (all(names(S) %in% phy$tip.label)) S <- S[phy$tip.label]
+        else warning('the names of argument "S" and the names of the tip labels
+did not match: the former were ignored in the analysis.')
     }
     N <- length(S)
     x <- branching.times(phy)
     x <- c(x[1], x)
-    trm.br <- phy$edge.length[as.numeric(phy$edge[, 2]) > 0]
+    trm.br <- phy$edge.length[phy$edge[, 2] <= N]
     dev <- function(a, r)
     {
         -2 * (sum(log((N - 1):1))

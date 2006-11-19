@@ -1,48 +1,32 @@
-### is.ultrametric.R (2006-02-06)
+### is.ultrametric.R (2006-10-04)
 ###
-###     Test if a Tree is Ultrametric
+###   Test if a Tree is Ultrametric
 ###
 ### Copyright 2003-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 is.ultrametric <- function(phy, tol = .Machine$double.eps^0.5)
 {
+### the tree must be in cladewise order
     if (class(phy) != "phylo")
       stop('object "phy" is not of class "phylo".')
     if (is.null(phy$edge.length))
       stop("the tree has no branch lengths.")
-    tmp <- as.numeric(phy$edge)
-    nb.tip <- max(tmp)
-    nb.node <- -min(tmp)
+    n <- length(phy$tip.label)
+    n.node <- phy$Nnode
 
-    xx <- as.numeric(rep(NA, nb.tip + nb.node))
-    names(xx) <- as.character(c(-(1:nb.node), 1:nb.tip))
+    ## xx: vecteur donnant la distance d'un
+    ## noeud ou tip à partir de la racine
+    xx <- numeric(n + n.node)
 
-    ## xx: vecteur donnant la distance d'un noeud ou tip à partir de la racine
-    xx["-1"] <- 0
-    for (i in 2:length(xx)) {
-        nod <- names(xx[i])
-        ind <- which(phy$edge[, 2] == nod)
-        base <- phy$edge[ind, 1]
-        xx[i] <- xx[base] + phy$edge.length[ind]
-    }
+    for (i in 1:dim(phy$edge)[1])
+      xx[phy$edge[i, 2]] <- xx[phy$edge[i, 1]] + phy$edge.length[i]
 
-    if (identical(all.equal(var(xx[(nb.node + 1):length(xx)]), 0,
+    if (isTRUE(all.equal(var(xx[1:n]), 0, tol = tol))) return(TRUE)
+
+    if (identical(all.equal(var(xx[1:n]), 0,
                             tolerance = tol), TRUE)) return(TRUE)
     else return(FALSE)
 }

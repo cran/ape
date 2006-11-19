@@ -79,8 +79,8 @@ tiplabels(text, tip, adj = c(0.5, 0.5), frame = "rect",
 \examples{
 tr <- read.tree(text = "((Homo,Pan),Gorilla);")
 plot(tr)
-nodelabels("7.3 Ma", 1, frame = "r", bg = "yellow", adj = 0)
-nodelabels("5.4 Ma", 2, frame = "c", bg = "tomato", font = 3)
+nodelabels("7.3 Ma", 4, frame = "r", bg = "yellow", adj = 0)
+nodelabels("5.4 Ma", 5, frame = "c", bg = "tomato", font = 3)
 
 data(bird.orders)
 plot(bird.orders, use.edge.length = FALSE, font = 1)
@@ -115,7 +115,7 @@ plot(bird.orders, "c", FALSE, font = 1, label.offset = 3,
 tiplabels(pch = 21, bg = gray(1:23/23), cex = 2, adj = 1.4)
 tiplabels(pch = 19, col = c("yellow", "red", "blue"), adj = 2.5, cex = 2)
 ### Some random data to compare piecharts and thermometres:
-tr <- rcoal(15)
+tr <- rtree(15)
 x <- runif(14, 0, 0.33)
 y <- runif(14, 0, 0.33)
 z <- runif(14, 0, 0.33)

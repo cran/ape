@@ -3,16 +3,21 @@
 \alias{as.phylo.hclust}
 \alias{as.phylo.phylog}
 \alias{as.hclust.phylo}
+\alias{old2new.phylo}
+\alias{new2old.phylo}
 \title{Conversion Among Tree Objects}
 \usage{
 as.phylo(x, ...)
 \method{as.phylo}{hclust}(x, ...)
 \method{as.phylo}{phylog}(x, ...)
 \method{as.hclust}{phylo}(x, ...)
+old2new.phylo(phy)
+new2old.phylo(phy)
 }
 \arguments{
   \item{x}{an object to be converted into another class.}
   \item{...}{further arguments to be passed to or from other methods.}
+  \item{phy}{an object of class \code{"phylo"}.}
 }
 \description{
   \code{as.phylo} is a generic function which converts an object into a
@@ -24,6 +29,10 @@ as.phylo(x, ...)
   \code{"phylo"} into one of class \code{"hclust"}. This can used to
   convert an object of class \code{"phylo"} into one of class
   \code{"dendrogram"} (see examples).
+
+  \code{old2new.phylo} and \code{new2old.phylo} are utility functions
+  for converting between the old and new coding of the class
+  \code{"phylo"}.
 }
 \value{
   An object of class \code{"hclust"} or \code{"phylo"}.

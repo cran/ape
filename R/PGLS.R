@@ -1,33 +1,11 @@
-### PGLS.R  (2004-10-22)
+### PGLS.R (2006-10-12)
 ###
 ###     Phylogenetic Generalized Least Squares
 ###
-### Copyright 2004 Julien Dutheil <julien.dutheil@univ-montp2.fr>
+### Copyright 2004 Julien Dutheil, and 2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
-
-# For debugging:
-#library(ape)
-#library(nlme)
-#cat("((((Homo:0.21,Pongo:0.21):0.28,","Macaca:0.49):0.13,Ateles:0.62):0.38,Galago:1.00);",file = "ex.tre", sep = "\n")
-#tree.primates <- read.tree("ex.tre")
-#X <- c(4.09434, 3.61092, 2.37024, 2.02815, -1.46968)
-#Y <- c(4.74493, 3.33220, 3.36730, 2.89037, 2.30259)
-#unlink("ex.tre") # delete the file "ex.tre"
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 corBrownian <- function(value = 1, phy, form=~1)
 {
@@ -85,7 +63,7 @@ Initialize.corPhyl <- function(object, data, ...)
   ## Added by EP 29 May 2006:
   if (nrow(data) != length(phy$tip.label))
     stop("number of observations and number of tips in the tree are not equal.")
-  ## End of addition by EP.
+  ## END
   if(is.null(rownames(data))) {
     warning("No row names supplied in dataframe, data taken to be in the same order as in tree.")
     attr(object, "index") <- 1:dim(data)[1]
@@ -187,44 +165,34 @@ coef.corGrafen <- function(object, unconstrained = TRUE, ...)
   return(aux)
 }
 
-# Use Grafen's branch lengths:
+### removed node.sons() and node.leafnumber()  (2006-10-12)
 
-node.sons <- function (phy, node)
+### changed by EP (2006-10-12):
+
+compute.brlen <- function(phy, method = "Grafen", power = 1, ...)
 {
-    if (!("phylo" %in% class(phy)))
-        stop("Object \"phy\" is not of class \"phylo\"")
-    phy$edge[which(phy$edge[, 1] == node), 2]
+    if (!"phylo" %in% class(phy))
+      stop('object "phy" is not of class "phylo"')
+    Ntip <- length(phy$tip.label)
+    Nnode <- phy$Nnode
+    Nedge <- dim(phy$edge)[1]
+    if (is.numeric(method)) {
+        phy$edge.length <- rep(method, length.out = Nedge)
+        return(phy)
+    }
+    if (is.function(method)) {
+        phy$edge.length <- method(Nedge, ...)
+        return(phy)
+    }
+    if (is.character(method)) { # == "Grafen"
+        tr <- reorder(phy, "pruningwise")
+        xx <- .C("node_depth", as.integer(Ntip), as.integer(Nnode),
+                 as.integer(tr$edge[, 1]), as.integer(tr$edge[, 2]),
+                 as.integer(Nedge), double(Ntip + Nnode),
+                 DUP = FALSE, PACKAGE = "ape")[[6]] - 1
+        m <- Ntip - 1
+        phy$edge.length <-
+          (xx[phy$edge[, 1]]/m)^power - (xx[phy$edge[, 2]]/m)^power
+        return(phy)
+    }
 }
-
-node.leafnumber <- function(phy, node)
-{
-  if (!("phylo" %in% class(phy)))
-    stop("Object \"phy\" is not of class \"phylo\"")
-  if(as.numeric(node) > 0) return(1)
-  else {
-    number <- 0
-    sons <- node.sons(phy, node)
-    for(i in sons) number <- number + node.leafnumber(phy, i)
-    return(number)
-  }
-}
-
-compute.brlen <- function(phy, method="Grafen", power=1)
-{
-  if (!("phylo" %in% class(phy))) stop("Object \"phy\" is not of class \"phylo\"")
-  E <- phy$edge
-  n <- dim(E)[1]
-  n.leaves <- length(phy$tip.label)
-  for(i in 1:n) {
-    bottom <- ((node.leafnumber(phy, E[i,1]) - 1)/(n.leaves - 1))^power
-    top    <- ifelse(as.numeric(E[i, 2]) > 0, 0, ((node.leafnumber(phy, E[i, 2]) - 1)/(n.leaves - 1))^power)
-    phy$edge.length[i] <- bottom - top
-  }
-  #Now scale the tree:
-  return(phy)
-}
-
-#m1 <- gls(Y~X, correlation=corBrownian(tree.primates))
-#m2 <- gls(Y~X, correlation=corMartins(1, tree.primates))
-#m3 <- gls(Y~X, correlation=corGrafen(1, tree.primates))
-

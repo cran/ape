@@ -1,33 +1,81 @@
-/* Copyright 2004 Emmanuel Paradis
+/* plot_phylo.c (2006-10-13) */
 
-/* This file is part of the `ape' library for R and related languages. */
-/* It is made available under the terms of the GNU General Public */
-/* License, version 2, or at your option, any later version, */
-/* incorporated herein by reference. */
+/* Copyright 2004-2006 Emmanuel Paradis
 
-/* This program is distributed in the hope that it will be */
-/* useful, but WITHOUT ANY WARRANTY; without even the implied */
-/* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR */
-/* PURPOSE.  See the GNU General Public License for more */
-/* details. */
-
-/* You should have received a copy of the GNU General Public */
-/* License along with this program; if not, write to the Free */
-/* Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, */
-/* MA 02111-1307, USA */
+/* This file is part of the R-package `ape'. */
+/* See the file ../COPYING for licensing issues. */
 
 #include <R.h>
 
 void node_depth_edgelength(int *ntip, int *nnode, int *edge1, int *edge2,
-			   int *nms, double *edge_length, double *xx)
+			   int *nedge, double *edge_length, double *xx)
 {
-    int i, j, k;
+    int i;
 
-    for (i = 1; i < *ntip + *nnode; i++) {
-        j = 0;
-	while (edge2[j] != nms[i]) j++;
-	if (edge1[j] < 0) k = -edge1[j] - 1;
-	else k = nnode + edge1[j] - 1;
-	xx[i] = xx[k] + edge_length[j];
+    /* We do a preorder tree traversal starting from the bottom */
+    /* of `edge'; we assume `xx' has 0 for the root and the tree */
+    /* is in pruningwise order. */
+    for (i = *nedge - 1; i >= 0; i--)
+      xx[edge2[i] - 1] = xx[edge1[i] - 1] + edge_length[i];
+}
+
+void node_depth(int *ntip, int *nnode, int *edge1, int *edge2,
+		int *nedge, double *xx)
+{
+    int i;
+
+    /* First set the coordinates for all tips */
+    for (i = 0; i < *ntip; i++) xx[i] = 1;
+
+    /* Then compute recursively for the nodes; we assume `xx' has */
+    /* been initialized with 0's which is true if it has been */
+    /* created in R (the tree must be in pruningwise order) */
+    for (i = 0; i < *nedge; i++)
+      xx[edge1[i] - 1] = xx[edge1[i] - 1] + xx[edge2[i] - 1];
+}
+
+void node_height(int *ntip, int *nnode, int *edge1, int *edge2,
+		int *nedge, double *yy)
+{
+    int i, k, n;
+    double S;
+
+    /* The coordinates of the tips have been already computed */
+
+    k = 1;
+    S = 0;
+    n = 0;
+    for (i = 0; i < *nedge; i++) {
+	S += yy[edge2[i] - 1];
+	n += 1;
+        if (edge1[i + 1] != edge1[i]) {
+	    yy[edge1[i] - 1] = S/n;
+	    S = 0;
+	    n = 0;
+	}
+    }
+}
+
+void node_height_clado(int *ntip, int *nnode, int *edge1, int *edge2,
+		       int *nedge, double *xx, double *yy)
+{
+    int i, k, n;
+    double S;
+
+    node_depth(ntip, nnode, edge1, edge2, nedge, xx);
+
+    /* The coordinates of the tips have been already computed */
+
+    k = 1;
+    S = 0;
+    n = 0;
+    for (i = 0; i < *nedge; i++) {
+	S += yy[edge2[i] - 1] * xx[edge2[i] - 1];
+	n += xx[edge2[i] - 1];
+        if (edge1[i + 1] != edge1[i]) {
+	    yy[edge1[i] - 1] = S/n;
+	    S = 0;
+	    n = 0;
+	}
     }
 }

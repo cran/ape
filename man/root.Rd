@@ -44,7 +44,7 @@ is.rooted(phy)
 }
 \value{
   an object of class \code{"phylo"} for \code{root} and \code{unroot}; a
-  logical for \code{is.rooted}.
+  single logical value for \code{is.rooted}.
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
@@ -52,7 +52,6 @@ is.rooted(phy)
 }
 \examples{
 data(bird.orders)
-
 plot(root(bird.orders, 1))
 plot(root(bird.orders, 1:5))
 

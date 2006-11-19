@@ -7,8 +7,7 @@ write.dna(x, file, format = "interleaved", append = FALSE,
           blocksep = 1)
 }
 \arguments{
-  \item{x}{a list a DNA sequences each made of a single vector of mode
-    character where each element is a nucleotide.}
+  \item{x}{a list or a matrix of DNA sequences.}
   \item{file}{a file name specified by either a variable of mode character,
     or a double-quoted string.}
   \item{format}{a character string specifying the format of the DNA
@@ -41,14 +40,14 @@ write.dna(x, file, format = "interleaved", append = FALSE,
   The same three formats are supported in the present function than in
   \code{\link{read.dna}}: see its help page and the references below for
   a description of these formats.
-  
+
   If the sequences have no names, then they are given "1", "2", ... as
   names in the file.
 
   With the interleaved and sequential formats, the sequences must be all
   of the same length; if the taxon names are longer than 10 characters,
   they are truncated and a warning message is issued.
-  
+
   The argument `indent' specifies how the rows of nucleotides are
   indented. In the interleaved and sequential formats, the rows with
   the taxon names are never indented; the subsequent rows are indented

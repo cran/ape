@@ -1,25 +1,11 @@
-### nprs.R  (2003-07-11)
+### nprs.R (2003-07-11)
 ###
-###     Nonparametric Rate Smoothing Method by Sanderson
+###    Nonparametric Rate Smoothing Method by Sanderson
 ###
-### Copyright 2003 Gangolf Jobb <gangolf@treefinder.de> and
-###                Korbinian Strimmer <strimmer@stat.uni-muenchen.de>
+### Copyright 2003 Gangolf Jobb and Korbinian Strimmer
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 setTree <-
   function(lowerNodes,upperNodes,edgeLengths,minEdgeLength,tipLabels)
@@ -123,13 +109,18 @@ phylogram <- function(phy, ...)
 {
     if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
 
+    ## added by EP for the new coding of "phylo" (2006-10-04):
+    phy <- new2old.phylo(phy)
+    ## End
+
     prepareTree(phy, ...)
     ##opt <- optimTree(phy, ...)
 
     newTree <- phy
     newTree$edge.length <- getEdgeLengths()
 
-    return(newTree)
+    ans <- newTree
+    old2new.phylo(ans)
 }
 
 ### public functions
@@ -138,13 +129,18 @@ chronogram <- function(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
 {
     if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
 
+    ## added by EP for the new coding of "phylo" (2006-10-04):
+    phy <- new2old.phylo(phy)
+    ## End
+
     prepareTree(phy, minEdgeLength = minEdgeLength)
     opt <- optimTree(phy, expo = expo)
 
     newTree <- phy
     newTree$edge.length <- getDurations(opt$par, scale)
 
-    return(newTree)
+    ans <- newTree
+    old2new.phylo(ans)
 }
 
 ratogram <- function(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
@@ -152,19 +148,29 @@ ratogram <- function(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
     if (class(phy) != "phylo")
       stop("object \"phy\" is not of class \"phylo\"")
 
+    ## added by EP for the new coding of "phylo" (2006-10-04):
+    phy <- new2old.phylo(phy)
+    ## End
+
     prepareTree(phy, minEdgeLength = minEdgeLength)
     opt <- optimTree(phy, expo = expo)
 
     newTree <- phy
     newTree$edge.length <- getRates(opt$par, scale)
 
-    return(newTree)
+    ans <- newTree
+    old2new.phylo(ans)
 }
 
 NPRS.criterion <- function(phy, chrono, expo = 2, minEdgeLength = 1e-06)
 {
     if (!is.ultrametric(chrono))
       stop("tree \"chrono\" is not ultrametric (clock-like)")
+
+    ## added by EP for the new coding of "phylo" (2006-10-04):
+    phy <- new2old.phylo(phy)
+    chrono <- new2old.phylo(chrono)
+    ## End
 
     prepareTree(chrono, minEdgeLength = minEdgeLength)
     parms <- getExternalParams()

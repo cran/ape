@@ -55,8 +55,6 @@ function in R, \code{\link{coalescent.intervals}}, \code{\link{skyline}}
 }
 
 \examples{
-library(ape)
-
 # get tree
 data("hivtree.newick") # example tree in NH format
 tree.hiv <- read.tree(text = hivtree.newick) # load tree

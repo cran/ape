@@ -1,24 +1,11 @@
-### compar.gee.R (2006-03-23)
+### compar.gee.R (2006-10-11)
 ###
-###     Comparative Analysis with GEEs
+###   Comparative Analysis with GEEs
 ###
 ### Copyright 2002-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 compar.gee <- function(formula, data = NULL, family = "gaussian", phy,
                        scale.fix = FALSE, scale.value = 1)
@@ -45,18 +32,7 @@ do not match: the former were ignored in the analysis.")
     if (family == "binomial")
       W <- summary(glm(formula, family = quasibinomial, data = data))$cov.scaled
     N <- geemod$nobs
-    nb.node <- -min(as.numeric(phy$edge))
-    ## xx: vecteur donnant la distance d'un noeud ou tip à partir de la racine
-    xx <- as.numeric(rep(NA, N + nb.node))
-    names(xx) <- as.character(c(-(1:nb.node), 1:N))
-    xx["-1"] <- 0
-    for (i in 2:length(xx)) {
-        nod <- names(xx[i])
-        ind <- which(phy$edge[, 2] == nod)
-        base <- phy$edge[ind, 1]
-        xx[i] <- xx[base] + phy$edge.length[ind]
-    }
-    dfP <- sum(phy$edge.length) * N / sum(xx[as.character(1:N)])
+    dfP <- sum(phy$edge.length)*N / sum(diag(vcv.phylo(phy)))
     obj <- list(call = geemod$call,
                 effect.assign = effect.assign,
                 nobs = N,

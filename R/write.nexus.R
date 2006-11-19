@@ -4,21 +4,8 @@
 ###
 ### Copyright 2003-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 write.nexus <- function(..., file = "", translate = TRUE, original.data = TRUE)
 {
@@ -95,7 +82,7 @@ the original data won't be written with the tree."))
           cat("\tTREE * UNTITLED = [&R] ", file = file, append = TRUE)
         else cat("\tTREE * UNTITLED = [&U] ", file = file, append = TRUE)
         cat(write.tree(obj[[i]], file = "", multi.line = FALSE),
-            "\n", sep = "",file = file, append = TRUE)
+            "\n", sep = "", file = file, append = TRUE)
     }
     cat("END;\n", file = file, append = TRUE)
     if(original.data) cat(ORI, file = file, append = TRUE, sep = "\n")

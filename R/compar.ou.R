@@ -1,24 +1,11 @@
-### compar.ou.R  (2005-09-15)
+### compar.ou.R (2006-10-05)
 ###
-###    Ornstein--Uhlenbeck Model for Continuous Characters
+###   Ornstein--Uhlenbeck Model for Continuous Characters
 ###
-### Copyright 2005 Emmanuel Paradis
+### Copyright 2005-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 compar.ou <- function(x, phy, node = NULL, alpha = NULL)
 {
@@ -26,31 +13,28 @@ compar.ou <- function(x, phy, node = NULL, alpha = NULL)
       stop('object "phy" is not of class "phylo".')
     if (!is.numeric(x)) stop("'x' must be numeric.")
     if (!is.null(names(x))) {
-        if(!any(is.na(match(names(x), phy$tip.label))))
-          x <- x[phy$tip.label]
-        else
-          warning('the names of argument "x" and the names of the tip labels
-did not match: the former were ignored in the analysis.')
+        if (all(names(x) %in% phy$tip.label)) x <- x[phy$tip.label]
+        else warning('the names of argument "x" and the names of the tip labels did not match: the former were ignored in the analysis.')
     }
-    if (is.numeric(node)) node <- as.character(node)
-    if (is.null(node)) node <- character(0)
-    if ("-1" %in% node) node <- node[-which(node == "-1")]
-    nb.tip <- max(as.numeric(phy$edge))
+    nb.tip <- length(phy$tip.label)
+    root <- nb.tip + 1
+    if (is.null(node)) node <- numeric(0)
+    if (root %in% node) node <- node[node != root]
     bt <- branching.times(phy)
-    Tmax <- bt["-1"]
+    Tmax <- bt[1]
     Wend <- matrix(0, nb.tip, length(node) + 1)
-    colnames(Wend) <- c(names(sort(bt[node])), "-1")
+    colnames(Wend) <- c(names(sort(bt[node])), as.character(root))
     Wstart <- Wend
     Wstart[, ncol(Wstart)] <- Tmax
-    root2tip <- .Call("seq_root2tip", phy$edge[, 1],
-                      phy$edge[, 2], PACKAGE = "ape")
+    root2tip <- .Call("seq_root2tip", phy$edge[, 1], phy$edge[, 2],
+                      nb.tip, phy$Nnode, PACKAGE = "ape")
     for (i in 1:nb.tip) {
         last.change <- names(Tmax)
         for (j in root2tip[[i]]) {#[-1]) {# don't need to look at the root
             if (j %in% node) {
-                Wend[i, last.change] <-
-                  Wstart[i, as.character(j)] <- bt[as.character(j)]
-                last.change <- as.character(j)
+                jb <- as.character(j)
+                Wend[i, last.change] <- Wstart[i, jb] <- bt[jb]
+                last.change <- jb
             }
         }
     }

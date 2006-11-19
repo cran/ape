@@ -1,82 +1,72 @@
-### pic.R (2005-12-16)
+### pic.R (2006-10-29)
 ###
 ###     Phylogenetically Independent Contrasts
 ###
-### Copyright 2002-2005 Emmanuel Paradis
+### Copyright 2002-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
 {
     if (class(phy) != "phylo")
-      stop("object \"phy\" is not of class \"phylo\"")
+      stop("object 'phy' is not of class \"phylo\"")
     if (is.null(phy$edge.length))
       stop("your tree has no branch lengths: you may consider setting them equal to one, or using the function `compute.brlen'.")
-    tmp <- as.numeric(phy$edge)
-    nb.tip <- max(tmp)
-    nb.node <- -min(tmp)
+    nb.tip <- length(phy$tip.label)
+    nb.node <- phy$Nnode
     if (nb.node != nb.tip - 1)
-      stop("\"phy\" is not fully dichotomous")
+      stop("'phy' is not rooted and fully dichotomous")
     if (length(x) != nb.tip)
       stop("length of phenotypic and of phylogenetic data do not match")
     if (any(is.na(x)))
       stop("the present method cannot (yet) be used directly with missing data: you may consider removing the species with missing data from your tree with the function `drop.tip'.")
 
-    phenotype <- as.numeric(rep(NA, nb.tip + nb.node))
-    names(phenotype) <- as.character(c(1:nb.tip, -(1:nb.node)))
+    phy <- reorder(phy, "pruningwise")
+    phenotype <- numeric(nb.tip + nb.node)
+
     if (is.null(names(x))) {
         phenotype[1:nb.tip] <- x
     } else {
-        if(!any(is.na(match(names(x), phy$tip.label))))
+        if (all(names(x) %in% phy$tip.label))
           phenotype[1:nb.tip] <- x[phy$tip.label]
         else {
             phenotype[1:nb.tip] <- x
-            warning('the names of argument "x" and the names of the tip labels
-did not match: the former were ignored in the analysis.')
+            warning('the names of argument "x" and the names of the tip labels did not match: the former were ignored in the analysis.')
         }
     }
+    ## No need to copy the branch lengths: they are rescaled
+    ## in the C code, so it's important to leave the default
+    ## `DUP = TRUE' of .C.
+    contr <- var.con <- numeric(nb.node)
 
-    bl <- phy$edge.length   # copy the branch lengths to rescale them subsequently
-    ## `unused' says if the phenotype has NOT been used to compute a contrast
-    unused <- rep(TRUE, nb.tip + nb.node)
-    names(unused) <- names(phenotype)
-    contr <- numeric(nb.node)
-    names(contr) <- as.character(-(1:nb.node))
-    if (var.contrasts) var.con <- contr
+    ans <- .C("pic", as.integer(nb.tip), as.integer(nb.node),
+              as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
+              as.double(phy$edge.length), as.double(phenotype),
+              as.double(contr), as.double(var.con),
+              as.integer(var.contrasts), as.integer(scaled),
+              PACKAGE = "ape")
 
-    while(sum(unused) > 1) {
-        term <- names(phenotype[!is.na(phenotype) & unused])
-        ind <- phy$edge[, 2] %in% term
-        ## extract the nodes with 2 branches above
-        basal <- names(which(table(phy$edge[ind, 1]) == 2))
-        for (nod in basal) {
-            pair.ind <- which(phy$edge[, 1] == nod)
-            i <- pair.ind[1]
-            j <- pair.ind[2]
-            pair <- phy$edge[pair.ind, 2]
-            a <- pair[1]
-            b <- pair[2]
-            contr[nod] <- if (scaled) (phenotype[a] - phenotype[b])/sqrt(bl[i] + bl[j]) else phenotype[a] - phenotype[b]
-            if (var.contrasts) var.con[nod] <- bl[i] + bl[j]
-            unused[pair] <- FALSE
-            phenotype[nod] <- (phenotype[a] * bl[j] + phenotype[b] * bl[i]) / (bl[i] + bl[j])
-            k <- which(phy$edge[, 2] == nod)
-            bl[k] <- bl[k] + bl[i] * bl[j] / (bl[i] + bl[j])
-        }
-    }
-    if (var.contrasts) return(cbind(contr, var.con)) else return(contr)
+    ## The "old" R code:
+    ##for (i in seq(from = 1, by = 2, length.out = nb.node)) {
+    ##    j <- i + 1
+    ##    anc <- phy$edge[i, 1]
+    ##    des1 <- phy$edge[i, 2]
+    ##    des2 <- phy$edge[j, 2]
+    ##    sumbl <- bl[i] + bl[j]
+    ##    ic <- anc - nb.tip
+    ##    contr[ic] <- phenotype[des1] - phenotype[des2]
+    ##    if (scaled) contr[ic] <- contr[ic]/sqrt(sumbl)
+    ##    if (var.contrasts) var.con[ic] <- sumbl
+    ##    phenotype[anc] <- (phenotype[des1]*bl[j] + phenotype[des2]*bl[i])/sumbl
+    ##    k <- which(phy$edge[, 2] == anc)
+    ##    bl[k] <- bl[k] + bl[i]*bl[j]/sumbl
+    ##
+    ##}
+    contr <- ans[[7]]
+    if (var.contrasts) {
+        contr <- cbind(contr, ans[[8]])
+        dimnames(contr) <- list(1:nb.node + nb.tip, c("contrasts", "variance"))
+    } else names(contr) <- 1:nb.node + nb.tip
+    contr
 }

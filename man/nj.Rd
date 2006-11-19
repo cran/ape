@@ -29,10 +29,9 @@ nj(X)
 x <- c(7, 8, 11, 13, 16, 13, 17, 5, 8, 10, 13,
        10, 14, 5, 7, 10, 7, 11, 8, 11, 8, 12,
        5, 6, 10, 9, 13, 8)
-M <- matrix(NA, 8, 8)
+M <- matrix(0, 8, 8)
 M[row(M) > col(M)] <- x
 M[row(M) < col(M)] <- x
-diag(M) <- 0
 rownames(M) <- colnames(M) <- 1:8
 tr <- nj(M)
 plot(tr, "u")

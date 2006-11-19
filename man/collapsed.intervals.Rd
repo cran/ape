@@ -57,8 +57,6 @@ An object of class \code{"collapsedIntervals"} with the following entries:
 }
 
 \examples{
-library(ape)
-
 data("hivtree.table") # example tree
 
 # colescent intervals from vector of interval lengths

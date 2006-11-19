@@ -102,8 +102,6 @@ Pybus et al. (2000).  The latter is in turn directly related to lineage-through-
 }
 
 \examples{
-library(ape)
-
 # get tree
 data("hivtree.newick") # example tree in NH format
 tree.hiv <- read.tree(text = hivtree.newick) # load tree

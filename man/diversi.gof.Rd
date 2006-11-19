@@ -20,7 +20,9 @@ diversi.gof(x, null = "exponential", z = NULL)
   times. In this case, the expected distribution under this model is
   computed with a rate estimated from the data. Alternatively, the user
   may specify an expected cumulative density function (\code{z}): in this
-  case, \code{x} and \code{z} must be of the same length.
+  case, \code{x} and \code{z} must be of the same length. See the
+  examples for how to compute the latter from a sample of expected
+  branching times.
 }
 \details{
   The Cramér-von Mises and Anderson-Darling tests compare the empirical
@@ -53,5 +55,19 @@ diversi.gof(x, null = "exponential", z = NULL)
   \code{\link{branching.times}}, \code{\link{diversi.time}}
   \code{\link{ltt.plot}}, \code{\link{birthdeath}}, \code{\link{yule}},
   \code{\link{yule.cov}}
+}
+\examples{
+data(bird.families)
+x <- branching.times(bird.families)
+### suppose we have a sample of expected branching times `y';
+### for simplicity, take them from a uniform distribution:
+y <- runif(500, 0, max(x) + 1) # + 1 to avoid A2 = Inf
+### now compute the expected cumulative distribution:
+x <- sort(x)
+N <- length(x)
+ecdf <- numeric(N)
+for (i in 1:N) ecdf[i] <- sum(y <= x[i])/500
+### finally do the test:
+diversi.gof(x, "user", z = ecdf)
 }
 \keyword{univar}

@@ -2,14 +2,15 @@
 \alias{chronopl}
 \title{Molecular Dating With Penalized Likelihood}
 \usage{
-chronopl(phy, lambda, node.age = NULL, nodes = NULL, CV = FALSE)
+chronopl(phy, lambda, node.age = 1, node = "root", CV = FALSE)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
   \item{lambda}{value of the smoothng parameter.}
   \item{node.age}{numeric values specifying the fixed node ages.}
-  \item{nodes}{the numbers (given as negative numerics) of the nodes
-    whose ages are given by \code{node.age}.}
+  \item{node}{the numbers of the nodes whose ages are given by
+    \code{node.age}; \code{"root"} is a short-cut the number of the
+    node.}
   \item{CV}{whether to perform cross-validation.}
 }
 \description{
@@ -28,10 +29,11 @@ chronopl(phy, lambda, node.age = NULL, nodes = NULL, CV = FALSE)
   lambda, the variation are smoother to tend to a clock-like model (same
   rate for all branches).
 
-  `lambda' must be given. The known ages are given in `node.age', and
-  the correponding node numbers in `nodes'. These two arguments must
-  obviously be of the same length. If they are left \code{NULL}, then
-  the age at the root is fixed at one.
+  \code{lambda} must be given. The known ages are given in
+  \code{node.age}, and the correponding node numbers in \code{node}.
+  These two arguments must obviously be of the same length. By default,
+  an age of 1 is assumed for the root, and the ages of the other nodes
+  are estimated.
 
   The cross-validation used here is different from the one proposed by
   Sanderson (2002). Here, each tip is dropped successively and the

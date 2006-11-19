@@ -1,31 +1,17 @@
-### summary.phylo.R (2006-03-24)
+### summary.phylo.R (2006-11-16)
 ###
 ###       Print Summary of a Phylogeny
 ###
-### Copyright 2003-2006 Emmanuel Paradis
+### Copyright 2003-2006 Emmanuel Paradis, and 2006 Ben Bolker
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 summary.phylo <- function(object, ...)
 {
     cat("\nPhylogenetic tree:", deparse(substitute(object)), "\n\n")
-    tmp <- as.numeric(object$edge)
-    nb.tip <- max(tmp)
-    nb.node <- -min(tmp)
+    nb.tip <- length(object$tip.label)
+    nb.node <- object$Nnode
     cat("  Number of tips:", nb.tip, "\n")
     cat("  Number of nodes:", nb.node, "\n")
     if (is.null(object$edge.length))
@@ -74,4 +60,41 @@ summary.phylo <- function(object, ...)
                      attr(object, "xi")[i - 1], "\n")
         }
     }
+}
+
+### by BB:
+print.phylo <- function(x, printlen = 6 ,...)
+{
+    nb.tip <- length(x$tip.label)
+    nb.node <- x$Nnode
+    cat(paste("\nPhylogenetic tree with", nb.tip, "tips and", nb.node,
+              "internal nodes.\n\n"))
+    cat("Tip labels:\n")
+    if (nb.tip > printlen) {
+        cat(paste("\t", paste(x$tip.label[1:printlen],
+                              collapse=", "), ", ...\n", sep = ""))
+    } else print(x$tip.label)
+    if (!is.null(x$node.label)) {
+        cat("\tNode labels:\n")
+        if (nb.node > printlen) {
+            cat(paste("\t", paste(x$node.label[1:printlen],
+                                 collapse=", "), ",...\n", sep = ""))
+        } else print(x$node.label)
+    }
+    rlab <- if (is.rooted(x)) "Rooted" else "Unooted"
+    cat("\n", rlab, "; ", sep="")
+
+    blen <- if (is.null(x$edge.length)) "no branch lengths." else
+    "includes branch lengths."
+    cat(blen, "\n", sep = "")
+}
+
+print.multi.tree <- function(x, details = FALSE, ...)
+{
+    N <- length(x)
+    cat(N, "phylogenetic trees\n")
+    if (details)
+      for (i in 1:N)
+        cat("tree", i, ":", length(x[[i]]$tip.label), "tips\n")
+    cat("\n")
 }

@@ -154,6 +154,8 @@
   \item{y.lim}
   \item{direction}
   \item{tip.color}
+  \item{Ntip}
+  \item{Nnode}
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{

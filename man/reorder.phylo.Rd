@@ -34,7 +34,7 @@
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
   \code{\link{read.tree}} to read tree files in Newick format,
-  \code{\link[stats]{cophenetic}} for the generic function
+  \code{\link[stats]{reorder}} for the generic function
 }
 \examples{
 data(bird.families)
@@ -42,4 +42,5 @@ tr <- reorder(bird.families, "p")
 all.equal(bird.families, tr) # uses all.equal.phylo actually
 all.equal.list(bird.families, tr) # bypasses the generic
 }
+
 \keyword{manip}

@@ -1,108 +1,114 @@
-### root.R (2006-03-31)
+### root.R (2006-10-05)
 ###
-###            Root of Phylogenetic Trees
+###      Root of Phylogenetic Trees
 ###
 ### Copyright 2004-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 is.rooted <- function(phy)
 {
     if (class(phy) != "phylo")
       stop('object "phy" is not of class "phylo"')
     if (!is.null(phy$root.edge)) return(TRUE)
-    else if (table(phy$edge[, 1])["-1"] > 2) return(FALSE) else return(TRUE)
+    else
+      if (tabulate(phy$edge[, 1])[length(phy$tip.label) + 1] > 2)
+        return(FALSE)
+      else return(TRUE)
 }
 
 unroot <- function(phy)
 {
     if (class(phy) != "phylo")
       stop('object "phy" is not of class "phylo"')
-    if (dim(phy$edge)[1] == 2)
+    if (dim(phy$edge)[1] < 3)
       stop("cannot unroot a tree with two edges.")
     ## delete FIRST the root.edge (in case this is sufficient to
-    ## unroot the tree, i.e. there is multichotomy at the root)
+    ## unroot the tree, i.e. there is a multichotomy at the root)
     if (!is.null(phy$root.edge)) phy$root.edge <- NULL
     if (!is.rooted(phy)) return(phy)
-    i.oroot <- which(phy$edge[, 1] == "-1")
-    i <- i.oroot[1]
-    if (as.numeric(phy$edge[i, 2]) > 0) i <- i.oroot[2]
-    newroot <- phy$edge[i, 2]
-    j <- i.oroot[which(i.oroot != i)]
-    phy$edge[j, 1] <- newroot
+    ## We remove one of the edges coming from the root, and
+    ## eventually adding the branch length to the other one
+    ## also coming from the root.
+    ## In all cases, the node deleted is the 2nd one (numbered
+    ## nb.tip+2 in `edge'), so we simply need to renumber the
+    ## nodes by adding 1, except the root (this remains the
+    ## origin of the tree).
+    nb.tip <- length(phy$tip.label)
+    if (phy$edge[1, 2] <= nb.tip) {
+        ## If the 1st edge is terminal, we delete the second which
+        ## is necessarily internal and coming from the root too:
+        j <- 1 # the target where to stick the edge
+        i <- 2 # the edge to delete
+    } else { # remove the 1st edge
+        j <- which(phy$edge[, 1] == -1)[2]
+        i <- 1
+    }
     phy$edge <- phy$edge[-i, ]
+    nodes <- phy$edge > nb.tip + 1 # renumber all nodes except the root
+    phy$edge[nodes] <- phy$edge[nodes] - 1
     if (!is.null(phy$edge.length)) {
         phy$edge.length[j] <- phy$edge.length[j] + phy$edge.length[i]
         phy$edge.length <- phy$edge.length[-i]
     }
-    phy$edge[which(phy$edge == newroot)] <- "-1"
-    read.tree(text = write.tree(phy, multi.line = FALSE))
+    if (!is.null(phy$node.label))
+      phy$node.label <- phy$node.label[-2]
+    phy
 }
 
 root <- function(phy, outgroup)
 {
-    if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
+    if (class(phy) != "phylo")
+      stop('object "phy" is not of class "phylo"')
     if (is.character(outgroup))
-      tip <- as.character(which(phy$tip.label %in% outgroup))
-    if (is.numeric(outgroup)) tip <- as.character(outgroup)
+      outgroup <- which(phy$tip.label %in% outgroup)
+    nb.tip <- length(phy$tip.label)
+    if (length(outgroup) == nb.tip) return(phy)
+
     ## First check that the outgroup is monophyletic--
     ## unless there's only one tip specified of course
-    if (length(tip) > 1) {
+    ROOT <- nb.tip + 1
+    if (length(outgroup) > 1) {
         msg <- "the specified outgroup is not monophyletic!"
-        if (!all(diff(as.numeric(tip)) == 1)) stop(msg)
-        ## Find the MRCA of the tips given as outgroup
-        ## The following loop is `borrowed' from vcv.phylo()
-        seq.nod <- list()
-        nb.tip <- max(as.numeric(phy$edge))
-        for (i in as.character(1:nb.tip)) {
-            vec <- i
-            j <- i
-            while (j != "-1") {
-                ind <- which(phy$edge[, 2] == j)
-                j <- phy$edge[ind, 1]
-                vec <- c(vec, j)
-            }
-            seq.nod[[i]] <- vec
+        ## If all tips in `tip' are not contiguous, then
+        ## no need to go further:
+        if (!all(diff(outgroup) == 1)) stop(msg)
+        seq.nod <- .Call("seq_root2tip", phy$edge[, 1], phy$edge[, 2],
+                         nb.tip, phy$Nnode, PACKAGE = "ape")
+        sn <- seq.nod[outgroup]
+        ## We go from the root to the tips: the sequence of nodes
+        ## is identical until the MRCA:
+        newroot <- ROOT
+        i <- 2 # we start at the 2nd position since the root
+               # of the tree is a common ancestor to all tips
+        repeat {
+            x <- unique(unlist(lapply(sn, "[", i)))
+            if (length(x) != 1) break
+            newroot <- x
+            i <- i + 1
         }
-        sn <- lapply(seq.nod[tip], rev)
-        i <- 1
-        x <- unlist(lapply(sn, function(x) x[i]))
-        while (length(unique(x)) == 1) {
-            x <- unlist(lapply(sn, function(x) x[i]))
-            i <-  i + 1
-        }
-        newroot <- sn[[1]][i - 2]
-        ## Then check that all descendants of this node
+        ## Check that all descendants of this node
         ## are included in the outgroup
-        desc <- names(unlist(lapply(seq.nod, function(x) which(x == newroot))))
-        ## First, if all descendants are all the tips of the tree, then
-        ## the outgroup is already outgroup (just return the tree):
-        if (length(desc) == nb.tip) return(phy)
-        if (length(tip) != length(desc)) stop(msg)
-        if (!all(sort(tip) == sort(desc))) stop(msg)
+        ## (1st solution... there may be something smarter)
+        desc <- which(unlist(lapply(seq.nod,
+                                    function(x) any(x %in% newroot))))
+        if (length(outgroup) != length(desc)) stop(msg)
+        if (!all(sort(outgroup) == sort(desc))) stop(msg)
 
-    } else newroot <- phy$edge[which(phy$edge[, 2] == tip), 1]
+    } else newroot <- phy$edge[which(phy$edge[, 2] == outgroup), 1]
 
-    if (newroot == "-1") return(phy)
+    if (newroot == ROOT) return(phy)
+
+### <FIXME>
+### The remaining part of the code has not been improved; this
+### does not seem obvious. This is delayed...     (2006-09-23)
+### </FIXME>
 
     ## Invert all branches from the new root to the old one
     i <- which(phy$edge[, 2] == newroot)
     nod <- phy$edge[i, 1]
-    while (nod != "-1") {
+    while (nod != ROOT) {
         j <- which(phy$edge[, 2] == nod)
         phy$edge[i, 1] <- phy$edge[i, 2]
         phy$edge[i, 2] <- nod
@@ -110,7 +116,7 @@ root <- function(phy, outgroup)
         nod <- phy$edge[i, 1]
     }
 
-    i.oroot <- which(phy$edge[, 1] == "-1")
+    i.oroot <- which(phy$edge[, 1] == ROOT)
     ## Unroot the tree if there's a basal dichotomy...
     if (length(i.oroot) == 2) {
         j <- i.oroot[which(i.oroot != i)]
@@ -120,10 +126,10 @@ root <- function(phy, outgroup)
             phy$edge.length[j] <- phy$edge.length[j] + phy$edge.length[i]
             phy$edge.length <- phy$edge.length[-i]
         }
-        phy$edge[which(phy$edge == newroot)] <- "-1"
+        phy$edge[which(phy$edge == newroot)] <- ROOT
     } else {
         ## ... otherwise just invert the root with the newroot
-        phy$edge[which(phy$edge == newroot)] <- "-1"
+        phy$edge[which(phy$edge == newroot)] <- ROOT
         phy$edge[i.oroot] <- newroot
         ## ... and invert finally! (fixed 2005-11-07)
         phy$edge[i, ] <- rev(phy$edge[i, ])
