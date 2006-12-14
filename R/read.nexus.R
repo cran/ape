@@ -1,4 +1,4 @@
-### read.nexus.R (2006-11-07)
+### read.nexus.R (2006-11-24)
 ###
 ###     Read Tree File in Nexus Format
 ###
@@ -29,7 +29,7 @@ clado.build <- function(tp) {
         current.node <<- edge[l, 1]
     }
     if (!length(grep(",", tp))) {
-        obj <- list(edge = matrix(c(2, 1), 1, 2))
+        obj <- list(edge = matrix(c(2, 1), 1, 2), Nnode = 1)
         tp <- unlist(strsplit(tp, "[\\(\\);]"))
         obj$tip.label <- tp[2]
         if (length(tp) == 3) obj$node.label <- tp[3]

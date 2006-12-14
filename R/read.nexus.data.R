@@ -87,7 +87,7 @@
         if(any(jtmp <- grep("\\bend\\b", X[j], perl = TRUE, ignore.case = TRUE))) {
             break
         }
-        ts <- unlist(strsplit(Xj, "(?<=\\S)(\\s+)(\?=\\S)", perl = TRUE))
+        ts <- unlist(strsplit(Xj, "(?<=\\S)(\\s+)(?=\\S)", perl = TRUE))
         if (length(ts) > 2) {
             stop("nexus parser does not handle spaces in sequences or taxon names (ts>2)")
         }

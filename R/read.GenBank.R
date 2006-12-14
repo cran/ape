@@ -1,24 +1,11 @@
-### read.GenBank.R (2005-05-31)
+### read.GenBank.R (2006-12-08)
 ###
 ###    Read DNA Sequences from GenBank via Internet
 ###
-### Copyright 2002-2005 Emmanuel Paradis
+### Copyright 2002-2006 Emmanuel Paradis
 ###
-### This file is part of the `ape' library for R and related languages.
-### It is made available under the terms of the GNU General Public
-### License, version 2, or at your option, any later version,
-### incorporated herein by reference.
-###
-### This program is distributed in the hope that it will be
-### useful, but WITHOUT ANY WARRANTY; without even the implied
-### warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-### PURPOSE.  See the GNU General Public License for more
-### details.
-###
-### You should have received a copy of the GNU General Public
-### License along with this program; if not, write to the Free
-### Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-### MA 02111-1307, USA
+### This file is part of the R-package `ape'.
+### See the file ../COPYING for licensing issues.
 
 read.GenBank <- function(access.nb, seq.names = access.nb,
                          species.names = TRUE)
@@ -37,7 +24,7 @@ read.GenBank <- function(access.nb, seq.names = access.nb,
                      "&rettype=gb", sep = "")
         X <- c(X, scan(file = URL, what = "", sep = "\n", quiet = TRUE))
     }
-    FI <- grep("ORIGIN", X) + 1
+    FI <- grep("^ {0,}ORIGIN", X) + 1
     LA <- which(X == "//") - 1
     obj <- list()
     length(obj) <- N

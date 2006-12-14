@@ -22,7 +22,7 @@ SEXP seq_root2tip(SEXP edge1, SEXP edge2, SEXP nbtip, SEXP nbnode)
     Ntip = *INTEGER(nbtip);
     Nnode = *INTEGER(nbnode);
     nbedge = LENGTH(edge1);
-    ROOT = Ntip + 1; /* check that "*" is needed here */
+    ROOT = Ntip + 1;
 
     PROTECT(ans = allocVector(VECSXP, Ntip));
     PROTECT(seqnod = allocVector(VECSXP, Nnode));

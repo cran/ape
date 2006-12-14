@@ -1,4 +1,4 @@
-### root.R (2006-10-05)
+### root.R (2006-11-29)
 ###
 ###      Root of Phylogenetic Trees
 ###
@@ -52,6 +52,7 @@ unroot <- function(phy)
         phy$edge.length[j] <- phy$edge.length[j] + phy$edge.length[i]
         phy$edge.length <- phy$edge.length[-i]
     }
+    phy$Nnode <- phy$Nnode - 1
     if (!is.null(phy$node.label))
       phy$node.label <- phy$node.label[-2]
     phy

@@ -8,16 +8,16 @@
 \title{Skyline Plot Estimate of Effective Population Size}
 \usage{
 skyline(x, \dots)
-skyline.phylo(x, \dots)
-skyline.coalescentIntervals(x, epsilon=0, \dots)
-skyline.collapsedIntervals(x, old.style=FALSE, \dots)
+\method{skyline}{phylo}(x, \dots)
+\method{skyline}{coalescentIntervals}(x, epsilon=0, \dots)
+\method{skyline}{collapsedIntervals}(x, old.style=FALSE, \dots)
 find.skyline.epsilon(ci, GRID=1000, MINEPS=1e-6, \dots)
 }
 \arguments{
-  \item{x}{Either an ultrametric tree (i.e. an object of class \code{"phylo"}), 
-           or coalescent intervals (i.e. an object of class \code{"coalescentIntervals"}), or
-	   collapsed coalescent intervals (i.e. an object of class \code{"collapsedIntervals"}).}
-  
+  \item{x}{Either an ultrametric tree (i.e. an object of class
+    \code{"phylo"}), or coalescent intervals (i.e. an object of class
+    \code{"coalescentIntervals"}), or collapsed coalescent intervals
+    (i.e. an object of class \code{"collapsedIntervals"}).}
   \item{epsilon}{collapsing parameter that controls the amount of smoothing
     (allowed range: from \code{0} to \code{ci$total.depth}, default value: 0). This is the same parameter as in
     \link{collapsed.intervals}.}

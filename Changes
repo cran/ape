@@ -1,3 +1,22 @@
+		CHANGES IN APE VERSION 1.9-1
+
+
+BUG FIXES
+
+    o Trees with a single tip were not read correctly in R as the
+      element `Nnode' was not set: this is fixed.
+
+    o unroot() did not set correctly the number of nodes of the
+      unrooted tree in most cases.
+
+    o read.GenBank() failed when fetching very long sequences,
+      particularly of the BX-series.
+
+    o A bug was introduced in read.tree() with ape 1.9: it has been
+      fixed
+
+
+
 		CHANGES IN APE VERSION 1.9
 
 

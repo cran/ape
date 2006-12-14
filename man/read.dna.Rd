@@ -52,7 +52,7 @@ read.dna(file, format = "interleaved", skip = 0,
     finds 10 contiguous characters belonging to the ambiguity code of
     the IUPAC (namely A, C, G, T, U, M, R, W, S, Y, K, V, H, D, B, and
     N, upper- or lowercase, so you might run into trouble if you have a
-    taxa name with 10 contiguous letters among these!). All characters
+    taxa name with 10 contiguous letters among these!) All characters
     before the sequences are taken as the taxa names after removing the
     leading and trailing spaces (so spaces in a taxa name are
     allowed). It is assumed that the taxa names are not repeated in the

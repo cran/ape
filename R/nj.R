@@ -13,7 +13,7 @@ nj <- function(X)
     N <- attr(X, "Size")
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
-    edge1 <- edge2 <- numeric(2*N - 3)
+    edge1 <- edge2 <- integer(2*N - 3)
     edge.length <- numeric(2*N - 3)
     ans <- .C("nj", as.double(X), as.integer(N), as.integer(edge1),
               as.integer(edge2), as.double(edge.length), PACKAGE = "ape")

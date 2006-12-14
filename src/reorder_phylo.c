@@ -68,7 +68,7 @@ void neworder_pruningwise(int *ntip, int *nnode, int *edge1,
 
     ready = (int*)R_alloc(*nedge, sizeof(int));
 
-    /* use `nextI' temporarily because need a pointer for R_tabulate */
+    /* use `nextI' temporarily because need an address for R_tabulate */
     nextI = *ntip +  *nnode;
     Ndegr = (int*)R_alloc(nextI, sizeof(int));
     for (i = 0; i < nextI; i++) Ndegr[i] = 0;
