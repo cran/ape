@@ -46,7 +46,7 @@ drop.tip(phy, tip, trim.internal = TRUE, subtree = FALSE,
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{bind.tree}}, \code{\link{root}}, \code{\link{rotate}}
+  \code{\link{bind.tree}}, \code{\link{root}}
 }
 \examples{
 data(bird.families)

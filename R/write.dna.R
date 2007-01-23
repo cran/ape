@@ -1,4 +1,4 @@
-### write.dna.R (2003-11-19)
+### write.dna.R (2003-12-29)
 ###
 ###     Write DNA Sequences in a File
 ###
@@ -12,6 +12,7 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
                       blocksep = 1)
 {
     format <- match.arg(format, c("interleaved", "sequential", "fasta"))
+    phylip <- if (format %in% c("interleaved", "sequential")) TRUE else FALSE
     if (is.matrix(x)) {
         N <- dim(x)[1]
         xx <- vector("list", N)
@@ -21,22 +22,19 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
         rm(xx)
     } else N <- length(x)
     if (is.null(names(x))) names(x) <- as.character(1:N)
-    if (is.null(indent)) {
-        indent <- if (format %in% c("interleaved", "sequential")) 10 else  0
-    }
+    if (is.null(indent))
+      indent <- if (phylip) 10 else  0
     if (indent == "") indent <- 0
     if (is.numeric(indent)) indent <- paste(rep(" ", indent), collapse = "")
     if (format == "interleaved") {
         if (blocksep) {
             blockseparation <- TRUE
             blocksep <- paste(rep("\n", blocksep), collapse = "")
-        } else {
-            blockseparation <- FALSE
-        }
+        } else blockseparation <- FALSE
         if (nbcol < 0) format <- "sequential"
     }
     zz <- if (append) file(file, "a") else file(file, "w")
-    if (format %in% c("interleaved", "sequential")) {
+    if (phylip) {
         S <- unique(unlist(lapply(x, length)))
         ## check that all sequences have the same length
         if (length(S) != 1)
@@ -46,12 +44,8 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
             warning("at least one name was longer than 10 characters;\nthey will be truncated which may lead to some redundancy.\n")
             names(x) <- substr(names(x), 1, 10)
         }
-        for (i in 1:N) {
-            nam <- names(x)[i]
-            nch <- nchar(nam)
-            if (nch < 10)
-              names(x)[i] <- paste(nam, paste(rep(" ", 10 - nch), collapse = ""), sep = "")
-        }
+        ## left justify
+        names(x) <- sprintf("%-10s", names(x))
         cat(N, S, "\n", file = zz)
         if (nbcol < 0) {
             nb.block <- 1
@@ -60,7 +54,7 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
             nb.block <- ceiling(S / (colw * nbcol))
             totalcol <- ceiling(S / colw)
         }
-        ## Prepare the sequences in a matrix which elements are
+        ## Prepare the sequences in a matrix whose elements are
         ## strings with `colw' characters.
         SEQ <- matrix(NA, N, totalcol)
         mode(SEQ) <- "character"

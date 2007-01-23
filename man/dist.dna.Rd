@@ -35,8 +35,8 @@ dist.dna(x, model = "K80", variance = FALSE,
     \link[stats]{dist}.}
 }
 \description{
-  These functions compute a matrix of pairwise distances from DNA
-  sequences using a model of DNA evolution. Eight substitution models
+  This function computes a matrix of pairwise distances from DNA
+  sequences using a model of DNA evolution. Eleven substitution models
   (and the raw distance) are currently available.
 }
 \details{
@@ -114,7 +114,7 @@ dist.dna(x, model = "K80", variance = FALSE,
     transitons and transversions.}
 
   \item{``logdet''}{The Log-Det distance, developed by Lockhart et
-    al. (1994), is related to BH87. However, this distance is symetric.}
+    al. (1994), is related to BH87. However, this distance is symmetric.}
 
   \item{``paralin''}{Lake (1994) developed the paralinear distance which
     can be viewed as another variant of the Barry--Hartigan distance.}

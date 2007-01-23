@@ -1,23 +1,25 @@
 \name{cophenetic.phylo}
 \alias{cophenetic.phylo}
+\alias{dist.nodes}
 \title{Pairwise Distances from a Phylogenetic Tree}
 \usage{
-\method{cophenetic}{phylo}(x, full = FALSE)
+\method{cophenetic}{phylo}(x)
+dist.nodes(x)
 }
 \arguments{
   \item{x}{an object of class \code{"phylo"}.}
-  \item{full}{a logical indicating whether to return the distances among
-    all tips and nodes (if \code{TRUE}); the default is to return only
-    the distances among tips.}
 }
 \description{
-  This function computes the pairwise distances between the pairs of
-  tips from a phylogenetic tree using its branch lengths.
+  \code{cophenetic.phylo} computes the pairwise distances between the
+  pairs of tips from a phylogenetic tree using its branch lengths.
+
+  \code{dist.nodes} does the same but between all nodes, internal and
+  terminal, of the tree.
 }
 \value{
-  a numeric matrix with colnames and rownames set, by default, to the
-  names of the tips (as given by the element \code{tip.label} of the
-  argument \code{phy}), or, if \code{full = TRUE}, the numbers of the
+  a numeric matrix with colnames and rownames set to the names of the
+  tips (as given by the element \code{tip.label} of the argument
+  \code{phy}), or, in the case of \code{dist.nodes}, the numbers of the
   tips and the nodes (as given by the element \code{edge}).
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}

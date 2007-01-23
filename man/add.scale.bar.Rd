@@ -40,6 +40,6 @@ plot(tr)
 add.scale.bar()
 plot(tr)
 add.scale.bar(cex = 0.7, font = 2, col = "red")
-layout(matrix(1, 2, 1))
+layout(matrix(1))
 }
 \keyword{aplot}

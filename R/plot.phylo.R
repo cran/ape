@@ -1,8 +1,8 @@
-### plot.phylo.R (2006-11-13)
+### plot.phylo.R (2007-01-23)
 ###
 ###          Plot Phylogenies
 ###
-### Copyright 2002-2006 Emmanuel Paradis
+### Copyright 2002-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
@@ -42,7 +42,15 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
         TIPS <- x$edge[x$edge[, 2] <= nb.tip, 2]
         yy[TIPS] <- 1:nb.tip
     }
+    edge.color <- rep(edge.color, length.out = nb.edge)
+    edge.width <- rep(edge.width, length.out = nb.edge)
+    ## fix from Li-San Wang (2007-01-23):
+    xe <- x$edge
     x <- reorder(x, order = "pruningwise")
+    ereorder <- match(x$edge[, 2], xe[, 2])
+    edge.color <- edge.color[ereorder]
+    edge.width <- edge.width[ereorder]
+    ## End of fix
     if (phyloORclado) {
         if (is.null(node.pos)) {
             node.pos <- 1
@@ -191,8 +199,6 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
         if (direction == "downwards") y.lim[2] <- y.lim[2] + x$root.edge
     }
 
-    edge.color <- rep(edge.color, length.out = nb.edge)
-    edge.width <- rep(edge.width, length.out = nb.edge)
     plot(0, type = "n", xlim = x.lim, ylim = y.lim, xlab = "",
          ylab = "", xaxt = "n", yaxt = "n", bty = "n", ...)
     if (is.null(adj))
@@ -324,11 +330,7 @@ phylogram.plot <- function(edge, nb.tip, nb.node, xx, yy,
     ## `pos' gives for each element in `sq' its index in edge[, 2]
     pos <- match(sq, edge[, 2])
     x0h <- xx[edge[pos, 1]]
-    ## we need to reorder `edge.color' and `edge.width':
-    ## <FIXME> Need to be fixed wrt to reordering pruningwise:
-    edge.width <- edge.width[pos]
-    edge.color <- edge.color[pos]
-    ## </FIXME>
+
     e.w <- unique(edge.width)
     if (length(e.w) == 1) width.v <- rep(e.w, nb.node)
     else {
@@ -344,11 +346,16 @@ phylogram.plot <- function(edge, nb.tip, nb.node, xx, yy,
     else {
         color.v <- rep("black", nb.node)
         for (i in 1:nb.node) {
-            br <- edge[which(edge[, 1] == i + nb.tip), 2]
+            br <- which(edge[, 1] == i + nb.tip)
+            #br <- edge[which(edge[, 1] == i + nb.tip), 2]
             color <- unique(edge.color[br])
             if (length(color) == 1) color.v[i] <- color
         }
     }
+
+    ## we need to reorder `edge.color' and `edge.width':
+    edge.width <- edge.width[pos]
+    edge.color <- edge.color[pos]
     if (horizontal) {
         segments(x0v, y0v, x0v, y1v, col = color.v, lwd = width.v) # draws vertical lines
         segments(x0h, y0h, x1h, y0h, col = edge.color, lwd = edge.width) # draws horizontal lines

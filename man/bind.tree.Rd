@@ -36,7 +36,7 @@ bind.tree(x, y, where = "root", position = 0)
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{drop.tip}}, \code{\link{root}}, \code{\link{rotate}}
+  \code{\link{drop.tip}}, \code{\link{root}}
 }
 \examples{
 ### binds the two clades of bird orders

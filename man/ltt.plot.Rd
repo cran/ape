@@ -84,34 +84,25 @@ title(main = "Lineages Through Time Plot of the Bird Families",
       sub = "(with logarithmic transformation of the y-axis)")
 par(opar)
 ### to plot the tree and the LTT plot together
-tmp <- bird.families
-tmp$tip.label <- rep("", length(bird.families$tip.label))
-tmp2 <- bird.orders
-tmp2$tip.label <- rep("", length(bird.orders$tip.label))
 layout(matrix(1:4, 2, 2))
-plot(tmp)
+plot(bird.families, show.tip.label = FALSE)
 ltt.plot(bird.families, main = "Bird families")
-plot(tmp2)
+plot(bird.orders, show.tip.label = FALSE)
 ltt.plot(bird.orders, main = "Bird orders")
 layout(matrix(1))
 mltt.plot(bird.families, bird.orders)
 ### Generates 10 random trees with 23 tips:
-TR <- list()
-for (i in 1:10) TR <- c(TR, list(rtree(23)))
+TR <- replicate(10, rcoal(23), FALSE)
 ### Give names to each tree:
 names(TR) <- paste("random tree", 1:10)
 ### And specify the class of the list so that mltt.plot()
 ### does not trash it!
 class(TR) <- c("phylo", "multi.tree")
-### (This is non-sense: the trees are not ultrametric!)
 mltt.plot(TR)
-### Now rescale the branche lengths to have roughly the
-### same scale than for the avian orders
-for (i in 1:10) TR[[i]]$edge.length <- 7 * TR[[i]]$edge.length
-### And now for something (not so) completely different...
-### ... but still non-nense!
+### And now for something (not so) completely different:
 ltt.plot(bird.orders, lwd = 2)
-for (i in 1:10) ltt.lines(TR[[i]], lty = 2)
+lapply(TR, ltt.lines, lty = 2) # same as:
+### for (i in 1:10) ltt.lines(TR[[i]], lty = 2)
 legend(-10, 5, lwd = c(2, 1), lty = c(1, 2), bty = "n",
        legend = c("Bird orders", "Random trees"))
 }

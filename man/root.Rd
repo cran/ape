@@ -48,7 +48,7 @@ is.rooted(phy)
 }
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \seealso{
-  \code{\link{bind.tree}}, \code{\link{drop.tip}}, \code{\link{rotate}}
+  \code{\link{bind.tree}}, \code{\link{drop.tip}}
 }
 \examples{
 data(bird.orders)

@@ -1,4 +1,4 @@
-### as.phylo.R (2006-10-13)
+### as.phylo.R (2006-12-15)
 ###
 ###     Conversion Among Tree Objects
 ###
@@ -10,10 +10,10 @@
 old2new.phylo <- function(phy)
 {
     mode(phy$edge) <- "numeric"
+    phy$Nnode <- -min(phy$edge)
     n <- length(phy$tip.label)
     NODES <- phy$edge < 0
     phy$edge[NODES] <- n - phy$edge[NODES]
-    phy$Nnode <- sum(NODES)
     phy
 }
 

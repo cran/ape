@@ -1,3 +1,46 @@
+		CHANGES IN APE VERSION 1.9-2
+
+
+NEW FEATURES
+
+    o The new function ladderize reorganizes the internal structure of
+      a tree to plot them left- or right-ladderized.
+
+    o The new function dist.nodes computes the patristic between all
+      nodes, internal and terminal, of a tree. It replaces the option
+      `full = TRUE' of cophenetic.phylo (see below).
+
+
+BUG FIXES
+
+    o A bug was fixed in old2new.phylo().
+
+    o Some bugs were fixed in chronopl().
+
+    o The edge colours were not correctly displayed by plot.phylo
+      (thank you to Li-San Wang for the fix).
+
+    o cophenetic.phylo() failed with multichotomous trees: this is
+      fixed.
+
+
+OTHER CHANGES
+
+    o read.dna() now returns the sequences in a matrix if they are
+      aligned (interleaved or sequential format). Sequences in FASTA
+      format are still returned in a list.
+
+    o The option `full' of cophenetic.phylo() has been removed because
+      it could not be used from the generic.
+
+
+DEPRECATED & DEFUNCT
+
+    o rotate() has been removed; this function did not work correctly
+      since ape 1.9.
+
+
+
 		CHANGES IN APE VERSION 1.9-1
 
 

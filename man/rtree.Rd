@@ -14,7 +14,7 @@ rcoal(n, tip.label = NULL, br = rexp, ...)
     specified, the tips "t1", "t2", ..., are given.}
   \item{br}{either an R function used to generate the branch lengths
     (\code{rtree}) or the coalescence times (\code{rcoal}), or
-    \code{NULL} to gave no branch lengths in the tree.}
+    \code{NULL} to give no branch lengths in the tree.}
   \item{...}{further argument(s) to be passed to \code{br}.}
 }
 \description{

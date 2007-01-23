@@ -25,6 +25,9 @@ di2multi(phy, tol = 1e-08)
   \code{di2multi} deletes all branches smaller than \code{tol} and
   collapses the corresponding dichotomies into a multichotomy.
 }
+\seealso{
+\code{\link{is.binary.tree}}
+}
 \author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
 \value{
   Both functions return an object of class \code{"phylo"}.

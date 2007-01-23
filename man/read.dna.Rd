@@ -22,14 +22,15 @@ read.dna(file, format = "interleaved", skip = 0,
     names read in the file are used.}
 }
 \description{
-  This function reads DNA sequences in a file, and returns a list of DNA
-  sequences with the names of the taxa read in the file as names of the
-  vectors of the list. In order to be consistent with other functions in
-  APE, the sequences are returned in lower case.
+  This function reads DNA sequences in a file, and returns a matrix or a
+  list of DNA sequences with the names of the taxa read in the file as
+  rownames or names, respectively. The sequences are returned in lower
+  case.
 }
 \value{
-  A list a DNA sequences each made of a single vector of mode character
-  where each element is a nucleotide.
+  A matrix or a list (if \code{format = "fasta"}) of DNA sequences each
+  made of a single vector of mode character where each element is a
+  nucleotide.
 }
 \details{
   This function follows the interleaved and sequential formats defined

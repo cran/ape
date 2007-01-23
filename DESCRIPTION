@@ -1,6 +1,6 @@
 Package: ape
-Version: 1.9-1
-Date: 2006-12-14
+Version: 1.9-2
+Date: 2007-01-23
 Title: Analyses of Phylogenetics and Evolution
 Author: Ben Bolker, Julien Claude, Benoît Durand,
   Julien Dutheil, Gangolf Jobb, Jim Lemon, Yvonnick Noël,
@@ -10,7 +10,7 @@ Maintainer: Emmanuel Paradis <paradis@isem.univ-montp2.fr>
 Depends: R (>= 2.0.0)
 Suggests: gee, nlme, lattice
 ZipData: no
-Description: Ape provides functions for reading, writing, plotting,
+Description: ape provides functions for reading, writing, plotting,
   and manipulating phylogenetic trees, analyses of comparative data
   in a phylogenetic framework, analyses of diversification and
   macroevolution, computing distances from allelic and nucleotide
@@ -22,4 +22,4 @@ Description: Ape provides functions for reading, writing, plotting,
   likelihood, classifying genes in trees using the Klastorin-Misawa-Tajima
   approach. Phylogeny estimation can be done with the NJ and ML methods.
 License: GPL version 2 or newer
-Packaged: Thu Dec 14 10:17:58 2006; paradis
+Packaged: Tue Jan 23 19:17:48 2007; paradis

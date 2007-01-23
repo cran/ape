@@ -1,8 +1,8 @@
-### ace.R (2006-10-03)
+### ace.R (2007-01-23)
 ###
 ###     Ancestral Character Estimation
 ###
-### Copyright 2005-2006 Emmanuel Paradis and Ben Bolker
+### Copyright 2005-2007 Emmanuel Paradis and Ben Bolker
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
@@ -84,13 +84,13 @@ did not match: the former were ignored in the analysis.')
             if (is.null(corStruct))
               stop('you must give a correlation structure if method = "GLS".')
             if (class(corStruct)[1] == "corMartins")
-              M <- corStruct[1] * cophenetic.phylo(phy, full = TRUE)
+              M <- corStruct[1] * dist.nodes(phy)
             if (class(corStruct)[1] == "corGrafen")
               phy <- compute.brlen(attr(object, "tree"),
                                    method = "Grafen",
                                    power = exp(corStruct[1]))
             if (class(corStruct)[1] %in% c("corBrownian", "corGrafen")) {
-                dis <- cophenetic.phylo(attr(corStruct, "tree"), full = TRUE)
+                dis <- dist.nodes(attr(corStruct, "tree"))
                 MRCA <- mrca(attr(corStruct, "tree"), full = TRUE)
                 M <- dis[as.character(nb.tip + 1), MRCA]
                 dim(M) <- rep(sqrt(length(M)), 2)

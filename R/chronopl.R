@@ -1,8 +1,8 @@
-### chronopl.R (2006-10-06)
+### chronopl.R (2007-01-17)
 ###
 ###    Molecular Dating With Penalized Likelihood
 ###
-### Copyright 2005 Emmanuel Paradis
+### Copyright 2005-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
@@ -49,8 +49,9 @@ chronopl <- function(phy, lambda, node.age = 1, node = "root",
     age <- rep(0, 2*n - 1)
     age[node] <- node.age
 
+    tmp <- reorder(phy, "pruningwise")
     ini.time <- .C("node_depth", as.integer(n), as.integer(n.node),
-                   as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
+                   as.integer(tmp$edge[, 1]), as.integer(tmp$edge[, 2]),
                    as.integer(N), double(n + n.node), DUP = FALSE,
                    PACKAGE = "ape")[[6]][-(1:n)] - 1
     ini.time <- ini.time/max(ini.time)
@@ -78,7 +79,7 @@ chronopl <- function(phy, lambda, node.age = 1, node = "root",
     }
 
     out <- nlm(function(p) -ploglik(p[1:N], p[-(1:N)]),
-               p = c(ini.rate, ini.time[unknown.ages]),
+               p = c(ini.rate, ini.time[unknown.ages - n]),
                iterlim = 500)
 
     attr(phy, "ploglik") <- -out$minimum

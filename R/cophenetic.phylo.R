@@ -1,22 +1,22 @@
-### cophenetic.phylo.R (2006-10-04)
+### cophenetic.phylo.R (2007-01-23)
 ###
 ###   Pairwise Distances from a Phylogenetic Tree
 ###
-### Copyright 2006 Emmanuel Paradis
+### Copyright 2006-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
 
-cophenetic.phylo <- function(x, full = FALSE)
+dist.nodes <- function(x)
 {
     if (is.null(x$edge.length))
       stop("your tree has no branch lengths")
 
+    if (!is.binary.tree(x) || !is.rooted(x))
+      x <- multi2di(x, random = FALSE)
     n <- length(x$tip.label)
     n.node <- x$Nnode
     N <- n + n.node
-
-    if (!is.binary.tree(x)) x <- multi2di(x, random = FALSE)
     x <- reorder(x, order = "pruningwise")
 
     res <- matrix(NA, N, N)
@@ -57,10 +57,14 @@ cophenetic.phylo <- function(x, full = FALSE)
             res[des1, nod] <- res[nod, des1] <- res[anc, des1] + l
         }
     }
-
-    if (!full) {
-        res <- res[1:n, 1:n]
-        dimnames(res)[1:2] <- list(x$tip.label)
-    } else dimnames(res)[1:2] <- list(as.character(1:N))
+    dimnames(res)[1:2] <- list(1:N)
     res
+}
+
+cophenetic.phylo <- function(x)
+{
+    n <- length(x$tip.label)
+    ans <- dist.nodes(x)[1:n, 1:n]
+    dimnames(ans)[1:2] <- list(x$tip.label)
+    ans
 }

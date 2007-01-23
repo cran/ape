@@ -17,7 +17,7 @@ dist.gene.percentage(x, variance = FALSE)
     distances should be returned (default to FALSE).}
 }
 \description{
-  This function computes a matrix of distances between pairs of
+  These functions compute a matrix of distances between pairs of
   individuals from a matrix or a data frame of genetic data.
 }
 \details{

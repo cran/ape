@@ -119,7 +119,7 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   Pagel, M. (1994) Detecting correlated evolution on phylogenies: a
   general method for the comparative analysis of discrete
   characters. \emph{Proceedings of the Royal Society of London. Series
-    B. Biological Sciences}, \bold{255}, 37--445.
+    B. Biological Sciences}, \bold{255}, 37--45.
 
   Schluter, D., Price, T., Mooers, A. O. and Ludwig, D. (1997)
   Likelihood of ancestor states in adaptive radiation. \emph{Evolution},

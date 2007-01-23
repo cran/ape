@@ -17,7 +17,7 @@ is.binary.tree(phy)
    is a fully binary phylogenetic tree, otherwise it returns \code{FALSE}.
 }
 \seealso{
-\code{\link{read.tree}}, \code{\link{is.ultrametric}}
+\code{\link{read.tree}}, \code{\link{is.ultrametric}}, \code{\link{multi2di}}
 }
 
 \author{Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})}
