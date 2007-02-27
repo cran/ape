@@ -12,8 +12,8 @@ mcmc.popsize(tree,nstep, thinning=1, burn.in=0,progress.bar=TRUE,
     prior.height.mean,
     prior.height.var)
 extract.popsize(mcmc.out, credible.interval=0.95, time.points=200, thinning=1, burn.in=0)
-plot.popsize(x, show.median=TRUE, show.years=FALSE, subst.rate, present.year, ...)
-lines.popsize(x, show.median=TRUE,show.years=FALSE, subst.rate, present.year, ...)
+\method{plot}{popsize}(x, show.median=TRUE, show.years=FALSE, subst.rate, present.year, ...)
+\method{lines}{popsize}(x, show.median=TRUE,show.years=FALSE, subst.rate, present.year, ...)
 
 }
 \arguments{

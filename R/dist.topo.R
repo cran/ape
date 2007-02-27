@@ -1,9 +1,9 @@
-### dist.topo.R (2006-10-11)
+### dist.topo.R (2007-02-27)
 ###
 ###      Topological Distances, Tree Bipartitions,
 ###   Consensus Trees, and Bootstrapping Phylogenies
 ###
-### Copyright 2005-2006 Emmanuel Paradis
+### Copyright 2005-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
@@ -21,8 +21,8 @@ dist.topo <- function(x, y, method = "PH85")
     bp2 <- lapply(bp2, function(xx) sort(y$tip.label[xx]))
     q1 <- length(bp1)
     q2 <- length(bp2)
-    p <- 0
     if (method == "PH85") {
+        p <- 0
         for (i in 1:q1) {
             for (j in 1:q2) {
                 if (identical(all.equal(bp1[[i]], bp2[[j]]), TRUE)) {
@@ -37,23 +37,21 @@ dist.topo <- function(x, y, method = "PH85")
         dT <- 0
         found1 <- FALSE
         found2 <- logical(q2)
-        for (i in 1:q1) {
-            for (j in 1:q2) {
-                if (identical(all.equal(bp1[[i]], bp2[[j]]), TRUE)) {
-                    if (i != 1 || j != 1)
-                      dT <- dT + x$edge.length[which(x$edge[, 2] == n + i)] -
-                               y$edge.length[which(x$edge[, 2] == n + j)]
+        found2[1] <- TRUE
+        for (i in 2:q1) {
+            for (j in 2:q2) {
+                if (identical(bp1[[i]], bp2[[j]])) {
+                    dT <- dT + abs(x$edge.length[which(x$edge[, 2] == n + i)] -
+                                   y$edge.length[which(y$edge[, 2] == n + j)])
                     found1 <- found2[j] <- TRUE
                     break
                 }
             }
-            if (found1) {
-                found1 <- FALSE
-                next
-            } else dT <- dT + x$edge.length[which(x$edge[, 2] == n + j)]
+            if (found1) found1 <- FALSE
+            else dT <- dT + x$edge.length[which(x$edge[, 2] == n + i)]
         }
-        if (any(!found2))
-          dT <- dT + sum(y$edge.length[y$edge[, 2] %in% -which(!found2)])
+        if (!all(found2))
+          dT <- dT + sum(y$edge.length[y$edge[, 2] %in% (n + which(!found2))])
     }
     dT
 }

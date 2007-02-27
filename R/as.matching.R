@@ -49,7 +49,7 @@ as.phylo.matching <- function(x, ...)
     if (!is.null(x$edge.length)) {
         edge.length <- numeric(N)
         br <- TRUE
-    }
+    } else br <- FALSE
     nb.tip <- (N + 2)/2
     nb.node <- nb.tip - 1
     new.nodes <- numeric(N + 1)

@@ -1,8 +1,8 @@
-### multi2di.R (2006-10-03)
+### multi2di.R (2007-01-29)
 ###
 ###     Collapse and Resolve Multichotomies
 ###
-### Copyright 2005-2006 Emmanuel Paradis
+### Copyright 2005-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
@@ -26,7 +26,11 @@ multi2di <- function(phy, random = TRUE)
         N <- length(ind)
         desc <- phy$edge[ind, 2]
         if (random) {
-            desc <- sample(desc)
+          ## if we shuffle the descendants, we need to eventually
+          ## reorder the corresponding branch lenghts (see below)
+          ## so we store the result of sample()
+            tmp <- sample(length(desc))
+            desc <- desc[tmp]
             res <- rtree(N)$edge
         } else {
             res <- matrix(0, 2*N - 2, 2)
@@ -38,7 +42,8 @@ multi2di <- function(phy, random = TRUE)
         if (wbl) {
             ## keep the branch lengths coming from `node'
             el <- numeric(dim(res)[1]) # initialized with 0's
-            el[res[, 2] <= N] <- phy$edge.length[ind]
+            el[res[, 2] <= N] <-
+              if (random) phy$edge.length[ind][tmp] else phy$edge.length[ind]
         }
         ## now substitute the nodes in `res'
         ## `node' stays at the "root" of these new

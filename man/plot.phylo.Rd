@@ -142,8 +142,6 @@
   \item{node.pos}
   \item{show.tip.label}
   \item{show.node.label}
-  \item{edge.color}
-  \item{edge.width}
   \item{font}
   \item{cex}
   \item{adj}

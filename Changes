@@ -1,3 +1,28 @@
+		CHANGES IN APE VERSION 1.9-3
+
+
+NEW FEATURES
+
+    o The new function edgelabels adds labels on the edge of the tree
+      in the same way than nodelabels or tiplabels.
+
+
+BUG FIXES
+
+    o multi2di() did not handle correctly branch lengths with the
+      default option `random = TRUE': this is now fixed.
+
+    o A bug was fixed in nuc.div() when using pairwise deletions.
+
+    o A bug occurred in the analysis of bipartitions with large
+      numbers of large trees, with consequences on prop.part,
+      prop.clades, and boot.phylo.
+
+    o The calculation of the Billera-Holmes-Vogtmann distance in
+      dist.topo was wrong: this has been fixed.
+
+
+
 		CHANGES IN APE VERSION 1.9-2
 
 

@@ -1,4 +1,4 @@
-### plot.phylo.R (2007-01-23)
+### plot.phylo.R (2007-02-20)
 ###
 ###          Plot Phylogenies
 ###
@@ -27,10 +27,6 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     direction <- match.arg(direction, c("rightwards", "leftwards",
                                         "upwards", "downwards"))
     if (is.null(x$edge.length)) use.edge.length <- FALSE
-
-    ## <FIXME> Maybe it's possible to simplify this:
-    if (!show.tip.label) x$tip.label <- rep("", nb.tip)
-    ## </FIXME>
 
     if (type == "unrooted" || !use.edge.length) root.edge <- FALSE
     phyloORclado <- type %in% c("phylogram", "cladogram")
@@ -134,65 +130,61 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
         if (phyloORclado) {
             if (horizontal) {
                 x.lim <- c(0, NA)
-                tmp <- nchar(x$tip.label) * 0.018 * max(xx) * cex
+                tmp <-
+                  if (show.tip.label) nchar(x$tip.label) * 0.018 * max(xx) * cex else 0
                 x.lim[2] <-
                   if (direction == "leftwards") max(xx[root] + tmp) else max(xx[1:nb.tip] + tmp)
             } else x.lim <- c(1, nb.tip)
         }
         if (type == "unrooted") {
-            offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
-            x.lim <- c(0 - offset, max(xx) + offset)
+            if (show.tip.label) {
+                offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
+                x.lim <- c(0 - offset, max(xx) + offset)
+            } else x.lim <- c(0, max(xx))
         }
         if (type == "radial") {
-            offset <- max(nchar(x$tip.label) * 0.03 * cex)
-            x.lim <- c(-1 - offset, 1 + offset)
-        }
-    } else  {
-        if (length(x.lim) == 1) {
-            if (phyloORclado)
-              x.lim <- if (horizontal) c(0, x.lim) else c(1, x.lim)
-            if (type == "unrooted") {
-                offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
-                x.lim <- c(0 - offset, x.lim)
-            }
-            if (type == "radial") {
+            if (show.tip.label) {
                 offset <- max(nchar(x$tip.label) * 0.03 * cex)
-                x.lim <- c(-1 - offset, x.lim)
-            }
+                x.lim <- c(-1 - offset, 1 + offset)
+            } else x.lim <- c(-1, 1)
         }
+    } else if (length(x.lim) == 1) {
+        x.lim <- c(0, x.lim)
+        if (phyloORclado && !horizontal) x.lim[1] <- 1
+        if (type == "unrooted" && show.tip.label)
+          x.lim[1] <- -max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
+        if (type == "radial")
+          x.lim[1] <- if (show.tip.label) -1 - max(nchar(x$tip.label) * 0.03 * cex) else -1
     }
     if (is.null(y.lim)) {
         if (phyloORclado) {
-            if (!horizontal) {
+            if (!horizontal) y.lim <- c(1, nb.tip) else {
                 y.lim <- c(0, NA)
-                y.lim[2] <- if (direction == "downwards")
-                  max(yy[root] + nchar(x$tip.label) * 0.018 * max(yy) * cex)
-                else
-                  max(yy[1:nb.tip] + nchar(x$tip.label) * 0.018 * max(yy) * cex)
-            } else y.lim <- c(1, nb.tip)
+                tmp <-
+                  if (show.tip.label) nchar(x$tip.label) * 0.018 * max(yy) * cex else 0
+                y.lim[2] <-
+                  if (direction == "downwards") max(yy[root] + tmp) else max(yy[1:nb.tip] + tmp)
+            }
         }
         if (type == "unrooted") {
-            offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
-            y.lim <- c(0 - offset, max(yy) + offset)
+            if (show.tip.label) {
+                offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
+                y.lim <- c(0 - offset, max(yy) + offset)
+            } else y.lim <- c(0, max(yy))
         }
         if (type == "radial") {
-            offset <- max(nchar(x$tip.label) * 0.03 * cex)
-            y.lim <- c(-1 - offset, 1 + offset)
+            if (show.tip.label) {
+                offset <- max(nchar(x$tip.label) * 0.03 * cex)
+                y.lim <- c(-1 - offset, 1 + offset)
+            } else y.lim <- c(-1, 1)
         }
-    } else {
-        if (length(y.lim) == 1) {
-            if (phyloORclado)
-              y.lim <- if (horizontal)
-                c(1, y.lim) else c(0, y.lim)
-            if (type == "unrooted") {
-                offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
-                y.lim <- c(0 - offset, y.lim)
-            }
-            if (type == "radial") {
-                offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
-                y.lim <- c(-1 - offset, y.lim)
-            }
-        }
+    } else if (length(y.lim) == 1) {
+        y.lim <- c(0, y.lim)
+        if (phyloORclado && horizontal) y.lim[1] <- 1
+        if (type == "unrooted" && show.tip.label)
+          y.lim[1] <- -max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
+        if (type == "radial")
+          y.lim[1] <- if (show.tip.label) -1 - max(nchar(x$tip.label) * 0.018 * max(yy) * cex) else -1
     }
     if (phyloORclado && root.edge) {
         if (direction == "leftwards") x.lim[2] <- x.lim[2] + x$root.edge
@@ -237,69 +229,67 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
              "leftwards" = segments(xx[root], yy[root], xx[root] + x$root.edge, yy[root]),
              "upwards" = segments(xx[root], 0, xx[root], x$root.edge),
              "downwards" = segments(xx[root], yy[root], xx[root], yy[root] + x$root.edge))
-    if (!underscore) x$tip.label <- gsub("_", " ", x$tip.label)
-    if (phyloORclado) {
-        text(xx[1:nb.tip] + lox, yy[1:nb.tip] + loy, x$tip.label, adj = adj,
-             font = font, srt = srt, cex = cex, col = tip.color)
-    }
-    if (type == "unrooted") {
-        if (lab4ut == "horizontal") {
-            y.adj <- x.adj <- numeric(nb.tip)
-            sel <- abs(XY$axe) > 0.75 * pi
-            x.adj[sel] <- -strwidth(x$tip.label)[sel] * 1.05
-            sel <- abs(XY$axe) > pi/4 & abs(XY$axe) < 0.75 * pi
-            x.adj[sel] <- -strwidth(x$tip.label)[sel] * (2 * abs(XY$axe)[sel] / pi - 0.5)
-            sel <- XY$axe > pi / 4 & XY$axe < 0.75 * pi
-            y.adj[sel] <- strheight(x$tip.label)[sel] / 2
-            sel <- XY$axe < -pi / 4 & XY$axe > -0.75 * pi
-            y.adj[sel] <- -strheight(x$tip.label)[sel] * 0.75
-            text(xx[1:nb.tip] + x.adj, yy[1:nb.tip] + y.adj, x$tip.label,
-                 adj = c(adj, 0), font = font, srt = srt, cex = cex, col = tip.color)
-        } else { # if lab4ut == "axial"
-            adj <- as.numeric(abs(XY$axe) > pi/2)
-            srt <- 180*XY$axe/pi
-            srt[as.logical(adj)] <- srt[as.logical(adj)] - 180
-            ## <FIXME> temporary check of the values of `srt':
-            ## set to 0 if "-0.000001 < srt < 0"
-            sel <- srt > -1e-6 & srt < 0
-            if (any(sel)) srt[sel] <- 0
-            ## </FIXME>
+    if (show.tip.label) {
+        if (!underscore) x$tip.label <- gsub("_", " ", x$tip.label)
+        if (phyloORclado) {
+            text(xx[1:nb.tip] + lox, yy[1:nb.tip] + loy, x$tip.label, adj = adj,
+                 font = font, srt = srt, cex = cex, col = tip.color)
+        }
+        if (type == "unrooted") {
+            if (lab4ut == "horizontal") {
+                y.adj <- x.adj <- numeric(nb.tip)
+                sel <- abs(XY$axe) > 0.75 * pi
+                x.adj[sel] <- -strwidth(x$tip.label)[sel] * 1.05
+                sel <- abs(XY$axe) > pi/4 & abs(XY$axe) < 0.75 * pi
+                x.adj[sel] <- -strwidth(x$tip.label)[sel] * (2 * abs(XY$axe)[sel] / pi - 0.5)
+                sel <- XY$axe > pi / 4 & XY$axe < 0.75 * pi
+                y.adj[sel] <- strheight(x$tip.label)[sel] / 2
+                sel <- XY$axe < -pi / 4 & XY$axe > -0.75 * pi
+                y.adj[sel] <- -strheight(x$tip.label)[sel] * 0.75
+                text(xx[1:nb.tip] + x.adj, yy[1:nb.tip] + y.adj, x$tip.label,
+                     adj = c(adj, 0), font = font, srt = srt, cex = cex, col = tip.color)
+            } else { # if lab4ut == "axial"
+                adj <- as.numeric(abs(XY$axe) > pi/2)
+                srt <- 180*XY$axe/pi
+                srt[as.logical(adj)] <- srt[as.logical(adj)] - 180
+                ## <FIXME> temporary check of the values of `srt':
+                ## set to 0 if "-0.000001 < srt < 0"
+                sel <- srt > -1e-6 & srt < 0
+                if (any(sel)) srt[sel] <- 0
+                ## </FIXME>
+                ## `srt' takes only a single value, so we cannot vectorize this:
+                for (i in 1:nb.tip)
+                  text(xx[i], yy[i], cex = cex, x$tip.label[i], adj = adj[i],
+                       font = font, srt = srt[i], col = tip.color[i])
+            }
+        }
+        if (type == "radial") {
+            angle <- acos(xx[1:nb.tip]) * 180 / pi
+            s1 <- angle > 90 & yy[1:nb.tip] > 0
+            s2 <- angle < 90 & yy[1:nb.tip] < 0
+            s3 <- angle > 90 & yy[1:nb.tip] < 0
+            angle[s1] <- angle[s1] + 180
+            angle[s2] <- -angle[s2]
+            angle[s3] <- 180 - angle[s3]
+            adj <- numeric(nb.tip)
+            adj[xx[1:nb.tip] < 0] <- 1
             ## `srt' takes only a single value, so we cannot vectorize this:
             for (i in 1:nb.tip)
-              text(xx[i], yy[i], cex = cex, x$tip.label[i], adj = adj[i],
-                   font = font, srt = srt[i], col = tip.color[i])
+              text(xx[i], yy[i], x$tip.label[i], font = font, cex = cex,
+                   srt = angle[i], adj = adj[i], col = tip.color[i])
         }
-    }
-    if (type == "radial") {
-        angle <- acos(xx[1:nb.tip]) * 180 / pi
-        s1 <- angle > 90 & yy[1:nb.tip] > 0
-        s2 <- angle < 90 & yy[1:nb.tip] < 0
-        s3 <- angle > 90 & yy[1:nb.tip] < 0
-        angle[s1] <- angle[s1] + 180
-        angle[s2] <- -angle[s2]
-        angle[s3] <- 180 - angle[s3]
-        adj <- numeric(nb.tip)
-        adj[xx[1:nb.tip] < 0] <- 1
-        ## `srt' takes only a single value, so we cannot vectorize this:
-        for (i in 1:nb.tip)
-          text(xx[i], yy[i], x$tip.label[i], font = font, cex = cex,
-               srt = angle[i], adj = adj[i], col = tip.color[i])
     }
     if (show.node.label)
       text(xx[root:length(xx)] + label.offset, yy[root:length(yy)],
            x$node.label, adj = adj, font = font, srt = srt, cex = cex)
-    ## <FIXME>
-    ## Maybe not all elements in `L' are useful...
-    ## </FIXME>
     L <- list(type = type, use.edge.length = use.edge.length,
               node.pos = node.pos, show.tip.label = show.tip.label,
-              show.node.label = show.node.label,
-              edge.color = edge.color, edge.width = edge.width,
-              font = font, cex = cex, adj = adj, srt = srt,
-              no.margin = no.margin, label.offset = label.offset,
-              x.lim = x.lim, y.lim = y.lim, direction = direction,
-              tip.color = tip.color, Ntip = nb.tip, Nnode = nb.node)
-    .last_plot.phylo <<- c(L, list(xx = xx, yy = yy))
+              show.node.label = show.node.label, font = font,
+              cex = cex, adj = adj, srt = srt, no.margin = no.margin,
+              label.offset = label.offset, x.lim = x.lim, y.lim = y.lim,
+              direction = direction, tip.color = tip.color,
+              Ntip = nb.tip, Nnode = nb.node)
+    .last_plot.phylo <<- c(L, list(edge = xe, xx = xx, yy = yy))
     invisible(L)
 }
 

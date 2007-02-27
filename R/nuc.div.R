@@ -1,8 +1,8 @@
-### nuc.div.R (2005-04-01)
+### nuc.div.R (2007-02-23)
 ###
 ###    Nucleotide Diversity
 ###
-### Copyright 2005 Emmanuel Paradis
+### Copyright 2005-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
@@ -23,7 +23,7 @@ with pairwise deletion: try 'pairwise.deletion = FALSE' instead.")
     if (pairwise.deletion) {
         for (i in 1:(N - 1))
           for (j in (i + 1):N) {
-              sel <- !(x[i, ] == "n" || x[j, ] == "n")
+              sel <- !(x[i, ] == "n" | x[j, ] == "n")
               sum.pi <- sum.pi + sum(x[i, ][sel] != x[j, ][sel]) / sum(sel)
           }
         obj <- sum.pi / (N * (N - 1) / 2)

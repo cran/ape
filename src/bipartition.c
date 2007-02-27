@@ -1,6 +1,6 @@
-/* bipartition.c    2006-10-06 */
+/* bipartition.c    2007-02-26 */
 
-/* Copyright 2005-2006 Emmanuel Paradis */
+/* Copyright 2005-2007 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -93,7 +93,7 @@ SEXP bipartition(SEXP edge1, SEXP edge2, SEXP nbtip, SEXP nbnode)
 
     PROTECT(ans = allocVector(VECSXP, Nnode));
 
-    seqnod = seq_root2tip(edge1, edge2, nbtip, nbnode);
+    PROTECT(seqnod = seq_root2tip(edge1, edge2, nbtip, nbnode));
 
     for (i = 0; i < LENGTH(seqnod); i++) { /* for each tip */
         lt = LENGTH(VECTOR_ELT(seqnod, i));
@@ -113,6 +113,6 @@ SEXP bipartition(SEXP edge1, SEXP edge2, SEXP nbtip, SEXP nbnode)
 	}
     }
 
-    UNPROTECT(5);
+    UNPROTECT(6);
     return ans;
 } /* bipartition */

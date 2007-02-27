@@ -1,10 +1,12 @@
 \name{nodelabels}
 \alias{nodelabels}
 \alias{tiplabels}
-\title{Labelling the Nodes and the Tips of a Tree}
+\alias{edgelabels}
+\title{Labelling the Nodes, Tips, and Edges of a Tree}
 \description{
-  These functions add labels to or near the nodes or the tips of a tree
-  using text or plotting symbols. The text can be framed.
+  These functions add labels to or near the nodes, the tips, or the
+  edges of a tree using text or plotting symbols. The text can be
+  framed.
 }
 \usage{
 nodelabels(text, node, adj = c(0.5, 0.5), frame = "rect",
@@ -13,6 +15,10 @@ nodelabels(text, node, adj = c(0.5, 0.5), frame = "rect",
 tiplabels(text, tip, adj = c(0.5, 0.5), frame = "rect",
           pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
           col = "black", bg = "yellow", ...)
+edgelabels(text, edge, adj = c(0.5, 0.5), frame = "rect",
+           pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
+           col = "black", bg = "lightgreen", ...)
+
 }
 \arguments{
   \item{text}{a vector of mode character giving the text to be
@@ -20,6 +26,8 @@ tiplabels(text, tip, adj = c(0.5, 0.5), frame = "rect",
   \item{node}{a vector of mode numeric giving the numbers of the nodes
     where the text or the symbols are to be printed. Can be left empty.}
   \item{tip}{a vector of mode numeric giving the numbers of the tips
+    where the text or the symbols are to be printed. Can be left empty.}
+  \item{edge}{a vector of mode numeric giving the numbers of the edges
     where the text or the symbols are to be printed. Can be left empty.}
   \item{adj}{one or two numeric values specifying the horizontal and
     vertical, respectively, justification of the text. By default, the
@@ -50,15 +58,15 @@ tiplabels(text, tip, adj = c(0.5, 0.5), frame = "rect",
     below).}
 }
 \details{
-  These two functions have the same optional arguments and the same
+  These three functions have the same optional arguments and the same
   functioning.
 
   If the arguments \code{text} is missing and \code{pch} and
   \code{thermo} are left as \code{NULL}, then the numbers of the nodes
   (or of the tips) are printed.
 
-  If \code{node} (or \code{tip}) is missing, then the text or the
-  symbols are printed on all nodes (or tips).
+  If \code{node}, \code{tip}, or \code{edge} is missing, then the text
+  or the symbols are printed on all nodes, tips, or edges.
 
   The option \code{cex} can be used to change the size of all types of
   labels.
@@ -66,7 +74,7 @@ tiplabels(text, tip, adj = c(0.5, 0.5), frame = "rect",
   A simple call of these functions with no arguments (e.g.,
   \code{nodelabels()}) prints the numbers of all nodes (or tips).
 
-  In the case of \code{tiplabels}, it will be useful to play with the
+  In the case of \code{tiplabels}, it would be useful to play with the
   options \code{x.lim} and \code{label.offset} (and possibly
   \code{show.tip.label}) of \code{plot.phylo} in most cases (see the
   examples).
@@ -128,5 +136,10 @@ plot(tr, "c", FALSE, no.margin = TRUE)
 nodelabels(thermo = x, col = rainbow(4), cex = 1.3)
 text(4.5, 15, "... or \"thermo\"?", font = 4, cex = 1.5)
 layout(matrix(1))
+plot(tr, main = "Showing Edge Lengths")
+edgelabels(round(tr$edge.length, 3), srt = 90)
+plot(tr, "p", FALSE)
+edgelabels("above", adj = c(0.5, -0.25), bg = "yellow")
+edgelabels("below", adj = c(0.5, 1.25), bg = "lightblue")
 }
 \keyword{aplot}
