@@ -47,7 +47,7 @@ DNAmodel(model = "K80", part.model = 1,
   contrast parameter, denoted 'xi').
 
   The substitution models must be among the followings: \code{"JC69"}
-  \code{"K80"}, \code{"F81"}, \code{"K84"}, \code{"HKY85"},
+  \code{"K80"}, \code{"F81"}, \code{"F84"}, \code{"HKY85"},
   \code{"T92"}, \code{"TN93"}, and \code{"GTR"}. These models (except
   HKY85 and GTR) are described in the help page of \code{\link{dist.dna}}.
 
@@ -62,7 +62,7 @@ DNAmodel(model = "K80", part.model = 1,
   an object of class \code{"DNAmodel"} with components defined by the
   arguments of the function call.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{mlphylo}}, \code{\link{dist.dna}}
 }

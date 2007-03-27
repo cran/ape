@@ -20,7 +20,7 @@ consensus(..., p = 1)
 \value{
   an object of class \code{"phylo"}.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{prop.part}}, \code{\link{dist.topo}}
 }

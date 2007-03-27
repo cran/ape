@@ -79,7 +79,7 @@ edgelabels(text, edge, adj = c(0.5, 0.5), frame = "rect",
   \code{show.tip.label}) of \code{plot.phylo} in most cases (see the
   examples).
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}, Ben Bolker
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}, Ben Bolker
   \email{bolker@zoo.ufl.edu}, and Jim Lemon}
 \seealso{
   \code{\link{plot.phylo}}

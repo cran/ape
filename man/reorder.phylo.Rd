@@ -31,7 +31,7 @@
 \value{
   an object of class \code{"phylo"}.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{read.tree}} to read tree files in Newick format,
   \code{\link[stats]{reorder}} for the generic function

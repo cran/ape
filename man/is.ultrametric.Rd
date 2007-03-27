@@ -22,7 +22,7 @@ is.ultrametric(phy, tol = .Machine$double.eps^0.5)
   The default value for \code{tol} is based on the numerical
   characteristics of the machine R is running on.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{is.binary.tree}}, \code{\link[base]{.Machine}}
 }

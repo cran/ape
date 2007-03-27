@@ -21,7 +21,7 @@
   A NULL value is returned, the results are simply printed.
 }
 \author{Ben Bolker \email{bolker@zoo.ufl.edu} and Emmanuel Paradis
-  \email{paradis@isem.univ-montp2.fr}}
+  \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{read.tree}}, \code{\link{summary.phylo}},
   \code{\link[base]{print}} for the generic R function

@@ -34,7 +34,7 @@ bind.tree(x, y, where = "root", position = 0)
 
   Further testing/improvements may be needed.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{drop.tip}}, \code{\link{root}}
 }

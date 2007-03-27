@@ -39,7 +39,7 @@ bd.ext(phy, S)
   and taxonomic data. \emph{Proceedings of the Royal Society of
     London. Series B. Biological Sciences}, \bold{270}, 2499--2505.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{birthdeath}}, \code{\link{branching.times}},
   \code{\link{diversi.gof}}, \code{\link{diversi.time}},

@@ -43,7 +43,7 @@ dist.gene.percentage(x, variance = FALSE)
   \code{distances} and \code{variance}, respectively (if \code{variance =
     TRUE}).
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{dist.dna}}, \code{\link{cophenetic.phylo}}
 }

@@ -46,7 +46,7 @@ is.rooted(phy)
   an object of class \code{"phylo"} for \code{root} and \code{unroot}; a
   single logical value for \code{is.rooted}.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{bind.tree}}, \code{\link{drop.tip}}
 }

@@ -38,7 +38,7 @@ theta.h(x, standard.error = FALSE)
   mitochondrial DNA genome in American Indians is at mutation-drift
   equilibrium. \emph{American Journal of Human Genetics}, \bold{86}, 497--506.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{heterozygosity}}, \code{\link{theta.s}}, \code{\link{theta.k}}
 }

@@ -37,7 +37,7 @@ theta.k(x, n = NULL, k = NULL)
   Ewens, W. J. (1972) The sampling theory of selectively neutral
   alleles. \emph{Theoretical Population Biology}, \bold{3}, 87--112.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{theta.h}}, \code{\link{theta.s}}
 }

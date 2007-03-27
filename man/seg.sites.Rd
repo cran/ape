@@ -21,7 +21,7 @@ seg.sites(X)
 \value{
   A numeric vector giving the indices of the segregating sites.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \note{
   The present version looks for the sites which are ``variable'' in the
   data in terms of different \emph{letters}. This may give unexpected

@@ -38,7 +38,7 @@ write.tree(phy, file = "", append = FALSE,
   \url{http://evolution.genetics.washington.edu/phylip/newick_doc.html}
 }
 
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{read.tree}}, \code{\link{read.nexus}},
   \code{\link{write.nexus}}

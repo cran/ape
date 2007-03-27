@@ -33,7 +33,7 @@ sh.test(..., x, model = DNAmodel(), B = 100)
   inference. \emph{Molecular Biology and Evolution}, \bold{16},
   1114--1116.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{mlphylo}}, \code{\link{DNAmodel}}
 }

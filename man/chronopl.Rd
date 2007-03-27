@@ -63,7 +63,7 @@ chronopl(phy, lambda, node.age = 1, node = "root", CV = FALSE)
   approach. \emph{Molecular Biology and Evolution}, \bold{19},
   101--109.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{chronogram}}, \code{\link{ratogram}},
   \code{\link{NPRS.criterion}}

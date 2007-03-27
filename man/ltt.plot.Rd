@@ -67,7 +67,7 @@ mltt.plot(phy, ..., dcol = TRUE, dlty = FALSE,
     Transactions of the Royal Society of London. Series B. Biological
     Sciences}, \bold{349}, 25--31.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{skyline}}, \code{\link{branching.times}},
   \code{\link{birthdeath}}, \code{\link{bd.ext}}, \code{\link{yule.cov}}

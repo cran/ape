@@ -89,7 +89,7 @@ mlphylo(model = DNAmodel(), x, phy, search.tree = FALSE, quiet = FALSE)
   multiple sequence data. \emph{Journal of Molecular Evolution},
   \bold{42}, 587--596.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{DNAmodel}}, \code{\link{nj}}, \code{\link{read.dna}},
   \code{\link{summary.phylo}}

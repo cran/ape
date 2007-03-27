@@ -33,7 +33,7 @@ theta.s(s, n, variance = FALSE)
   Tajima, F. (1989) Statistical method for testing the neutral mutation
   hypothesis by DNA polymorphism. \emph{Genetics}, \bold{123}, 585--595.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{theta.h}}, \code{\link{theta.k}}, \code{\link{seg.sites}},
   \code{\link{nuc.div}}

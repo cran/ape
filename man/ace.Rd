@@ -125,7 +125,7 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   Likelihood of ancestor states in adaptive radiation. \emph{Evolution},
   \bold{51}, 1699--1711.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}, Ben Bolker
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}, Ben Bolker
 \email{bolker@zoo.ufl.edu}}
 \seealso{
   \code{\link{corBrownian}}, \code{\link{corGrafen}},

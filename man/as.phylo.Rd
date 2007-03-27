@@ -37,7 +37,7 @@ new2old.phylo(phy)
 \value{
   An object of class \code{"hclust"} or \code{"phylo"}.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link[stats]{hclust}}, \code{\link[stats]{as.hclust}},
   \code{\link[stats]{dendrogram}}, \code{\link[ade4]{phylog}}

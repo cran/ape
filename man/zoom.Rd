@@ -37,7 +37,7 @@ zoom(phy, focus, subtree = FALSE, col = rainbow, ...)
   subtrees: see \code{\link[graphics]{rainbow}} for some possibilities
   with colours.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{plot.phylo}}, \code{\link{drop.tip}},
   \code{\link[graphics]{layout}}, \code{\link[graphics]{rainbow}},

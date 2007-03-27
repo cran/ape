@@ -1,8 +1,8 @@
-### mlphylo.R (2006-07-05)
+### mlphylo.R (2007-03-27)
 ###
 ###     Estimating Phylogenies by Maximum Likelihood
 ###
-### Copyright 2006 Emmanuel Paradis
+### Copyright 2006-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
@@ -39,6 +39,8 @@ mlphylo <- function(model = DNAmodel(), x, phy, search.tree = FALSE,
       warning("the initial tree is rooted: it will be unrooted.")
     if (is.null(phy$edge.length))
       stop("the initial tree must have branch lengths.")
+    if (any(phy$edge.length > 1))
+      stop("some branch lengths are greater than one.")
     if (!quiet) cat("Preparing the sequences...\n")
     BF <- base.freq(x)
     ## <FIXME> Will need to do the usual checks of names...

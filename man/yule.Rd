@@ -37,7 +37,7 @@ yule(phy)
   \item{se}{the standard-error of lambda.}
   \item{loglik}{the log-likelihood at its maximum.}
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{branching.times}}, \code{\link{diversi.gof}},
   \code{\link{diversi.time}}, \code{\link{ltt.plot}},

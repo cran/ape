@@ -49,7 +49,7 @@ as.matching(x, ...)
 
   \code{as.phylo.matching} returns an object of class \code{"phylo"}.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \references{
   Diaconis, P. W. and Holmes, S. P. (1998) Matchings and phylogenetic
   trees. \emph{Proceedings of the National Academy of Sciences USA},

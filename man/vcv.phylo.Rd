@@ -28,7 +28,7 @@ vcv.phylo(phy, model = "Brownian", cor = FALSE)
   comparative methods. \emph{American Naturalist}, \bold{155}, 346--364.
 }
 
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{read.tree}} to read tree files in Newick format
 }

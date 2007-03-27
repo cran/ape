@@ -40,7 +40,7 @@ cherry(phy)
   McKenzie, A. and Steel, M. (2000) Distributions of cherries for two
   models of trees. \emph{Mathematical Biosciences}, \bold{164}, 81--92.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{gammaStat}}
 }

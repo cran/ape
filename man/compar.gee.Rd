@@ -72,7 +72,7 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
     Biology}, \bold{218}, 175--185.
 }
 
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 
 \seealso{
   \code{\link{read.tree}}, \code{\link{pic}},

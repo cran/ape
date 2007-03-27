@@ -14,7 +14,7 @@ ladderize(phy, right = TRUE)
   This function simply reorganizes the internal structure of the tree to
   get the ladderized effect when plotted.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{plot.phylo}}, \code{\link{reorder}}
 }

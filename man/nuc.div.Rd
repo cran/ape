@@ -34,7 +34,7 @@ nuc.div(x, variance = FALSE, pairwise.deletion = FALSE)
   Nei, M. (1987) \emph{Molecular evolutionary genetics}. New York:
   Columbia University Press.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{base.freq}}, \code{\link{GC.content}},
   \code{\link{theta.s}}, \code{\link{seg.sites}}

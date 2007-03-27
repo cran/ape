@@ -25,5 +25,5 @@ balance(phy)
   phylogenetic trees, from Yule to today. \emph{Statistical Science},
   \bold{16}, 23--34.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \keyword{manip}

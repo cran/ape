@@ -28,7 +28,7 @@ add.scale.bar(x = 0, y = 1, length = NULL, ...)
   The function \code{\link[graphics]{locator}}  may be used to
   determine the \code{x} and \code{y} arguments.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{plot.phylo}}, \code{\link{axisPhylo}},
   \code{\link[graphics]{locator}}

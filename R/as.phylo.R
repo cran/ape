@@ -1,8 +1,8 @@
-### as.phylo.R (2006-12-15)
+### as.phylo.R (2007-03-05)
 ###
 ###     Conversion Among Tree Objects
 ###
-### Copyright 2005-2006 Emmanuel Paradis
+### Copyright 2005-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
@@ -54,6 +54,8 @@ as.phylo.hclust <- function(x, ...)
         }
         j <- j + 2
     }
+    if (is.null(x$labels))
+      x$labels <- as.character(1:(N + 1))
     obj <- list(edge = edge, edge.length = edge.length,
                 tip.label = x$labels, Nnode = N)
     class(obj) <- "phylo"

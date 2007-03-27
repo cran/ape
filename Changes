@@ -1,4 +1,27 @@
-		CHANGES IN APE VERSION 1.9-3
+		CHANGES IN APE VERSION 1.9-4
+
+
+BUG FIXES
+
+    o A bug was fixed in edgelabels().
+
+    o as.phylo.hclust() did not work correctly when the object of
+      class "hclust" has its labels set to NULL: the returned tree has
+      now its tip labels set to "1", "2", ...
+
+    o consensus could fail if some tip labels are a subset of others
+      (e.g., "a" and "a_1"): this is now fixed.
+
+    o mlphylo() failed in most cases if some branch lengths of the
+      initial tree were greater than one: an error message is now
+      issued.
+
+    o mlphylo() failed in most cases when estimating the proportion of
+      invariants: this is fixed.
+
+
+
+      		CHANGES IN APE VERSION 1.9-3
 
 
 NEW FEATURES

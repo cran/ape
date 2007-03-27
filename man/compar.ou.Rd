@@ -76,7 +76,7 @@ compar.ou(x, phy, node = NULL, alpha = NULL)
   Hansen, T. F. (1997) Stabilizing selection and the comparative
   analysis of adaptation. \emph{Evolution}, \bold{51}, 1341--1351.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{ace}}, \code{\link{compar.lynch}},
   \code{\link{corBrownian}}, \code{\link{corMartins}}, \code{\link{pic}}

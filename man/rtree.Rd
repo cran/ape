@@ -32,7 +32,7 @@ rcoal(n, tip.label = NULL, br = rexp, ...)
   inter-node distances. If further arguments are passed to \code{br},
   they need to be tagged (e.g., \code{min = 0, max = 10}).
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \examples{
 layout(matrix(1:9, 3, 3))
 ### Nine random trees:

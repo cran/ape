@@ -40,7 +40,7 @@ write.nexus(..., file = "", translate = TRUE, original.data = TRUE)
     Biology}, \bold{46}, 590--621.
 }
 
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{read.nexus}}, \code{\link{read.tree}},
   \code{\link{write.tree}}, \code{\link{read.nexus.data}},

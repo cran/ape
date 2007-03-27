@@ -34,7 +34,7 @@ gammaStat(phy)
     the Royal Society of London. Series B. Biological Sciences},
   \bold{267}, 2267--2272.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{branching.times}}, \code{\link{ltt.plot}}, \code{\link{skyline}}
 }

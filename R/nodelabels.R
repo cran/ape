@@ -1,4 +1,4 @@
-### nodelabels.R (2007-02-20)
+### nodelabels.R (2007-03-05)
 ###
 ###        Labelling the Nodes and the Tips of a Tree
 ###
@@ -66,7 +66,7 @@ BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
                     width <- height
                     height <- tmp
                 } else if (args$srt != 0)
-                  warning("only right angle rotation of frame is supported\n")
+                  warning("only right angle rotation of frame is supported;\n         try  `frame = \"n\"' instead.\n")
             }
             width <- xinch(width)
             height <- yinch(height)
@@ -145,7 +145,10 @@ edgelabels <- function(text, edge, adj = c(0.5, 0.5), frame = "rect",
     if (missing(edge)) {
         sel <- 1:dim(.last_plot.phylo$edge)[1]
         subedge <- .last_plot.phylo$edge
-    } else subedge <- .last_plot.phylo$edge[sel, ]
+    } else {
+        sel <- edge
+        subedge <- .last_plot.phylo$edge[sel, , drop = FALSE]
+    }
     if (.last_plot.phylo$type == "phylogram") {
         if(.last_plot.phylo$direction %in% c("rightwards", "leftwards")) {
             XX <- (.last_plot.phylo$xx[subedge[, 1]] +

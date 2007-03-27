@@ -30,9 +30,6 @@ dist.topo(x, y, method = "PH85")
   space. The distance between two trees can be seen as the sum of the
   branch lengths that need be erased to have two similar trees.
 }
-\author{
-  Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}
-}
 \references{
   Billera, L. J., Holmes, S. P. and Vogtmann, K. (2001) Geometry of the
   space of phylogenetic trees. \emph{Advances in Applied Mathematics},
@@ -48,6 +45,7 @@ dist.topo(x, y, method = "PH85")
   testing minimum-evolution trees. \emph{Molecular Biology and
     Evolution}, \bold{9}, 945--967.
 }
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}}
 \seealso{
   \code{\link{read.tree}} to read tree files in Newick format,
   \code{\link{cophenetic.phylo}}, \code{\link{prop.part}}

@@ -56,7 +56,7 @@ birthdeath(phy)
   extinctions from molecular phylogenies. in \emph{Extinction Rates},
   eds. Lawton, J. H. and May, R. M., pp. 164--182, Oxford University Press.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{branching.times}}, \code{\link{diversi.gof}},
   \code{\link{diversi.time}}, \code{\link{ltt.plot}},

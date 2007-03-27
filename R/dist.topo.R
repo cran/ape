@@ -1,4 +1,4 @@
-### dist.topo.R (2007-02-27)
+### dist.topo.R (2007-03-09)
 ###
 ###      Topological Distances, Tree Bipartitions,
 ###   Consensus Trees, and Bootstrapping Phylogenies
@@ -169,6 +169,8 @@ consensus <- function(..., p = 1)
     ## Get the order of the remaining partitions by decreasing size:
     ind <- rev(sort(unlist(lapply(pp, length)),
                     index.return = TRUE)$ix)
+    pp <- lapply(pp, function(xx) paste("IMPROBABLE_PREFIX", xx,
+                                        "IMPROBABLE_SUFFIX", sep = "_"))
     STRING <- paste(pp[[1]], collapse = ",")
     STRING <- paste("(", STRING, ");", sep = "")
     for (i in ind[-1]) {
@@ -185,5 +187,7 @@ consensus <- function(..., p = 1)
     STRING <- gsub(",{2,}", ",", STRING)
     STRING <- gsub("\\(,", "\\(", STRING)
     STRING <- gsub(",\\)", "\\)", STRING)
+    STRING <- gsub("IMPROBABLE_PREFIX_", "", STRING)
+    STRING <- gsub("_IMPROBABLE_SUFFIX", "", STRING)
     read.tree(text = STRING)
 }

@@ -181,7 +181,7 @@ dist.dna(x, model = "K80", variance = FALSE,
   substitutions in the control region of mitochondrial DNA in humans and
   chimpanzees. \emph{Molecular Biology and Evolution}, \bold{10}, 512--526.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{read.GenBank}}, \code{\link{read.dna}},
   \code{\link{write.dna}}, \code{\link{dist.gene}},

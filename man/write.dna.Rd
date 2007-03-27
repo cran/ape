@@ -73,7 +73,7 @@ write.dna(x, file, format = "interleaved", append = FALSE,
 \value{
   None (invisible `NULL').
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \references{
   Anonymous. FASTA format description.
   \url{http://www.ncbi.nlm.nih.gov/BLAST/fasta.html}

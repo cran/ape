@@ -20,7 +20,7 @@ GC.content(x)
 \value{
   A single numeric value is returned.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{base.freq}}, \code{\link{seg.sites}},
   \code{\link{nuc.div}}

@@ -20,7 +20,7 @@ branching.times(phy)
   returned vector; otherwise the numbers (of mode character) of the
   matrix \code{edge} of \code{phy} are used as names.
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
 \code{\link{is.ultrametric}}
 }

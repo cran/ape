@@ -86,7 +86,7 @@ read.dna(file, format = "interleaved", skip = 0,
   \code{\link{read.GenBank}}, \code{\link{write.dna}},
   \code{\link{dist.dna}}, \code{\link{woodmouse}}
 }
-\author{Emmanuel Paradis \email{paradis@isem.univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \examples{
 ### a small extract from `data(woddmouse)'
 cat("3 40",

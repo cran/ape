@@ -1,6 +1,6 @@
-/* mlphylo.c       2006-07-17 */
+/* mlphylo.c       2007-03-27 */
 
-/* Copyright 2006 Emmanuel Paradis */
+/* Copyright 2006-2007 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -52,7 +52,7 @@ void tQ_unbalBF(double *BF, double *P)
 /*BF: the base frequencies */
 /* P: (input) the matrix of substitution rates */
 /*    (output) tQ */
-/* NOTE: P must already be multiplied by t. */
+/* NOTE: P must already be multiplied by t */
 {
    P[1] *= BF[0];  P[2] *= BF[0];  P[3] *= BF[0];
    P[4] *= BF[1];  P[6] *= BF[1];  P[7] *= BF[1];
@@ -290,68 +290,74 @@ void PMAT_GTR(double t, double a, double b, double c, double d, double e,
 	}                                                         \
     }
 
-#define LOOP_THROUGH_SITES                                             \
-    for(j = start; j < end; j++) {                                     \
-        i1 = d1 + j*nr;                                                \
-        i2 = d2 + j*nr;                                                \
-        tmp[0] = tmp[1] = tmp[2] = tmp[3] = 0.0;                       \
-	for(i = 0; i < ncat; i++) {                                    \
-	    switch(model) {                                            \
-	    case 1 : PMAT_JC69(l1, coef_gamma[i], P1);                 \
-                     PMAT_JC69(l2, coef_gamma[i], P2); break;          \
-	    case 2 : PMAT_K80(l1, coef_gamma[i], u[0], P1);            \
-PMAT_K80(l2, coef_gamma[i], u[0], P2); break;                          \
-	    case 3 : PMAT_F81(l1, coef_gamma[i], BF, P1);              \
-PMAT_F81(l2, coef_gamma[i], BF, P2); break;                            \
-	    case 4 : PMAT_F84(l1, coef_gamma[i], u[0], BF, P1);        \
-PMAT_F84(l2, coef_gamma[i], u[0], BF, P2); break;                      \
-	    case 5 : PMAT_HKY85(l1, coef_gamma[i], u[0], BF, P1);      \
-PMAT_HKY85(l2, coef_gamma[i], u[0], BF, P2); break;                    \
-	    case 6 : PMAT_T92(l1, coef_gamma[i], u[0], BF, P1);        \
-PMAT_T92(l2, coef_gamma[i], u[0], BF, P2); break;                      \
+#define LOOP_THROUGH_SITES \
+    for(j = start; j < end; j++) { \
+        i1 = d1 + j*nr; \
+        i2 = d2 + j*nr; \
+        tmp[0] = tmp[1] = tmp[2] = tmp[3] = 0.0; \
+	for(i = 0; i < ncat; i++) { \
+	    switch(model) { \
+	    case 1 : PMAT_JC69(l1, coef_gamma[i], P1); \
+                     PMAT_JC69(l2, coef_gamma[i], P2); break; \
+	    case 2 : PMAT_K80(l1, coef_gamma[i], u[0], P1); \
+PMAT_K80(l2, coef_gamma[i], u[0], P2); break; \
+	    case 3 : PMAT_F81(l1, coef_gamma[i], BF, P1); \
+PMAT_F81(l2, coef_gamma[i], BF, P2); break; \
+	    case 4 : PMAT_F84(l1, coef_gamma[i], u[0], BF, P1); \
+PMAT_F84(l2, coef_gamma[i], u[0], BF, P2); break; \
+	    case 5 : PMAT_HKY85(l1, coef_gamma[i], u[0], BF, P1); \
+PMAT_HKY85(l2, coef_gamma[i], u[0], BF, P2); break; \
+	    case 6 : PMAT_T92(l1, coef_gamma[i], u[0], BF, P1); \
+PMAT_T92(l2, coef_gamma[i], u[0], BF, P2); break; \
 	    case 7 : PMAT_TN93(l1, coef_gamma[i], u[0], u[1], BF, P1); \
-PMAT_TN93(l2, coef_gamma[i], u[0], u[1], BF, P2); break;               \
-	    case 8 : PMAT_GTR(l1, coef_gamma[i], u[0], u[1],           \
-			      u[2], u[3], u[4], BF, P1);               \
-PMAT_GTR(l2, coef_gamma[i], u[0], u[1],                                \
-			      u[2], u[3], u[4], BF, P2); break;        \
-	    }                                                          \
-	    tmp[0] += (X.A[i1] * P1[0] + X.C[i1] * P1[1] +             \
-		      X.G[i1] * P1[2] + X.T[i1] * P1[3]) *             \
-                     (X.A[i2] * P2[0] + X.C[i2] * P2[1] +              \
-		      X.G[i2] * P2[2] + X.T[i2] * P2[3]);              \
-	    tmp[1] += (X.A[i1] * P1[4] + X.C[i1] * P1[5] +             \
-		      X.G[i1] * P1[6] + X.T[i1] * P1[7]) *             \
-                     (X.A[i2] * P2[4] + X.C[i2] * P2[5] +              \
-		      X.G[i2] * P2[6] + X.T[i2] * P2[7]);              \
-	    tmp[2] += (X.A[i1] * P1[8] + X.C[i1] * P1[9] +             \
-		      X.G[i1] * P1[10] + X.T[i1] * P1[11]) *           \
-                     (X.A[i2] * P2[8] + X.C[i2] * P2[9] +              \
-		      X.G[i2] * P2[10] + X.T[i2] * P2[11]);            \
-	    tmp[3] += (X.A[i1] * P1[12] + X.C[i1] * P1[13] +           \
-		      X.G[i1] * P1[14] + X.T[i1] * P1[15]) *           \
-                     (X.A[i2] * P2[12] + X.C[i2] * P2[13] +            \
-		      X.G[i2] * P2[14] + X.T[i2] * P2[15]);            \
-	}                                                              \
-        if (ncat > 1) {                                                \
-            tmp[0] /= ncat;                                            \
-            tmp[1] /= ncat;                                            \
-            tmp[2] /= ncat;                                            \
-            tmp[3] /= ncat;                                            \
-        }                                                              \
-	if (I > 0) { /* maybe use a better comparison */               \
-	    V = 1. - I;                                                \
-            tmp[0] = V * tmp[0] + I * X.A[ind];                        \
-            tmp[1] = V * tmp[1] + I * X.C[ind];                        \
-            tmp[2] = V * tmp[2] + I * X.G[ind];                        \
-            tmp[3] = V * tmp[3] + I * X.T[ind];                        \
-	}                                                              \
-        ind = anc + j*nr;                                              \
-        X.A[ind] = tmp[0];                                             \
-        X.C[ind] = tmp[1];                                             \
-        X.G[ind] = tmp[2];                                             \
-        X.T[ind] = tmp[3];                                             \
+PMAT_TN93(l2, coef_gamma[i], u[0], u[1], BF, P2); break; \
+	    case 8 : PMAT_GTR(l1, coef_gamma[i], u[0], u[1], \
+			      u[2], u[3], u[4], BF, P1); \
+PMAT_GTR(l2, coef_gamma[i], u[0], u[1], \
+			      u[2], u[3], u[4], BF, P2); break; \
+	    } \
+	    tmp[0] += (X.A[i1] * P1[0] + X.C[i1] * P1[1] + \
+		      X.G[i1] * P1[2] + X.T[i1] * P1[3]) * \
+                     (X.A[i2] * P2[0] + X.C[i2] * P2[1] + \
+		      X.G[i2] * P2[2] + X.T[i2] * P2[3]); \
+	    tmp[1] += (X.A[i1] * P1[4] + X.C[i1] * P1[5] + \
+		      X.G[i1] * P1[6] + X.T[i1] * P1[7]) * \
+                     (X.A[i2] * P2[4] + X.C[i2] * P2[5] + \
+		      X.G[i2] * P2[6] + X.T[i2] * P2[7]); \
+	    tmp[2] += (X.A[i1] * P1[8] + X.C[i1] * P1[9] + \
+		      X.G[i1] * P1[10] + X.T[i1] * P1[11]) * \
+                     (X.A[i2] * P2[8] + X.C[i2] * P2[9] + \
+		      X.G[i2] * P2[10] + X.T[i2] * P2[11]); \
+	    tmp[3] += (X.A[i1] * P1[12] + X.C[i1] * P1[13] + \
+		      X.G[i1] * P1[14] + X.T[i1] * P1[15]) * \
+                     (X.A[i2] * P2[12] + X.C[i2] * P2[13] + \
+		      X.G[i2] * P2[14] + X.T[i2] * P2[15]); \
+	} \
+        if (ncat > 1) { \
+            tmp[0] /= ncat; \
+            tmp[1] /= ncat; \
+            tmp[2] /= ncat; \
+            tmp[3] /= ncat; \
+        } \
+        ind = anc + j*nr; \
+	if (I > 0) { \
+	    V = 1. - I; \
+            tmp[0] = V*tmp[0] + I*X.A[i1]*X.A[i2]; \
+            tmp[1] = V*tmp[1] + I*X.C[i1]*X.C[i2]; \
+            tmp[2] = V*tmp[2] + I*X.G[i1]*X.G[i2]; \
+            tmp[3] = V*tmp[3] + I*X.T[i1]*X.T[i2]; \
+	} \
+        X.A[ind] = tmp[0]; \
+        X.C[ind] = tmp[1]; \
+        X.G[ind] = tmp[2]; \
+        X.T[ind] = tmp[3]; \
+Rprintf("");\
     }
+
+/* <FIXME>
+The Rprintf() above is needed to avoid a memory corruption,
+but I don't know why! (2007-03-27)
+</FIXME> */
 
 void lik_dna_node(dna_matrix X, int d1, int d2, int anc,
 		  double *edge_length, part_dna PART,
@@ -399,7 +405,7 @@ nucleotides.
     double tmp[4], l1, l2, l3, P1[16], P2[16], P3[16], V,
       coef_gamma[10], u[6], I;
 
-    /* change d1, d1, d3, and anc to use them as indices */
+    /* change d1, d2, d3, and anc to use them as indices */
     d1--; d2--; d3--; anc--;
 
     l1 = edge_length[d1];
@@ -559,12 +565,10 @@ double fcn_mlphylo_invar(double I, info *INFO)
 
     N = *(INFO->D->n)*2 - 3;
     INFO->D->INV.I[INFO->i] = I;
-
     lik_dna_tree(INFO->D->n, INFO->D->s, N, INFO->D->X, INFO->D->w,
 		 INFO->D->match, INFO->D->edge_length,
 		 INFO->D->partition, INFO->D->PAR, INFO->D->GAMMA,
 		 INFO->D->INV, INFO->D->BF, &loglik);
-
     return(-loglik);
 }
 
@@ -584,7 +588,7 @@ optimize proportion of invariants
         infptr->i = i;
 	I = Brent_fmin(0.0, 1.0,
 		       (double (*)(double, void*)) fcn_mlphylo_invar,
-		       infptr, 1.e-6);
+		       infptr, 1.e-9);
 	D->INV.I[i] = I;
     }
 }
@@ -909,7 +913,7 @@ paramaters and of the branch lengths for a given tree.
 /*---------------------------------------------------------------*/
 
 /* Exemples de "C-wrappers" pour obtenir la matrice */
-/* de probabilité de transition. */
+/* de probabilités de transition. */
 
 /* void titijc(double *t, double *u, double *P) */
 /* { */
