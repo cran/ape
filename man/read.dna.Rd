@@ -3,7 +3,8 @@
 \title{Read DNA Sequences in a File}
 \usage{
 read.dna(file, format = "interleaved", skip = 0,
-         nlines = 0, comment.char = "#", seq.names = NULL)
+         nlines = 0, comment.char = "#", seq.names = NULL,
+         as.character = FALSE)
 }
 \arguments{
   \item{file}{a file name specified by either a variable of mode character,
@@ -20,17 +21,15 @@ read.dna(file, format = "interleaved", skip = 0,
     after this character is ignored.}
   \item{seq.names}{the names to give to each sequence; by default the
     names read in the file are used.}
+  \item{as.character}{a logical controlling whether to return the
+    sequences as an object of class \code{"DNAbin"} (the default).}
 }
 \description{
   This function reads DNA sequences in a file, and returns a matrix or a
   list of DNA sequences with the names of the taxa read in the file as
-  rownames or names, respectively. The sequences are returned in lower
+  rownames or names, respectively. By default, the sequences are stored
+  in binary format, otherwise (if \code{as.character = "TRUE"}) in lower
   case.
-}
-\value{
-  A matrix or a list (if \code{format = "fasta"}) of DNA sequences each
-  made of a single vector of mode character where each element is a
-  nucleotide.
 }
 \details{
   This function follows the interleaved and sequential formats defined
@@ -71,6 +70,11 @@ read.dna(file, format = "interleaved", skip = 0,
     names after removing the ``>'' and the possible leading and trailing
     spaces. All the data in the file before the first sequence is ignored.}
 }
+\value{
+  a matrix or a list (if \code{format = "fasta"}) of DNA sequences
+  stored in binary format, or of mode character (if \code{as.character =
+    "TRUE"}).
+}
 \references{
   Anonymous. FASTA format description.
   \url{http://www.ncbi.nlm.nih.gov/BLAST/fasta.html}
@@ -84,7 +88,7 @@ read.dna(file, format = "interleaved", skip = 0,
 }
 \seealso{
   \code{\link{read.GenBank}}, \code{\link{write.dna}},
-  \code{\link{dist.dna}}, \code{\link{woodmouse}}
+  \code{\link{DNAbin}}, \code{\link{dist.dna}}, \code{\link{woodmouse}}
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \examples{

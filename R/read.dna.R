@@ -1,14 +1,15 @@
-### read.dna.R (2006-12-29)
+### read.dna.R (2007-05-01)
 ###
 ###     Read DNA Sequences in a File
 ###
-### Copyright 2003-2006 Emmanuel Paradis
+### Copyright 2003-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
 
 read.dna <- function(file, format = "interleaved", skip = 0,
-                     nlines = 0, comment.char = "#", seq.names = NULL)
+                     nlines = 0, comment.char = "#", seq.names = NULL,
+                     as.character = FALSE)
 {
     getTaxaNames <- function(x) {
         x <- sub("^ +", "", x) # remove the leading spaces
@@ -98,5 +99,6 @@ read.dna <- function(file, format = "interleaved", skip = 0,
         names(obj) <- seq.names
         obj <- lapply(obj, tolower)
     }
+    if (!as.character) obj <- as.DNAbin(obj)
     obj
 }

@@ -63,7 +63,7 @@ summary.phylo <- function(object, ...)
 }
 
 ### by BB:
-print.phylo <- function(x, printlen = 6 ,...)
+print.phylo <- function(x, printlen = 6,...)
 {
     nb.tip <- length(x$tip.label)
     nb.node <- x$Nnode

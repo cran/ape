@@ -1,14 +1,14 @@
-### read.GenBank.R (2006-12-08)
+### read.GenBank.R (2007-05-01)
 ###
 ###    Read DNA Sequences from GenBank via Internet
 ###
-### Copyright 2002-2006 Emmanuel Paradis
+### Copyright 2002-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
 
 read.GenBank <- function(access.nb, seq.names = access.nb,
-                         species.names = TRUE)
+                         species.names = TRUE, as.character = FALSE)
 {
     N <- length(access.nb)
     ## If there are more than 400 sequences, we need to break down the
@@ -41,5 +41,6 @@ read.GenBank <- function(access.nb, seq.names = access.nb,
           tmp[i] <- unlist(strsplit(X[sp[i]], " +ORGANISM +"))[2]
         attr(obj, "species") <- gsub(" ", "_", tmp)
     }
+    if (!as.character) obj <- as.DNAbin(obj)
     obj
 }

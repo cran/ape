@@ -145,6 +145,7 @@ DNAmodel <- function(model = "K80", part.model = 1,
 
 prepare.dna <- function(X, DNAmodel)
 {
+    if (class(X) == "DNAbin") X <- as.character(X)
     ## First, check that all sequences in the list are of the
     ## same length. If OK, convert as a matrix.
     if (is.list(X)) {

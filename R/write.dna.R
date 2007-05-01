@@ -13,6 +13,7 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
 {
     format <- match.arg(format, c("interleaved", "sequential", "fasta"))
     phylip <- if (format %in% c("interleaved", "sequential")) TRUE else FALSE
+    if (class(x) == "DNAbin") x <- as.character(x)
     if (is.matrix(x)) {
         N <- dim(x)[1]
         xx <- vector("list", N)
@@ -46,7 +47,7 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
         }
         ## left justify
         names(x) <- sprintf("%-10s", names(x))
-        cat(N, S, "\n", file = zz)
+        cat(N, " ", S, "\n", sep = "", file = zz)
         if (nbcol < 0) {
             nb.block <- 1
             nbcol <- totalcol <- ceiling(S / colw)

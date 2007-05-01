@@ -1,8 +1,8 @@
-### root.R (2006-11-29)
+### root.R (2007-04-17)
 ###
 ###      Root of Phylogenetic Trees
 ###
-### Copyright 2004-2006 Emmanuel Paradis
+### Copyright 2004-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
@@ -135,10 +135,10 @@ root <- function(phy, outgroup)
         ## ... and invert finally! (fixed 2005-11-07)
         phy$edge[i, ] <- rev(phy$edge[i, ])
     }
-    if (!is.null(phy$node.label)) {
-        tmp <- phy$node.label[1]
-        phy$node.label[1] <- phy$node.label[-as.numeric(newroot)]
-        phy$node.label[-as.numeric(newroot)] <- tmp
-    }
+    if (!is.null(phy$node.label))
+      ## It's important to not delete the label of the newroot
+      ## to keep the positions of the other nodes
+      phy$node.label[1] <- phy$node.label[newroot - nb.tip]
+    ## Not needed: phy$Nnode <- phy$Nnode - 1
     read.tree(text = write.tree(phy, multi.line = FALSE))
 }

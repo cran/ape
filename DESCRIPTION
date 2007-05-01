@@ -1,6 +1,6 @@
 Package: ape
-Version: 1.9-4
-Date: 2007-03-27
+Version: 1.10
+Date: 2007-05-01
 Title: Analyses of Phylogenetics and Evolution
 Author: Ben Bolker, Julien Claude, Benoît Durand,
   Julien Dutheil, Gangolf Jobb, Jim Lemon, Yvonnick Noël,
@@ -22,4 +22,5 @@ Description: ape provides functions for reading, writing, plotting,
   likelihood, classifying genes in trees using the Klastorin-Misawa-Tajima
   approach. Phylogeny estimation can be done with the NJ and ML methods.
 License: GPL version 2 or newer
-Packaged: Tue Mar 27 10:33:25 2007; paradis
+URL: http://pbil.univ-lyon1.fr/R/ape/
+Packaged: Tue May  1 11:47:33 2007; paradis

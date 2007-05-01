@@ -4,10 +4,10 @@
   Find Segregating Sites in DNA Sequences
 }
 \usage{
-seg.sites(X)
+seg.sites(x)
 }
 \arguments{
-  \item{X}{a matrix, a data frame, or a list which contains the DNA
+  \item{x}{a matrix, a data frame, or a list which contains the DNA
     sequences.}
 }
 \description{

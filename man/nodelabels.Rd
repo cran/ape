@@ -122,6 +122,10 @@ plot(bird.orders, "c", FALSE, font = 1, label.offset = 3,
      x.lim = 31, no.margin = TRUE)
 tiplabels(pch = 21, bg = gray(1:23/23), cex = 2, adj = 1.4)
 tiplabels(pch = 19, col = c("yellow", "red", "blue"), adj = 2.5, cex = 2)
+### This can be used to highlight tip labels:
+plot(bird.orders, font = 1)
+i <- c(1, 7, 18)
+tiplabels(bird.orders$tip.label[i], i, adj = 0)
 ### Some random data to compare piecharts and thermometres:
 tr <- rtree(15)
 x <- runif(14, 0, 0.33)

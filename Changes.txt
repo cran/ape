@@ -32,10 +32,10 @@ BUG FIXES
 OTHER CHANGES
 
     o DNA sequences are now internally stored in a binary format. See
-      the document "A Bit-Level Coding Scheme for Nucleotides" for the
+      the document "A Bit-Level Coding Scheme for Nucleotides" for
       details. Most functions analyzing DNA functions have been
-      modified accordingly and are now much faster (dist.dna is now
-      ca. 60 times faster).
+      modified accordingly and are now much faster (dist.dna is ca. 60
+      times faster).
 
 
 

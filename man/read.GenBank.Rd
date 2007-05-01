@@ -3,7 +3,7 @@
 \title{Read DNA Sequences from GenBank via Internet}
 \usage{
 read.GenBank(access.nb, seq.names = access.nb,
-             species.names = TRUE)
+             species.names = TRUE, as.character = FALSE)
 }
 \arguments{
   \item{access.nb}{a vector of mode character giving the accession numbers.}
@@ -11,14 +11,16 @@ read.GenBank(access.nb, seq.names = access.nb,
     accession numbers are used.}
   \item{species.names}{a logical indicating whether to attribute the
     species names to the returned object.}
+  \item{as.character}{a logical controlling whether to return the
+    sequences as an object of class \code{"DNAbin"} (the default).}
 }
 \description{
-  This function connects to the GenBank databasis, and reads nucleotide
+  This function connects to the GenBank database, and reads nucleotide
   sequences using accession numbers given as arguments.
 }
 \value{
-  A list a DNA sequences each made of a single vector of mode character
-  where each element is a nucleotide.
+  A list of DNA sequences made of vectors of class \code{"DNAbin"}, or
+  of single characters (if \code{as.character = "TRUE"}).
 }
 \details{
   The function uses the site \url{http://www.ncbi.nlm.nih.gov/} from
@@ -29,12 +31,13 @@ read.GenBank(access.nb, seq.names = access.nb,
   field ``ORGANISM'' in GenBank.
 }
 \seealso{
-  \code{\link{read.dna}}, \code{\link{write.dna}}, \code{\link{dist.dna}}
+  \code{\link{read.dna}}, \code{\link{write.dna}},
+  \code{\link{dist.dna}}, \code{\link{DNAbin}}
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \examples{
 ### This won't work if your computer is not connected
-### to internet!!!
+### to the Internet!!!
 ###
 ### Get the 8 sequences of tanagers (Ramphocelus)
 ### as used in Paradis (1997)

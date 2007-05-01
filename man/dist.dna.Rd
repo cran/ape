@@ -1,8 +1,5 @@
 \name{dist.dna}
 \alias{dist.dna}
-\alias{dist.dna.BH87}
-\alias{dist.dna.logdet}
-\alias{dist.dna.paralin}
 \title{Pairwise Distances from DNA Sequences}
 \usage{
 dist.dna(x, model = "K80", variance = FALSE,

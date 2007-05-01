@@ -22,7 +22,7 @@ data(woodmouse)
     Ecology}, \bold{12}, 685--697.
 }
 \seealso{
-  \code{\link{read.dna}}, \code{\link{dist.dna}}
+  \code{\link{read.dna}}, \code{\link{DNAbin}}, \code{\link{dist.dna}}
 }
 \examples{
 data(woodmouse)

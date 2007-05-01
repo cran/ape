@@ -1,4 +1,4 @@
-### plot.phylo.R (2007-02-20)
+### plot.phylo.R (2007-04-25)
 ###
 ###          Plot Phylogenies
 ###
@@ -158,7 +158,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     }
     if (is.null(y.lim)) {
         if (phyloORclado) {
-            if (!horizontal) y.lim <- c(1, nb.tip) else {
+            if (horizontal) y.lim <- c(1, nb.tip) else {
                 y.lim <- c(0, NA)
                 tmp <-
                   if (show.tip.label) nchar(x$tip.label) * 0.018 * max(yy) * cex else 0
