@@ -1,4 +1,4 @@
-### plot.phylo.R (2007-04-25)
+### plot.phylo.R (2007-06-16)
 ###
 ###          Plot Phylogenies
 ###
@@ -27,13 +27,16 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     direction <- match.arg(direction, c("rightwards", "leftwards",
                                         "upwards", "downwards"))
     if (is.null(x$edge.length)) use.edge.length <- FALSE
-
     if (type == "unrooted" || !use.edge.length) root.edge <- FALSE
     phyloORclado <- type %in% c("phylogram", "cladogram")
     horizontal <- direction %in% c("rightwards", "leftwards")
     if (phyloORclado) {
-        ## we first compute the y-coordinates of the tips, this
-        ## doesn't require to have the tips ordered (2006-10-13)
+        ## we first compute the y-coordinates of the tips.
+        ## Fix from Klaus Schliep (2007-06-16):
+        if (!is.null(attr(x, "order")))
+          if (attr(x, "order") == "pruningwise")
+            x <- reorder(x)
+        ## End of fix
         yy <- numeric(nb.tip + nb.node)
         TIPS <- x$edge[x$edge[, 2] <= nb.tip, 2]
         yy[TIPS] <- 1:nb.tip
@@ -246,8 +249,9 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                 y.adj[sel] <- strheight(x$tip.label)[sel] / 2
                 sel <- XY$axe < -pi / 4 & XY$axe > -0.75 * pi
                 y.adj[sel] <- -strheight(x$tip.label)[sel] * 0.75
-                text(xx[1:nb.tip] + x.adj, yy[1:nb.tip] + y.adj, x$tip.label,
-                     adj = c(adj, 0), font = font, srt = srt, cex = cex, col = tip.color)
+                text(xx[1:nb.tip] + x.adj*cex, yy[1:nb.tip] + y.adj*cex,
+                     x$tip.label, adj = c(adj, 0), font = font,
+                     srt = srt, cex = cex, col = tip.color)
             } else { # if lab4ut == "axial"
                 adj <- as.numeric(abs(XY$axe) > pi/2)
                 srt <- 180*XY$axe/pi

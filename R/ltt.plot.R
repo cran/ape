@@ -1,8 +1,8 @@
-### ltt.plot.R (2004-08-31)
+### ltt.plot.R (2007-05-04)
 ###
 ###    Lineages Through Time Plot
 ###
-### Copyright 2002-2004 Emmanuel Paradis
+### Copyright 2002-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
@@ -27,9 +27,12 @@ ltt.lines <- function(phy, ...)
 mltt.plot <- function(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
                       xlab = "Time", ylab = "N")
 {
-    ## this will also accept objects of class `c("phylo", "multi.tree")'
-    if (class(phy)[1] != "phylo")
+    ## this will also accept objects of class `c("multi.tree", "phylo")'
+    if (!inherits(phy, "phylo")) {
+      cat("doing\n")
       stop("object \"phy\" is not of class \"phylo\"")
+      cat("done\n")
+    }
     ltt.xy <- function(phy) {
         x <- -c(rev(sort(branching.times(phy))), 0)
         names(x) <- NULL
@@ -68,7 +71,10 @@ mltt.plot <- function(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
     lty <- if (!dlty) rep(1, n) else 1:n
     col <- if (!dcol) rep(1, n) else topo.colors(n)
 
-    for (i in 1:n) lines(TREES[[i]], col = col[i], lty = lty[i], type = "S")
+    for (i in 1:n)
+      lines(TREES[[i]], col = col[i], lty = lty[i], type = "S")
 
-    if (legend) legend(xl[1], yl[2], legend = names(TREES), lty = lty, col = col, bty = "n")
+    if (legend)
+      legend(xl[1], yl[2], legend = names(TREES),
+             lty = lty, col = col, bty = "n")
 }

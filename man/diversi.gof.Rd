@@ -14,15 +14,15 @@ diversi.gof(x, null = "exponential", z = NULL)
 }
 \description{
   This function computes two tests of the distribution of branching
-  times using the Cramér-von Mises and Anderson-Darling goodness-of-fit
-  tests. By default, it is assumed that the diversification rate is
-  constant, and an exponential distribution is assumed for the branching
-  times. In this case, the expected distribution under this model is
-  computed with a rate estimated from the data. Alternatively, the user
-  may specify an expected cumulative density function (\code{z}): in this
-  case, \code{x} and \code{z} must be of the same length. See the
-  examples for how to compute the latter from a sample of expected
-  branching times.
+  times using the \enc{Cramér}{Cramer}--von Mises and Anderson--Darling
+  goodness-of-fit tests. By default, it is assumed that the
+  diversification rate is constant, and an exponential distribution is
+  assumed for the branching times. In this case, the expected
+  distribution under this model is computed with a rate estimated from
+  the data. Alternatively, the user may specify an expected cumulative
+  density function (\code{z}): in this case, \code{x} and \code{z} must
+  be of the same length. See the examples for how to compute the latter
+  from a sample of expected branching times.
 }
 \details{
   The Cramér-von Mises and Anderson-Darling tests compare the empirical

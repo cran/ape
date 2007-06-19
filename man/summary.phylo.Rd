@@ -1,16 +1,26 @@
 \name{summary.phylo}
 \alias{summary.phylo}
+\alias{Ntip}
+\alias{Nnode}
+\alias{Nedge}
 \title{Print Summary of a Phylogeny}
 \usage{
 \method{summary}{phylo}(object, \dots)
+Ntip(phy)
+Nnode(phy, internal.only = TRUE)
+Nedge(phy)
 }
 \arguments{
-  \item{object}{an object of class \code{"phylo"}.}
+  \item{object, phy}{an object of class \code{"phylo"}.}
   \item{...}{further arguments passed to or from other methods.}
+  \item{internal.only}{a logical indicating whether to return the number
+    of internal nodes only (the default), or of internal and terminal
+    (tips) nodes (if \code{FALSE}).}
 }
 \description{
-  This function prints a compact summary of a phylogenetic tree (an
-  object of class \code{"phylo"}).
+  The first function prints a compact summary of a phylogenetic tree (an
+  object of class \code{"phylo"}). The three other functions return the
+  number of tips, nodes, or edges, respectively.
 }
 \details{
   The summary includes the numbers of tips and of nodes, summary
@@ -25,11 +35,12 @@
   \code{\link{mlphylo}}, a summary of the model fit and the parameter
   estimated is printed.
 
-  This function simply prints its results on the standard output and is
+  \code{summary} simply prints its results on the standard output and is
   not meant for programming.
 }
 \value{
-  A NULL value is returned, the results are simply printed.
+  A NULL value in the case of \code{summary}, a single numeric value for
+  the three other functions.
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
@@ -39,5 +50,8 @@
 \examples{
 data(bird.families)
 summary(bird.families)
+Ntip(bird.families)
+Nnode(bird.families)
+Nedge(bird.families)
 }
 \keyword{manip}

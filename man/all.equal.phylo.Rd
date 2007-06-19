@@ -40,7 +40,7 @@
 \value{
   A logical value, or a two-column matrix.
 }
-\author{Benoît Durand \email{b.durand@alfort.AFSSA.FR}}
+\author{\enc{Benoît Durand}{Benoit Durand} \email{b.durand@alfort.AFSSA.FR}}
 \seealso{
   \code{\link[base]{all.equal}} for the generic R function
 }

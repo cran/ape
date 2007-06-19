@@ -1,3 +1,31 @@
+		CHANGES IN APE VERSION 1.10-1
+
+
+NEW FEATURES
+
+    o The three new functions Ntip, Nnode, and Nedge return, for a
+      given tree, the number of tips, nodes, or edges, respectively.
+
+
+BUG FIXES
+
+    o read.nexus() did not set correctly the class of the returned
+      object when reading multiple trees.
+
+    o mllt.plot() failed with objects of class c("multi.tree",
+      "phylo").
+
+    o unroot() did not work correctly in most cases.
+
+    o reorder.phylo() made R freeze in some occasions.
+
+    o Plotting a tree in pruningwise order failed.
+
+    o When plotting an unrooted tree, the tip labels where not all
+      correctly positioned if the option `cex' was used.
+
+
+
 		CHANGES IN APE VERSION 1.10
 
 
@@ -20,7 +48,7 @@ NEW FEATURES
 
 BUG FIXES
 
-    o root() failed when the tree has node labels: this is fixed.
+    o root() failed when the tree had node labels: this is fixed.
 
     o plot.phylo() did not correctly set the limits on the y-axis with
       the default setting: this is fixed.

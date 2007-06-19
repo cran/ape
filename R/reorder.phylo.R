@@ -1,8 +1,8 @@
-### reorder.phylo.R (2006-11-08)
+### reorder.phylo.R (2007-06-16)
 ###
 ###     Internal Reordering of Trees
 ###
-### Copyright 2006 Emmanuel Paradis
+### Copyright 2006-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
@@ -10,6 +10,8 @@
 reorder.phylo <- function(x, order = "cladewise", ...)
 {
     order <- match.arg(order, c("cladewise", "pruningwise"))
+    if (!is.null(attr(x, "order")))
+      if (attr(x, "order") == order) return(x)
     nb.tip <- length(x$tip.label)
     nb.node <- x$Nnode
     nb.edge <- dim(x$edge)[1]

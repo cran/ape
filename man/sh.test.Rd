@@ -43,6 +43,6 @@ t1 <- nj(dist.dna(woodmouse))
 t2 <- rtree(15, tip.label = t1$tip.label)
 t3 <- rtree(15, tip.label = t1$tip.label)
 ### Are the NJ tree and two random tress significantly different?
-sh.test(t1, t2, t3, x = woodmouse, B = 100)
+\dontrun{sh.test(t1, t2, t3, x = woodmouse, B = 100)}
 }
 \keyword{models}

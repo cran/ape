@@ -11,12 +11,12 @@ ladderize(phy, right = TRUE)
     (if \code{FALSE}).}
 }
 \description{
-  This function simply reorganizes the internal structure of the tree to
-  get the ladderized effect when plotted.
+  This function reorganizes the internal structure of the tree to get
+  the ladderized effect when plotted.
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
-  \code{\link{plot.phylo}}, \code{\link{reorder}}
+  \code{\link{plot.phylo}}, \code{\link{reorder.phylo}}
 }
 \examples{
 tr <- rcoal(50)

@@ -1,11 +1,33 @@
-### summary.phylo.R (2006-11-16)
+### summary.phylo.R (2007-06-19)
 ###
 ###       Print Summary of a Phylogeny
 ###
-### Copyright 2003-2006 Emmanuel Paradis, and 2006 Ben Bolker
+### Copyright 2003-2007 Emmanuel Paradis, and 2006 Ben Bolker
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
+
+Ntip <- function(phy)
+{
+    if (class(phy) != "phylo")
+      stop('object "phy" is not of class "phylo"')
+    length(phy$tip.label)
+}
+
+Nnode <- function(phy, internal.only = TRUE)
+{
+    if (class(phy) != "phylo")
+      stop('object "phy" is not of class "phylo"')
+    if (internal.only) return(phy$Nnode)
+    phy$Nnode + length(phy$tip.label)
+}
+
+Nedge <- function(phy)
+{
+    if (class(phy) != "phylo")
+      stop('object "phy" is not of class "phylo"')
+    dim(phy$edge)[1]
+}
 
 summary.phylo <- function(object, ...)
 {

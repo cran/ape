@@ -51,7 +51,7 @@ read.nexus(file, tree.names = NULL)
     branch at the root is it exists (\code{NULL} otherwise).}
 
   If several trees are read in the file, the returned object is of class
-  \code{c("phylo", "multi.tree")}, and is a list of objects of class
+  \code{c("multi.tree", "phylo")}, and is a list of objects of class
   \code{"phylo"}.
 
   An attribute \code{"origin"} is further given to the returned object

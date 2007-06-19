@@ -1,8 +1,8 @@
-### read.nexus.R (2006-11-24)
+### read.nexus.R (2007-05-03)
 ###
 ###     Read Tree File in Nexus Format
 ###
-### Copyright 2003-2006 Emmanuel Paradis
+### Copyright 2003-2007 Emmanuel Paradis
 ###
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
@@ -159,7 +159,7 @@ read.nexus <- function(file, tree.names = NULL)
     }
     if (nb.tree == 1) trees <- trees[[1]] else {
         names(trees) <- if (is.null(tree.names)) paste("tree", 1:nb.tree, sep = "") else tree.names
-        class(trees) <- c("phylo", "multi.tree")
+        class(trees) <- c("multi.tree", "phylo")
     }
     if (length(grep("[\\/]", file)) == 1) attr(trees, "origin") <- file
     else attr(trees, "origin") <- paste(getwd(), file, sep = "/")

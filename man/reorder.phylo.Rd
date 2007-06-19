@@ -21,12 +21,12 @@
   branch is represented by a row in the element `edge', there is an
   arbitrary choice for the ordering of these rows. \code{reorder} allows
   to reorder these rows according to two rules: in the
-  \code{"cladewise"} order each clase is formed by a series of
+  \code{"cladewise"} order each clade is formed by a series of
   contiguous rows; this is the order returned by
   \code{\link{read.tree}}. In the \code{"pruningwise"} order, rows are
   arranged so that ``pruning'' the tree (or post-order tree traversal)
-  can be done by simply descending along the rows of `edge'. The
-  possible multichotomies and branch lengths are preserved.
+  can be done by descending along the rows of `edge'. The possible
+  multichotomies and branch lengths are preserved.
 }
 \value{
   an object of class \code{"phylo"}.
