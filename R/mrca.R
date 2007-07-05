@@ -1,22 +1,21 @@
 ### mrca.R (2006-10-12)
-###
+
 ###    Find Most Recent Common Ancestors Between Pairs
-###
+
 ### Copyright 2005-2006 Emmanuel Paradis
-###
+
 ### This file is part of the R-package `ape'.
 ### See the file ../COPYING for licensing issues.
 
 mrca <- function(phy, full = FALSE)
 {
     if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
-###    if (!is.rooted(phy)) stop("the tree must be rooted.")
+    ##    if (!is.rooted(phy)) stop("the tree must be rooted.")
     ## Get all clades:
-    BP <- .Call("bipartition", phy$edge[, 1], phy$edge[, 2],
-                length(phy$tip.label), phy$Nnode,
-                PACKAGE = "ape")
     nb.tip <- length(phy$tip.label)
     nb.node <- phy$Nnode
+    BP <- .Call("bipartition", phy$edge, nb.tip,
+                nb.node, PACKAGE = "ape")
     N <- nb.tip + nb.node
     ROOT <- nb.tip + 1
     ## In the following matrix, numeric indexing will be used:

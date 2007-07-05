@@ -1,4 +1,4 @@
-### read.GenBank.R (2007-05-01)
+### read.GenBank.R (2007-06-27)
 ###
 ###    Read DNA Sequences from GenBank via Internet
 ###
@@ -34,6 +34,7 @@ read.GenBank <- function(access.nb, seq.names = access.nb,
         obj[[i]] <- unlist(strsplit(tmp, NULL))
     }
     names(obj) <- seq.names
+    if (!as.character) obj <- as.DNAbin(obj)
     if (species.names) {
         tmp <- character(N)
         sp <- grep("ORGANISM", X)
@@ -41,6 +42,5 @@ read.GenBank <- function(access.nb, seq.names = access.nb,
           tmp[i] <- unlist(strsplit(X[sp[i]], " +ORGANISM +"))[2]
         attr(obj, "species") <- gsub(" ", "_", tmp)
     }
-    if (!as.character) obj <- as.DNAbin(obj)
     obj
 }

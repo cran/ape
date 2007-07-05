@@ -40,7 +40,8 @@ new2old.phylo(phy)
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link[stats]{hclust}}, \code{\link[stats]{as.hclust}},
-  \code{\link[stats]{dendrogram}}, \code{\link[ade4]{phylog}}
+  \code{\link[stats]{dendrogram}}, \code{\link[ade4]{phylog}},
+  \code{\link{as.phylo.formula}}
 }
 \examples{
 data(bird.orders)

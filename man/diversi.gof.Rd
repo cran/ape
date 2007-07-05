@@ -1,3 +1,4 @@
+\encoding{latin1}
 \name{diversi.gof}
 \alias{diversi.gof}
 \title{Tests of Constant Diversification Rates}
@@ -25,11 +26,12 @@ diversi.gof(x, null = "exponential", z = NULL)
   from a sample of expected branching times.
 }
 \details{
-  The Cramér-von Mises and Anderson-Darling tests compare the empirical
-  density function (EDF) of the observations to an expected cumulative
-  density function. By contrast to the Kolmogorov--Smirnov test where
-  the greatest difference between these two functions is used, in both
-  tests all differences are taken into account.
+  The \enc{Cramér}{Cramer}--von Mises and Anderson--Darling tests
+  compare the empirical density function (EDF) of the observations to an
+  expected cumulative density function. By contrast to the
+  Kolmogorov--Smirnov test where the greatest difference between these
+  two functions is used, in both tests all differences are taken into
+  account.
 
   The distributions of both test statistics depend on the null
   hypothesis, and on whether or not some parameters were estimated from

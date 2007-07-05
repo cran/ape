@@ -11,10 +11,11 @@ getMRCA <- function(phy, tip)
 ### Find the MRCA of the tips given as `tip'
 ### (see `root.R' for comments on the code)
 {
-    seq.nod <- .Call("seq_root2tip", phy$edge[, 1], phy$edge[, 2],
-                     length(phy$tip.label), phy$Nnode, PACKAGE = "ape")
+    Ntip <- length(phy$tip.label)
+    seq.nod <- .Call("seq_root2tip", phy$edge, Ntip,
+                     phy$Nnode, PACKAGE = "ape")
     sn <- seq.nod[tip]
-    MRCA <- length(phy$tip.label) + 1
+    MRCA <- Ntip + 1
     i <- 2
     repeat {
         x <- unique(unlist(lapply(sn, "[", i)))

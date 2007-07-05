@@ -26,8 +26,8 @@ compar.ou <- function(x, phy, node = NULL, alpha = NULL)
     colnames(Wend) <- c(names(sort(bt[node])), as.character(root))
     Wstart <- Wend
     Wstart[, ncol(Wstart)] <- Tmax
-    root2tip <- .Call("seq_root2tip", phy$edge[, 1], phy$edge[, 2],
-                      nb.tip, phy$Nnode, PACKAGE = "ape")
+    root2tip <- .Call("seq_root2tip", phy$edge, nb.tip,
+                      phy$Nnode, PACKAGE = "ape")
     for (i in 1:nb.tip) {
         last.change <- names(Tmax)
         for (j in root2tip[[i]]) {#[-1]) {# don't need to look at the root

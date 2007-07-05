@@ -27,7 +27,11 @@ new2old.phylo <- function(phy)
     phy
 }
 
-as.phylo <- function (x, ...) UseMethod("as.phylo")
+as.phylo <- function (x, ...)
+{
+    if (class(x) == "phylo") return(x)
+    UseMethod("as.phylo")
+}
 
 as.phylo.hclust <- function(x, ...)
 {

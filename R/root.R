@@ -79,8 +79,8 @@ root <- function(phy, outgroup)
         ## If all tips in `tip' are not contiguous, then
         ## no need to go further:
         if (!all(diff(outgroup) == 1)) stop(msg)
-        seq.nod <- .Call("seq_root2tip", phy$edge[, 1], phy$edge[, 2],
-                         nb.tip, phy$Nnode, PACKAGE = "ape")
+        seq.nod <- .Call("seq_root2tip", phy$edge, nb.tip,
+                         phy$Nnode, PACKAGE = "ape")
         sn <- seq.nod[outgroup]
         ## We go from the root to the tips: the sequence of nodes
         ## is identical until the MRCA:

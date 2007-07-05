@@ -17,7 +17,8 @@
     \code{"multi.tree"}.}
   \item{type}{a character string specifying the type of phylogeny to be
     drawn; it must be one of "phylogram" (the default), "cladogram",
-    "unrooted", "radial" or any unambiguous abbreviation of these.}
+    "fan", "unrooted", "radial" or any unambiguous abbreviation of
+    these.}
   \item{use.edge.length}{a logical indicating whether to use the edge
     lengths of the phylogeny to draw the branches (the default) or not
     (if \code{FALSE}). This option has no effect if the object of class
@@ -192,7 +193,7 @@ plot(xenarthra, type = "c", no.margin = TRUE,
 par(mar = c(5.1, 4.1, 4.1, 2.1))
 
 data(bird.orders)
-### using random colours and thichness
+### using random colours and thickness
 plot(bird.orders,
      edge.color = sample(colors(), length(bird.orders$edge)/2),
      edge.width = sample(1:10, length(bird.orders$edge)/2, replace = TRUE))
@@ -231,5 +232,9 @@ plot(bird.orders, tip.col = c(rep("red", 5), rep("blue", 18)),
      font = c(rep(3, 5), rep(2, 17), 1))
 plot(bird.orders, tip.col = c("blue", "green"),
      cex = 23:1/23 + .3, font = 1:3)
+co <- c(rep("blue", 9), rep("green", 35))
+plot(bird.orders, "f", edge.col = co)
+plot(bird.orders, edge.col = co)
+layout(1)
 }
 \keyword{hplot}

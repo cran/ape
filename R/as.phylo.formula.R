@@ -1,11 +1,11 @@
-### as.phylo.formula.R (2005-12-10)
-###
-###   Conversion from Taxonomy Variables to Phylogenetic Trees
-###
-### Copyright 2005 Julien Dutheil
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## as.phylo.formula.R (2005-12-10)
+
+##   Conversion from Taxonomy Variables to Phylogenetic Trees
+
+## Copyright 2005 Julien Dutheil
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 as.phylo.formula <- function(x, data=parent.frame(), ...)
 {

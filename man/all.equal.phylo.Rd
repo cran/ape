@@ -1,3 +1,4 @@
+\encoding{latin1}
 \name{all.equal.phylo}
 \alias{all.equal.phylo}
 \title{Global Comparison of two Phylogenies}
@@ -40,7 +41,7 @@
 \value{
   A logical value, or a two-column matrix.
 }
-\author{\enc{Benoît Durand}{Benoit Durand} \email{b.durand@alfort.AFSSA.FR}}
+\author{\enc{Benoît}{Benoit} \email{b.durand@alfort.AFSSA.FR}}
 \seealso{
   \code{\link[base]{all.equal}} for the generic R function
 }

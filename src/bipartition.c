@@ -1,6 +1,6 @@
-/* bipartition.c    2007-02-26 */
+/* bipartition.c    2007-06-29 */
 
-/* Copyright 2005-2007 Emmanuel Paradis */
+/* Copyright 2005-2007 Emmanuel Paradis, and 2007 R Development Core Team */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -8,20 +8,20 @@
 #include <R.h>
 #include <Rinternals.h>
 
-SEXP seq_root2tip(SEXP edge1, SEXP edge2, SEXP nbtip, SEXP nbnode)
+SEXP seq_root2tip(SEXP edge, SEXP nbtip, SEXP nbnode)
 {
-    int i, j, k, nbedge, *x1, *x2, *done, dn, sumdone, lt, ROOT, Ntip, Nnode;
+    int i, j, k, Nedge, *x, *done, dn, sumdone, lt, ROOT, Ntip, Nnode;
     SEXP ans, seqnod, tmp_vec;
 
-    PROTECT(edge1 = coerceVector(edge1, INTSXP));
-    PROTECT(edge2 = coerceVector(edge2, INTSXP));
+    /* The following is needed only if we are not sure
+       that the storage mode of `edge' is "integer". */
+    PROTECT(edge = coerceVector(edge, INTSXP));
     PROTECT(nbtip = coerceVector(nbtip, INTSXP));
     PROTECT(nbnode = coerceVector(nbnode, INTSXP));
-    x1 = INTEGER(edge1);
-    x2 = INTEGER(edge2);
+    x = INTEGER(edge); /* copy the pointer */
     Ntip = *INTEGER(nbtip);
     Nnode = *INTEGER(nbnode);
-    nbedge = LENGTH(edge1);
+    Nedge = LENGTH(edge)/2;
     ROOT = Ntip + 1;
 
     PROTECT(ans = allocVector(VECSXP, Ntip));
@@ -42,17 +42,17 @@ SEXP seq_root2tip(SEXP edge1, SEXP edge2, SEXP nbtip, SEXP nbnode)
 	    /* descendants are not yet found */
 	    if (VECTOR_ELT(seqnod, i) == R_NilValue || done[i]) continue;
 	    /* look for the descendants in 'edge': */
-	    for (j = 0; j < nbedge; j++) {
+	    for (j = 0; j < Nedge; j++) {
 	        /* skip the terminal edges, we look only for nodes now */
-	        if (x1[j] - Ntip != i + 1 || x2[j] <= Ntip) continue;
+	        if (x[j] - Ntip != i + 1 || x[j + Nedge] <= Ntip) continue;
 		/* can now make the sequence from */
 		/* the root to the current node */
 		lt = LENGTH(VECTOR_ELT(seqnod, i));
 		tmp_vec = allocVector(INTSXP, lt + 1);
 		for (k = 0; k < lt; k++)
 		  INTEGER(tmp_vec)[k] = INTEGER(VECTOR_ELT(seqnod, i))[k];
-		INTEGER(tmp_vec)[lt] = x2[j];
-		SET_VECTOR_ELT(seqnod, x2[j] - Ntip - 1, tmp_vec);
+		INTEGER(tmp_vec)[lt] = x[j + Nedge];
+		SET_VECTOR_ELT(seqnod, x[j + Nedge] - Ntip - 1, tmp_vec);
 	    }
 	    done[i] = 1;
 	    sumdone++;
@@ -61,39 +61,34 @@ SEXP seq_root2tip(SEXP edge1, SEXP edge2, SEXP nbtip, SEXP nbnode)
 
     /* build the sequence from root to tip */
     /* by simply looping through 'edge' */
-    for (i = 0; i < nbedge; i++) {
+    for (i = 0; i < Nedge; i++) {
         /* skip the internal edges */
-        if (x2[i] > Ntip) continue;
-	lt = LENGTH(VECTOR_ELT(seqnod, x1[i] - Ntip - 1));
+        if (x[i + Nedge] > Ntip) continue;
+	lt = LENGTH(VECTOR_ELT(seqnod, x[i] - Ntip - 1));
 	tmp_vec = allocVector(INTSXP, lt + 1);
 	for (j = 0; j < lt; j++)
-	  INTEGER(tmp_vec)[j] = INTEGER(VECTOR_ELT(seqnod, x1[i] - Ntip - 1))[j];
-	INTEGER(tmp_vec)[lt] = x2[i];
-	SET_VECTOR_ELT(ans, x2[i] - 1, tmp_vec);
+	  INTEGER(tmp_vec)[j] = INTEGER(VECTOR_ELT(seqnod, x[i] - Ntip - 1))[j];
+	INTEGER(tmp_vec)[lt] = x[i + Nedge];
+	SET_VECTOR_ELT(ans, x[i + Nedge] - 1, tmp_vec);
     }
 
-    UNPROTECT(6);
+    UNPROTECT(5);
     return ans;
 } /* EOF seq_root2tip */
 
-SEXP bipartition(SEXP edge1, SEXP edge2, SEXP nbtip, SEXP nbnode)
+SEXP bipartition(SEXP edge, SEXP nbtip, SEXP nbnode)
 {
-    int i, j, k, nbedge, *x1, *x2, lt, lt2, inod, Ntip, Nnode;
+    int i, j, k, lt, lt2, inod, Ntip, Nnode;
     SEXP ans, seqnod, tmp_vec;
 
-    PROTECT(edge1 = coerceVector(edge1, INTSXP));
-    PROTECT(edge2 = coerceVector(edge2, INTSXP));
+    PROTECT(edge = coerceVector(edge, INTSXP));
     PROTECT(nbtip = coerceVector(nbtip, INTSXP));
     PROTECT(nbnode = coerceVector(nbnode, INTSXP));
-    x1 = INTEGER(edge1);
-    x2 = INTEGER(edge2);
     Ntip = *INTEGER(nbtip);
     Nnode = *INTEGER(nbnode);
-    nbedge = LENGTH(edge1);
 
     PROTECT(ans = allocVector(VECSXP, Nnode));
-
-    PROTECT(seqnod = seq_root2tip(edge1, edge2, nbtip, nbnode));
+    PROTECT(seqnod = seq_root2tip(edge, nbtip, nbnode));
 
     for (i = 0; i < LENGTH(seqnod); i++) { /* for each tip */
         lt = LENGTH(VECTOR_ELT(seqnod, i));
@@ -113,6 +108,116 @@ SEXP bipartition(SEXP edge1, SEXP edge2, SEXP nbtip, SEXP nbnode)
 	}
     }
 
-    UNPROTECT(6);
+    UNPROTECT(5);
     return ans;
 } /* bipartition */
+
+/* From R-ext: */
+SEXP getListElement(SEXP list, char *str)
+{
+    SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
+    int i;
+
+    for (i = 0; i < length(list); i++)
+      if(strcmp(CHAR(STRING_ELT(names, i)), str) == 0) {
+	  elmt = VECTOR_ELT(list, i);
+	  break;
+      }
+    return elmt;
+}
+
+int SameClade(SEXP clade1, SEXP clade2)
+{
+    int i, n = LENGTH(clade1), *c1, *c2;
+
+    if (n != LENGTH(clade2)) return 0;
+
+    c1 = INTEGER(clade1);
+    c2 = INTEGER(clade2);
+    for (i = 0; i < n; i++)
+      if (c1[i] != c2[i]) return 0;
+
+    return 1;
+}
+
+SEXP prop_part(SEXP TREES, SEXP nbtree, SEXP keep_partitions)
+{
+    int i, j, k, l, KeepPartition, Ntree, Ntip, Nnode, Npart, NpartCurrent, *no;
+    SEXP bp, ans, nbtip, nbnode, number;
+
+    PROTECT(nbtree = coerceVector(nbtree, INTSXP));
+    PROTECT(keep_partitions = coerceVector(keep_partitions, INTSXP));
+    Ntree = *INTEGER(nbtree);
+    KeepPartition = *INTEGER(keep_partitions);
+
+
+    Ntip = LENGTH(getListElement(VECTOR_ELT(TREES, 0), "tip.label"));
+    Nnode = *INTEGER(getListElement(VECTOR_ELT(TREES, 0), "Nnode"));
+
+    PROTECT(nbtip = allocVector(INTSXP, 1));
+    PROTECT(nbnode = allocVector(INTSXP, 1));
+    INTEGER(nbtip)[0] = Ntip;
+    INTEGER(nbnode)[0] = Nnode;
+
+    if (KeepPartition) Npart = Ntree*(Nnode - 1) + 1;
+    else Npart = Nnode;
+
+    PROTECT(number = allocVector(INTSXP, Npart));
+    no = INTEGER(number); /* copy the pointer */
+    /* The first partition in the returned list has all tips,
+       so it is observed in all trees: */
+    no[0] = Ntree;
+    /* The partitions in the first tree are obviously observed once: */
+    for (i = 1; i < Nnode; i++) no[i] = 1;
+
+    if (KeepPartition) {
+        for (i = Nnode; i < Npart; i++) no[i] = 0;
+
+        PROTECT(ans = allocVector(VECSXP, Npart));
+	PROTECT(bp = bipartition(getListElement(VECTOR_ELT(TREES, 0), "edge"),
+				 nbtip, nbnode));
+	for (i = 0; i < Nnode; i++)
+	  SET_VECTOR_ELT(ans, i, VECTOR_ELT(bp, i));
+	UNPROTECT(1);
+    } else {
+        PROTECT(ans = bipartition(getListElement(VECTOR_ELT(TREES, 0), "edge"),
+				  nbtip, nbnode));
+    }
+
+    NpartCurrent = Nnode;
+
+    /* We start on the 2nd tree: */
+    for (k = 1; k < Ntree; k++) {
+        PROTECT(bp = bipartition(getListElement(VECTOR_ELT(TREES, k), "edge"),
+				 nbtip, nbnode));
+	for (i = 1; i < Nnode; i++) {
+	    j = 1;
+next_j:
+	    if (SameClade(VECTOR_ELT(bp, i), VECTOR_ELT(ans, j))) {
+	        no[j]++;
+		continue;
+	    }
+	    j++;
+	    if (j < NpartCurrent) goto next_j;
+	    if (KeepPartition) {
+	        no[NpartCurrent]++;
+		SET_VECTOR_ELT(ans, NpartCurrent, VECTOR_ELT(bp, i));
+		NpartCurrent++;
+	    }
+	}
+	UNPROTECT(1);
+    }
+
+    if (KeepPartition && NpartCurrent < Npart) {
+        PROTECT(bp = allocVector(VECSXP, NpartCurrent));
+	for (i = 0; i < NpartCurrent; i++)
+	  SET_VECTOR_ELT(bp, i, VECTOR_ELT(ans, i));
+	setAttrib(bp, install("number"), number);
+	UNPROTECT(7);
+	return bp;
+    } else {
+        setAttrib(ans, install("number"), number);
+	UNPROTECT(6);
+	return ans;
+    }
+} /* prop_part */

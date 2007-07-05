@@ -28,6 +28,7 @@
 \alias{getMisawaTajima}
 \alias{phylogram.plot}
 \alias{cladogram.plot}
+\alias{circular.plot}
 \alias{unrooted.plot}
 \alias{unrooted.xy}
 \alias{node.height}
