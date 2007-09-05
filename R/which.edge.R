@@ -1,11 +1,11 @@
-### which.edge.R (2006-10-05)
-###
-###      Identifies Edges of a Tree
-###
-### Copyright 2004-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## which.edge.R (2006-10-05)
+
+##   Identifies Edges of a Tree
+
+## Copyright 2004-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 getMRCA <- function(phy, tip)
 ### Find the MRCA of the tips given as `tip'

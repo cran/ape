@@ -1,11 +1,11 @@
-### read.nexus.R (2007-05-03)
-###
-###     Read Tree File in Nexus Format
-###
-### Copyright 2003-2007 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## read.nexus.R (2007-05-03)
+
+##   Read Tree File in Nexus Format
+
+## Copyright 2003-2007 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 clado.build <- function(tp) {
     add.internal <- function() {

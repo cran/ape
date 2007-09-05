@@ -1,11 +1,11 @@
-### PGLS.R (2006-10-12)
-###
-###     Phylogenetic Generalized Least Squares
-###
-### Copyright 2004 Julien Dutheil, and 2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## PGLS.R (2006-10-12)
+
+##   Phylogenetic Generalized Least Squares
+
+## Copyright 2004 Julien Dutheil, and 2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 corBrownian <- function(value = 1, phy, form=~1)
 {

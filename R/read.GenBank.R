@@ -1,11 +1,11 @@
-### read.GenBank.R (2007-06-27)
-###
-###    Read DNA Sequences from GenBank via Internet
-###
-### Copyright 2002-2007 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## read.GenBank.R (2007-06-27)
+
+##   Read DNA Sequences from GenBank via Internet
+
+## Copyright 2002-2007 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 read.GenBank <- function(access.nb, seq.names = access.nb,
                          species.names = TRUE, as.character = FALSE)

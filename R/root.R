@@ -1,11 +1,11 @@
-### root.R (2007-06-15)
-###
-###      Root of Phylogenetic Trees
-###
-### Copyright 2004-2007 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## root.R (2007-06-15)
+
+##   Root of Phylogenetic Trees
+
+## Copyright 2004-2007 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 is.rooted <- function(phy)
 {

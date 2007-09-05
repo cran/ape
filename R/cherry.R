@@ -1,11 +1,11 @@
-### cherry.R (2006-10-03)
-###
-###     Number of Cherries and Null Models of Trees
-###
-### Copyright 2002-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## cherry.R (2006-10-03)
+
+##     Number of Cherries and Null Models of Trees
+
+## Copyright 2002-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 cherry <- function(phy)
 {

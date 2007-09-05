@@ -1,12 +1,12 @@
-### klastorin.R (2003-05-26)
-###
-###   Klastorin's (1982) classifification method, applied to
-###   phylogenetic trees as suggested by Misawa and Tajima (2000)
-###
-### Copyright 2003 Gangolf Jobb
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## klastorin.R (2003-05-26)
+
+##   Klastorin's (1982) classifification method, applied to
+##   phylogenetic trees as suggested by Misawa and Tajima (2000)
+
+## Copyright 2003 Gangolf Jobb
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 ########### PRIVATE ##############
 

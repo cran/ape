@@ -1,11 +1,11 @@
-### summary.phylo.R (2007-06-19)
-###
-###       Print Summary of a Phylogeny
-###
-### Copyright 2003-2007 Emmanuel Paradis, and 2006 Ben Bolker
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## summary.phylo.R (2007-06-19)
+
+##   Print Summary of a Phylogeny
+
+## Copyright 2003-2007 Emmanuel Paradis, and 2006 Ben Bolker
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 Ntip <- function(phy)
 {

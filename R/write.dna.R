@@ -1,11 +1,11 @@
-### write.dna.R (2003-12-29)
-###
-###     Write DNA Sequences in a File
-###
-### Copyright 2003-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## write.dna.R (2003-12-29)
+
+##   Write DNA Sequences in a File
+
+## Copyright 2003-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 write.dna <- function(x, file, format = "interleaved", append = FALSE,
                       nbcol = 6, colsep = " ", colw = 10, indent = NULL,

@@ -1,11 +1,11 @@
-### dist.gene.R (2002-08-28)
-###
-###    Pairwise Distances from Genetic Data
-###
-### Copyright 2002 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## dist.gene.R (2002-08-28)
+
+##   Pairwise Distances from Genetic Data
+
+## Copyright 2002 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 dist.gene.pairwise <- function(x, variance = FALSE)
 {

@@ -1,11 +1,11 @@
-### read.tree.R (2006-12-11)
-###
-###    Read Tree Files in Parenthetic Format
-###
-### Copyright 2002-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## read.tree.R (2006-12-11)
+
+##   Read Tree Files in Parenthetic Format
+
+## Copyright 2002-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 tree.build <- function(tp)
 {

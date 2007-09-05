@@ -1,11 +1,11 @@
-### compar.lynch.R (2002-08-28)
-###
-###    Lynch's Comparative Method
-###
-### Copyright 2002 Julien Claude
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## compar.lynch.R (2002-08-28)
+
+##   Lynch's Comparative Method
+
+## Copyright 2002 Julien Claude
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 compar.lynch <- function(x, G, eps = 1e-4)
 {

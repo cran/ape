@@ -1,11 +1,11 @@
-### evolve.tree.R (2005-12-04)
-###
-###   Character Simulation under a Brownian Model
-###
-### Copyright 2005 Julien Dutheil
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## evolve.tree.R (2005-12-04)
+
+##   Character Simulation under a Brownian Model
+
+## Copyright 2005 Julien Dutheil
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 evolve.phylo <- function(phy, value, var) {
   if (!("phylo" %in% class(phy)))

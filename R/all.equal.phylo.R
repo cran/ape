@@ -1,12 +1,12 @@
-### all.equal.phylo.R (2006-09-12)
-###
-###     Global Comparison of two Phylogenies
-###
-### Copyright 2006 Benoît Durand
-###    modified by EP for the new coding of "phylo" (2006-10-04)
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## all.equal.phylo.R (2006-09-12)
+##
+##     Global Comparison of two Phylogenies
+
+## Copyright 2006 Benoît Durand
+##    modified by EP for the new coding of "phylo" (2006-10-04)
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 ### Recherche de la correspondance entre deux arbres
 ### Parcours en profondeur et en parallèle des deux arbres (current et target)

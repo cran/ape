@@ -1,11 +1,11 @@
-### skyline.R (2002-09-12)
-###
-###    Methods to construct skyline objects (data underlying skyline plot)
-###
-### Copyright 2002 Korbinian Strimmer
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## skyline.R (2002-09-12)
+
+##   Methods to construct skyline objects (data underlying skyline plot)
+
+## Copyright 2002 Korbinian Strimmer
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 skyline <- function(x, ...) UseMethod("skyline")
 

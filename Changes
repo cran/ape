@@ -1,3 +1,36 @@
+		CHANGES IN APE VERSION 2.0
+
+
+NEW FEATURES
+
+    o The three new functions bionj, fastme.ols, and fastme.bal
+      perform phylogeny estimation by the BIONJ and fastME methods in
+      OLS and balanced versions. This is a port to R of previous
+      previous programs done by Vincent Lefort.
+
+    o The new function chronoMPL performs molecular dating with the
+      mean path lengths method of Britton et al. (2002, Mol. Phyl.
+      Evol. 24: 58).
+
+    o The new function rotate, contributed by Christoph Heibl, swaps
+      two clades connected to the same node. It works also with
+      multichotomous nodes.
+
+    o The new `method' as.matrix.DNAbin() may be used to convert
+      easily DNA sequences stored in a list into a matrix while
+      keeping the names and the class.
+
+
+BUG FIXES
+
+    o chronopl() failed when some branch lengths were equal to zero:
+      an error message is now returned.
+
+    o di2multi() failed when there was a series of consecutive edges
+      to remove.
+
+
+
 		CHANGES IN APE VERSION 1.10-2
 
 

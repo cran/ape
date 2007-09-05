@@ -1,11 +1,11 @@
-### howmanytrees.R (2004-12-23)
-###
-###    Calculate Numbers of Phylogenetic Trees
-###
-### Copyright 2004 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## howmanytrees.R (2004-12-23)
+
+##   Calculate Numbers of Phylogenetic Trees
+
+## Copyright 2004 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 howmanytrees <- function(n, rooted = TRUE, binary = TRUE,
                          labeled = TRUE, detail = FALSE)

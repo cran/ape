@@ -1,11 +1,11 @@
-### MoranI.R (2004-10-29)
-###
-###   Variance Component of Mixed-Effect Linear Model
-###
-### Copyright 2004 Julien Dutheil
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## MoranI.R (2004-10-29)
+
+##   Variance Component of Mixed-Effect Linear Model
+
+## Copyright 2004 Julien Dutheil
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 varcomp <- function(x, scale = FALSE, cum = FALSE)
 {

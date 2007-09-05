@@ -1,12 +1,12 @@
-### is.binary.tree.R (2002-09-12) [modified by EP 2005-05-31, 2005-08-18,
-###                                2006-10-04]
-###
-###    Tests whether a given phylogenetic tree is binary
-###
-### Copyright 2002 Korbinian Strimmer
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## is.binary.tree.R (2002-09-12) [modified by EP 2005-05-31, 2005-08-18,
+##                                2006-10-04]
+
+##    Tests whether a given phylogenetic tree is binary
+
+## Copyright 2002 Korbinian Strimmer
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 is.binary.tree <- function(phy)
 {

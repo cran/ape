@@ -1,11 +1,11 @@
-### collapsed.intervals.R (2002-09-12)
-###
-###    Collapsed coalescent intervals (e.g. for the skyline plot)
-###
-### Copyright 2002 Korbinian Strimmer
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## collapsed.intervals.R (2002-09-12)
+
+##   Collapsed coalescent intervals (e.g. for the skyline plot)
+
+## Copyright 2002 Korbinian Strimmer
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 # construct collapsed intervals from coalescent intervals
 collapsed.intervals <- function(ci, epsilon=0.0)

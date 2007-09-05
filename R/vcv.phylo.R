@@ -1,11 +1,11 @@
-### vcv.phylo.R (2006-10-04)
-###
-###    Phylogenetic Variance-Covariance or Correlation Matrix
-###
-### Copyright 2002-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## vcv.phylo.R (2006-10-04)
+
+##   Phylogenetic Variance-Covariance or Correlation Matrix
+
+## Copyright 2002-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 vcv.phylo <- function(phy, model = "Brownian", cor = FALSE)
 {

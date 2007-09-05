@@ -1,15 +1,15 @@
-### theta.R (2002-08-28)
-###
-###       Population Parameter THETA
-###
-### theta.h: using homozigosity
-### theta.k: using expected number of alleles
-### theta.s: using segregating sites in DNA sequences
-###
-### Copyright 2002 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## theta.R (2002-08-28)
+
+##   Population Parameter THETA
+
+## theta.h: using homozigosity
+## theta.k: using expected number of alleles
+## theta.s: using segregating sites in DNA sequences
+
+## Copyright 2002 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 theta.h <- function(x, standard.error = FALSE)
 {

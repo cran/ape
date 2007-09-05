@@ -1,11 +1,11 @@
-### read.dna.R (2007-05-01)
-###
-###     Read DNA Sequences in a File
-###
-### Copyright 2003-2007 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## read.dna.R (2007-05-01)
+
+##   Read DNA Sequences in a File
+
+## Copyright 2003-2007 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 read.dna <- function(file, format = "interleaved", skip = 0,
                      nlines = 0, comment.char = "#", seq.names = NULL,

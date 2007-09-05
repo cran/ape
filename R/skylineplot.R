@@ -1,11 +1,11 @@
-### skylineplot.R (2004-07-4)
-###
-###    Various methods to plot skyline objects (= skyline plots)
-###
-### Copyright 2002-2004 Korbinian Strimmer
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## skylineplot.R (2004-07-4)
+
+##   Various methods to plot skyline objects (= skyline plots)
+
+## Copyright 2002-2004 Korbinian Strimmer
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 # plot skyline
 plot.skyline <- function(x, show.years=FALSE, subst.rate, present.year, ...)

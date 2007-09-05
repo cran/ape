@@ -1,11 +1,11 @@
-### collapse.singles.R (2006-07-15)
-###
-###     Collapse "Single" Nodes
-###
-### Copyright 2006 Ben Bolker
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## collapse.singles.R (2006-07-15)
+
+##    Collapse "Single" Nodes
+
+## Copyright 2006 Ben Bolker
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 collapse.singles <- function(tree)
 {

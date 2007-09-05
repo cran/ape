@@ -1,11 +1,11 @@
-### rtree.R (2006-10-04)
-###
-###     Generates Random Trees
-###
-### Copyright 2004-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## rtree.R (2006-10-04)
+
+##   Generates Random Trees
+
+## Copyright 2004-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 rtree <- function(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
 {

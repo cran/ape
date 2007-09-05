@@ -1,11 +1,11 @@
-### pic.R (2006-10-29)
-###
-###     Phylogenetically Independent Contrasts
-###
-### Copyright 2002-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## pic.R (2006-10-29)
+
+##   Phylogenetically Independent Contrasts
+
+## Copyright 2002-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
 {

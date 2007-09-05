@@ -1,11 +1,11 @@
-### sh.test.R (2006-07-06)
-###
-###     Shimodaira-Hasegawa Test
-###
-### Copyright 2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## sh.test.R (2006-07-06)
+
+##   Shimodaira-Hasegawa Test
+
+## Copyright 2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 sh.test <- function(..., x, model = DNAmodel(), B = 100)
 {

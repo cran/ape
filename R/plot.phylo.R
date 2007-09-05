@@ -1,6 +1,6 @@
 ## plot.phylo.R (2007-07-04)
 
-##      Plot Phylogenies
+##   Plot Phylogenies
 
 ## Copyright 2002-2007 Emmanuel Paradis
 
@@ -79,13 +79,13 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                        as.integer(Nedge), double(Ntip + Nnode),
                        DUP = FALSE, PACKAGE = "ape")[[6]] - 1
             xx <- max(xx) - xx
-          } else  {
+        } else  {
               xx <- .C("node_depth_edgelength", as.integer(Ntip),
                        as.integer(Nnode), as.integer(x$edge[, 1]),
                        as.integer(x$edge[, 2]), as.integer(Nedge),
                        as.double(x$edge.length), double(Ntip + Nnode),
                        DUP = FALSE, PACKAGE = "ape")[[7]]
-          }
+        }
     }
     if (type == "fan") {
         ## if the tips are not in the same order in tip.label

@@ -1,14 +1,14 @@
-### mcmc.popsize.R (2004-12-02)
-###
-###    Run reversible jump MCMC to sample demographic histories
-###
-### Copyright 2004 Rainer Opgen-Rhein and Korbinian Strimmer
-###
-### Portions of this function are adapted from rjMCMC code by
-### Karl Broman (see http://www.biostat.jhsph.edu/~kbroman/)
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## mcmc.popsize.R (2004-12-02)
+
+##   Run reversible jump MCMC to sample demographic histories
+
+## Copyright 2004 Rainer Opgen-Rhein and Korbinian Strimmer
+
+## Portions of this function are adapted from rjMCMC code by
+## Karl Broman (see http://www.biostat.jhsph.edu/~kbroman/)
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 # public function
 

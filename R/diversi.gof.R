@@ -1,11 +1,11 @@
-### diversi.gof.R (2006-10-16)
-###
-###    Tests of Constant Diversification Rates
-###
-### Copyright 2002-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## diversi.gof.R (2006-10-16)
+
+##   Tests of Constant Diversification Rates
+
+## Copyright 2002-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 diversi.gof <- function(x, null = "exponential", z = NULL)
 {

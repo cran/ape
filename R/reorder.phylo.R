@@ -1,11 +1,11 @@
-### reorder.phylo.R (2007-06-16)
-###
-###     Internal Reordering of Trees
-###
-### Copyright 2006-2007 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## reorder.phylo.R (2007-06-16)
+
+##   Internal Reordering of Trees
+
+## Copyright 2006-2007 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 reorder.phylo <- function(x, order = "cladewise", ...)
 {

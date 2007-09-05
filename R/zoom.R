@@ -1,11 +1,11 @@
-### zoom.R (2004-12-17)
-###
-###     Zoom on a Portion of a Phylogeny
-###
-### Copyright 2003-2004 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## zoom.R (2004-12-17)
+
+##   Zoom on a Portion of a Phylogeny
+
+## Copyright 2003-2004 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 zoom <- function(phy, focus, subtree = FALSE, col = rainbow, ...)
 {

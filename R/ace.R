@@ -1,11 +1,11 @@
-### ace.R (2007-01-23)
-###
-###     Ancestral Character Estimation
-###
-### Copyright 2005-2007 Emmanuel Paradis and Ben Bolker
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## ace.R (2007-01-23)
+
+##     Ancestral Character Estimation
+
+## Copyright 2005-2007 Emmanuel Paradis and Ben Bolker
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
                 model = if (type == "continuous") "BM" else "ER",

@@ -1,11 +1,11 @@
-### write.nexus.R (2006-09-09)
-###
-###          Write Tree File in Nexus Format
-###
-### Copyright 2003-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## write.nexus.R (2006-09-09)
+
+##   Write Tree File in Nexus Format
+
+## Copyright 2003-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 write.nexus <- function(..., file = "", translate = TRUE, original.data = TRUE)
 {

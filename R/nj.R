@@ -1,11 +1,11 @@
-### nj.R (2006-09-15)
-###
-###      Neighbor-Joining Tree Estimation
-###
-### Copyright 2004-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## nj.R (2006-09-15)
+
+##   Neighbor-Joining Tree Estimation
+
+## Copyright 2004-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 nj <- function(X)
 {

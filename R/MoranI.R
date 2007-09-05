@@ -1,11 +1,11 @@
-### MoranI.R (2004-09-16)
-###
-###     Moran's I Autocorrelation Index
-###
-### Copyright 2004 Julien Dutheil
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## MoranI.R (2004-09-16)
+
+##   Moran's I Autocorrelation Index
+
+## Copyright 2004 Julien Dutheil
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 Moran.I <- function(
   x,              # x the vector of values to analyse

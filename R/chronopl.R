@@ -1,11 +1,11 @@
-### chronopl.R (2007-01-17)
-###
-###    Molecular Dating With Penalized Likelihood
-###
-### Copyright 2005-2007 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## chronopl.R (2007-01-17)
+
+##   Molecular Dating With Penalized Likelihood
+
+## Copyright 2005-2007 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 chronopl <- function(phy, lambda, node.age = 1, node = "root",
                      CV = FALSE)
@@ -14,6 +14,9 @@ chronopl <- function(phy, lambda, node.age = 1, node = "root",
     n.node <- phy$Nnode
     if (n != n.node + 1)
       stop("the tree must be rooted AND dichotomous")
+    if (any(phy$edge.length == 0))
+      stop("some branch lengths are equal to zero;
+you must remove them beforehand.")
     N <- dim(phy$edge)[1]
     ROOT <- n + 1
     if (node == "root") node <- ROOT

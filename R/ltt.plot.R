@@ -1,11 +1,11 @@
-### ltt.plot.R (2007-05-04)
-###
-###    Lineages Through Time Plot
-###
-### Copyright 2002-2007 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## ltt.plot.R (2007-05-04)
+
+##    Lineages Through Time Plot
+
+## Copyright 2002-2007 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 ltt.plot <- function(phy, xlab = "Time", ylab = "N", ...)
 {

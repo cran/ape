@@ -1,11 +1,11 @@
-### cophenetic.phylo.R (2007-01-23)
-###
-###   Pairwise Distances from a Phylogenetic Tree
-###
-### Copyright 2006-2007 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## cophenetic.phylo.R (2007-01-23)
+
+##   Pairwise Distances from a Phylogenetic Tree
+
+## Copyright 2006-2007 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 dist.nodes <- function(x)
 {

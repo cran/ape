@@ -1,11 +1,11 @@
-### mrca.R (2006-10-12)
+## mrca.R (2006-10-12)
 
-###    Find Most Recent Common Ancestors Between Pairs
+##   Find Most Recent Common Ancestors Between Pairs
 
-### Copyright 2005-2006 Emmanuel Paradis
+## Copyright 2005-2006 Emmanuel Paradis
 
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 mrca <- function(phy, full = FALSE)
 {

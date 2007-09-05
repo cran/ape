@@ -1,11 +1,11 @@
-### phymltest.R (2005-11-10)
-###
-###    Fits a Bunch of Models with PHYML
-###
-### Copyright 2004-2005 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## phymltest.R (2005-11-10)
+
+##   Fits a Bunch of Models with PHYML
+
+## Copyright 2004-2005 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 .phymltest.model <- c("JC69", "JC69+I", "JC69+G", "JC69+I+G",
                       "K80", "K80+I", "K80+G", "K80+I+G",
@@ -15,13 +15,8 @@
                       "TN93", "TN93+I", "TN93+G", "TN93+I+G",
                       "GTR", "GTR+I", "GTR+G", "GTR+I+G")
 
-.phymltest.nfp <- c(1, 2, 2, 3,
-                    2, 3, 3, 4,
-                    4, 5, 5, 6,
-                    5, 6, 6, 7,
-                    5, 6, 6, 7,
-                    6, 7, 7, 8,
-                    9, 10, 10, 11)
+.phymltest.nfp <- c(1, 2, 2, 3, 2, 3, 3, 4, 4, 5, 5, 6, 5, 6, 6, 7,
+                    5, 6, 6, 7, 6, 7, 7, 8, 9, 10, 10, 11)
 
 phymltest <- function(seqfile, format = "interleaved", itree = NULL,
                       exclude = NULL, execname, path2exec = NULL)

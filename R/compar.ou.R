@@ -1,11 +1,11 @@
-### compar.ou.R (2006-10-05)
-###
-###   Ornstein--Uhlenbeck Model for Continuous Characters
-###
-### Copyright 2005-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## compar.ou.R (2006-10-05)
+
+##   Ornstein--Uhlenbeck Model for Continuous Characters
+
+## Copyright 2005-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 compar.ou <- function(x, phy, node = NULL, alpha = NULL)
 {

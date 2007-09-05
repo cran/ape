@@ -1,11 +1,11 @@
-### read.caic.R (2005-09-21)
-###
-###     Read Tree File in CAIC Format
-###
-### Copyright 2005 Julien Dutheil
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## read.caic.R (2005-09-21)
+
+##   Read Tree File in CAIC Format
+
+## Copyright 2005 Julien Dutheil
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 read.caic <- function(file, brlen=NULL, skip = 0, comment.char="#", ...)
 {

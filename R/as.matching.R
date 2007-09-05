@@ -1,11 +1,11 @@
-### as.matching.R (2006-10-13)
-###
-###      Conversion Between Phylo and Matching Objects
-###
-### Copyright 2005-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## as.matching.R (2006-10-13)
+
+##    Conversion Between Phylo and Matching Objects
+
+## Copyright 2005-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 as.matching <- function(x, ...) UseMethod("as.matching")
 

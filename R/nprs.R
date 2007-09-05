@@ -1,11 +1,11 @@
-### nprs.R (2003-07-11)
-###
-###    Nonparametric Rate Smoothing Method by Sanderson
-###
-### Copyright 2003 Gangolf Jobb and Korbinian Strimmer
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## nprs.R (2003-07-11)
+
+##   Nonparametric Rate Smoothing Method by Sanderson
+
+## Copyright 2003 Gangolf Jobb and Korbinian Strimmer
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 setTree <-
   function(lowerNodes,upperNodes,edgeLengths,minEdgeLength,tipLabels)

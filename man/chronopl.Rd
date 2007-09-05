@@ -66,6 +66,6 @@ chronopl(phy, lambda, node.age = 1, node = "root", CV = FALSE)
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{chronogram}}, \code{\link{ratogram}},
-  \code{\link{NPRS.criterion}}
+  \code{\link{NPRS.criterion}}, \code{\link{chronoMPL}}
 }
 \keyword{models}

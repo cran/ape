@@ -1,11 +1,11 @@
-### plot.ancestral.R (2005-12-04)
-###
-###     Plotting Ancestral Characters on a Tree
-###
-### Copyright 2005 Julien Dutheil
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## plot.ancestral.R (2005-12-04)
+
+##   Plotting Ancestral Characters on a Tree
+
+## Copyright 2005 Julien Dutheil
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 plot.ancestral <- function(x, which=names(x$node.character),
     n.col=10, col.fun=function(n) rainbow(n, start=0.4, end=0),

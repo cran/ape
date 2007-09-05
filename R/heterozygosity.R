@@ -1,11 +1,11 @@
-### heterozygosity.R (2002-08-28)
-###
-###    Heterozygosity at a Locus Using Gene Frequencies
-###
-### Copyright 2002 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## heterozygosity.R (2002-08-28)
+
+##   Heterozygosity at a Locus Using Gene Frequencies
+
+## Copyright 2002 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 heterozygosity <- function(x, variance = FALSE)
 {

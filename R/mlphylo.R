@@ -1,11 +1,11 @@
-### mlphylo.R (2007-03-27)
-###
-###     Estimating Phylogenies by Maximum Likelihood
-###
-### Copyright 2006-2007 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## mlphylo.R (2007-03-27)
+
+##   Estimating Phylogenies by Maximum Likelihood
+
+## Copyright 2006-2007 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 logLik.phylo <- function(object, ...) attr(object, "loglik")
 

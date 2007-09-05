@@ -1,11 +1,11 @@
-### coalescent.intervals.R (2002-09-12)
-###
-###   Constructs objects with information on coalescent intervals
-###
-### Copyright 2002 Korbinian Strimmer
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## coalescent.intervals.R (2002-09-12)
+
+##   Constructs objects with information on coalescent intervals
+
+## Copyright 2002 Korbinian Strimmer
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 coalescent.intervals <- function(x) UseMethod("coalescent.intervals")
 

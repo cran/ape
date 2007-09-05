@@ -1,9 +1,9 @@
-## DNA.R (2007-05-01)
-##
+## DNA.R (2007-07-05)
+
 ##    Comparisons and Manipulations of DNA Sequences
-##
+
 ## Copyright 2002-2007 Emmanuel Paradis
-##
+
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
@@ -43,6 +43,22 @@ as.alignment <- function(x)
         ans <- x[i]
     }
     structure(ans, class = "DNAbin")
+}
+
+as.matrix.DNAbin <- function(x, ...)
+{
+    if (is.matrix(x)) return(x)
+    if (is.list(x)) {
+        if (length(unique(unlist(lapply(x, length)))) != 1)
+          stop("DNA sequences in list not of the same length.")
+        nms <- names(x)
+        n <- length(x)
+        s <- length(x[[1]])
+        x <- matrix(unlist(x), n, s, byrow = TRUE)
+        ronwnames(x) <- nms
+        class(x) <- "DNAbin"
+    }
+    x
 }
 
 rbind.DNAbin <- function(...)
@@ -86,8 +102,10 @@ cbind.DNAbin <- function(..., check.names = TRUE)
 
 print.DNAbin <- function(x, ...)
 {
-    if (is.list(x)) cat(length(x), "DNA sequences in binary format.\n")
-    else if (is.matrix(x)) cat(dim(x)[1], "DNA sequences in binary format.\n")
+    n <- 1 # <- if is.vector(x)
+    if (is.list(x)) n <- length(x)
+    else if (is.matrix(x)) n <- dim(x)[1]
+    if (n > 1) cat(n, "DNA sequences in binary format.\n")
     else cat("1 DNA sequence in binary format.\n")
 }
 

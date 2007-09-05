@@ -1,11 +1,11 @@
-### multi2di.R (2007-01-29)
-###
-###     Collapse and Resolve Multichotomies
-###
-### Copyright 2005-2007 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## multi2di.R (2007-08-02)
+
+##   Collapse and Resolve Multichotomies
+
+## Copyright 2005-2007 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 multi2di <- function(phy, random = TRUE)
 {
@@ -72,16 +72,26 @@ di2multi <- function(phy, tol = 1e-8)
     ## We select only the internal branches which are
     ## significantly small:
     ind <- which(phy$edge.length < tol & phy$edge[, 2] > length(phy$tip.label))
-    if (!length(ind)) return(phy)
+    n <- length(ind)
+    if (!n) return(phy)
+    ## recursive function to `propagate' node #'s in case
+    ## there is a series of consecutive edges to remove
+    foo <- function(ancestor, des2del) {
+        wh <- which(phy$edge[, 1] == des2del)
+        for (k in wh) {
+            if (phy$edge[k, 2] %in% node2del) foo(ancestor, phy$edge[k, 2])
+            else phy$edge[k, 1] <<- ancestor
+        }
+    }
     node2del <- phy$edge[ind, 2]
     anc <- phy$edge[ind, 1]
-    ## It is likely that the tree needs to be in pruningwise
-    ## order for this to work correctly
-    for (i in 1:length(ind))
-      phy$edge[which(phy$edge[, 1] == node2del[i]), 1] <- anc[i]
+    for (i in 1:n) {
+        if (anc[i] %in% node2del) next
+        foo(anc[i], node2del[i])
+    }
     phy$edge <- phy$edge[-ind, ]
     phy$edge.length <- phy$edge.length[-ind]
-    phy$Nnode <- phy$Nnode - length(node2del)
+    phy$Nnode <- phy$Nnode - n
     ## Now we renumber the nodes that need to be:
     sel <- phy$edge > min(node2del)
     for (i in which(sel))

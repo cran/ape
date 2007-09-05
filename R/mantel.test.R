@@ -1,11 +1,11 @@
-### mantel.test.R (2006-07-28)
-###
-###    Mantel Test for Similarity of Two Matrices
-###
-### Copyright 2002-2006 Ben Bolker and Julien Claude
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## mantel.test.R (2006-07-28)
+
+##   Mantel Test for Similarity of Two Matrices
+
+## Copyright 2002-2006 Ben Bolker and Julien Claude
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 perm.rowscols <- function(m1, n)
 {

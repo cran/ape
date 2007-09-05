@@ -1,11 +1,11 @@
-### diversi.time.R (2005-05-17)
-###
-###   Analysis of Diversification with Survival Models
-###
-### Copyright 2002-2005 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## diversi.time.R (2005-05-17)
+
+##   Analysis of Diversification with Survival Models
+
+## Copyright 2002-2005 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 diversi.time <- function(x, census = NULL, censoring.codes = c(1, 0),
                          Tc = NULL)

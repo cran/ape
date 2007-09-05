@@ -1,14 +1,14 @@
-### scales.R (2004-12-18)
-###
-###     Add a Scale Bar or Axis to a Phylogeny Plot
-###
-### add.scale.bar: add a scale bar to a phylogeny plot
-### axisPhylo: add a scale axis on the side of a phylogeny plot
-###
-### Copyright 2002-2004 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## scales.R (2004-12-18)
+
+##   Add a Scale Bar or Axis to a Phylogeny Plot
+
+## add.scale.bar: add a scale bar to a phylogeny plot
+## axisPhylo: add a scale axis on the side of a phylogeny plot
+
+## Copyright 2002-2004 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 add.scale.bar <- function(x = 0, y = 1, length = NULL, ...)
 {

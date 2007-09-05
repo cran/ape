@@ -1,11 +1,11 @@
-### balance.R (2006-10-04)
-###
-###    Balance of a Dichotomous Phylogenetic Tree
-###
-### Copyright 2002-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## balance.R (2006-10-04)
+
+##   Balance of a Dichotomous Phylogenetic Tree
+
+## Copyright 2002-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 balance <- function(phy)
 {

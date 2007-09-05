@@ -1,11 +1,11 @@
-### drop.tip.R (2006-10-12)
-###
-###     Remove Tips in a Phylogenetic Tree
-###
-### Copyright 2003-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## drop.tip.R (2006-10-12)
+
+##   Remove Tips in a Phylogenetic Tree
+
+## Copyright 2003-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 drop.tip <- function(phy, tip, trim.internal = TRUE, subtree = FALSE,
                      root.edge = 0)

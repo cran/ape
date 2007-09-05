@@ -1,11 +1,11 @@
-### as.phylo.R (2007-03-05)
-###
-###     Conversion Among Tree Objects
-###
-### Copyright 2005-2007 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## as.phylo.R (2007-03-05)
+
+##     Conversion Among Tree Objects
+
+## Copyright 2005-2007 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 old2new.phylo <- function(phy)
 {

@@ -1,15 +1,15 @@
-### birthdeath.R (2006-10-04)
-###
-###   Estimation of Speciation and Extinction Rates
-###             with Birth-Death Models
-###
-### birthdeath: standard model
-### bd.ext: extended version
-###
-### Copyright 2002-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## birthdeath.R (2006-10-04)
+
+##   Estimation of Speciation and Extinction Rates
+##             with Birth-Death Models
+
+## birthdeath: standard model
+## bd.ext: extended version
+
+## Copyright 2002-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 birthdeath <- function(phy)
 {

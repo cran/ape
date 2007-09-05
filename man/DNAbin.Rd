@@ -5,6 +5,7 @@
 \alias{[.DNAbin}
 \alias{rbind.DNAbin}
 \alias{cbind.DNAbin}
+\alias{as.matrix.DNAbin}
 \title{Manipulate DNA Sequences in Bit-Level Format}
 \description{
   These functions help to manipulate DNA sequences coded in the
@@ -19,14 +20,16 @@
 
 \method{cbind}{DNAbin}(\dots, check.names = TRUE)
 
-x[i, j, drop = TRUE]
+\method{[}{DNAbin}(x, i, j, drop = TRUE)
+
+\method{as.matrix}{DNAbin}(x, \dots)
 }
 \arguments{
   \item{x, object}{an object of class \code{"DNAbin"}.}
   \item{\dots}{either further arguments to be passed to or from other
-    methods in the case of \code{print} and \code{summary}, or a series
-    of objects of class \code{"DNAbin"} in the case of \code{rbind} and
-    \code{cbind}.}
+    methods in the case of \code{print}, \code{summary}, and
+    \code{as.matrix}, or a series of objects of class \code{"DNAbin"} in
+    the case of \code{rbind} and \code{cbind}.}
   \item{printlen}{the number of labels to print (6 by default).}
   \item{digits}{the number of digits to print (3 by default).}
   \item{check.names}{a logical specifying whether to check the rownames
@@ -54,6 +57,10 @@ x[i, j, drop = TRUE]
   rownames differ among matrices, an error occurs. If
   \code{"check.names = FALSE"}, the matrices are simply binded and the
   rownames of the first matrix are used.
+
+  \code{as.matrix} may be used to convert DNA sequences (of the same
+  length) stored in a list into a matrix while keeping the names and the
+  class.
 }
 \value{
   an object of class \code{"DNAbin"} in the case of \code{rbind},

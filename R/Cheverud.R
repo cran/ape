@@ -1,11 +1,11 @@
-### Cheverud.R (2004-10-29)
-###
-###    Cheverud's 1985 Autoregression Model
-###
-### Copyright 2004 Julien Dutheil
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## Cheverud.R (2004-10-29)
+
+##    Cheverud's 1985 Autoregression Model
+
+## Copyright 2004 Julien Dutheil
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 # This function is adapted from a MatLab code from
 # Rholf, F. J. (2001) Comparative Methods for the Analysis of Continuous Variables: Geometric Interpretations.

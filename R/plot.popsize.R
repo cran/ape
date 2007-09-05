@@ -1,11 +1,11 @@
-### plot.popsize.R (2004-07-4)
-###
-###     Plot population size in dependence of time
-###
-### Copyright 2004 Rainer Opgen-Rhein and Korbinian Strimmer
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## plot.popsize.R (2004-07-4)
+
+##   Plot population size in dependence of time
+
+## Copyright 2004 Rainer Opgen-Rhein and Korbinian Strimmer
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 plot.popsize <- function(x, show.median=TRUE,
     show.years=FALSE, subst.rate, present.year, ...)

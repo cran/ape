@@ -1,11 +1,11 @@
-### mst.R (2006-11-08)
-###
-###     Minimum Spanning Tree
-###
-### Copyright 2002-2006 Yvonnick Noel, Julien Claude, and Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## mst.R (2006-11-08)
+
+##   Minimum Spanning Tree
+
+## Copyright 2002-2006 Yvonnick Noel, Julien Claude, and Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 mst <- function(X)
 {

@@ -1,17 +1,17 @@
-### nodelabels.R (2007-03-05)
-###
-###        Labelling the Nodes and the Tips of a Tree
-###
-### Copyright 2004-2007 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## nodelabels.R (2007-03-05)
 
-### from JL:
-### floating.pie() from plotrix with two changes:
-### (1) aspect ratio fixed, so pies will appear circular
-###     (`radius' is the radius in user coordinates along the x axis);
-### (2) zero values allowed (but not negative).
+##   Labelling the Nodes and the Tips of a Tree
+
+## Copyright 2004-2007 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
+
+## from JL:
+## floating.pie() from plotrix with two changes:
+## (1) aspect ratio fixed, so pies will appear circular
+##     (`radius' is the radius in user coordinates along the x axis);
+## (2) zero values allowed (but not negative).
 
 floating.pie.asp <- function(xpos, ypos, x, edges = 200, radius = 1,
                              col = NULL, startpos = 0, ...)

@@ -1,11 +1,11 @@
-### bind.tree.R (2006-10-06)
-###
-###     Bind Trees
-###
-### Copyright 2003-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## bind.tree.R (2006-10-06)
+
+##    Bind Trees
+
+## Copyright 2003-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 bind.tree <- function(x, y, where = "root", position = 0)
 {

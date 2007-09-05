@@ -1,11 +1,11 @@
-### ladderize.R (2007-01-04)
-###
-###     Ladderize a Tree
-###
-### Copyright 2007 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## ladderize.R (2007-01-04)
+
+##   Ladderize a Tree
+
+## Copyright 2007 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 ladderize <- function(phy, right = TRUE)
 {

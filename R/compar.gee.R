@@ -1,11 +1,11 @@
-### compar.gee.R (2006-10-11)
-###
-###   Comparative Analysis with GEEs
-###
-### Copyright 2002-2006 Emmanuel Paradis
-###
-### This file is part of the R-package `ape'.
-### See the file ../COPYING for licensing issues.
+## compar.gee.R (2006-10-11)
+
+##   Comparative Analysis with GEEs
+
+## Copyright 2002-2006 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 compar.gee <- function(formula, data = NULL, family = "gaussian", phy,
                        scale.fix = FALSE, scale.value = 1)
