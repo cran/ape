@@ -39,13 +39,13 @@ nodelabels()
 tre.new <- rotate(tre, 30)
 
 # compare the results:
-quartz() # open new graphical device
+X11() # open new graphical device
 par(mfrow=c(1,2)) # devide graphical device
 plot(tre) # plot old tre
 plot(tre.new) # plot new tree
 
 # visualize labels of terminal nodes:
-quartz() # open new graphical device
+X11() # open new graphical device
 plot.phylo(tre)
 tiplabels()
 
@@ -53,7 +53,7 @@ tiplabels()
 tre.new <- rotate(tre, c(12, 21))
 
 # compare the results:
-quartz() # open new graphical device
+X11() # open new graphical device
 par(mfrow=c(1,2)) # devide graphical device
 plot(tre) # plot old tre
 plot(tre.new) # plot new tree
@@ -62,7 +62,7 @@ plot(tre.new) # plot new tree
 tre.new <- rotate(tre, c("t3", "t14"))
 
 # compare the results:
-quartz() # open new graphical device
+X11() # open new graphical device
 par(mfrow=c(1,2)) # devide graphical device
 plot(tre) # plot old tre
 plot(tre.new) # plot new tree
