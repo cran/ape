@@ -2,10 +2,12 @@
 \alias{yule}
 \title{Fits Yule Model to a Phylogenetic Tree}
 \usage{
-yule(phy)
+yule(phy, use.root.edge = FALSE)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
+  \item{use.root.edge}{a logical specifying whether to consider the root
+    edge in the calculations.}
 }
 \description{
   This function fits by maximum likelihood a Yule model, i.e. a
@@ -21,10 +23,11 @@ yule(phy)
   number of nodes in the tree, and the sum of the branch lengths,
   respectively.
 
-  If there is a `root.edge' element in the phylogenetic tree, then it is
-  assumed that it has a biological meaning and is counted as a branch
-  length, and the root is counted as a speciation event; otherwise the
-  number of speciation events is the number of nodes - 1.
+  If there is a `root.edge' element in the phylogenetic tree, and
+  \code{use.root.edge = TRUE}, then it is assumed that it has a
+  biological meaning and is counted as a branch length, and the root is
+  counted as a speciation event; otherwise the number of speciation
+  events is the number of nodes - 1.
 
   The standard-error of lambda is computed with the second derivative of
   the log-likelihood function.

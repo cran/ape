@@ -1,8 +1,8 @@
-## which.edge.R (2006-10-05)
+## which.edge.R (2007-09-11)
 
 ##   Identifies Edges of a Tree
 
-## Copyright 2004-2006 Emmanuel Paradis
+## Copyright 2004-2007 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -29,9 +29,11 @@ getMRCA <- function(phy, tip)
 which.edge <- function(phy, group)
 {
     if (class(phy) != "phylo")
-      stop("object \"phy\" is not of class \"phylo\"")
+      stop('object "phy" is not of class "phylo"')
     if (is.character(group))
       group <- which(phy$tip.label %in% group)
+    if (length(group) == 1)
+      return(match(group, phy$edge[, 2]))
     nb.tip <- length(phy$tip.label)
     MRCA <- getMRCA(phy, group)
     if (MRCA == nb.tip + 1) {
@@ -49,7 +51,7 @@ which.edge <- function(phy, group)
     test <- tmp %in% group | tmp > nb.tip
     if (any(!test)) {
         wh <- wh[test] # drop the extra tips
-        ## see if there no extra internal edges:
+        ## see if there are no extra internal edges:
         tmp <- phy$edge[wh, ]
         test <- !(tmp[, 2] %in% tmp[, 1]) & tmp[, 2] > nb.tip
         while (any(test)){

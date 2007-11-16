@@ -1,4 +1,42 @@
-		CHANGES IN APE VERSION 2.0
+		CHANGES IN APE VERSION 2.0-2
+
+
+NEW FEATURES
+
+    o The new function matexpo computes the exponential of a square
+      matrix.
+
+    o The new function unique.multi.tree removes duplicate trees from
+      a list.
+
+    o yule() has a new option `use.root.edge = FALSE' that specifies
+      to ignore, by default, the root edge of the tree if it exists.
+
+
+BUG FIXES
+
+    o which.edge() failed when the index of a single terminal edge was
+      looked for.
+
+    o In diversi.time(), the values returned for model C were
+      incorrect.
+
+    o A bug was fixed in yule() that affected the calculation of the
+      likelihood in the presence of ties in the branching times.
+
+    o There was a bug in the C function mat_expo4x4 affecting the
+      calculations of the transition probabilities for models HKY and
+      GTR in mlphylo().
+
+    o A small bug was fixed in as.matrix.DNAbin (thanks to James
+      Bullard).
+
+    o rtree() did not `shuffle' the tip labels by default, so only a
+      limited number of labelled topologies could be generated.
+
+
+
+		CHANGES IN APE VERSION 2.0-1
 
 
 NEW FEATURES

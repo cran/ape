@@ -1,16 +1,16 @@
-## yule.R (2006-10-04)
+## yule.R (2007-10-18)
 
 ##     Fits Yule Model to a Phylogenetic Tree
 
 ## yule: standard Yule model (constant birth rate)
 ## yule.cov: Yule model with covariates
 
-## Copyright 2003-2006 Emmanuel Paradis
+## Copyright 2003-2007 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-yule <- function(phy)
+yule <- function(phy, use.root.edge = FALSE)
 {
     if (!is.binary.tree(phy))
       stop("tree must be dichotomous to fit the Yule model.")
@@ -18,15 +18,13 @@ yule <- function(phy)
     ni <- cumsum(rev(table(bt))) + 1
     X <- sum(phy$edge.length)
     nb.node <- phy$Nnode
-    if (is.null(phy$root.edge)) {
-        nb.node <- nb.node - 1
-    } else {
+    if (!is.null(phy$root.edge) && use.root.edge) {
         X <- X + phy$root.edge
         ni <- c(1, ni)
-    }
+    } else nb.node <- nb.node - 1
     lambda <- nb.node/X
     se <- lambda/sqrt(nb.node)
-    loglik <- -lambda*X + sum(log(ni[-length(ni)])) + nb.node*log(lambda)
+    loglik <- -lambda*X + lfactorial(phy$Nnode) + nb.node*log(lambda)
     obj <- list(lambda = lambda, se = se, loglik = loglik)
     class(obj) <- "yule"
     obj

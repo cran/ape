@@ -1,8 +1,8 @@
-## rtree.R (2006-10-04)
+## rtree.R (2007-11-09)
 
 ##   Generates Random Trees
 
-## Copyright 2004-2006 Emmanuel Paradis
+## Copyright 2004-2007 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -92,7 +92,7 @@ rtree <- function(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
     }
     phy <- list(edge = edge)
     phy$tip.label <-
-      if (is.null(tip.label)) paste("t", 1:n, sep = "")
+      if (is.null(tip.label)) paste("t", sample(n), sep = "")
       else sample(tip.label)
     if (is.function(br)) phy$edge.length <- br(nbr, ...)
     phy$Nnode <- if (rooted) n - 1 else n - 2

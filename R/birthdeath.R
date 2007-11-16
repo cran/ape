@@ -1,4 +1,4 @@
-## birthdeath.R (2006-10-04)
+## birthdeath.R (2007-10-30)
 
 ##   Estimation of Speciation and Extinction Rates
 ##             with Birth-Death Models
@@ -6,7 +6,7 @@
 ## birthdeath: standard model
 ## bd.ext: extended version
 
-## Copyright 2002-2006 Emmanuel Paradis
+## Copyright 2002-2007 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -17,7 +17,7 @@ birthdeath <- function(phy)
     N <- length(phy$tip.label)
     x <- c(NA, branching.times(phy))
     dev <- function(a, r) {
-        -2 * (sum(log((N - 1):1))
+        -2 * (lfactorial(N - 1)
               + (N - 2) * log(r)
               + r * sum(x[3:N])
               + N * log(1 - a)
@@ -92,7 +92,7 @@ did not match: the former were ignored in the analysis.')
     trm.br <- phy$edge.length[phy$edge[, 2] <= N]
     dev <- function(a, r)
     {
-        -2 * (sum(log((N - 1):1))
+        -2 * (lfactorial(N - 1)
               + (N - 2) * log(r)
               + (3 * N) * log(1 - a)
               + 2 * r * sum(x[2:N])

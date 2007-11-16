@@ -1,4 +1,4 @@
-## root.R (2007-06-15)
+## root.R (2007-10-09)
 
 ##   Root of Phylogenetic Trees
 
@@ -9,7 +9,7 @@
 
 is.rooted <- function(phy)
 {
-    if (class(phy) != "phylo")
+    if (!"phylo" %in% class(phy))
       stop('object "phy" is not of class "phylo"')
     if (!is.null(phy$root.edge)) return(TRUE)
     else

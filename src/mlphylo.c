@@ -1,4 +1,4 @@
-/* mlphylo.c       2007-03-27 */
+/* mlphylo.c       2007-09-27 */
 
 /* Copyright 2006-2007 Emmanuel Paradis */
 
@@ -11,48 +11,48 @@
 #include <R_ext/Lapack.h>
 
 typedef struct {
-  double *A, *C, *G, *T;
+	double *A, *C, *G, *T;
 } dna_matrix;
 
 typedef struct {
-  int *s1, *s2, *a;
+	int *s1, *s2, *a;
 } matching;
 
 typedef struct {
-  int *n; int *limit; int *model; double *xi;
+	int *n; int *limit; int *model; double *xi;
 } part_dna;
 
 typedef struct {
-  double *para; int *n; int *pim;
+	double *para; int *n; int *pim;
 } para_dna;
 
 typedef struct {
-  int *ncat; double *alpha; int *n; int *pim;
+	int *ncat; double *alpha; int *n; int *pim;
 } gamma_dna;
 
 typedef struct {
-  double *I; int *n; int *pim;
+	double *I; int *n; int *pim;
 } invar_dna;
 
 typedef struct {
-  int *n; int *s; dna_matrix X; double *w;
-  matching match; double *edge_length;
-  part_dna partition; para_dna PAR;
-  gamma_dna GAMMA; invar_dna INV; double *BF;
+	int *n; int *s; dna_matrix X; double *w;
+	matching match; double *edge_length;
+	part_dna partition; para_dna PAR;
+	gamma_dna GAMMA; invar_dna INV; double *BF;
 } DNAdata;
 
 typedef struct {
-  DNAdata *D; int i;
+	DNAdata *D; int i;
 } info;
 
 void tQ_unbalBF(double *BF, double *P)
-/* This function computes the rate matrix Q multiplied by */
-/* time t in the case of unbalanced base frequencies. */
-/* The arguments are: */
-/*BF: the base frequencies */
-/* P: (input) the matrix of substitution rates */
-/*    (output) tQ */
-/* NOTE: P must already be multiplied by t */
+/* This function computes the rate matrix Q multiplied by
+   time t in the case of unbalanced base frequencies.
+   The arguments are:
+  BF: the base frequencies
+   P: (input) the matrix of substitution rates
+      (output) tQ
+   NOTE: P must already be multiplied by t */
 {
    P[1] *= BF[0];  P[2] *= BF[0];  P[3] *= BF[0];
    P[4] *= BF[1];  P[6] *= BF[1];  P[7] *= BF[1];
@@ -69,9 +69,8 @@ void mat_expo4x4(double *P)
 /* This function computes the exponential of a 4x4 matrix */
 {
   double U[16], vl[4], WR[4], Uinv[16], WI[4], work[32];
-  int i, j, info, ipiv[16], n = 4, lw = 32, ord[4];
+  int i, info, ipiv[16], n = 4, lw = 32, ord[4];
   char yes = 'V', no = 'N';
-
 
   /* The matrix is not symmetric, so we use 'dgeev'. */
   /* We take the real part of the eigenvalues -> WR */
@@ -80,7 +79,6 @@ void mat_expo4x4(double *P)
 		  U, &n, work, &lw, &info);
 
   /* It is not necessary to sort the eigenvalues... */
-
   /* Copy U -> P */
   for (i = 0; i < 16; i++) P[i] = U[i];
 
@@ -103,19 +101,19 @@ void mat_expo4x4(double *P)
   P[1] = U[1]*Uinv[0] + U[5]*Uinv[1] + U[9]*Uinv[2] + U[13]*Uinv[3];
   P[2] = U[2]*Uinv[0] + U[6]*Uinv[1] + U[10]*Uinv[2] + U[14]*Uinv[3];
   P[3] = U[3]*Uinv[0] + U[7]*Uinv[1] + U[11]*Uinv[2] + U[15]*Uinv[3];
-  P[0] = 1 - P[1] - P[2] - P[3];
   P[4] = U[0]*Uinv[4] + U[4]*Uinv[5] + U[8]*Uinv[6] + U[12]*Uinv[7];
   P[6] = U[2]*Uinv[4] + U[6]*Uinv[5] + U[10]*Uinv[6] + U[14]*Uinv[7];
   P[7] = U[3]*Uinv[4] + U[7]*Uinv[5] + U[11]*Uinv[6] + U[15]*Uinv[7];
-  P[5] = 1 - P[4] - P[6] - P[7];
   P[8] = U[0]*Uinv[8] +  U[4]*Uinv[9] + U[8]*Uinv[10] + U[12]*Uinv[11];
   P[9] = U[1]*Uinv[8] +  U[5]*Uinv[9] + U[9]*Uinv[10] + U[13]*Uinv[11];
   P[11] = U[3]*Uinv[8] +  U[7]*Uinv[9] + U[11]*Uinv[10] + U[15]*Uinv[11];
-  P[10] = 1 - P[8] - P[9] - P[11];
   P[12] = U[0]*Uinv[12] + U[4]*Uinv[13] + U[8]*Uinv[14] + U[12]*Uinv[15];
   P[13] = U[1]*Uinv[12] + U[5]*Uinv[13] + U[9]*Uinv[14] + U[13]*Uinv[15];
   P[14] = U[2]*Uinv[12] + U[6]*Uinv[13] + U[10]*Uinv[14] + U[14]*Uinv[15];
-  P[15] = 1 - P[12] - P[13] - P[14];
+  P[0] = 1 - P[4] - P[8] - P[12];
+  P[5] = 1 - P[1] - P[9] - P[13];
+  P[10] = 1 - P[2] - P[6] - P[14];
+  P[15] = 1 - P[3] - P[7] - P[11];
 }
 
 void PMAT_JC69(double t, double u, double *P)

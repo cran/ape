@@ -109,7 +109,7 @@ prop.clades(phy, ..., part = NULL)
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
-  \code{\link{dist.topo}}, \code{\link{consensus}}
+  \code{\link{dist.topo}}, \code{\link{consensus}}, \code{\link{nodelabels}}
 }
 \examples{
 data(woodmouse)

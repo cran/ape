@@ -1,8 +1,8 @@
-## diversi.time.R (2005-05-17)
+## diversi.time.R (2007-09-22)
 
 ##   Analysis of Diversification with Survival Models
 
-## Copyright 2002-2005 Emmanuel Paradis
+## Copyright 2002-2007 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -44,7 +44,7 @@ diversi.time <- function(x, census = NULL, censoring.codes = c(1, 0),
     u2 <- u - u1
     tmp <- (k2 + u2) * Tc
     delta1 <- k1 / (sum(tk1) + sum(tu1) + tmp)
-    delta2 <- k2 / (sum(tk2) + sum(tu2) + tmp)
+    delta2 <- k2 / (sum(tk2) + sum(tu2) - tmp)
     var.delta1 <- delta1^2 / k1
     var.delta2 <- delta2^2 / k2
     tmp <- Tc * (delta2 - delta1)

@@ -1,4 +1,4 @@
-## DNA.R (2007-07-05)
+## DNA.R (2007-10-31)
 
 ##    Comparisons and Manipulations of DNA Sequences
 
@@ -55,7 +55,7 @@ as.matrix.DNAbin <- function(x, ...)
         n <- length(x)
         s <- length(x[[1]])
         x <- matrix(unlist(x), n, s, byrow = TRUE)
-        ronwnames(x) <- nms
+        rownames(x) <- nms
         class(x) <- "DNAbin"
     }
     x

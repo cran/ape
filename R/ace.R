@@ -56,7 +56,7 @@ did not match: the former were ignored in the analysis.')
         if (method == "ML") {
             if (model == "BM") {
                 tip <- phy$edge[, 2] <= nb.tip
-                dev <- function(p) {
+                dev.BM <- function(p) {
                     x1 <- p[-1][phy$edge[, 1] - nb.tip]
                     x2 <- numeric(length(x1))
                     x2[tip] <- x[phy$edge[tip, 2]]
@@ -64,7 +64,7 @@ did not match: the former were ignored in the analysis.')
                     -2 * (-sum((x1 - x2)^2/phy$edge.length)/(2*p[1]) -
                           nb.node * log(p[1]))
                 }
-                out <- nlm(function(p) dev(p),
+                out <- nlm(function(p) dev.BM(p),
                            p = c(1, rep(mean(x), nb.node)), hessian = TRUE)
                 obj$loglik <- -out$minimum / 2
                 obj$ace <- out$estimate[-1]
@@ -86,7 +86,7 @@ did not match: the former were ignored in the analysis.')
             if (class(corStruct)[1] == "corMartins")
               M <- corStruct[1] * dist.nodes(phy)
             if (class(corStruct)[1] == "corGrafen")
-              phy <- compute.brlen(attr(object, "tree"),
+              phy <- compute.brlen(attr(corStruct, "tree"),
                                    method = "Grafen",
                                    power = exp(corStruct[1]))
             if (class(corStruct)[1] %in% c("corBrownian", "corGrafen")) {
