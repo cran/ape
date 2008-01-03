@@ -13,7 +13,7 @@ compar.gee <- function(formula, data = NULL, family = "gaussian", phy,
     if (is.null(data)) data <- parent.frame() else {
         if(!any(is.na(match(rownames(data), phy$tip.label))))
           data <- data[phy$tip.label, ]
-        else warning("the rownames of the data.frame and the names of the tip labels
+        else warning("the rownames of the data.frame and the tip labels of the tree
 do not match: the former were ignored in the analysis.")
     }
     effect.assign <- attr(model.matrix(formula, data = data), "assign")

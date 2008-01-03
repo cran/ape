@@ -23,7 +23,7 @@ varcomp(x, scale = FALSE, cum = FALSE)
   with S (fourth edition)}. New York: Springer-Verlag.
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
-\seealso{ \code{\link[nlme]{lme}}, \code{\link{Correlogram}}}
+\seealso{\code{\link[nlme]{lme}}}
 \examples{
 data(carnivora)
 m <- lme(log10(SW) ~ 1, random = ~ 1|Order/SuperFamily/Family/Genus, data=carnivora)

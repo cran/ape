@@ -1,12 +1,11 @@
 Package: ape
-Version: 2.0-2
-Date: 2007-11-16
+Version: 2.1
+Date: 2008-01-03
 Title: Analyses of Phylogenetics and Evolution
-Author: Ben Bolker, Julien Claude, Hoa Sien Cuong, Richard Desper,
-  Benoit Durand, Julien Dutheil, Olivier Gascuel, Gangolf Jobb,
-  Christoph Heibl, Vincent Lefort, Jim Lemon, Yvonnick Noel,
-  Johan Nylander, Rainer Opgen-Rhein, Emmanuel Paradis,
-  Korbinian Strimmer
+Author: Emmanuel Paradis, Ben Bolker, Julien Claude, Hoa Sien Cuong,
+  Richard Desper, Benoit Durand, Julien Dutheil, Olivier Gascuel,
+  Gangolf Jobb, Christoph Heibl, Vincent Lefort, Jim Lemon,
+  Yvonnick Noel, Johan Nylander, Rainer Opgen-Rhein, Korbinian Strimmer
 Maintainer: Emmanuel Paradis <Emmanuel.Paradis@mpl.ird.fr>
 Depends: R (>= 2.0.0)
 Suggests: gee, nlme, lattice
@@ -23,6 +22,6 @@ Description: ape provides functions for reading, writing, plotting,
   smoothing and penalized likelihood, classifying genes in trees using
   the Klastorin-Misawa-Tajima approach. Phylogeny estimation can be done
   with the NJ, BIONJ, ME, and ML methods.
-License: GPL version 2 or newer
+License: GPL (>= 2)
 URL: http://pbil.univ-lyon1.fr/R/ape/
-Packaged: Fri Nov 16 12:46:37 2007; paradis
+Packaged: Fri Jan  4 16:10:34 2008; paradis

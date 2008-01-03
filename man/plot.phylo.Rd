@@ -1,6 +1,6 @@
 \name{plot.phylo}
 \alias{plot.phylo}
-\alias{plot.multi.tree}
+\alias{plot.multiPhylo}
 \title{Plot Phylogenies}
 \usage{
 \method{plot}{phylo}(x, type = "phylogram", use.edge.length = TRUE,
@@ -10,11 +10,11 @@
     root.edge = FALSE, label.offset = 0, underscore = FALSE,
     x.lim = NULL, y.lim = NULL, direction = "rightwards",
     lab4ut = "horizontal", tip.color = "black", ...)
-\method{plot}{multi.tree}(x, layout = 1, ...)
+\method{plot}{multiPhylo}(x, layout = 1, ...)
 }
 \arguments{
   \item{x}{an object of class \code{"phylo"} or of class
-    \code{"multi.tree"}.}
+    \code{"multiPhylo"}.}
   \item{type}{a character string specifying the type of phylogeny to be
     drawn; it must be one of "phylogram" (the default), "cladogram",
     "fan", "unrooted", "radial" or any unambiguous abbreviation of
@@ -98,7 +98,7 @@
 }
 \details{
   If \code{x} is a list of trees (i.e., an object of class
-  \code{"multi.tree"}), then any further argument may be passed with
+  \code{"multiPhylo"}), then any further argument may be passed with
   \code{...} and could be any one of those listed above for a single
   tree.
 

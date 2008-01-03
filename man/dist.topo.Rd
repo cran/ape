@@ -45,7 +45,7 @@ dist.topo(x, y, method = "PH85")
   testing minimum-evolution trees. \emph{Molecular Biology and
     Evolution}, \bold{9}, 945--967.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{read.tree}} to read tree files in Newick format,
   \code{\link{cophenetic.phylo}}, \code{\link{prop.part}}

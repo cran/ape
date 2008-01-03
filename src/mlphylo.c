@@ -1,6 +1,6 @@
-/* mlphylo.c       2007-09-27 */
+/* mlphylo.c       2008-01-03 */
 
-/* Copyright 2006-2007 Emmanuel Paradis */
+/* Copyright 2006-2008 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -11,39 +11,44 @@
 #include <R_ext/Lapack.h>
 
 typedef struct {
-	double *A, *C, *G, *T;
+	int *n;
+	int *s;
+	double *w;
+	unsigned char *seq;
+	double *anc;
 } dna_matrix;
 
 typedef struct {
-	int *s1, *s2, *a;
-} matching;
+	int *edge1;
+	int *edge2;
+	double *el;
+} phylo;
 
 typedef struct {
-	int *n; int *limit; int *model; double *xi;
-} part_dna;
+	int *npart;
+	int *partition;
+	int *model;
+	double *xi;
+	double *para;
+	int *npara;
+	double *alpha;
+	int *nalpha;
+	int *ncat;
+	double *invar;
+	int *ninvar;
+} DNAmodel;
 
 typedef struct {
-	double *para; int *n; int *pim;
-} para_dna;
-
-typedef struct {
-	int *ncat; double *alpha; int *n; int *pim;
-} gamma_dna;
-
-typedef struct {
-	double *I; int *n; int *pim;
-} invar_dna;
-
-typedef struct {
-	int *n; int *s; dna_matrix X; double *w;
-	matching match; double *edge_length;
-	part_dna partition; para_dna PAR;
-	gamma_dna GAMMA; invar_dna INV; double *BF;
+	dna_matrix X;
+	phylo PHY;
+	DNAmodel MOD;
+	double *BF;
 } DNAdata;
 
 typedef struct {
 	DNAdata *D; int i;
 } info;
+
 
 void tQ_unbalBF(double *BF, double *P)
 /* This function computes the rate matrix Q multiplied by
@@ -122,18 +127,18 @@ void PMAT_JC69(double t, double u, double *P)
   P[0] = P[5] = P[10] = P[15] = 1 - 3*P[1];
 }
 
-void PMAT_K80(double t, double a, double b, double *P)
+void PMAT_K80(double t, double b, double a, double *P)
 {
   double R, p;
 
   R = a/(2*b);
   p = exp(-2*t/(R + 1));
 
-  P[1] = 0.5 * (1 - p); /* A -> C */
-  P[2] = 0.25 - 0.5 * exp(-t*(2*R + 1)/(R + 1)) + 0.25 * p; /* A -> G */
-  P[0] = P[5] = P[10] = P[15] = 1 - 2 * P[1] - P[2];
-  P[3] = P[4] = P[6] = P[8] =  P[9] = P[12] = P[13] = P[1];
-  P[7] = P[11] = P[14] = P[2];
+  P[1] = 0.5*(1 - p); /* A -> C */
+  P[2] = 0.25 - 0.5*exp(-t*(2*R + 1)/(R + 1)) + 0.25*p; /* A -> G */
+  P[0] = P[5] = P[10] = P[15] = 1 - 2*P[1] - P[2];
+  P[3] = P[4] = P[6] = P[11] =  P[9] = P[12] = P[14] = P[1];
+  P[7] = P[8] = P[13] = P[2];
 }
 
 void PMAT_F81(double t, double u, double *BF, double *P)
@@ -244,92 +249,89 @@ void PMAT_GTR(double t, double a, double b, double c, double d, double e,
   mat_expo4x4(P);
 }
 
-#define GET_DNA_PARAMETERS                                        \
-    /* get the substitution parameters */                         \
-    model = PART.model[k];                                        \
-    /* If the model is not JC69 or F81: */                        \
-    if (model != 1 && model != 3) {                               \
-        ind = 0;                                                  \
-        for(i = 0; i < *(PARA.n); i++) {                          \
-            if (PARA.pim[i + *(PARA.n)*k]) {                      \
-        	    u[ind] = PARA.para[i];                        \
-        	    ind++;                                        \
-	    }                                                     \
-        }                                                         \
-    }                                                             \
-    /* get the shape parameter and calculate the coefficients */  \
-    ncat = 1;                                                     \
-    if (GAMMA.ncat[k] > 1) {                                      \
-        ncat = GAMMA.ncat[k];                                     \
-        /* use `tmp[0]' to store the mean of the coefficients */  \
-        /* in order to rescale them */                            \
-        tmp[0] = 0.;                                              \
-	for(i = 0; i < *(GAMMA.n); i++) {                         \
-	    if (GAMMA.pim[i + *(GAMMA.n)*k]) {                    \
-	        for (j = 0; j < ncat; j++) {                      \
-		    coef_gamma[j] = qgamma((0.5 + j)/ncat,        \
-                                           GAMMA.alpha[i],        \
-					   1/GAMMA.alpha[i],      \
-					   1, 0);                 \
-                    tmp[0] += coef_gamma[j];                      \
-		}                                                 \
-                tmp[0] /= ncat;                                   \
-                for (j = 0; j < ncat; j++)                        \
-                  coef_gamma[j] /= tmp[0];                        \
-	    }                                                     \
-	}                                                         \
-    } else coef_gamma[0] = 1.;                                    \
-    /* get the proportion of invariants */                        \
-    I = 0;                                                        \
-    for(i = 0; i < *(INV.n); i++) {                               \
-        if (INV.pim[i + *(INV.n)*k]) {                            \
-	    I = INV.I[i];                                         \
-	    break;                                                \
-	}                                                         \
-    }
+#define GET_DNA_PARAMETERS \
+    /* get the substitution parameters */ \
+    model = *(D->MOD.model); \
+    /* If the model is not JC69 or F81: */ \
+    if (model != 1 && model != 3) { \
+        for(i = 0; i < *(D->MOD.npara); i++) \
+            u[i] = D->MOD.para[i]; \
+    } \
+    /* get the shape parameter and calculate the coefficients */ \
+    ncat = *(D->MOD.ncat); \
+    if (ncat > 1) { \
+        /* use `tmp[0]' to store the mean of the coefficients */ \
+        /* in order to rescale them */ \
+        tmp[0] = 0.; \
+        if (*(D->MOD.nalpha) > 1) alpha = *(D->MOD.alpha); \
+        else alpha = D->MOD.alpha[k]; \
+	for (j = 0; j < ncat; j++) { \
+		coef_gamma[j] = qgamma((0.5 + j)/ncat, alpha, \
+				       1/alpha, 1, 0); \
+                tmp[0] += coef_gamma[j]; \
+	} \
+        tmp[0] /= ncat; \
+        for (j = 0; j < ncat; j++) \
+          coef_gamma[j] /= tmp[0]; \
+    } else coef_gamma[0] = 1.; \
+    /* get the proportion of invariants */ \
+    if (*(D->MOD.ninvar)) { \
+        if (*(D->MOD.ninvar) > 1) I = *(D->MOD.invar); \
+        else I = D->MOD.invar[k]; \
+    } else I = 0.; \
+
+void getSiteLik(int n, int d, int j, int nr, DNAdata *D, double *L)
+{
+	int i;
+
+	if (d <= n - 1) {
+		i = d + j*n;
+		memset(L, 0, 4*sizeof(double));
+		if (D->X.seq[i] & 128) L[0] = 1;
+		if (D->X.seq[i] & 64) L[1] = 1;
+		if (D->X.seq[i] & 32) L[2] = 1;
+		if (D->X.seq[i] & 16) L[3] = 1;
+	} else {
+		i = (d - n) + j*(n - 2);
+		L[0] = D->X.anc[i];
+		L[1] = D->X.anc[i + nr];
+		L[2] = D->X.anc[i + 2*nr];
+		L[3] = D->X.anc[i + 3*nr];
+	}
+}
 
 #define LOOP_THROUGH_SITES \
     for(j = start; j < end; j++) { \
-        i1 = d1 + j*nr; \
-        i2 = d2 + j*nr; \
-        tmp[0] = tmp[1] = tmp[2] = tmp[3] = 0.0; \
+        memset(tmp, 0, 4*sizeof(double)); \
+        getSiteLik(n, d1, j, nr, D, L1); \
+        getSiteLik(n, d2, j, nr, D, L2); \
 	for(i = 0; i < ncat; i++) { \
 	    switch(model) { \
 	    case 1 : PMAT_JC69(l1, coef_gamma[i], P1); \
                      PMAT_JC69(l2, coef_gamma[i], P2); break; \
 	    case 2 : PMAT_K80(l1, coef_gamma[i], u[0], P1); \
-PMAT_K80(l2, coef_gamma[i], u[0], P2); break; \
+                     PMAT_K80(l2, coef_gamma[i], u[0], P2); break; \
 	    case 3 : PMAT_F81(l1, coef_gamma[i], BF, P1); \
-PMAT_F81(l2, coef_gamma[i], BF, P2); break; \
+                     PMAT_F81(l2, coef_gamma[i], BF, P2); break; \
 	    case 4 : PMAT_F84(l1, coef_gamma[i], u[0], BF, P1); \
-PMAT_F84(l2, coef_gamma[i], u[0], BF, P2); break; \
+                     PMAT_F84(l2, coef_gamma[i], u[0], BF, P2); break; \
 	    case 5 : PMAT_HKY85(l1, coef_gamma[i], u[0], BF, P1); \
-PMAT_HKY85(l2, coef_gamma[i], u[0], BF, P2); break; \
+                     PMAT_HKY85(l2, coef_gamma[i], u[0], BF, P2); break; \
 	    case 6 : PMAT_T92(l1, coef_gamma[i], u[0], BF, P1); \
-PMAT_T92(l2, coef_gamma[i], u[0], BF, P2); break; \
+                     PMAT_T92(l2, coef_gamma[i], u[0], BF, P2); break; \
 	    case 7 : PMAT_TN93(l1, coef_gamma[i], u[0], u[1], BF, P1); \
-PMAT_TN93(l2, coef_gamma[i], u[0], u[1], BF, P2); break; \
-	    case 8 : PMAT_GTR(l1, coef_gamma[i], u[0], u[1], \
-			      u[2], u[3], u[4], BF, P1); \
-PMAT_GTR(l2, coef_gamma[i], u[0], u[1], \
-			      u[2], u[3], u[4], BF, P2); break; \
+                     PMAT_TN93(l2, coef_gamma[i], u[0], u[1], BF, P2); break; \
+	    case 8 : PMAT_GTR(l1, coef_gamma[i], u[0], u[1], u[2], u[3], u[4], BF, P1); \
+                     PMAT_GTR(l2, coef_gamma[i], u[0], u[1], u[2], u[3], u[4], BF, P2); break; \
 	    } \
-	    tmp[0] += (X.A[i1] * P1[0] + X.C[i1] * P1[1] + \
-		      X.G[i1] * P1[2] + X.T[i1] * P1[3]) * \
-                     (X.A[i2] * P2[0] + X.C[i2] * P2[1] + \
-		      X.G[i2] * P2[2] + X.T[i2] * P2[3]); \
-	    tmp[1] += (X.A[i1] * P1[4] + X.C[i1] * P1[5] + \
-		      X.G[i1] * P1[6] + X.T[i1] * P1[7]) * \
-                     (X.A[i2] * P2[4] + X.C[i2] * P2[5] + \
-		      X.G[i2] * P2[6] + X.T[i2] * P2[7]); \
-	    tmp[2] += (X.A[i1] * P1[8] + X.C[i1] * P1[9] + \
-		      X.G[i1] * P1[10] + X.T[i1] * P1[11]) * \
-                     (X.A[i2] * P2[8] + X.C[i2] * P2[9] + \
-		      X.G[i2] * P2[10] + X.T[i2] * P2[11]); \
-	    tmp[3] += (X.A[i1] * P1[12] + X.C[i1] * P1[13] + \
-		      X.G[i1] * P1[14] + X.T[i1] * P1[15]) * \
-                     (X.A[i2] * P2[12] + X.C[i2] * P2[13] + \
-		      X.G[i2] * P2[14] + X.T[i2] * P2[15]); \
+            tmp[0] += (L1[0]*P1[0] + L1[1]*P1[1] + L1[2]*P1[2] + L1[3]*P1[3]) * \
+		      (L2[0]*P2[0] + L2[1]*P2[1] + L2[2]*P2[2] + L2[3]*P2[3]); \
+            tmp[1] += (L1[0]*P1[4] + L1[1]*P1[5] + L1[2]*P1[6] + L1[3]*P1[7]) * \
+		      (L2[0]*P2[4] + L2[1]*P2[5] + L2[2]*P2[6] + L2[3]*P2[7]); \
+            tmp[2] += (L1[0]*P1[8] + L1[1]*P1[9] + L1[2]*P1[10] + L1[3]*P1[11]) * \
+		      (L2[0]*P2[8] + L2[1]*P2[9] + L2[2]*P2[10] + L2[3]*P2[11]); \
+            tmp[3] += (L1[0]*P1[12] + L1[1]*P1[13] + L1[2]*P1[14] + L1[3]*P1[15]) * \
+		      (L2[0]*P2[12] + L2[1]*P2[13] + L2[2]*P2[14] + L2[3]*P2[15]); \
 	} \
         if (ncat > 1) { \
             tmp[0] /= ncat; \
@@ -337,237 +339,200 @@ PMAT_GTR(l2, coef_gamma[i], u[0], u[1], \
             tmp[2] /= ncat; \
             tmp[3] /= ncat; \
         } \
-        ind = anc + j*nr; \
-	if (I > 0) { \
+	if (D->MOD.ninvar) { \
 	    V = 1. - I; \
-            tmp[0] = V*tmp[0] + I*X.A[i1]*X.A[i2]; \
-            tmp[1] = V*tmp[1] + I*X.C[i1]*X.C[i2]; \
-            tmp[2] = V*tmp[2] + I*X.G[i1]*X.G[i2]; \
-            tmp[3] = V*tmp[3] + I*X.T[i1]*X.T[i2]; \
+            tmp[0] = V*tmp[0] + I*L1[0]*L2[0]; \
+            tmp[1] = V*tmp[1] + I*L1[1]*L2[1]; \
+            tmp[2] = V*tmp[2] + I*L1[2]*L2[2]; \
+            tmp[3] = V*tmp[3] + I*L1[3]*L2[3]; \
 	} \
-        X.A[ind] = tmp[0]; \
-        X.C[ind] = tmp[1]; \
-        X.G[ind] = tmp[2]; \
-        X.T[ind] = tmp[3]; \
-Rprintf("");\
+        ind = anc - n + j*(n - 2); \
+        D->X.anc[ind] = tmp[0]; \
+        D->X.anc[ind + nr] = tmp[1]; \
+        D->X.anc[ind + 2*nr] = tmp[2]; \
+        D->X.anc[ind + 3*nr] = tmp[3]; \
     }
 
-/* <FIXME>
-The Rprintf() above is needed to avoid a memory corruption,
-but I don't know why! (2007-03-27)
-</FIXME> */
-
-void lik_dna_node(dna_matrix X, int d1, int d2, int anc,
-		  double *edge_length, part_dna PART,
-		  para_dna PARA, gamma_dna GAMMA,
-		  invar_dna INV, double *BF, int nr)
+void lik_dna_node(DNAdata *D, int ie)
 /*
 This function computes the likelihoods at a node for all
 nucleotides.
 */
 {
-    int i, j, k, start, end, ind, i1, i2, ncat, model;
-    double tmp[4], l1, l2, P1[16], P2[16], V, coef_gamma[10], u[6], I;
+	int d1, d2, anc, n, nr;
+	int i, j, k, start, end, ind, i1, i2, ncat, model;
+	double tmp[4], L1[4], L2[4], l1, l2, P1[16], P2[16], V, coef_gamma[10], u[6], I, alpha, *BF;
 
-    /* change d1, d2, and anc to use them as indices */
-    d1--; d2--; anc--;
+	n = *(D->X.n);
+	nr = *(D->X.s) * (n - 2);
+	BF = D->BF;
 
-    l1 = edge_length[d1];
-    l2 = edge_length[d2];
+	d1 = D->PHY.edge2[ie];
+	d2 = D->PHY.edge2[ie + 1];
+	anc = D->PHY.edge1[ie];
 
-    for(k = 0; k < *(PART.n); k++) {
-        start = PART.limit[k*2] - 1;
-        end = PART.limit[k*2 + 1];
+	/* change these to use them as indices */
+	d1--; d2--; anc--;
 
-        GET_DNA_PARAMETERS
+	l1 = D->PHY.el[ie];
+	l2 = D->PHY.el[ie + 1];
 
-	if (k > 0) {
-	    l1 *= PART.xi[k - 1];
-	    l2 *= PART.xi[k - 1];
+	for(k = 0; k < *(D->MOD.npart); k++) {
+		start = D->MOD.partition[k*2] - 1;
+		end = D->MOD.partition[k*2 + 1] - 1;
+
+		GET_DNA_PARAMETERS
+
+		if (k > 0) {
+			l1 *= D->MOD.xi[k - 1];
+			l2 *= D->MOD.xi[k - 1];
+		}
+
+		LOOP_THROUGH_SITES
 	}
+} /* lik_dna_node */
 
-	LOOP_THROUGH_SITES
-    }
-} /* EOF lik_dna_node */
-
-void lik_dna_root(dna_matrix X, int d1, int d2, int d3, int anc,
-		  double *edge_length, part_dna PART,
-		  para_dna PARA, gamma_dna GAMMA,
-		  invar_dna INV, double *BF, int nr)
+void lik_dna_root(DNAdata *D)
 /*
 This function computes the likelihoods at the root for all
 nucleotides.
 */
 {
-    int i, j, k, start, end, ind, ncat, model, i1, i2, i3;
-    double tmp[4], l1, l2, l3, P1[16], P2[16], P3[16], V,
-      coef_gamma[10], u[6], I;
+	int i, j, k, start, end, ind, ncat, model, d1, d2, d3, n, N, nr;
+	double tmp[4],  L1[4], L2[4], L3[4], l1, l2, l3, P1[16], P2[16], P3[16], V, coef_gamma[10], u[6], I, alpha, *BF;
 
-    /* change d1, d2, d3, and anc to use them as indices */
-    d1--; d2--; d3--; anc--;
+	n = *(D->X.n); /* number of tips */
+	N = 2*n - 3; /* number of edges */
+	nr = *(D->X.s) * (n - 2);
+	BF = D->BF;
 
-    l1 = edge_length[d1];
-    l2 = edge_length[d2];
-    l3 = edge_length[d3];
+	d1 = D->PHY.edge2[N - 3];
+	d2 = D->PHY.edge2[N - 2];
+	d3 = D->PHY.edge2[N - 1];
 
-    for(k = 0; k < *(PART.n); k++) {
-        start = PART.limit[k*2] - 1;
-        end = PART.limit[k*2 + 1];
+	/* change these to use them as indices */
+	d1--; d2--; d3--;
 
-        GET_DNA_PARAMETERS
+	l1 = D->PHY.el[N - 3];
+	l2 = D->PHY.el[N - 2];
+	l3 = D->PHY.el[N - 1];
 
-	if (k > 0) {
-	    l1 *= PART.xi[k - 1];
-	    l2 *= PART.xi[k - 1];
-	    l3 *= PART.xi[k - 1];
-	}
+	for(k = 0; k < *(D->MOD.npart); k++) {
+		start = D->MOD.partition[k*2] - 1;
+		end = D->MOD.partition[k*2 + 1] - 1;
 
-	for(j = start; j < end; j++) {
-	    i1 = d1 + j*nr;
-	    i2 = d2 + j*nr;
-	    i3 = d3 + j*nr;
-	    tmp[0] = tmp[1] = tmp[2] = tmp[3] = 0.;
-	    for(i = 0; i < ncat; i++) {
-	        switch(model) {
-		case 1 : PMAT_JC69(l1, coef_gamma[i], P1);
-		  PMAT_JC69(l2, coef_gamma[i], P2);
-		  PMAT_JC69(l3, coef_gamma[i], P3); break;
-		case 2 : PMAT_K80(l1, coef_gamma[i], u[0], P1);
-		  PMAT_K80(l2, coef_gamma[i], u[0], P2);
-		  PMAT_K80(l3, coef_gamma[i], u[0], P3); break;
-		case 3 : PMAT_F81(l1, coef_gamma[i], BF, P1);
-		  PMAT_F81(l2, coef_gamma[i], BF, P3);
-		  PMAT_F81(l3, coef_gamma[i], BF, P3); break;
-		case 4 : PMAT_F84(l1, coef_gamma[i], u[0], BF, P1);
-		  PMAT_F84(l2, coef_gamma[i], u[0], BF, P2);
-		  PMAT_F84(l3, coef_gamma[i], u[0], BF, P3); break;
-		case 5 : PMAT_HKY85(l1, coef_gamma[i], u[0], BF, P1);
-		  PMAT_HKY85(l2, coef_gamma[i], u[0], BF, P2);
-		  PMAT_HKY85(l3, coef_gamma[i], u[0], BF, P3); break;
-		case 6 : PMAT_T92(l1, coef_gamma[i], u[0], BF, P1);
-		  PMAT_T92(l2, coef_gamma[i], u[0], BF, P2);
-		  PMAT_T92(l3, coef_gamma[i], u[0], BF, P3); break;
-		case 7 : PMAT_TN93(l1, coef_gamma[i], u[0], u[1], BF, P1);
-		  PMAT_TN93(l2, coef_gamma[i], u[0], u[1], BF, P2);
-		  PMAT_TN93(l3, coef_gamma[i], u[0], u[1], BF, P3);break;
-		case 8 : PMAT_GTR(l1, coef_gamma[i], u[0], u[1],
-				  u[2], u[3], u[4], BF, P1);
-		  PMAT_GTR(l2, coef_gamma[i], u[0], u[1],
-			   u[2], u[3], u[4], BF, P2);
-		  PMAT_GTR(l3, coef_gamma[i], u[0], u[1],
-			   u[2], u[3], u[4], BF, P3); break;
+		GET_DNA_PARAMETERS
+
+		if (k > 0) {
+			l1 *= D->MOD.xi[k - 1];
+			l2 *= D->MOD.xi[k - 1];
+			l3 *= D->MOD.xi[k - 1];
 		}
-		tmp[0] += (X.A[i1] * P1[0] + X.C[i1] * P1[1] +
-			   X.G[i1] * P1[2] + X.T[i1] * P1[3]) *
-		  (X.A[i2] * P2[0] + X.C[i2] * P2[1] +
-		   X.G[i2] * P2[2] + X.T[i2] * P2[3]) *
-		  (X.A[i3] * P3[0] + X.C[i3] * P3[1] +
-		   X.G[i3] * P3[2] + X.T[i3] * P3[3]);
-		tmp[1] += (X.A[i1] * P1[4] + X.C[i1] * P1[5] +
-			   X.G[i1] * P1[6] + X.T[i1] * P1[7]) *
-		  (X.A[i2] * P2[4] + X.C[i2] * P2[5] +
-		   X.G[i2] * P2[6] + X.T[i2] * P2[7]) *
-		  (X.A[i3] * P3[4] + X.C[i3] * P3[5] +
-		   X.G[i3] * P3[6] + X.T[i3] * P3[7]);
-		tmp[2] += (X.A[i1] * P1[8] + X.C[i1] * P1[9] +
-			   X.G[i1] * P1[10] + X.T[i1] * P1[11]) *
-		  (X.A[i2] * P2[8] + X.C[i2] * P2[9] +
-		   X.G[i2] * P2[10] + X.T[i2] * P2[11]) *
-		  (X.A[i3] * P3[8] + X.C[i3] * P3[9] +
-		   X.G[i3] * P3[10] + X.T[i3] * P3[11]);
-		tmp[3] += (X.A[i1] * P1[12] + X.C[i1] * P1[13] +
-			   X.G[i1] * P1[14] + X.T[i1] * P1[15]) *
-		  (X.A[i2] * P2[12] + X.C[i2] * P2[13] +
-		   X.G[i2] * P2[14] + X.T[i2] * P2[15]) *
-		  (X.A[i3] * P3[12] + X.C[i3] * P3[13] +
-		   X.G[i3] * P3[14] + X.T[i3] * P3[15]);
-	    }
-	    if (ncat > 1) {
-	        tmp[0] /= ncat;
-		tmp[1] /= ncat;
-		tmp[2] /= ncat;
-		tmp[3] /= ncat;
-	    }
-	    if (I > 0) { /* maybe use a better comparison */
-	        V = 1. - I;
-		tmp[0] = V * tmp[0] + I * X.A[ind];
-		tmp[1] = V * tmp[1] + I * X.C[ind];
-		tmp[2] = V * tmp[2] + I * X.G[ind];
-		tmp[3] = V * tmp[3] + I * X.T[ind];
-	    }
-	    ind = anc + j*nr;
-	    X.A[ind] = tmp[0];
-	    X.C[ind] = tmp[1];
-	    X.G[ind] = tmp[2];
-	    X.T[ind] = tmp[3];
+
+		for(j = start; j < end; j++) {
+			getSiteLik(n, d1, j, nr, D, L1);
+			getSiteLik(n, d2, j, nr, D, L2);
+			getSiteLik(n, d3, j, nr, D, L3);
+			memset(tmp, 0, 4*sizeof(double));
+			for(i = 0; i < ncat; i++) {
+				switch(model) {
+				case 1 : PMAT_JC69(l1, coef_gamma[i], P1);
+					PMAT_JC69(l2, coef_gamma[i], P2);
+					PMAT_JC69(l3, coef_gamma[i], P3); break;
+				case 2 : PMAT_K80(l1, coef_gamma[i], u[0], P1);
+					PMAT_K80(l2, coef_gamma[i], u[0], P2);
+					PMAT_K80(l3, coef_gamma[i], u[0], P3); break;
+				case 3 : PMAT_F81(l1, coef_gamma[i], BF, P1);
+					PMAT_F81(l2, coef_gamma[i], BF, P3);
+					PMAT_F81(l3, coef_gamma[i], BF, P3); break;
+				case 4 : PMAT_F84(l1, coef_gamma[i], u[0], BF, P1);
+					PMAT_F84(l2, coef_gamma[i], u[0], BF, P2);
+					PMAT_F84(l3, coef_gamma[i], u[0], BF, P3); break;
+				case 5 : PMAT_HKY85(l1, coef_gamma[i], u[0], BF, P1);
+					PMAT_HKY85(l2, coef_gamma[i], u[0], BF, P2);
+					PMAT_HKY85(l3, coef_gamma[i], u[0], BF, P3); break;
+				case 6 : PMAT_T92(l1, coef_gamma[i], u[0], BF, P1);
+					PMAT_T92(l2, coef_gamma[i], u[0], BF, P2);
+					PMAT_T92(l3, coef_gamma[i], u[0], BF, P3); break;
+				case 7 : PMAT_TN93(l1, coef_gamma[i], u[0], u[1], BF, P1);
+					PMAT_TN93(l2, coef_gamma[i], u[0], u[1], BF, P2);
+					PMAT_TN93(l3, coef_gamma[i], u[0], u[1], BF, P3);break;
+				case 8 : PMAT_GTR(l1, coef_gamma[i], u[0], u[1], u[2], u[3], u[4], BF, P1);
+					PMAT_GTR(l2, coef_gamma[i], u[0], u[1], u[2], u[3], u[4], BF, P2);
+					PMAT_GTR(l3, coef_gamma[i], u[0], u[1], u[2], u[3], u[4], BF, P3); break;
+				}
+				tmp[0] += (L1[0]*P1[0] + L1[1]*P1[1] + L1[2]*P1[2] + L1[3]*P1[3]) *
+					(L2[0]*P2[0] + L2[1]*P2[1] + L2[2]*P2[2] + L2[3]*P2[3]) *
+					(L3[0]*P3[0] + L3[1]*P3[1] + L3[2]*P3[2] + L3[3]*P3[3]);
+				tmp[1] += (L1[0]*P1[4] + L1[1]*P1[5] + L1[2]*P1[6] + L1[3]*P1[7]) *
+					(L2[0]*P2[4] + L2[1]*P2[5] + L2[2]*P2[6] + L2[3]*P2[7]) *
+					(L3[0]*P3[4] + L3[1]*P3[5] + L3[2]*P3[6] + L3[3]*P3[7]);
+				tmp[2] += (L1[0]*P1[8] + L1[1]*P1[9] + L1[2]*P1[10] + L1[3]*P1[11]) *
+					(L2[0]*P2[8] + L2[1]*P2[9] + L2[2]*P2[10] + L2[3]*P2[11]) *
+					(L3[0]*P3[8] + L3[1]*P3[9] + L3[2]*P3[10] + L3[3]*P3[11]);
+				tmp[3] += (L1[0]*P1[12] + L1[1]*P1[13] + L1[2]*P1[14] + L1[3]*P1[15]) *
+					(L2[0]*P2[12] + L2[1]*P2[13] + L2[2]*P2[14] + L2[3]*P2[15]) *
+					(L3[0]*P3[12] + L3[1]*P3[13] + L3[2]*P3[14] + L3[3]*P3[15]);
+			}
+			if (ncat > 1) {
+				tmp[0] /= ncat;
+				tmp[1] /= ncat;
+				tmp[2] /= ncat;
+				tmp[3] /= ncat;
+			}
+			if (D->MOD.ninvar) {
+				V = 1. - I;
+				tmp[0] = V*tmp[0] + I*L1[0]*L2[0]*L3[0];
+				tmp[1] = V*tmp[1] + I*L1[1]*L2[1]*L3[1];
+				tmp[2] = V*tmp[2] + I*L1[2]*L2[2]*L3[2];
+				tmp[3] = V*tmp[3] + I*L1[3]*L2[3]*L3[3];
+			}
+			ind = j*(n - 2);
+			D->X.anc[ind] = tmp[0];
+			D->X.anc[ind + nr] = tmp[1];
+			D->X.anc[ind + 2*nr] = tmp[2];
+			D->X.anc[ind + 3*nr] = tmp[3];
+		}
 	}
-    }
-} /* EOF lik_dna_root */
+} /* lik_dna_root */
 
-/*----------------------------------------------------*\
-| Il faudra ajouter un moyen pour spécifier les noeuds |
-|    à partir desquels calculer la vraisemblance !!    |
-\*----------------------------------------------------*/
-
-void lik_dna_tree(int *n, int *s, int N, dna_matrix X, double *w,
-		  matching match, double *edge_length, part_dna PART,
-		  para_dna PARA, gamma_dna GAMMA, invar_dna INV,
-		  double *BF, double *loglik)
+void lik_dna_tree(DNAdata *D, double *loglik)
 {
-    int i, j, k, nr, root;
+    int i, j, n, nnode, nsite, nr;
+    double tmp;
+
+    n = *(D->X.n);
+    nnode = n - 2;
+    nsite = *(D->X.s);
+    nr = nsite*nnode;
 
     /* initialize before looping through the tree */
-    /*-------------------------------------------------*\
-    |     Cette boucle sera éventuellement ajustée      |
-    | pour le calcul des vraisemblances conditionnelles |
-    |      (sera même faite une fonction à part?)       |
-    \*-------------------------------------------------*/
-    nr = (*n*2 - 2);
-    for(i = *n; i < *n*2 - 2; i++) { /* only for nodes */
-        for(j = 0; j < *s; j++) {
-	    k = i + j*nr;
-	    X.A[k] = X.C[k] = X.G[k] = X.T[k] = 1.;
-	}
-    } /* end of initialization */
+    memset(D->X.anc, 1., nr*4*sizeof(double));
 
-    /* loop through the matching */
-    /*-------------------------------------------*\
-    |  Ici aussi il faudra ajuster pour calculer  |
-    | à partir des vraisemblances conditionnelles |
-    \*-------------------------------------------*/
-    /* We don't do the root node here,
-       so k goes between 0 and n - 3. */
-    for(k = 0; k < *n - 3; k++) {
-        lik_dna_node(X, match.s1[k], match.s2[k],
-		     match.a[k], edge_length, PART,
-		     PARA, GAMMA, INV, BF, nr);
-    }
+    /* loop through the tree
+       We don't do the root node here, so i goes between 0 and 2n - 6 */
+    for(i = 0; i < 2*n - 6; i += 2)
+	    lik_dna_node(D, i);
 
     /* We now do the root */
-    root = match.s2[*n - 2];
-    lik_dna_root(X, match.s1[*n - 3], match.s2[*n - 3],
-		 match.s1[*n - 2], root, edge_length,
-                 PART, PARA, GAMMA, INV, BF, nr);
+    lik_dna_root(D);
     *loglik = 0.;
-    root--; /* to use root as index */
-    for(j = 0; j < *s; j++) {
-        i = root + j*nr;
-        *loglik += w[j]*log(BF[0]*X.A[i] + BF[1]*X.C[i] + BF[2]*X.G[i] + BF[3]*X.T[i]);
+    for(j = 0; j < nsite; j++) {
+	    tmp = 0.;
+	    for (i = 0; i < 4; i++)
+		    tmp += D->BF[i] * D->X.anc[j + i*nr];
+	    *loglik += D->X.w[j]*log(tmp);
     }
 } /* lik_dna_tree */
 
 double fcn_mlphylo_invar(double I, info *INFO)
 {
     double loglik;
-    int N;
 
-    N = *(INFO->D->n)*2 - 3;
-    INFO->D->INV.I[INFO->i] = I;
-    lik_dna_tree(INFO->D->n, INFO->D->s, N, INFO->D->X, INFO->D->w,
-		 INFO->D->match, INFO->D->edge_length,
-		 INFO->D->partition, INFO->D->PAR, INFO->D->GAMMA,
-		 INFO->D->INV, INFO->D->BF, &loglik);
-    return(-loglik);
+    INFO->D->MOD.invar[INFO->i] = I;
+    lik_dna_tree(INFO->D, &loglik);
+
+    return -loglik;
 }
 
 void mlphylo_invar(int N, DNAdata *D, double *loglik)
@@ -587,24 +552,18 @@ optimize proportion of invariants
 	I = Brent_fmin(0.0, 1.0,
 		       (double (*)(double, void*)) fcn_mlphylo_invar,
 		       infptr, 1.e-9);
-	D->INV.I[i] = I;
+	D->MOD.invar[i] = I;
     }
 }
 
 double fcn_mlphylo_gamma(double a, info *INFO)
 {
     double loglik;
-    int N;
 
-    N = *(INFO->D->n)*2 - 3;
-    INFO->D->GAMMA.alpha[INFO->i] = a;
+    INFO->D->MOD.alpha[INFO->i] = a;
+    lik_dna_tree(INFO->D, &loglik);
 
-    lik_dna_tree(INFO->D->n, INFO->D->s, N, INFO->D->X, INFO->D->w,
-		 INFO->D->match, INFO->D->edge_length,
-		 INFO->D->partition, INFO->D->PAR, INFO->D->GAMMA,
-		 INFO->D->INV, INFO->D->BF, &loglik);
-
-    return(-loglik);
+    return -loglik;
 }
 
 void mlphylo_gamma(int N, DNAdata *D, double *loglik)
@@ -624,24 +583,18 @@ optimize gamma (ISV) parameters
 	a = Brent_fmin(0.0, 1.e4,
 		       (double (*)(double, void*)) fcn_mlphylo_gamma,
 		       infptr, 1.e-6);
-	D->GAMMA.alpha[i] = a;
+	D->MOD.alpha[i] = a;
     }
 }
 
 double fcn_mlphylo_para(double p, info *INFO)
 {
     double loglik;
-    int N;
 
-    N = *(INFO->D->n)*2 - 3;
-    INFO->D->PAR.para[INFO->i] = p;
+    INFO->D->MOD.para[INFO->i] = p;
+    lik_dna_tree(INFO->D, &loglik);
 
-    lik_dna_tree(INFO->D->n, INFO->D->s, N, INFO->D->X, INFO->D->w,
-		 INFO->D->match, INFO->D->edge_length,
-		 INFO->D->partition, INFO->D->PAR, INFO->D->GAMMA,
-		 INFO->D->INV, INFO->D->BF, &loglik);
-
-    return(-loglik);
+    return -loglik;
 }
 
 void mlphylo_para(int N, DNAdata *D, double *loglik)
@@ -661,24 +614,18 @@ optimize the contrast parameter(s) xi
 	p = Brent_fmin(0, 1.e3,
 		       (double (*)(double, void*)) fcn_mlphylo_para,
 		       infptr, 1.e-6);
-	D->PAR.para[i] = p;
+	D->MOD.para[i] = p;
     }
 }
 
 double fcn_mlphylo_xi(double XI, info *INFO)
 {
     double loglik;
-    int N;
 
-    N = *(INFO->D->n)*2 - 3;
-    INFO->D->partition.xi[INFO->i] = XI;
+    INFO->D->MOD.xi[INFO->i] = XI;
+    lik_dna_tree(INFO->D, &loglik);
 
-    lik_dna_tree(INFO->D->n, INFO->D->s, N, INFO->D->X, INFO->D->w,
-		 INFO->D->match, INFO->D->edge_length,
-		 INFO->D->partition, INFO->D->PAR, INFO->D->GAMMA,
-		 INFO->D->INV, INFO->D->BF, &loglik);
-
-    return(-loglik);
+    return -loglik;
 }
 
 void mlphylo_xi(int N, DNAdata *D, double *loglik)
@@ -695,7 +642,6 @@ optimize the contrast parameter(s) xi
 
     /* In the following, the range of the search algo was changed from */
     /* 0-1000 to 0-100 to avoid infinite looping. (2006-04-15) */
-
     /* This was changed again to 0-20. (2006-07-17) */
 
     for(i = 0; i < N; i++) {
@@ -703,23 +649,18 @@ optimize the contrast parameter(s) xi
 	XI = Brent_fmin(0.0, 2.e1,
 		       (double (*)(double, void*)) fcn_mlphylo_xi,
 		       infptr, 1.e-4);
-	D->partition.xi[i] = XI;
+	D->MOD.xi[i] = XI;
     }
 }
 
 double fcn_mlphylo_edgelength(double l, info *INFO)
 {
     double loglik;
-    int N;
 
-    N = *(INFO->D->n)*2 - 3;
-    INFO->D->edge_length[INFO->i] = l;
+    INFO->D->PHY.el[INFO->i] = l;
+    lik_dna_tree(INFO->D, &loglik);
 
-    lik_dna_tree(INFO->D->n, INFO->D->s, N, INFO->D->X, INFO->D->w,
-		 INFO->D->match, INFO->D->edge_length,
-		 INFO->D->partition, INFO->D->PAR, INFO->D->GAMMA,
-		 INFO->D->INV, INFO->D->BF, &loglik);
-    return(-loglik);
+    return -loglik;
 }
 
 void mlphylo_edgelength(int N, DNAdata *D, double *loglik)
@@ -731,11 +672,6 @@ optimize branch lengths
     info INFO, *infptr;
     double l;
 
-/*     int tmp; */
-
-/*     tmp = D->GAMMA.ncat[0]; */
-/*     D->GAMMA.ncat[0] = 1; */
-
     infptr = &INFO;
     INFO.D = D;
 
@@ -744,181 +680,67 @@ optimize branch lengths
 	l = Brent_fmin(0.0, 0.1,
 		       (double (*)(double, void*)) fcn_mlphylo_edgelength,
 		       infptr, 1.e-6);
-	D->edge_length[i] = l;
+	D->PHY.el[i] = l;
     }
-
-/*     D->GAMMA.ncat[0] = tmp; */
 }
 
-/* void nni_matching(int *sib1, int *sib2, int *ancestor, */
-/* 		  int node1, int node2, int crossed) */
-/* { */
-/*   int i, j, tmp; */
-
-/*   /\* find the line with 'node1' as the ancestor *\/ */
-/*   i = 0; */
-/*   while (ancestor[i] != node1) i++; */
-/*   /\* same thing for 'node2' *\/ */
-/*   j = 0; */
-/*   while (ancestor[j] != node1) j++; */
-
-/*   /\* now do the inversion *\/ */
-/*   if (crossed) { */
-/*     tmp = sib2[i]; */
-/*     sib2[i] = sib1[j]; */
-/*     sib1[j] = tmp; */
-/*   } else { */
-/*     tmp = sib2[i]; */
-/*     sib2[i] = sib2[j]; */
-/*     sib2[j] = tmp; */
-/*   } */
-
-/*   /\* we check that both new pairs are correctly ordered *\/ */
-/*   /\* (is this really needed?? or more checks??) *\/ */
-/*   if (sib1[i] > sib2[i]) { */
-/*     tmp = sib1[i]; */
-/*     sib1[i] = sib2[i]; */
-/*     sib2[i] = tmp; */
-/*   } */
-/*   if (sib1[j] > sib2[j]) { */
-/*     tmp = sib1[j]; */
-/*     sib1[j] = sib2[j]; */
-/*     sib2[j] = tmp; */
-/*   } */
-/* } /\* nni_matching *\/ */
-
-/* void mlphylo_topology(int n, DNAdata *D, double *loglik) */
-/* { */
-/*   int i, j, new_sib1, new_sib2, new_ancestor, *ns1, *ns2, *na; */
-/*   double oldlik, newlik; */
-
-/*   ns1 = &new_sib1; */
-/*   ns2 = &new_sib2; */
-/*   na = &new_ancestor; */
-
-/*   ns1 = (int*)R_alloc(n - 1, sizeof(int)); */
-/*   ns2 = (int*)R_alloc(n - 1, sizeof(int)); */
-/*   na = (int*)R_alloc(n - 1, sizeof(int)); */
-
-/*   oldlik = *loglik; */
-
-/*   for (i = 0; i < n - 1; i++) { */
-/*     ns1[i] = D->sib1[i]; */
-/*     ns2[i] = D->sib2[i]; */
-/*     na[i] = D->ancestor[i]; */
-/*   } */
-
-/*   for (i = 0; i < n - 3; i++) { */
-/*     j = 0; */
-/*     while (ns1[j] != na[i] || ns2[j] != na[i]) j++; */
-/*     /\* peut-etre pas la pein de faire l'appel de fonction ou */
-/*        alors, on peut le simplifier en passant juste le */
-/*        numero de la ligne du matching *\/ */
-/*     nni_matching(ns1, ns2, na, ns1[j], ns2[j], 0); */
-
-/*     /\* In the followng, all the likelihood is re-computed: this *\/ */
-/*     /\* may be speeded up by just re-computing the relevant part *\/ */
-/*     /\* of the likelihood *\/ */
-/*     lik_dna_tree(D->n, D->s, D->XA, D->XC, D->XG, D->XT, D->w, ns1, ns2, na, */
-/* 		 D->edge_length, D->npart, D->partition, D->model, D->xi, D->para, */
-/* 		 D->npara, D->pim_para, D->ncat, D->alpha, D->nalpha, D->pim_alpha, */
-/* 		 D->invar, D->ninvar, D->pim_invar, D->BF, &newlik); */
-
-/*     if (newlik < oldlik) { */
-/*       for (i = 0; i < n - 1; i++) { */
-/* 	ns1[i] = D->sib1[i]; */
-/* 	ns2[i] = D->sib2[i]; */
-/* 	na[i] = D->ancestor[i]; */
-/*       } */
-/*     } */
-/*   } */
-/* } /\* mlphylo_topology *\/ */
-
-void mlphylo_DNAmodel(int *n, int *s, double *XA, double *XC, double *XG,
-		     double *XT, double *w, int *sib1, int *sib2,
-		     int *ancestor, double *edge_length, int *npart,
-		     int *partition, int *model, double *xi, double *para,
-		     int *npara, int *pim_para, double *alpha, int *nalpha,
-		     int *pim_alpha, int *ncat, double *invar, int *ninvar,
-		     int *pim_invar, double *BF, int *search_tree,
-		     double *loglik)
+void mlphylo_DNAmodel(int *n, int *s, unsigned char *SEQ, double *ANC,
+		      double *w, int *edge1, int *edge2,
+		      double *edge_length, int *npart, int *partition,
+		      int *model, double *xi, double *para, int *npara,
+		      double *alpha, int *nalpha, int *ncat,
+		      double *invar, int *ninvar, double *BF,
+		      int *search_tree, int *fixed, double *loglik)
 /*
 This function iterates to find the MLEs of the substitution
 paramaters and of the branch lengths for a given tree.
 */
 {
-    int N, i, j, k;
-    DNAdata *D, data;
+	DNAdata *D, data;
 
-    D = &data;
-    N = *n*2 - 3;      /* the tree is unrooted */
+	D = &data;
 
-    D->n = n;
-    D->s = s;
+	D->X.n = n;
+	D->X.s = s;
+	D->X.w = w;
+	D->X.seq = SEQ;
+	D->X.anc = ANC;
 
-    D->X.A = XA;
-    D->X.C = XC;
-    D->X.G = XG;
-    D->X.T = XT;
+	D->PHY.edge1 = edge1;
+	D->PHY.edge2 = edge2;
+	D->PHY.el = edge_length;
 
-    D->w = w;
+	D->MOD.npart = npart;
+	D->MOD.partition = partition;
+	D->MOD.model = model;
+	D->MOD.xi = xi;
+	D->MOD.para = para;
+	D->MOD.npara = npara;
+	D->MOD.alpha = alpha;
+	D->MOD.nalpha = nalpha;
+	D->MOD.ncat = ncat;
+	D->MOD.invar = invar;
+	D->MOD.ninvar = ninvar;
 
-    D->match.s1 = sib1;
-    D->match.s2 = sib2;
-    D->match.a = ancestor;
+	D->BF = BF;
 
-    D->edge_length = edge_length;
-
-    D->partition.n = npart;
-    D->partition.limit = partition;
-    D->partition.model = model;
-    D->partition.xi = xi;
-
-    D->PAR.para = para;
-    D->PAR.n = npara;
-    D->PAR.pim = pim_para;
-
-    D->GAMMA.ncat = ncat;
-    D->GAMMA.alpha = alpha;
-    D->GAMMA.n = nalpha;
-    D->GAMMA.pim = pim_alpha;
-
-    D->INV.I = invar;
-    D->INV.n = ninvar;
-    D->INV.pim = pim_invar;
-
-    D->BF = BF;
-
-    lik_dna_tree(D->n, D->s, N, D->X, D->w, D->match,
- 		 D->edge_length, D->partition, D->PAR,
-		 D->GAMMA, D->INV, D->BF, loglik);
-
-/*     for (i = 0; i < 10; i++) { */
-    if (*npart > 1) mlphylo_xi(*npart - 1, D, loglik);
-    if (*npara) mlphylo_para(*npara, D, loglik);
-    if (*nalpha) mlphylo_gamma(*nalpha, D, loglik);
-    if (*ninvar) mlphylo_invar(*ninvar, D, loglik);
-/*     mlphylo_edgelength(N, D, loglik); */
-
-    lik_dna_tree(D->n, D->s, N, D->X, D->w, D->match,
- 		 D->edge_length, D->partition, D->PAR,
-		 D->GAMMA, D->INV, D->BF, loglik);
-
-/*     if (*search_tree) mlphylo_topology(*n, D, loglik); */
-/*     } */
+	lik_dna_tree(D, loglik);
+	if (! *fixed) {
+		if (*npart > 1) mlphylo_xi(*npart - 1, D, loglik);
+		if (*npara) mlphylo_para(*npara, D, loglik);
+		if (*nalpha) mlphylo_gamma(*nalpha, D, loglik);
+		if (*ninvar) mlphylo_invar(*ninvar, D, loglik);
+	}
+	lik_dna_tree(D, loglik);
 } /* mlphylo_DNAmodel */
+/*
+void jc69(double *P, double *t, double *u)
+{
+	PMAT_JC69(*t, *u, P);
+}
 
-/*---------------------------------------------------------------*/
-
-/* Exemples de "C-wrappers" pour obtenir la matrice */
-/* de probabilités de transition. */
-
-/* void titijc(double *t, double *u, double *P) */
-/* { */
-/*   PMAT_JC69(*t, *u, P); */
-/* } */
-
-/* void titihky(double *t, double *a, double *b, double *BF, double *P) */
-/* { */
-/*   PMAT_HKY85(*t, *a, *b, BF, P); */
-/* } */
+void k80(double *P, double *t, double *u)
+{
+	PMAT_K80(*t, u[0], u[1], P);
+}
+*/

@@ -30,7 +30,7 @@
 		\deqn{V_{ij} = \gamma \times t_a}{%
 					Vij = gamma . ta}
 	where \eqn{t_a}{ta} is the distance on the phylogeny between the root and the most recent common ancestor
-	of taxa \eqn{i}{i} and \eqn{j}{j} and \eqn{\gamma}{gamma} is a constant.}
+	of taxa \eqn{i}{i} and \eqn{j}{j} and \eqn{\gamma}{gamma} is a constant.
 }
 \value{
 	An object of class \code{corBrownian} or coefficient from an object of this class (actually sends \code{numeric(0)}!)

@@ -1,8 +1,8 @@
-## mlphylo.R (2007-03-27)
+## mlphylo.R (2008-01-03)
 
 ##   Estimating Phylogenies by Maximum Likelihood
 
-## Copyright 2006-2007 Emmanuel Paradis
+## Copyright 2006-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -13,269 +13,143 @@ deviance.phylo <- function(object, ...) -2*attr(object, "loglik")
 
 AIC.phylo <- function(object, ..., k = 2)
 {
-    np <- length(object$edge.length)
-    PARA <- attr(object, "para")
-    npart <- length(PARA)
-    unbalancedBF <- FALSE
-    for (i in 1:npart) {
-        if (!PARA[[i]][[1]] %in% c("JC69", "F81"))
-          np <- np + length(PARA[[i]][[2]])
-        if (!PARA[[i]][[1]] %in% c("JC69", "K80"))
-          unbalancedBF <- TRUE
-    }
-    if (unbalancedBF) np <- np + 3
-    if (npart > 1) np <- np + npart - 1
-    -2*attr(object, "loglik") + k * np
+    np <- length(object$edge.length) +
+        length(attr(object, "rates")) +
+            length(attr(object, "alpha")) +
+                length(attr(object, "invar")) +
+                    length(attr(object, "xi"))
+    if (!attr(object, "model") %in% c("JC69", "F81"))
+        np <- np + 3
+    -2*attr(object, "loglik") + k*np
 }
 
-.subst.model <- c("JC69", "K80", "F81", "F84",
-                  "HKY85", "T92", "TN93", "GTR")
+.subst.model <- structure(c(0, 1, 0, 1, 1, 1, 2, 5),
+   names = c("JC69", "K80", "F81", "F84",
+   "HKY85", "T92", "TN93", "GTR"))
 
-mlphylo <- function(model = DNAmodel(), x, phy, search.tree = FALSE,
-                    quiet = FALSE)
+mlphylo <-
+    function(x, phy, model = DNAmodel(), search.tree = FALSE,
+             quiet = FALSE, value = NULL, fixed = FALSE)
 {
-    if (!is.binary.tree(phy)) stop("the initial tree must be dichotomous.")
-    if (is.rooted(phy))
-      warning("the initial tree is rooted: it will be unrooted.")
+    ## not yet generic....
+    if (class(x) != "DNAbin") stop("DNA sequences not in binary format")
+    if (!is.binary.tree(phy))
+        stop("the initial tree must be dichotomous.")
+    if (!quiet && is.rooted(phy)) {
+        warning("the initial tree is rooted: it will be unrooted.")
+        phy <- unroot(phy)
+    }
     if (is.null(phy$edge.length))
       stop("the initial tree must have branch lengths.")
     if (any(phy$edge.length > 1))
       stop("some branch lengths are greater than one.")
+    phy <- reorder(phy, "pruningwise")
     if (!quiet) cat("Preparing the sequences...\n")
-    BF <- base.freq(x)
-    ## <FIXME> Will need to do the usual checks of names...
-    x <- if (is.list(x)) x[phy$tip.label] else x[phy$tip.label, ]
-    ## </FIXME>
-    Y <- prepare.dna(x, model)
+    BF <- if (model$model %in% 1:2) rep(0.25, 4) else base.freq(x)
+    if (is.list(x)) x <- as.matrix(x)
+    if (is.null(rownames(x)))
+        stop("DNA sequences have no names") # safe...
+    if (!all(names(x) %in% phy$tip.label))
+        stop("the names of the DNA sequences and the tip labels
+of the tree do not match") # safe here also
+    x <- x[phy$tip.label, ]
+    Y <- prepareDNA(x, model)
     S <- length(Y$weight)
     npart <- dim(Y$partition)[2] # the number of overall partitions
+    ## in case of negative branch lengths:
+    phy$edge.length <- abs(phy$edge.length)
+    nb.tip <- length(phy$tip.label)
+    para <- if (Y$npara) rep(1, Y$npara) else 0
+    alpha <- if (Y$nalpha) rep(.5, Y$nalpha) else 0
+    invar <- if (Y$ninvar) rep(0.5, Y$ninvar) else 0
 
-    ## prepare the tree:
-    if (!quiet) cat("Preparing the tree...\n")
-    if (!is.rooted(phy)) phy <- multi2di(phy, random = FALSE)
-
-    ## in case NJ returns negative branch lengths:
-    if (any(phy$edge.length < 0)) phy$edge.length <- abs(phy$edge.length)
-
-    match <- as.matching(phy)
-    nb.tip <- length(match$edge.length) / 2 + 1
-    ## unroot the tree:
-    nr <- dim(match$matching)[1]
-    n1 <- match$matching[nr, 1]
-    n2 <- match$matching[nr, 2]
-    if (match$edge.length[n1] == 0) {
-        match$edge.length[n1] <- match$edge.length[n2]
-        match$edge.length[n2] <-  0
+    if (!is.null(value)) {
+        if (para && !is.null(value$rates))
+            para <- value$rates[1:Y$npara]
+        if (alpha && !is.null(value$alpha))
+            alpha <- value$alpha[1:Y$nalpha]
+        if (invar && !is.null(value$invar))
+            invar <- value$invar[1:Y$ninvar]
     }
-    match$matching[nr, 3] <- 0
-
-    if (Y$npara) para <- rep(1, Y$npara)
-    else Y$pim.para <- para <- 0
-
-    if (Y$nalpha) alpha <- rep(.5, Y$nalpha)
-    else {
-        Y$ncat <- rep(1, npart)
-        alpha <- Y$pim.alpha <- 0
-    }
-
-    if (Y$ninvar) invar <- rep(0.5, Y$ninvar)
-    else invar <- Y$pim.invar <- 0
 
     loglik <- 0
-
     if (!quiet) cat("Fitting in progress... ")
-    ans <- .C("mlphylo_DNAmodel", as.integer(nb.tip), as.integer(S),
-              as.double(Y$XA), as.double(Y$XC), as.double(Y$XG), as.double(Y$XT),
-              as.double(Y$w), as.integer(match$matching[, 1]),
-              as.integer(match$matching[, 2]), as.integer(match$matching[, 3]),
-              as.double(match$edge.length), as.integer(npart),
-              as.integer(Y$partition), as.integer(Y$submo), as.double(Y$xi),
-              as.double(para), as.integer(Y$npara), as.integer(Y$pim.para),
+    res <- .C("mlphylo_DNAmodel", as.integer(nb.tip), as.integer(S),
+              as.raw(Y$SEQ), as.double(Y$ANC), as.double(Y$w),
+              as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
+              as.double(phy$edge.length), as.integer(npart),
+              as.integer(Y$partition), as.integer(Y$model),
+              as.double(Y$xi), as.double(para), as.integer(Y$npara),
               as.double(alpha), as.integer(Y$nalpha),
-              as.integer(Y$pim.alpha), as.integer(Y$ncat),
-              as.double(invar), as.integer(Y$ninvar),
-              as.integer(Y$pim.invar), as.double(BF), as.integer(search.tree),
+              as.integer(Y$ncat), as.double(invar), as.integer(Y$ninvar),
+              as.double(BF), as.integer(search.tree), as.integer(fixed),
               as.double(loglik), NAOK = TRUE, PACKAGE = "ape")
     if (!quiet) cat("DONE!\n")
-    tree <- list(matching = cbind(ans[[8]], ans[[9]], ans[[10]]),
-                 edge.length = ans[[11]], tip.label = phy$tip.label)
-    class(tree) <- "matching"
-    tree$matching[length(tree$matching)] <-
-      tree$matching[length(tree$matching) - 1] + 1
-    tree <- unroot(as.phylo(tree))
-    attr(tree, "loglik") <- ans[[28]]
-    para <- list()
-    length(para) <- npart
-    names(para) <- paste("partition", 1:npart)
-    for (i in 1:npart) {
-        l <- list(.subst.model[ans[[14]]][i])
-        names(l) <- "substitution model"
-        if (Y$npara && sum(Y$pim.para[, i])) {
-            tmp <- list(ans[[16]][as.logical(Y$pim.para[, i])])
-            names(tmp) <- "substitution rates"
-            l <- c(l, tmp)
-        }
-        if (Y$nalpha && sum(Y$pim.alpha[, i])) {
-            tmp <- list(ans[[19]][as.logical(Y$pim.alpha[, i])])
-            names(tmp) <- "alpha"
-            l <- c(l, tmp)
-        }
-        if (Y$ninvar && sum(Y$pim.invar[, i])) {
-            tmp <- list(ans[[23]][as.logical(Y$pim.invar[, i])])
-            names(tmp) <- "invariants rate"
-            l <- c(l, tmp)
-        }
-        para[[i]] <- l
-    }
-    attr(tree, "para") <- para
-    if (dim(Y$partition)[2] > 1) attr(tree, "xi") <- ans[[15]]
-    tree
+    phy$edge.length = res[[8]]
+    attr(phy, "loglik") <- res[[23]]
+    attr(phy, "npart") <- npart
+    attr(phy, "model") <- names(Y$npara)
+    if (para) attr(phy, "rates") <- res[[13]]
+    if (alpha) attr(phy, "alpha") <- res[[15]]
+    if (invar) attr(phy, "invar") <- res[[18]]
+    if (npart > 1) attr(phy, "xi") <- res[[12]]
+    phy
 }
 
-DNAmodel <- function(model = "K80", part.model = 1,
-                     ncat = 1, part.gamma = 1,
-                     invar = FALSE, part.invar = 1)
+DNAmodel <- function(model = "K80", partition = 1,
+         ncat.isv = 1, invar = FALSE,
+         equal.isv = TRUE, equal.invar = 1)
 {
-    obj <- list(model = model, part.model = part.model,
-                ncat = ncat, part.gamma = part.gamma,
-                invar = invar, part.invar = part.invar)
-    class(obj) <- "DNAmodel"
-    obj
+    if (ncat.isv > 10)
+        stop("number of categories for inter-site variation cannot exceed 10")
+    structure(list(model = model, partition = partition,
+                   ncat.isv = ncat.isv, invar = invar,
+                   equal.isv = equal.isv, equal.invar = equal.invar),
+              class = "DNAmodel")
 }
 
-prepare.dna <- function(X, DNAmodel)
+prepareDNA <- function(X, DNAmodel)
 {
-    if (class(X) == "DNAbin") X <- as.character(X)
-    ## First, check that all sequences in the list are of the
-    ## same length. If OK, convert as a matrix.
-    if (is.list(X)) {
-        if (length(unique(unlist(lapply(X, length)))) > 1)
-            stop("sequences in list must have the same lengths")
-        X <- matrix(unlist(X), nrow = length(X), byrow = TRUE)
-    }
-    if (is.data.frame(X)) X <- as.matrix(X)
-    L <- dim(X)[2]
+    L <- dim(X)[2] # already converted as a matrix in mlphylo()
 
-    ## In the following 'partition' is an indicator of a set
-    ## of sites that are assumed to evolve under the same
-    ## parameters
-    x <- rep(DNAmodel$part.model, length.out = L)
-    y <- rep(DNAmodel$part.gamma, length.out = L)
-    z <- rep(DNAmodel$part.invar, length.out = L)
-    partition <- factor(paste(x, y, z, sep = "-"))
-    npart <- nlevels(partition)
+    npart <- length(unique(DNAmodel$partition))
 
-    ## find which substitution model for each partition:
-    submo <- integer(npart)
-    pim.submo <- matrix(0, length(DNAmodel$part.model), npart)
-    for (i in 1:npart) {
-        j <- as.numeric(unlist(strsplit(levels(partition)[i], "-"))[1])
-        submo[i] <- which(.subst.model == DNAmodel$model[j])
-        pim.submo[j, i] <- 1
-    }
-    ## determine how many free substitution parameters
-    free.para <- c(0, 1, 0, 1, 1, 1, 2, 5)
-    npara <- sum(free.para[submo])
+    ## find which substitution model:
+    mo <- which(names(.subst.model) == DNAmodel$model)
+    npara <- .subst.model[mo] # keeps the 'names'
 
+    ## inter-sites variation:
+    nalpha <- as.numeric(DNAmodel$ncat.isv > 1)
+    if (!DNAmodel$equal.isv) nalpha <- npart * nalpha
 
-    pim.para <- matrix(0, npara, npart)
-    i <- 1
-    for (j in 1:npart) {
-        if (!free.para[submo[i]]) next
-        pim.para[i:(i - 1 + free.para[submo[i]]), j] <- 1
-        i <- i + free.para[submo[i]]
-    }
+    ## proportion of invariants:
+    ninvar <- as.numeric(DNAmodel$invar)
+    if (!DNAmodel$equal.invar) ninvar <- npart * ninvar
 
-    ## inter-sites variation for each partition:
-    nalpha <- sum(DNAmodel$ncat > 1)
-    pim.alpha <- matrix(0, nalpha, npart)
-    ncat <- rep(1, npart)
-    if (nalpha) {
-        for (i in 1:npart) {
-            j <- as.numeric(unlist(strsplit(levels(partition)[i], "-"))[2])
-            pim.alpha[j, i] <- 1
-            ncat[i] <- DNAmodel$ncat[j]
-        }
-    }
+    SEQ <- weight <- part <- NULL
 
-    ## proportion of invariants for each partition:
-    ninvar <- sum(DNAmodel$invar)
-    pim.invar <- matrix(0, ninvar, npart)
-    if (ninvar) {
-        for (i in 1:npart) {
-            j <- as.numeric(unlist(strsplit(levels(partition)[i], "-"))[3])
-            pim.invar[j, i] <- 1
-        }
-    }
-
-    XA <- XC <- XG <- XT <- matrix(NA, dim(X)[1], 0)
-    weight <- numeric(0)
-    part <- numeric(0) # gives the length of each partition
     ## For each partition...
     for (i in 1:npart) {
-        M <- X[, partition == levels(partition)[i], drop = FALSE]
-        ## Get the (logical) indices of the variable sites:
-        polymorph <- apply(M, 2, function(x) length(unique(x)) > 1)
-        ## Frequencies of the monomorph sites:
-        if (!all(polymorph)) { # is there at least one monomorph site?
-            TAB <- table(M[1, !polymorph, drop = FALSE])
-            x <- matrix(names(TAB), dim(M)[1], length(TAB), byrow = TRUE)
-        }
-        ## Frequencies of the patterns among species for the
-        ## variables sites:
-        if (any(polymorph)) { # is there at least one polymorph site?
-            TAB2 <- table(apply(M[, polymorph, drop = FALSE], 2,
-                                paste, collapse = ""))
-            ## The names of TAB2 (= patterns among species) are already
-            ## sorted in alphabetical order.
-            y <- matrix(unlist(strsplit(names(TAB2), NULL)),
-                        dim(M)[1], length(TAB2))
-        }
-        if (all(polymorph)) {
-            dna <- y
-            weight <- c(weight, as.vector(TAB2))
-        } else {
-            if (!any(polymorph)) {
-                dna <- x
-                weight <- c(weight, as.vector(TAB))
-            } else {
-                dna <- cbind(x, y)
-                weight <- c(weight, as.vector(TAB), as.vector(TAB2))
-            }
-        }
-        ## Transform the nucleotide values in "likelihood" values:
-        xa <- xc <- xg <- xt <- matrix(0, nrow(dna), ncol(dna))
-        xa[dna == "a"] <- 1
-        xc[dna == "c"] <- 1
-        xg[dna == "g"] <- 1
-        xt[dna == "t"] <- 1
-### For the moment gaps ("-") are treated in
-### the same way than missing data ("n").
-        uk <- dna %in% c("n", "-") # unknown
-        xa[uk] <- xc[uk] <- xg[uk] <- xt[uk] <- 1
-        xa[dna == "m"] <- xc[dna == "m"] <- 1
-        xa[dna == "r"] <- xg[dna == "r"] <- 1
-        xa[dna == "w"] <- xt[dna == "w"] <- 1
-        xc[dna == "s"] <- xg[dna == "s"] <- 1
-        xc[dna == "y"] <- xt[dna == "y"] <- 1
-        xg[dna == "k"] <- xt[dna == "k"] <- 1
-        xa[dna == "v"] <- xc[dna == "v"] <- xg[dna == "v"] <- 1
-        xa[dna == "h"] <- xc[dna == "h"] <- xt[dna == "h"] <- 1
-        xa[dna == "d"] <- xg[dna == "d"] <- xt[dna == "d"] <- 1
-        xc[dna == "b"] <- xg[dna == "b"] <- xt[dna == "b"] <- 1
-
-        XA <- cbind(XA, xa)
-        XC <- cbind(XC, xc)
-        XG <- cbind(XG, xg)
-        XT <- cbind(XT, xt)
-        part <- c(part, dim(xa)[2])
+        ## extracts the sites in this partition:
+        M <- X[, DNAmodel$partition == i, drop = FALSE]
+        ## convert each column as a character string:
+        M <- apply(M, 2, rawToChar)
+        ## get their frequencies:
+        w <- table(M)
+        ## convert back to raw the unique(M):
+        M <- sapply(dimnames(w)[[1]], charToRaw)
+        ## remove useless attributes:
+        colnames(M) <- dimnames(w) <- NULL
+        w <- unclass(w)
+        ## bind everything:
+        SEQ <- cbind(SEQ, M)
+        weight <- c(weight, w)
+        part <- c(part, length(w)) # the length of each partition
     }
-    ## Here we add rows to these matrices for the nodes:
-    tmp <- matrix(1, nrow(XA) - 2, ncol(XA))
-    XA <- rbind(XA, tmp)
-    XC <- rbind(XC, tmp)
-    XG <- rbind(XG, tmp)
-    XT <- rbind(XT, tmp)
+
+    class(SEQ) <- "DNAbin"
+    ANC <- array(1, c(nrow(SEQ) - 2, ncol(SEQ), 4))
+
     ## 'partition' gives the start and end of each partition:
     partition <- matrix(1, 2, npart)
     partition[2, ] <- cumsum(part)
@@ -284,9 +158,7 @@ prepare.dna <- function(X, DNAmodel)
         partition[2, npart] <- length(weight)
         xi <- rep(1, npart - 1)
     } else xi <- 0
-    list(XA = XA, XC = XC, XG = XG, XT = XT, weight = weight,
-         partition = partition, submo = submo, xi = xi,
-         npara = npara, pim.para = pim.para, nalpha = nalpha,
-         ncat = ncat, pim.alpha = pim.alpha, ninvar = ninvar,
-         pim.invar = pim.invar)
+    list(SEQ = SEQ, ANC = ANC, weight = weight, partition = partition,
+         model = mo, xi = xi, npara = npara, nalpha = nalpha,
+         ncat = DNAmodel$ncat.isv, ninvar = ninvar)
 }

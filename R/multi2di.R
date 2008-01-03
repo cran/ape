@@ -63,7 +63,7 @@ multi2di <- function(phy, random = TRUE)
     if (wbl)
       phy$edge.length <- c(phy$edge.length[-edge2delete], new.edge.length)
     reorder(phy)
-    ##read.tree(text = write.tree(phy, multi.line = FALSE))
+    ##read.tree(text = write.tree(phy))
 }
 
 di2multi <- function(phy, tol = 1e-8)

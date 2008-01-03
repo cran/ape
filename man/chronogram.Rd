@@ -24,7 +24,7 @@ chronogram(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
 \value{
 \code{chronogram} returns an object of class \code{"phylo"}. The branch lengths of this
 tree will be clock-like and scaled so that the root node has age 1 (or the value
-set by the option \code{scale}}
+set by the option \code{scale}
 }
 \author{
   Gangolf Jobb (\url{http://www.treefinder.de}) and

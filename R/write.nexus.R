@@ -81,7 +81,7 @@ the original data won't be written with the tree."))
         if (is.rooted(obj[[i]]))
           cat("\tTREE * UNTITLED = [&R] ", file = file, append = TRUE)
         else cat("\tTREE * UNTITLED = [&U] ", file = file, append = TRUE)
-        cat(write.tree(obj[[i]], file = "", multi.line = FALSE),
+        cat(write.tree(obj[[i]], file = ""),
             "\n", sep = "", file = file, append = TRUE)
     }
     cat("END;\n", file = file, append = TRUE)

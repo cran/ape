@@ -24,7 +24,7 @@
 \alias{getError}
 \alias{nEdges}
 \alias{nNodes}
-\alias{nTips}
+\alias{klastorin_nTips}
 \alias{getMisawaTajima}
 \alias{phylogram.plot}
 \alias{cladogram.plot}
@@ -40,7 +40,7 @@
 \alias{pos.move}
 \alias{BOTHlabels}
 \alias{chronopl.cv}
-\alias{prepare.dna}
+\alias{prepareDNA}
 \alias{floating.pie.asp}
 \alias{checkLabel}
 \alias{getMRCA}

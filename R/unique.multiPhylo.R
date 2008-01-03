@@ -1,4 +1,4 @@
-## unique.multi.tree.R (2007-11-16)
+## unique.multiPhylo.R (2007-11-16)
 
 ##   Revomes Duplicate Trees from a List
 
@@ -7,7 +7,7 @@
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-unique.multi.tree <- function(x, incomparables = FALSE,
+unique.multiPhylo <- function(x, incomparables = FALSE,
                               use.edge.length = FALSE,
                               use.tip.label = TRUE, ...)
 {
@@ -25,5 +25,5 @@ unique.multi.tree <- function(x, incomparables = FALSE,
             j <- j + 1
         }
     }
-    structure(x[keep], class = c("multi.tree", "phylo"))
+    structure(x[keep], class = "multiPhylo")
 }

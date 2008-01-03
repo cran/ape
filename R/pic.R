@@ -32,7 +32,7 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
           phenotype[1:nb.tip] <- x[phy$tip.label]
         else {
             phenotype[1:nb.tip] <- x
-            warning('the names of argument "x" and the names of the tip labels did not match: the former were ignored in the analysis.')
+            warning('the names of argument "x" and the tip labels of the tree did not match: the former were ignored in the analysis.')
         }
     }
     ## No need to copy the branch lengths: they are rescaled

@@ -1,4 +1,4 @@
-## ace.R (2007-01-23)
+## ace.R (2007-12-14)
 
 ##     Ancestral Character Estimation
 
@@ -13,6 +13,8 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
 {
     if (class(phy) != "phylo")
       stop('object "phy" is not of class "phylo".')
+    if (is.null(phy$edge.length))
+        stop("tree has no branch lengths")
     type <- match.arg(type, c("continuous", "discrete"))
     nb.tip <- length(phy$tip.label)
     nb.node <- phy$Nnode
@@ -23,7 +25,7 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
     if (!is.null(names(x))) {
         if(all(names(x) %in% phy$tip.label))
           x <- x[phy$tip.label]
-        else warning('the names of argument "x" and the names of the tip labels
+        else warning('the names of argument "x" and the tip labels of the tree
 did not match: the former were ignored in the analysis.')
     }
     obj <- list()

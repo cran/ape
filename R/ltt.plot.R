@@ -1,4 +1,4 @@
-## ltt.plot.R (2007-05-04)
+## ltt.plot.R (2007-12-22)
 
 ##    Lineages Through Time Plot
 
@@ -9,52 +9,46 @@
 
 ltt.plot <- function(phy, xlab = "Time", ylab = "N", ...)
 {
-    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
-    time <- sort(branching.times(phy))
+    if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
+    time <- sort(branching.times(phy), decreasing = TRUE)
     N <- 1:(length(time) + 1)
-    plot(-c(rev(time), 0), N, xlab = xlab, ylab = ylab,
+    plot(-c(time, 0), N, xlab = xlab, ylab = ylab,
          xaxs = "r", yaxs = "r", type = "S", ...)
 }
 
 ltt.lines <- function(phy, ...)
 {
-    if (class(phy) != "phylo") stop("object \"phy\" is not of class \"phylo\"")
-    time <- sort(branching.times(phy))
+    time <- sort(branching.times(phy), decreasing = TRUE)
     N <- 1:(length(time) + 1)
-    lines(-c(rev(time), 0), N, type = "S", ...)
+    lines(-c(time, 0), N, type = "S", ...)
 }
 
 mltt.plot <- function(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
                       xlab = "Time", ylab = "N")
 {
-    ## this will also accept objects of class `c("multi.tree", "phylo")'
-    if (!inherits(phy, "phylo")) {
-      cat("doing\n")
-      stop("object \"phy\" is not of class \"phylo\"")
-      cat("done\n")
-    }
     ltt.xy <- function(phy) {
-        x <- -c(rev(sort(branching.times(phy))), 0)
+        x <- -c(sort(branching.times(phy), decreasing = TRUE), 0)
         names(x) <- NULL
         y <- 1:length(x)
         cbind(x, y)
     }
-    if (length(class(phy)) == 1) {
+    if (class(phy) == "phylo") {
         TREES <- list(ltt.xy(phy))
         names(TREES) <- deparse(substitute(phy))
-    } else {
+    } else { # a list of trees
         TREES <- lapply(phy, ltt.xy)
         names(TREES) <- names(phy)
     }
     dts <- list(...)
-    if (length(dts)) {
+    n <- length(dts)
+    if (n) {
         mc <- as.character(match.call())[-(1:2)]
-        nms <- mc[1:length(dts)]
-        for (i in 1:length(dts)) {
-            if (length(class(dts[[i]])) == 1) {
+        nms <- mc[1:n]
+        for (i in 1:n) {
+            if (class(dts[[i]]) == "phylo") {
                 a <- list(ltt.xy(dts[[i]]))
                 names(a) <- nms[i]
-            } else {
+            } else { # a list of trees
                 a <- lapply(dts[[i]], ltt.xy)
                 names(a) <- names(dts[[i]])
             }

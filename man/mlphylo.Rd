@@ -5,22 +5,28 @@
 \alias{AIC.phylo}
 \title{Estimating Phylogenies by Maximum Likelihood}
 \usage{
-mlphylo(model = DNAmodel(), x, phy, search.tree = FALSE, quiet = FALSE)
+mlphylo(x, phy, model = DNAmodel(), search.tree = FALSE,
+        quiet = FALSE, value = NULL, fixed = FALSE)
 \method{logLik}{phylo}(object, ...)
 \method{deviance}{phylo}(object, ...)
 \method{AIC}{phylo}(object, ..., k = 2)
 }
 \arguments{
+  \item{x}{an object of class \code{"DNAbin"} giving the (aligned) DNA
+    sequence data.}
+  \item{phy}{an object of class \code{"phylo"} giving the tree.}
   \item{model}{an object of class \code{"DNAmodel"} giving the model to
     be fitted.}
-  \item{x}{a matrix, a data frame, or a list giving the (aligned) DNA
-    sequence data.}
-  \item{phy}{an object of class \code{"phylo"} giving the (initial)
-    tree.}
   \item{search.tree}{a logical specifying whether to search for the best
     tree (defaults to FALSE) (not functional for the moment).}
   \item{quiet}{a logical specifying whether to display the progress of
     the analysis.}
+  \item{value}{a list with elements named \code{rates}, \code{alpha},
+    and \code{invar}, or at least one of these, giving the initial
+    values of the parameters of the model. If \code{NULL}, some initial
+    values are given internally.}
+  \item{fixed}{a logical specifying whether to optimize parameters given
+    in \code{value}.}
   \item{object}{an object of class \code{"phylo"}.}
   \item{k}{a numeric value giving the penalty per estimated parameter;
     the default is \code{k = 2} which is the classical Akaike
@@ -38,13 +44,8 @@ mlphylo(model = DNAmodel(), x, phy, search.tree = FALSE, quiet = FALSE)
   available, \code{NULL} is returned.
 }
 \details{
-  The present version is a pre-alpha release. All comments, suggestions,
-  bug reports, are warmly welcome.
-
   The model specified by \code{\link{DNAmodel}} is fitted using the
-  standard ``pruning'' algorithm of Felsenstein (1981). An algorithm for
-  the estimation of tree topology is under development, and will be
-  released when ready.
+  standard ``pruning'' algorithm of Felsenstein (1981).
 
   The implementation of the inter-sites variation in substitution rates
   follows the methodology developed by Yang (1994).
@@ -59,8 +60,7 @@ mlphylo(model = DNAmodel(), x, phy, search.tree = FALSE, quiet = FALSE)
 }
 \note{
   For the moment, it is not possible to estimate neither branch lengths,
-  nor the topology with \code{mlphylo}: this is still in development and
-  will be released when ready. The function may estimate all other
+  nor the topology with \code{mlphylo}. The function may estimate all other
   parameters: substitution rates, shape (\eqn{\alpha}{alpha}) of the
   inter-sites variation in substitution rates, the proportion of
   invariants, and the ``contrast'' parameter (\eqn{\xi}{xi}) among
@@ -70,11 +70,16 @@ mlphylo(model = DNAmodel(), x, phy, search.tree = FALSE, quiet = FALSE)
   tests (LRTs) or AICs.
 }
 \value{
-  an object of class \code{"phylo"} with branch lengths as estimated by
-  the function. There are two additional attributes:
+  an object of class \code{"phylo"}. There are possible additional
+  attributes:
 
   \item{loglik}{the maximum log-likelihood.}
-  \item{para}{the estimated parameters for each partition.}
+  \item{npart}{the number of partitions.}
+  \item{model}{the substitution model.}
+  \item{rates}{the estimated substitution rates.}
+  \item{invar}{the estimated proportion of invariants.}
+  \item{alpha}{the estimated shape parameter of the inter-sites
+    variation in substitution rates.}
 }
 \references{
   Felsenstein, J. (1981) Evolutionary trees from DNA sequences: a

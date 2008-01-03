@@ -25,7 +25,7 @@ ratogram(phy, scale = 1, expo = 2, minEdgeLength = 1e-06)
 }
 \value{
 \code{chronogram} returns an object of class \code{"phylo"}. The branch lengths of this
-tree will be the absolute rates estimated for each branch.}
+tree will be the absolute rates estimated for each branch.
 }
 \author{Gangolf Jobb (\url{http://www.treefinder.de}) and
 Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})

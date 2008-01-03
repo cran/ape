@@ -1,8 +1,8 @@
-## write.tree.R (2006-10-06)
+## write.tree.R (2007-12-22)
 
 ##   Write Tree File in Parenthetic Format
 
-## Copyright 2002-2006 Emmanuel Paradis
+## Copyright 2002-2007 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -28,8 +28,18 @@ checkLabel <- function(x, ...)
 }
 
 write.tree <- function(phy, file = "", append = FALSE,
-                       multi.line = TRUE, digits = 10)
+                       digits = 10)
 {
+    if (class(phy) == "multiPhylo") {
+        write.tree(phy[[1]], file = file,
+                   append = append, digits = digits)
+        if (length(phy) > 1)
+            for (i in 2:length(phy))
+                write.tree(phy[[i]], file = file,
+                           append = TRUE, digits = digits)
+        return(invisible(NULL))
+    }
+
     if (class(phy) != "phylo")
       stop('object "phy" is not of class "phylo"')
 
@@ -92,20 +102,6 @@ write.tree <- function(phy, file = "", append = FALSE,
         cp(sprintf(f.d, phy$root.edge))
         cp(";")
     }
-    if (nchar(STRING) < 80) multi.line <- FALSE
-    ## <FIXME> the following does not work fine with long taxa names :(
-    if (multi.line) {
-        tmp <- unlist(strsplit(STRING, NULL))
-        wh <- grep("[,:]", tmp)
-        fin <- seq(7, length(wh), by = 7)
-        fin <- if (fin[length(fin)] == length(wh))
-          wh[fin] else c(wh[fin], length(tmp))
-        debut <- c(1, fin[-length(fin)] + 1)
-        STRING <- character(length(fin))
-        for (i in 1:length(STRING))
-          STRING[i] <- paste(tmp[debut[i]:fin[i]], collapse = "")
-    }
-    ## </FIXME>
     if (file == "") return(STRING)
     else cat(STRING, file = file, append = append, sep = "\n")
 }

@@ -7,9 +7,7 @@ dist.dna(x, model = "K80", variance = FALSE,
          base.freq = NULL, as.matrix = FALSE)
 }
 \arguments{
-  \item{x}{a matrix, a data frame, or a list containing the DNA
-    sequences (the latter can be taken from, e.g.,
-    \code{\link{read.GenBank}}).}
+  \item{x}{a matrix or a list containing the DNA sequences.}
   \item{model}{a character string specifying the evlutionary model to be
     used; must be one of \code{"raw"}, \code{"JC69"}, \code{"K80"} (the
     default), \code{"F81"}, \code{"K81"}, \code{"F84"}, \code{"BH87"},
@@ -37,9 +35,6 @@ dist.dna(x, model = "K80", variance = FALSE,
   (and the raw distance) are currently available.
 }
 \details{
-  As from ape 1.5, the interface and the computational part of this
-  function have been completely rewritten.
-
   The molecular evolutionary models available through the option
   \code{model} have been extensively described in the literature. A
   brief description is given below; more details can be found in the
@@ -181,8 +176,9 @@ dist.dna(x, model = "K80", variance = FALSE,
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{read.GenBank}}, \code{\link{read.dna}},
-  \code{\link{write.dna}}, \code{\link{dist.gene}},
-  \code{\link{cophenetic.phylo}}, \code{\link[stats]{dist}}
+  \code{\link{write.dna}},  \code{\link{DNAbin}},
+  \code{\link{dist.gene}}, \code{\link{cophenetic.phylo}},
+  \code{\link[stats]{dist}}
 }
 \keyword{manip}
 \keyword{multivariate}

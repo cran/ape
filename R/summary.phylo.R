@@ -1,4 +1,4 @@
-## summary.phylo.R (2007-06-19)
+## summary.phylo.R (2007-12-29)
 
 ##   Print Summary of a Phylogeny
 
@@ -103,7 +103,7 @@ print.phylo <- function(x, printlen = 6,...)
                                  collapse=", "), ",...\n", sep = ""))
         } else print(x$node.label)
     }
-    rlab <- if (is.rooted(x)) "Rooted" else "Unooted"
+    rlab <- if (is.rooted(x)) "Rooted" else "Unrooted"
     cat("\n", rlab, "; ", sep="")
 
     blen <- if (is.null(x$edge.length)) "no branch lengths." else
@@ -111,7 +111,7 @@ print.phylo <- function(x, printlen = 6,...)
     cat(blen, "\n", sep = "")
 }
 
-print.multi.tree <- function(x, details = FALSE, ...)
+print.multiPhylo <- function(x, details = FALSE, ...)
 {
     N <- length(x)
     cat(N, "phylogenetic trees\n")
@@ -119,4 +119,10 @@ print.multi.tree <- function(x, details = FALSE, ...)
       for (i in 1:N)
         cat("tree", i, ":", length(x[[i]]$tip.label), "tips\n")
     cat("\n")
+}
+
+"[.multiPhylo" <- function(x, i)
+{
+    class(x) <- NULL
+    structure(x[i], class = "multiPhylo")
 }

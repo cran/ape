@@ -1,4 +1,4 @@
-## plot.phylo.R (2007-07-04)
+## plot.phylo.R (2007-12-22)
 
 ##   Plot Phylogenies
 
@@ -505,7 +505,7 @@ node.depth <- function(phy)
        as.integer(N), double(n + m), DUP = FALSE, PACKAGE = "ape")[[6]]
 }
 
-plot.multi.tree <- function(x, layout = 1, ...)
+plot.multiPhylo <- function(x, layout = 1, ...)
 {
     if (layout > 1)
       layout(matrix(1:layout, ceiling(sqrt(layout)), byrow = TRUE))

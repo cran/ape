@@ -1,8 +1,8 @@
-## drop.tip.R (2006-10-12)
+## drop.tip.R (2007-12-21)
 
 ##   Remove Tips in a Phylogenetic Tree
 
-## Copyright 2003-2006 Emmanuel Paradis
+## Copyright 2003-2007 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -151,7 +151,7 @@ drop.tip <- function(phy, tip, trim.internal = TRUE, subtree = FALSE,
     phy$edge <- tmp
     phy <- old2new.phylo(phy)
     if (!trim.internal || subtree) {
-        S <- write.tree(phy, multi.line = FALSE)
+        S <- write.tree(phy)
         phy <- if (nobr) clado.build(S) else tree.build(S)
     }
     phy

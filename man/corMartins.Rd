@@ -34,7 +34,7 @@ corMartins(value, phy, form=~1, fixed = FALSE)
 	Martins and Hansen's (1997) covariance structure:
 		\deqn{V_{ij} = \gamma \times e^{-\alpha t_{ij}}}{%
 					Vij = gamma . exp(-alpha . tij)}
-	where \eqn{t_{ij}}{tij} is the phylogenetic distance between taxa \eqn{i}{i} and \eqn{j}{j} and \eqn{\gamma}{gamma} is a constant.}
+	where \eqn{t_{ij}}{tij} is the phylogenetic distance between taxa \eqn{i}{i} and \eqn{j}{j} and \eqn{\gamma}{gamma} is a constant.
 }
 \value{
 	An object of class \code{corMartins} or the alpha coefficient from an object of this class

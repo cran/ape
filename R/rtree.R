@@ -1,4 +1,4 @@
-## rtree.R (2007-11-09)
+## rtree.R (2007-12-22)
 
 ##   Generates Random Trees
 
@@ -134,5 +134,7 @@ rcoal <- function(n, tip.label = NULL, br = rexp, ...)
       else tip.label
     phy$Nnode <- n - 1
     class(phy) <- "phylo"
-    reorder(phy)
+    ##reorder(phy)
+    ## to avoid crossings when converting with as.hclust:
+    read.tree(text = write.tree(phy))
 }

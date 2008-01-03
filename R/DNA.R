@@ -1,6 +1,6 @@
-## DNA.R (2007-10-31)
+## DNA.R (2007-12-21)
 
-##    Comparisons and Manipulations of DNA Sequences
+##   Manipulations and Comparisons of DNA Sequences
 
 ## Copyright 2002-2007 Emmanuel Paradis
 
@@ -93,7 +93,7 @@ cbind.DNAbin <- function(..., check.names = TRUE)
         for (i in 2:nobj)
           if (all(rownames(obj[[i]]) %in% nms))
             obj[[i]] <- obj[[i]][nms, ]
-        else stop("row names do not match among matrices.")
+        else stop("rownames do not match among matrices.")
     }
     ans <- matrix(unlist(obj), NR)
     rownames(ans) <- nms
@@ -170,6 +170,17 @@ as.DNAbin.character <- function(x, ...)
     ans
 }
 
+as.DNAbin.alignment <- function(x, ...)
+{
+    n <- x$nb
+    x$seq <- tolower(x$seq)
+    ans <- matrix("", n, nchar(x$seq[1]))
+    for (i in 1:n)
+        ans[i, ] <- strsplit(x$seq[i], "")[[1]]
+    rownames(ans) <- gsub(" +$", "", gsub("^ +", "", x$nam))
+    as.DNAbin.character(ans)
+}
+
 as.DNAbin.list <- function(x, ...)
 {
     obj <- lapply(x, as.DNAbin)
@@ -197,7 +208,6 @@ as.character.DNAbin <- function(x, ...)
 base.freq <- function(x)
 {
     if (is.list(x)) x <- unlist(x)
-    if (is.matrix(x)) dim(x) <- NULL
     n <- length(x)
     BF <- .C("BaseProportion", as.raw(x), as.integer(n),
              double(4), PACKAGE = "ape")[[3]]
@@ -240,7 +250,7 @@ nuc.div <- function(x, variance = FALSE, pairwise.deletion = FALSE)
     }
     ## </FIXME>
 
-    ans <- .C("NuclearDiversity", x, as.integer(n), as.integer(s),
+    ans <- .C("NucleotideDiversity", x, as.integer(n), as.integer(s),
               as.integer(pairwise.deletion), double(1), PACKAGE = "ape")[[5]]
 
     if (variance) {
@@ -257,31 +267,19 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     MODELS <- c("RAW", "JC69", "K80", "F81", "K81", "F84", "T92", "TN93",
                 "GG95", "LOGDET", "BH87", "PARALIN")
     imod <- which(MODELS == toupper(model))
-
     if (imod == 11 && variance) {
         warning("computing variance temporarily not available for model BH87.")
         variance <- FALSE
     }
-
     if (gamma && imod %in% c(1, 5:7, 9:12)) {
         warning(paste("gamma-correction not available for model", model))
         gamma <- FALSE
     }
-
-    if (is.matrix(x)) {
-        nms <- dimnames(x)[[1]]
-        n <- dim(x)
-        s <- n[2]
-        n <- n[1]
-    }
-    if (is.list(x)) {
-        if (length(unique(unlist(lapply(x, length)))) != 1)
-          stop("DNA sequences in list not of the same length.")
-        nms <- names(x)
-        n <- length(x)
-        s <- length(x[[1]])
-        x <- matrix(unlist(x), n, s, byrow = TRUE)
-    }
+    if (is.list(x)) x <- as.matrix(x)
+    nms <- dimnames(x)[[1]]
+    n <- dim(x)
+    s <- n[2]
+    n <- n[1]
     BF <- if (is.null(base.freq)) base.freq(x) else base.freq
     if (!pairwise.deletion) {
         keep <- .C("GlobalDeletionDNA", x, as.integer(n),

@@ -1,33 +1,34 @@
 \name{weight.taxo}
 \alias{weight.taxo}
-\title{Pairwise Distances from a Taxonomic Level}
+\alias{weight.taxo2}
+\title{Define Similarity Matrix}
 \usage{
   weight.taxo(x)
+  weight.taxo2(x, y)
 }
 \arguments{
-  \item{x}{a vector describing a taxonomic level}
+  \item{x, y}{a vector or a factor.}
 }
 \description{
-  This function computes the pairwise distances between the pairs of
-  data in an alpha numeric vector.
-  This vector contains taxonomic data, either as a full description 
-  (for instance 'animal' and 'vegetal') or as a code (for instance '0' and '1').
-  This function is useful for drawing correlograms.
-}
-\details{
-  The matrix \eqn{m_{i,j}}{mij} will be:
-  \enumerate{
-    \item 0 if \eqn{i=j}{i=j};
-    \item 0 if \eqn{i \neq j}{i!=j} and \eqn{x_i \neq x_j}{x[i]!=x[j]};
-    \item 1 if \eqn{i \neq j}{i!=j} and \eqn{x_i = x_j}{x[i]==x[j]}.
-  }
+  \code{weight.taxo} computes a matrix whose entries [i, j] are set to 1
+  if x[i] == x[j], 0 otherwise.
+
+  \code{weight.taxo2} computes a matrix whose entries [i, j] are set to 1
+  if x[i] == x[j] AND y[i] != y[j], 0 otherwise.
+
+  The diagonal [i, i] is always set to 0.
+
+  This returned matrix can be used as a weight matrix in
+  \code{\link{Moran.I}}. \code{x} and \code{y} may be vectors of
+  factors.
+
+  See further details in \code{vignette("MoranI")}.
 }
 \value{
-  a square matrix of size \code{length(x)}.
+  a square numeric matrix.
 }
-\author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
-  \code{\link{Moran.I}} for example of use
+  \code{\link{Moran.I}}, \code{\link{correlogram.formula}}
 }
-\keyword{regression}
 \keyword{manip}

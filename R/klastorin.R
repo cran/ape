@@ -11,7 +11,7 @@
 ########### PRIVATE ##############
 
 getMisawaTajima <- function()
-  .C("getMisawaTajima", result = integer(nTips()),
+  .C("getMisawaTajima", result = integer(klastorin_nTips()),
      PACKAGE = "ape")$result
 
 ### functions to set and extract phylo tree ###
@@ -38,7 +38,7 @@ getError <- function()
   .C("getError", result = integer(1),
      PACKAGE = "ape")$result
 
-nTips <- function()
+klastorin_nTips <- function()
   .C("nTips", result = integer(1),
      PACKAGE = "ape")$result
 

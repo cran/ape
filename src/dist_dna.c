@@ -1,4 +1,4 @@
-/* dist_dna.c       2007-05-01 */
+/* dist_dna.c       2007-12-01 */
 
 /* Copyright 2005-2007 Emmanuel Paradis
 
@@ -64,7 +64,7 @@ double detFourByFour(double *x)
     if (KnownBase(x[s1]) && KnownBase(x[s2])) L++;\
     else continue;
 
-void dist_dna_raw_without_pairdel(unsigned char *x, int *n, int *s, double *d)
+void distDNA_raw(unsigned char *x, int *n, int *s, double *d)
 {
     int i1, i2, s1, s2, target, Nd;
 
@@ -80,7 +80,7 @@ void dist_dna_raw_without_pairdel(unsigned char *x, int *n, int *s, double *d)
     }
 }
 
-void dist_dna_raw_with_pairdel(unsigned char *x, int *n, int *s, double *d)
+void distDNA_raw_pairdel(unsigned char *x, int *n, int *s, double *d)
 {
     int i1, i2, s1, s2, target, Nd, L;
 
@@ -99,7 +99,7 @@ void dist_dna_raw_with_pairdel(unsigned char *x, int *n, int *s, double *d)
 }
 
 #define COMPUTE_DIST_JC69\
-    p = ((double) Nd / *s);\
+    p = ((double) Nd/L);\
     if (*gamma)\
       d[target] = 0.75 * *alpha*(pow(1 - 4*p/3, -1/ *alpha) - 1);\
     else d[target] = -0.75*log(1 - 4*p/3);\
@@ -108,8 +108,8 @@ void dist_dna_raw_with_pairdel(unsigned char *x, int *n, int *s, double *d)
 	else var[target] = p*(1 - p)/(pow(1 - 4*p/3, 2)*L);\
     }
 
-void dist_dna_JC69_without_pairdel(unsigned char *x, int *n, int *s, double *d,
-				   int *variance, double *var, int *gamma, double *alpha)
+void distDNA_JC69(unsigned char *x, int *n, int *s, double *d,
+		  int *variance, double *var, int *gamma, double *alpha)
 {
     int i1, i2, s1, s2, target, Nd, L;
     double p;
@@ -128,8 +128,8 @@ void dist_dna_JC69_without_pairdel(unsigned char *x, int *n, int *s, double *d,
     }
 }
 
-void dist_dna_JC69_with_pairdel(unsigned char *x, int *n, int *s, double *d,
-				int *variance, double *var, int *gamma, double *alpha)
+void distDNA_JC69_pairdel(unsigned char *x, int *n, int *s, double *d,
+			  int *variance, double *var, int *gamma, double *alpha)
 {
     int i1, i2, s1, s2, target, Nd, L;
     double p;
@@ -181,8 +181,8 @@ void dist_dna_JC69_with_pairdel(unsigned char *x, int *n, int *s, double *d,
     	var[target] = (c1*c1*P + c3*c3*Q - pow(c1*P + c3*Q, 2))/L;\
     }
 
-void dist_dna_K80_without_pairdel(unsigned char *x, int *n, int *s, double *d,
-				  int *variance, double *var, int *gamma, double *alpha)
+void distDNA_K80(unsigned char *x, int *n, int *s, double *d,
+		 int *variance, double *var, int *gamma, double *alpha)
 {
     int i1, i2, s1, s2, target, Nd, Ns, L;
     double P, Q, a1, a2, b, c1, c2, c3;
@@ -202,8 +202,8 @@ void dist_dna_K80_without_pairdel(unsigned char *x, int *n, int *s, double *d,
     }
 }
 
-void dist_dna_K80_with_pairdel(unsigned char *x, int *n, int *s, double *d,
-			       int *variance, double *var, int *gamma, double *alpha)
+void distDNA_K80_pairdel(unsigned char *x, int *n, int *s, double *d,
+			 int *variance, double *var, int *gamma, double *alpha)
 {
     int i1, i2, s1, s2, target, Nd, Ns, L;
     double P, Q, a1, a2, b, c1, c2, c3;
@@ -231,8 +231,8 @@ void dist_dna_K80_with_pairdel(unsigned char *x, int *n, int *s, double *d,
 	else var[target] = p*(1 - p)/(pow(1 - p/E, 2)*L);\
     }
 
-void dist_dna_F81_without_pairdel(unsigned char *x, int *n, int *s, double *d, double *BF,
-				  int *variance, double *var, int *gamma, double *alpha)
+void distDNA_F81(unsigned char *x, int *n, int *s, double *d, double *BF,
+		 int *variance, double *var, int *gamma, double *alpha)
 {
     int i1, i2, s1, s2, target, Nd, L;
     double p, E;
@@ -252,8 +252,8 @@ void dist_dna_F81_without_pairdel(unsigned char *x, int *n, int *s, double *d, d
     }
 }
 
-void dist_dna_F81_with_pairdel(unsigned char *x, int *n, int *s, double *d, double *BF,
-			       int *variance, double *var, int *gamma, double *alpha)
+void distDNA_F81_pairdel(unsigned char *x, int *n, int *s, double *d, double *BF,
+			 int *variance, double *var, int *gamma, double *alpha)
 {
     int i1, i2, s1, s2, target, Nd, L;
     double p, E;
@@ -299,8 +299,8 @@ void dist_dna_F81_with_pairdel(unsigned char *x, int *n, int *s, double *d, doub
       var[target] = (a*a*P + b*b*Q + c*c*R - pow(a*P + b*Q + c*R, 2))/2;\
     }
 
-void dist_dna_K81_without_pairdel(unsigned char *x, int *n, int *s, double *d,
-				  int *variance, double *var)
+void distDNA_K81(unsigned char *x, int *n, int *s, double *d,
+		 int *variance, double *var)
 {
     int i1, i2, Nd, Nv1, Nv2, L, s1, s2, target;
     double P, Q, R, a1, a2, a3, a, b, c;
@@ -320,8 +320,8 @@ void dist_dna_K81_without_pairdel(unsigned char *x, int *n, int *s, double *d,
     }
 }
 
-void dist_dna_K81_with_pairdel(unsigned char *x, int *n, int *s, double *d,
-			       int *variance, double *var)
+void distDNA_K81_pairdel(unsigned char *x, int *n, int *s, double *d,
+			 int *variance, double *var)
 {
     int i1, i2, Nd, Nv1, Nv2, L, s1, s2, target;
     double P, Q, R, a1, a2, a3, a, b, c;
@@ -358,8 +358,8 @@ void dist_dna_K81_with_pairdel(unsigned char *x, int *n, int *s, double *d,
        var[target] = (a*a*P + b*b*Q - pow(a*P + b*Q, 2))/2;\
    }
 
-void dist_dna_F84_without_pairdel(unsigned char *x, int *n, int *s, double *d,
-				  double *BF, int *variance, double *var)
+void distDNA_F84(unsigned char *x, int *n, int *s, double *d,
+		 double *BF, int *variance, double *var)
 {
     int i1, i2, Nd, Ns, L, target, s1, s2;
     double P, Q, A, B, C, a, b, t1, t2, t3;
@@ -380,8 +380,8 @@ void dist_dna_F84_without_pairdel(unsigned char *x, int *n, int *s, double *d,
     }
 }
 
-void dist_dna_F84_with_pairdel(unsigned char *x, int *n, int *s, double *d,
-			       double *BF, int *variance, double *var)
+void distDNA_F84_pairdel(unsigned char *x, int *n, int *s, double *d,
+			 double *BF, int *variance, double *var)
 {
     int i1, i2, Nd, Ns, L, target, s1, s2;
     double P, Q, A, B, C, a, b, t1, t2, t3;
@@ -415,8 +415,8 @@ void dist_dna_F84_with_pairdel(unsigned char *x, int *n, int *s, double *d,
         var[target] = (c1*c1*P + c3*c3*Q - pow(c1*P + c3*Q, 2))/L;\
     }
 
-void dist_dna_T92_without_pairdel(unsigned char *x, int *n, int *s, double *d,
-				  double *BF, int *variance, double *var)
+void distDNA_T92(unsigned char *x, int *n, int *s, double *d,
+		 double *BF, int *variance, double *var)
 {
     int i1, i2, Nd, Ns, L, target, s1, s2;
     double P, Q, wg, a1, a2, c1, c2, c3;
@@ -437,8 +437,8 @@ void dist_dna_T92_without_pairdel(unsigned char *x, int *n, int *s, double *d,
     }
 }
 
-void dist_dna_T92_with_pairdel(unsigned char *x, int *n, int *s, double *d,
-			       double *BF, int *variance, double *var)
+void distDNA_T92_pairdel(unsigned char *x, int *n, int *s, double *d,
+			 double *BF, int *variance, double *var)
 {
     int i1, i2, Nd, Ns, L, target, s1, s2;
     double P, Q, wg, a1, a2, c1, c2, c3;
@@ -510,9 +510,9 @@ void dist_dna_T92_with_pairdel(unsigned char *x, int *n, int *s, double *d,
     if (*variance)\
       var[target] = (c1*c1*P1 + c2*c2*P2 + c4*c4*Q - pow(c1*P1 + c2*P2 + c4*Q, 2))/L;
 
-void dist_dna_TN93_without_pairdel(unsigned char *x, int *n, int *s, double *d,
-				   double *BF, int *variance, double *var,
-				   int *gamma, double *alpha)
+void distDNA_TN93(unsigned char *x, int *n, int *s, double *d,
+		  double *BF, int *variance, double *var,
+		  int *gamma, double *alpha)
 {
     int i1, i2, k, Nd, Ns1, Ns2, L, target, s1, s2;
     double P1, P2, Q, A, B, C, gR, gY, k1, k2, k3, k4, w1, w2, w3, c1, c2, c3, c4, b;
@@ -534,9 +534,9 @@ void dist_dna_TN93_without_pairdel(unsigned char *x, int *n, int *s, double *d,
     }
 }
 
-void dist_dna_TN93_with_pairdel(unsigned char *x, int *n, int *s, double *d,
-				double *BF, int *variance, double *var,
-				int *gamma, double *alpha)
+void distDNA_TN93_pairdel(unsigned char *x, int *n, int *s, double *d,
+			  double *BF, int *variance, double *var,
+			  int *gamma, double *alpha)
 {
     int i1, i2, k, Nd, Ns1, Ns2, L, target, s1, s2;
     double P1, P2, Q, A, B, C, gR, gY, k1, k2, k3, k4, w1, w2, w3, c1, c2, c3, c4, b;
@@ -557,8 +557,8 @@ void dist_dna_TN93_with_pairdel(unsigned char *x, int *n, int *s, double *d,
     }
 }
 
-void dist_dna_GG95_without_pairdel(unsigned char *x, int *n, int *s, double *d,
-				   int *variance, double *var)
+void distDNA_GG95(unsigned char *x, int *n, int *s, double *d,
+		  int *variance, double *var)
 {
     int i1, i2, s1, s2, target, GC, Nd, Ns, tl, npair;
     double *theta, gcprop, *P, pp, *Q, qq, *tstvr, svr, A, sum, ma /* mean alpha */, K1, K2;
@@ -627,8 +627,8 @@ void dist_dna_GG95_without_pairdel(unsigned char *x, int *n, int *s, double *d,
     }
 }
 
-void dist_dna_GG95_with_pairdel(unsigned char *x, int *n, int *s, double *d,
-				int *variance, double *var)
+void distDNA_GG95_pairdel(unsigned char *x, int *n, int *s, double *d,
+			  int *variance, double *var)
 {
     int i1, i2, s1, s2, target, *L, length, GC, Nd, Ns, tl, npair;
     double *theta, gcprop, *P, pp, *Q, qq, *tstvr, svr, A, sum, ma /* mean alpha */, K1, K2;
@@ -739,8 +739,8 @@ void dist_dna_GG95_with_pairdel(unsigned char *x, int *n, int *s, double *d,
     		       U[14]*U[14]*Ftab[11] + U[15]*U[15]*Ftab[15] - 16)/(L*16);\
     }
 
-void dist_dna_LogDet_without_pairdel(unsigned char *x, int *n, int *s, double *d,
-				     int *variance, double *var)
+void distDNA_LogDet(unsigned char *x, int *n, int *s, double *d,
+		    int *variance, double *var)
 {
     int i1, i2, k, m, s1, s2, target, L, Ntab[16], ndim = 4, info, ipiv[16];
     double Ftab[16], U[16];
@@ -760,8 +760,8 @@ void dist_dna_LogDet_without_pairdel(unsigned char *x, int *n, int *s, double *d
     }
 }
 
-void dist_dna_LogDet_with_pairdel(unsigned char *x, int *n, int *s, double *d,
-				  int *variance, double *var)
+void distDNA_LogDet_pairdel(unsigned char *x, int *n, int *s, double *d,
+			    int *variance, double *var)
 {
     int i1, i2, k, m, s1, s2, target, L, Ntab[16], ndim = 4, info, ipiv[16];
     double Ftab[16], U[16];
@@ -781,8 +781,8 @@ void dist_dna_LogDet_with_pairdel(unsigned char *x, int *n, int *s, double *d,
     }
 }
 
-void dist_dna_BH87(unsigned char *x, int *n, int *s, double *d,
-		   int *variance, double *var)
+void distDNA_BH87(unsigned char *x, int *n, int *s, double *d,
+		  int *variance, double *var)
 /* <FIXME>
    For the moment there is no need to check for pairwise deletions
    since DO_CONTINGENCY_NUCLEOTIDES considers only the known nucleotides.
@@ -865,8 +865,8 @@ void dist_dna_BH87(unsigned char *x, int *n, int *s, double *d,
                        1/sqrt(find[3][i1 - 1]*find[3][i2 - 1])))/(L*16);\
     }
 
-void dist_dna_ParaLin_without_pairdel(unsigned char *x, int *n, int *s, double *d,
-				     int *variance, double *var)
+void distDNA_ParaLin(unsigned char *x, int *n, int *s, double *d,
+		     int *variance, double *var)
 {
     int i1, i2, k, s1, s2, m, target, L, Ntab[16], ndim = 4, info, ipiv[16];
     double Ftab[16], U[16], *find[4];
@@ -904,8 +904,8 @@ void dist_dna_ParaLin_without_pairdel(unsigned char *x, int *n, int *s, double *
     }
 }
 
-void dist_dna_ParaLin_with_pairdel(unsigned char *x, int *n, int *s, double *d,
-				     int *variance, double *var)
+void distDNA_ParaLin_pairdel(unsigned char *x, int *n, int *s, double *d,
+			     int *variance, double *var)
 {
     int i1, i2, k, s1, s2, m, target, L, Ntab[16], ndim = 4, info, ipiv[16];
     double Ftab[16], U[16], *find[4];
@@ -988,8 +988,8 @@ void SegSites(unsigned char *x, int *n, int *s, int *seg)
     }
 }
 
-void NuclearDiversity(unsigned char *x, int *n, int *s,
-		      int *pairdel, double *ans)
+void NucleotideDiversity(unsigned char *x, int *n, int *s,
+			 int *pairdel, double *ans)
 {
     int i1, i2, s1, s2, Nd, L;
 
@@ -1030,39 +1030,39 @@ void dist_dna(unsigned char *x, int *n, int *s, int *model, double *d,
 	      int *gamma, double *alpha)
 {
     switch (*model) {
-    case 1 : if (pairdel) dist_dna_raw_with_pairdel(x, n, s, d);
-             else dist_dna_raw_without_pairdel(x, n, s, d); break;
+    case 1 : if (pairdel) distDNA_raw_pairdel(x, n, s, d);
+             else distDNA_raw(x, n, s, d); break;
 
-    case 2 : if (pairdel) dist_dna_JC69_with_pairdel(x, n, s, d, variance, var, gamma, alpha);
-             else dist_dna_JC69_without_pairdel(x, n, s, d, variance, var, gamma, alpha); break;
+    case 2 : if (pairdel) distDNA_JC69_pairdel(x, n, s, d, variance, var, gamma, alpha);
+             else distDNA_JC69(x, n, s, d, variance, var, gamma, alpha); break;
 
-    case 3 : if (pairdel) dist_dna_K80_with_pairdel(x, n, s, d, variance, var, gamma, alpha);
-             else dist_dna_K80_without_pairdel(x, n, s, d, variance, var, gamma, alpha); break;
+    case 3 : if (pairdel) distDNA_K80_pairdel(x, n, s, d, variance, var, gamma, alpha);
+             else distDNA_K80(x, n, s, d, variance, var, gamma, alpha); break;
 
-    case 4 : if (pairdel) dist_dna_F81_with_pairdel(x, n, s, d, BF, variance, var, gamma, alpha);
-             else dist_dna_F81_without_pairdel(x, n, s, d, BF, variance, var, gamma, alpha); break;
+    case 4 : if (pairdel) distDNA_F81_pairdel(x, n, s, d, BF, variance, var, gamma, alpha);
+             else distDNA_F81(x, n, s, d, BF, variance, var, gamma, alpha); break;
 
-    case 5 : if (pairdel) dist_dna_K81_with_pairdel(x, n, s, d, variance, var);
-             else dist_dna_K81_without_pairdel(x, n, s, d, variance, var); break;
+    case 5 : if (pairdel) distDNA_K81_pairdel(x, n, s, d, variance, var);
+             else distDNA_K81(x, n, s, d, variance, var); break;
 
-    case 6 : if (pairdel) dist_dna_F84_with_pairdel(x, n, s, d, BF, variance, var);
-             else dist_dna_F84_without_pairdel(x, n, s, d, BF, variance, var); break;
+    case 6 : if (pairdel) distDNA_F84_pairdel(x, n, s, d, BF, variance, var);
+             else distDNA_F84(x, n, s, d, BF, variance, var); break;
 
-    case 7 : if (pairdel) dist_dna_T92_with_pairdel(x, n, s, d, BF, variance, var);
-             else dist_dna_T92_without_pairdel(x, n, s, d, BF, variance, var); break;
+    case 7 : if (pairdel) distDNA_T92_pairdel(x, n, s, d, BF, variance, var);
+             else distDNA_T92(x, n, s, d, BF, variance, var); break;
 
-    case 8 : if (pairdel) dist_dna_TN93_with_pairdel(x, n, s, d, BF, variance, var, gamma, alpha);
-             else dist_dna_TN93_without_pairdel(x, n, s, d, BF, variance, var, gamma, alpha); break;
+    case 8 : if (pairdel) distDNA_TN93_pairdel(x, n, s, d, BF, variance, var, gamma, alpha);
+             else distDNA_TN93(x, n, s, d, BF, variance, var, gamma, alpha); break;
 
-    case 9 : if (pairdel) dist_dna_GG95_with_pairdel(x, n, s, d, variance, var);
-             else dist_dna_GG95_without_pairdel(x, n, s, d, variance, var); break;
+    case 9 : if (pairdel) distDNA_GG95_pairdel(x, n, s, d, variance, var);
+             else distDNA_GG95(x, n, s, d, variance, var); break;
 
-    case 10 : if (pairdel) dist_dna_LogDet_with_pairdel(x, n, s, d, variance, var);
-              else dist_dna_LogDet_without_pairdel(x, n, s, d, variance, var); break;
+    case 10 : if (pairdel) distDNA_LogDet_pairdel(x, n, s, d, variance, var);
+              else distDNA_LogDet(x, n, s, d, variance, var); break;
 
-    case 11 : dist_dna_BH87(x, n, s, d, variance, var); break;
+    case 11 : distDNA_BH87(x, n, s, d, variance, var); break;
 
-    case 12 : if (pairdel) dist_dna_ParaLin_with_pairdel(x, n, s, d, variance, var);
-              else dist_dna_ParaLin_without_pairdel(x, n, s, d, variance, var); break;
+    case 12 : if (pairdel) distDNA_ParaLin_pairdel(x, n, s, d, variance, var);
+              else distDNA_ParaLin(x, n, s, d, variance, var); break;
     }
 }

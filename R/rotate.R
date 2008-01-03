@@ -119,7 +119,7 @@ else {
 			phy$edge.length <- c(phy$edge.length[c3:c4], phy$edge.length[(c2+1):(c3-1)], phy$edge.length[c1:c2])
 		}
 	}
-	S <- write.tree(phy, multi.line = FALSE)
+	S <- write.tree(phy)
     phy <- if (!with.br.length) clado.build(S) else tree.build(S)
 	phy
 	}

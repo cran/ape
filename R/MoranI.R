@@ -1,357 +1,212 @@
-## MoranI.R (2004-09-16)
+## MoranI.R (2007-12-26)
 
 ##   Moran's I Autocorrelation Index
 
-## Copyright 2004 Julien Dutheil
+## Copyright 2004 Julien Dutheil, 2007 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-Moran.I <- function(
-  x,              # x the vector of values to analyse
-  dist,           # dist is the distance matrix to use
-  scaled = FALSE, # tell if we must scale the indice to allow comparisons
-  na.rm = FALSE   # should we ignore missing values?
-) {
-  # Number of values:
-  nn <- length(x);
-  n <- ifelse(na.rm, sum(!is.na(x)), nn)
-  if(dim(dist)[1] != nn | dim(dist)[2] != nn) {
-    stop("\"dist\" must be a matrix of size n*n, with n=length(x)=", n, ".");
-  }
+## code cleaned-up by EP (Dec. 2007)
 
-  # Normalization of distances:
-  for(i in 1:nn) {
-    s <- sum(dist[i,]);
-    if(s != 0) {
-      dist[i,] <- dist[i,] / s;
-    } # Else row is only made of zeros, need to use scale=T for comparisons.
-  }
+Moran.I <- function(x, weight, scaled = FALSE, na.rm = FALSE,
+                    alternative = "two.sided")
+{
+    if(dim(weight)[1] != dim(weight)[2])
+        stop("'weight' must be a square matrix")
+    n <- length(x)
+    if(dim(weight)[1] != n)
+        stop("'weight' must have as many rows as observations in 'x'")
+    ## Expected mean:
+    ei <- -1/(n - 1)
 
-  s <- sum(dist);
-  m <- mean(x, na.rm = na.rm);
-  c <- 0; # covariance
-  v <- 0; # variance
-  # Compute covariance:
-  for(i in 1:nn) {
-    if(na.rm && is.na(x[i])) next
-    for(j in 1:nn) {
-      if(na.rm && is.na(x[j])) next
-      c <- c + dist[i,j] * (x[i] - m) * (x[j] - m);
+    nas <- is.na(x)
+    if (any(nas)) {
+        if (na.rm) {
+            x <- x[!nas]
+            n <- length(x)
+            weight <- weight[!nas, !nas]
+        } else {
+            warning("'x' has missing values: maybe you wanted to set na.rm=TRUE?")
+            return(list(observed = NA, expected = ei, sd = NA, p.value = NA))
+        }
     }
-  }
-  # Compute variance:
-  for(i in 1:nn) {
-    if(na.rm && is.na(x[i])) next
-    v <- v + (x[i] - m) ^ 2;
-  }
-  obs <- (n / s) * (c / v);
 
-  # Now computes expected mean and sd
-  # under the randomization null hypothesis:
+    ## normaling the weights:
+    ## Note that we normalize after possibly removing the
+    ## missing data.
+    ROWSUM <- rowSums(weight)
+    ## the following is useful if an observation has no "neighbour":
+    ROWSUM[ROWSUM == 0] <- 1
+    weight <- weight/ROWSUM # ROWSUM is properly recycled
 
-  # Expected mean:
-  ei <- -1/(n - 1);
-
-  # Scaling:
-  if(scaled) {
-    temp <- vector(length = nn);
-    for(i in 1:nn) {
-      temp[i] <- (x[i] - m) * sum(dist[i,]);
+    s <- sum(weight)
+    m <- mean(x)
+    y <- x - m # centre the x's
+    cv <- sum(weight * y %o% y)
+    v <- sum(y^2)
+    obs <- (n/s) * (cv/v)
+    ## Scaling:
+    if (scaled) {
+        i.max <- (n/s) * (sd(rowSums(weight) * y)/sqrt(v/(n - 1)))
+        obs <- obs/i.max
     }
-    i.max <- (n/s) * (sd(temp, na.rm = na.rm) / sd(x - m, na.rm = na.rm));
-    obs <- obs/i.max;
-  }
+    ## Expected sd:
+    S1 <- 0.5 * sum((weight + t(weight))^2)
+    S2 <- sum((apply(weight, 1, sum) + apply(weight, 2, sum))^2)
+    ## the above is the same than:
+    ##S2 <- 0
+    ##for (i in 1:n)
+    ##    S2 <- S2 + (sum(weight[i, ]) + sum(weight[, i]))^2
 
-  # Expected sd:
-  S1 <- (1/2) * sum((dist + t(dist))^2);
-  S2 <- 0;
-  for(i in 1:nn) {
-    S2 <- S2 + (sum(dist[i,]) + sum(dist[,i]))^2;
-  }
-  k <- ((1/n) * sum((x - m)^4, na.rm = na.rm)) / ((1/n) * sum((x - m)^2, na.rm = na.rm))^2
-  sdi <- sqrt((
-          n * ((n^2 - 3*n + 3)*S1 - n*S2 + 3*s^2)
-          - k * (n*(n-1)*S1 - 2*n*S2 + 6*s^2)
-         ) /
-         ((n-1)*(n-2)*(n-3)*s^2) -
-         1/((n-1)^2));
+    s.sq <- s^2
+    k <- (sum(y^4)/n) / (v/n)^2
+    sdi <- sqrt((n*((n^2 - 3*n + 3)*S1 - n*S2 + 3*s.sq) -
+                 k*(n*(n - 1)*S1 - 2*n*S2 + 6*s.sq))/
+                ((n - 1)*(n - 2)*(n - 3)*s.sq) - 1/((n - 1)^2))
 
-  names(obs) <- NULL
-  # Computes p-value:
-  pv <- 1 - 2*abs(pnorm(obs, m = ei, sd = sdi) - 0.5);
-
-  return(list(observed = obs, expected = ei, sd = sdi, p.value = pv));
+    alternative <- match.arg(alternative, c("two.sided", "less", "greater"))
+    pv <- pnorm(obs, mean = ei, sd = sdi)
+    if (alternative == "two.sided")
+        pv <- if (obs <= ei) 2*pv else 2*(1 - pv)
+    if (alternative == "greater") pv <- 1 - pv
+    list(observed = obs, expected = ei, sd = sdi, p.value = pv)
 }
 
-weight.taxo <- function (x) {
-  n <- length(x)
-  d <- matrix(ncol = n, nrow = n, 0)
-  for (i in 1:n) {
-    d[i, which(x[i] == x)] <- 1
-    d[i, i] <- 0
-  }
-  return(d)
+weight.taxo <- function(x)
+{
+    d <- outer(x, x, "==")
+    diag(d) <- 0 # implicitly converts 'd' into numeric
+    d
+}
+
+weight.taxo2 <- function(x, y)
+{
+    d <- outer(x, x, "==") & outer(y, y, "!=")
+    diag(d) <- 0
+    d
 }
 
 correlogram.formula <- function(formula, data = NULL, use = "all.obs")
 {
-  err <- "Formula must be of the kind \"y1+y2+..+yn~x1/x2/../xn\"."
-  if(!(use %in% c("all.obs", "complete.obs", "pairwise.complete.obs")))
-    stop("Argument 'use' must be either 'all.obs', 'complete.obs' or 'pairwise.complete.obs'.")
+    err <- 'formula must be of the form "y1+...+yn ~ x1/x2/../xn"'
+    use <- match.arg(use, c("all.obs", "complete.obs", "pairwise.complete.obs"))
+    if (formula[[1]] != "~") stop(err)
 
-  if (is.null(data)) data <- parent.frame()
+    lhs <- formula[[2]]
+    y.nms <- if (length(lhs) > 1)
+        unlist(strsplit(as.character(as.expression(lhs)), " \\+ "))
+    else as.character(as.expression(lhs))
 
-  if(formula[[1]] != "~") stop(err);
+    rhs <- formula[[3]]
+    gr.nms <- if (length(rhs) > 1)
+        rev(unlist(strsplit(as.character(as.expression(rhs)), "/")))
+    else as.character(as.expression(rhs))
 
-  #Must check if y is transformed:
-  get.var <- function(var) {
-    if(length(var) == 1) {
-      # Simple variable
-      var.name <- deparse(var)
-      if(!is.null(data[[var.name]])) {
-        # Look within dataframe:
-		    y <- data[[var.name]]
-      } else {
-        # Not found, look in global environment:
-		    y <- get(var.name)
-      }
-      return(list(y = y, name = var.name))
-    } else if(length(var) == 2) {
-      # Transformed variable:
-      var.name <- deparse(var[[2]])
-      fun.name <- deparse(var[[1]])
-      if(!is.null(data[[var.name]])) {
-        # Look within dataframe:
-		    y <- data[[var.name]]
-      } else {
-        # Not found, look in global environment:
-		    y <- parent.frame(2)[[var.name]]
-      }
-      return(list(y=get(fun.name)(y), name=deparse(var)))
-    } else if (length(var) == 3) {
-      if(var[[1]] == '$') {
-        var.name <- deparse(var[[3]])
-        df.name  <- deparse(var[[2]])
-        return(list(y = get(df.name)[[var.name]], name = deparse(var)))
-      } else stop(err)
+    if (is.null(data)) {
+        ## we 'get' the variables in the .GlobalEnv:
+        y <- as.data.frame(sapply(y.nms, get))
+        gr <- as.data.frame(sapply(gr.nms, get))
+    } else {
+        y <- data[y.nms]
+        gr <- data[gr.nms]
     }
-  }
-
-  y <- list()
-  ally <- formula[[2]]
-  while(length(ally) == 3 && ally[[1]] == '+') {
-    var <- get.var(ally[[3]])
-    y[[var$name]] <- var$y
-    ally <- ally[[2]]
-  }
-  # Last y:
-  var <- get.var(ally)
-  y[[var$name]] <- var$y
-
-  ##Groups:
-  groups <- formula[[3]]
-  d <- list()
-  g <- list()
-
-  while(length(groups) == 3 && groups[[1]] == '/') {
-    group  <- get.var(groups[[3]])
-    groups <- groups[[2]]
-    cat("Analysing level:", group$name, "\n")
-    g[[group$name]] <- group$y
-    d[[group$name]] <- weight.taxo(group$y)
-  }
-  # The last group:
-  group <- get.var(groups)
-  #cat("Analysing level:", group$name, "\n")
-  g[[group$name]] <- group$y
-  d[[group$name]] <- weight.taxo(group$y)
-
-  # Remove all data with missing grouping values:
-  filter <- rep(TRUE, length(y[[1]])) # All obs used
-  if(use == "complete.obs" || use == "pairwise.complete.obs") {
-    G <- sapply(g, is.na)
-    for(i in 1:dim(G)[[2]]) {
-      filter <- filter & !G[,i]
+    if (use == "all.obs") {
+        na.fail(y)
+        na.fail(gr)
     }
-  }
-
-  # Deal with the complete.obs option:
-  if(use == "complete.obs") {
-    M <- sapply(y, is.na)
-    for(i in 1:dim(M)[[2]]) {
-      filter <- filter & !M[,i]
+    if (use == "complete.obs") {
+        sel <- complete.cases(y, gr)
+        y <- y[sel]
+        gr <- gr[sel]
     }
-  }
+    na.rm <- use == "pairwise.complete.obs"
 
-  # Now compute Moran's I:
-  n <- length(d)
-  l <- p <- i <- vector(length = n)
-  corList <- list()
-  for(k in names(y)) {
-    for(j in 1:n) {
-      if(j == 1) Mat <- d[[j]]
-      else Mat <- d[[j]] & !d[[j-1]]
-      I.M  <- Moran.I(y[[k]][filter], Mat[filter, filter], scale = TRUE, na.rm = (use == "pairwise.complete.obs"));
-      i[j] <- I.M$obs
-      p[j] <- I.M$p.v
-      l[j] <- names(d)[j]
-    }
-
-    # Create an object of class 'correlogram':
-    corr <- list(obs = i, p.values = p, labels = l, filter = filter)
-    class(corr) <- "correlogram"
-    corList[[k]] <- corr
-  }
-  class(corList) <- "correlogramList"
-  if(length(corList) == 1) return(corList[[names(y)]])
-  else                     return(corList)
-}
-
-discrete.dist <- function(dist, inf, sup)
-{
-  if (class(dist) != "matrix") stop("object \"dist\" is not of class \"matrix\"")
-  n <- dim(dist)[1]
-  d <- matrix(ncol = n, nrow = n)
-  rownames(d) <- rownames(dist)
-  colnames(d) <- colnames(dist)
-  for(i in 1:n) {
-    for(j in 1:n) {
-      d[i, j] <- ifelse(dist[i,j] > inf & dist[i,j] <= sup & i != j, 1, 0)
-    }
-  }
-  return(d)
-}
-
-correlogram.phylo <- function(x, phy, nclass = NULL, breaks = NULL)
-{
-  if (!("phylo" %in% class(phy))) stop("object \"phy\" is not of class \"phylo\"")
-  if (is.null(phy$edge.length)) stop("tree \" phy\" must have branch lengths.")
-  #Get the minimum and maximum distance in the tree:
-  dist <- cophenetic.phylo(phy)
-  #What classes to use?
-  if(!is.null(breaks)) {
-    # User-defined breaks:
-    s <- sort(breaks)
-    nclass <- length(s)-1
-  } else if(!is.null(nclass)) {
-    # Equal classes:
-    l.min <- min(dist[dist != 0])
-    l.max <- max(dist)
-    if(nclass < 2) stop("\"nclass\" must be > 1.")
-    s <- seq(from=l.min, to=l.max, length=nclass+1)
-  }
-  if(!is.null(nclass)) {
-    l <- p <- i <- vector(length = nclass)
-    for(j in 1:(nclass)) {
-      cat("Analysing level:",j,"\n");
-      Mat <- discrete.dist(dist, s[j], s[j+1])
-      I.M <- Moran.I(x, Mat, scale=TRUE)
-      i[j] <- I.M$obs
-      p[j] <- I.M$p.v
-      l[j] <- paste("Class",j)
-    }
-  } else {
-    cat("using whole matrix\n");
-    I.M <- Moran.I(x, dist)
-    i <- I.M$obs
-    p <- I.M$p.v
-    l <- paste("Distance")
-  }
-
-  # Create an object of class 'correlogram':
-  corr <- list(obs=i, p.values=p, labels=l)
-  class(corr) <- "correlogram"
-  return(corr)
-}
-
-plot.correlogram <- function(x, test.level=0.05, ...)
-{
-  if (!("correlogram" %in% class(x))) stop("object \"x\" is not of class \"correlogram\"")
-  # Black circles are significant at the 5% level:
-  pch <- ifelse(x$p.values < test.level, 19, 21)
-  # Plot it!
-  return(xyplot(x$obs~ordered(x$l,levels=x$l), type="b", xlab="Rank", ylab="I / Imax", lty=2, lwd=2, cex=1.5, pch=pch, ...))
-}
-
-panel.superpose.correlogram <- function (x, y = NULL, subscripts, groups, panel.groups = "panel.xyplot",
-    col, col.line = superpose.line$col, col.symbol = superpose.symbol$col,
-    pch = superpose.symbol$pch, p.values = NULL, test.level=0.05, cex = superpose.symbol$cex, font = superpose.symbol$font,
-    fontface = superpose.symbol$fontface, fontfamily = superpose.symbol$fontfamily,
-    lty = superpose.line$lty, lwd = superpose.line$lwd, ...)
-{
-    x <- as.numeric(x)
-    if (!is.null(y))
-        y <- as.numeric(y)
-    if (length(x) > 0) {
-        if (!missing(col)) {
-            if (missing(col.line))
-                col.line <- col
-            if (missing(col.symbol))
-                col.symbol <- col
+    foo <- function(x, gr, na.rm) {
+        res <- data.frame(obs = NA, p.values = NA, labels = colnames(gr))
+        for (i in 1:length(gr)) {
+            sel <- if (na.rm) !is.na(x) & !is.na(gr[, i]) else TRUE
+            xx <- x[sel]
+            g <- gr[sel, i]
+            w <- if (i > 1) weight.taxo2(g, gr[sel, i - 1]) else weight.taxo(g)
+            o <- Moran.I(xx, w, scaled = TRUE)
+            res[i, 1] <- o$observed
+            res[i, 2] <- o$p.value
         }
-        superpose.symbol <- trellis.par.get("superpose.symbol")
-        superpose.line <- trellis.par.get("superpose.line")
-        vals <- if (is.factor(groups))
-            levels(groups)
-        else sort(unique(groups))
-        nvals <- length(vals)
-        col.line <- rep(col.line, length = nvals)
-        col.symbol <- rep(col.symbol, length = nvals)
-        if(is.null(p.values))
-          pch <- rep(pch, length = nvals)
-        else
-          pch <- ifelse(p.values < test.level, 19, 21)
-        lty <- rep(lty, length = nvals)
-        lwd <- rep(lwd, length = nvals)
-        cex <- rep(cex, length = nvals)
-        font <- rep(font, length = nvals)
-        fontface <- rep(fontface, length = nvals)
-        fontfamily <- rep(fontfamily, length = nvals)
-        panel.groups <- if (is.function(panel.groups))
-            panel.groups
-        else if (is.character(panel.groups))
-            get(panel.groups)
-        else eval(panel.groups)
-        for (i in seq(along = vals)) {
-            id <- (groups[subscripts] == vals[i])
-            if (any(id)) {
-                args <- list(x = x[id], groups = groups, subscripts = subscripts[id],
-                  pch = pch[id], cex = cex[i], font = font[i],
-                  fontface = fontface[i], fontfamily = fontfamily[i],
-                  col.line = col.line[i], col.symbol = col.symbol[i],
-                  lty = lty[i], lwd = lwd[i], ...)
-                if (!is.null(y))
-                  args$y <- y[id]
-                do.call("panel.groups", args)
-            }
+        ## We need to specify the two classes; if we specify
+        ## only "correlogram", 'res' is coerced as a list
+        ## (data frames are of class "data.frame" and mode "list")
+        structure(res, class = c("correlogram", "data.frame"))
+    }
+
+    if (length(y) == 1) foo(y[[1]], gr, na.rm)
+    else structure(lapply(y, foo, gr = gr, na.rm = na.rm),
+                   names = y.nms, class = "correlogramList")
+}
+
+plot.correlogram <-
+    function(x, legend = TRUE, test.level = 0.05,
+             col = c("grey", "red"), type = "b", xlab = "",
+             ylab = "Moran's I", pch = 21, cex = 2, ...)
+{
+    BG <- col[(x$p.values < test.level) + 1]
+    if (pch > 20 && pch < 26) {
+        bg <- col
+        col <- CO <- "black"
+    } else {
+        CO <- BG
+        BG <- bg <- NULL
+    }
+    plot(1:length(x$obs), x$obs, type = type, xaxt = "n", xlab = xlab,
+         ylab = ylab, col = CO, bg = BG, pch = pch, cex = cex, ...)
+    axis(1, at = 1:length(x$obs), labels = x$labels)
+    if (legend)
+        legend("top", legend = paste(c("P >=", "P <"), test.level),
+               pch = pch, col = col, pt.bg = bg, pt.cex = cex, horiz = TRUE)
+}
+
+plot.correlogramList <-
+    function(x, lattice = TRUE, legend = TRUE,
+             test.level = 0.05, col = c("grey", "red"),
+             xlab = "", ylab = "Moran's I",
+             type = "b", pch = 21, cex = 2, ...)
+{
+    n <- length(x)
+    obs <- unlist(lapply(x, "[[", "obs"))
+    pval <- unlist(lapply(x, "[[", "p.values"))
+    gr <- factor(unlist(lapply(x, "[[", "labels")),
+                 ordered = TRUE, levels = x[[1]]$labels)
+    vars <- gl(n, nlevels(gr), labels = names(x))
+    BG <- col[(pval < test.level) + 1]
+    if (lattice) {
+        ## trellis.par.set(list(plot.symbol=list(pch=19)))
+        xyplot(obs ~ gr | vars, xlab = xlab, ylab = ylab,
+               panel = function(x, y) {
+                   panel.lines(x, y, lty = 2)
+                   panel.points(x, y, cex = cex, pch = 19, col = BG)
+                   #panel.abline(h = 0, lty = 3)
+               })
+    } else {
+        if (pch > 20 && pch < 26) {
+            bg <- col
+            CO <- rep("black", length(obs))
+            col <- "black"
+        } else {
+            CO <- BG
+            BG <- bg <- NULL
+        }
+        plot(as.numeric(gr), obs, type = "n", xlab = xlab,
+             ylab = ylab, xaxt = "n")
+        for (i in 1:n) {
+            sel <- as.numeric(vars) == i
+            lines(as.numeric(gr[sel]), obs[sel], type = type, lty = i,
+                  col = CO[sel], bg = BG[sel], pch = pch, cex = cex, ...)
+        }
+        axis(1, at = 1:length(x[[i]]$obs), labels = x[[i]]$labels)
+        if (legend) {
+            legend("topright", legend = names(x), lty = 1:n, bty = "n")
+            legend("top", legend = paste(c("P >=", "P <"), test.level),
+                   pch = pch, col = col, pt.bg = bg, pt.cex = cex, horiz = TRUE)
         }
     }
 }
-
-plot.correlogramList <- function(x, test.level=0.05, ...)
-{
-  if (!("correlogramList" %in% class(x))) stop("object \"x\" is not of class \"correlogramList\"")
-  #Build a dataframe:
-  obs <- numeric(0)
-  lev <- numeric(0)
-  cor <- numeric(0)
-  pvl <- numeric(0)
-  for(i in names(x)) {
-    obs <- c(obs, x[[i]]$obs)
-    lev <- c(lev, x[[i]]$l)
-    cor <- c(cor, rep(i, length(x[[i]]$obs)))
-    pvl <- c(pvl, x[[i]]$p.values)
-  }
-  lev <- ordered(lev, levels=unique(lev))
-  return(xyplot(obs~lev, groups=cor,
-        type="b", xlab="Rank", ylab="I / Imax",
-        lty=2, lwd=2, cex=1.5, panel=panel.superpose.correlogram,
-        p.values=pvl, key=simpleKey(names(x), lines=TRUE, points=FALSE, rectangle=FALSE), ...))
-}
-
-#data(carnivora)
-#co <- correlogram.formula(log10(SW) + log10(FW) ~ Order/SuperFamily/Family/Genus, data=carnivora)
-#plot(co)
-
-

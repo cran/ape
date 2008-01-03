@@ -5,9 +5,7 @@
  *
  *  Various data structures and methods for manipulating
  *  and traversing trees
- *  (e.g., to convert between "phylo" and "hclust" objects
- *  and to classify genes)
- *
+ *  (e.g., to classify genes)
  *
  *  This code may be distributed under the GNU GPL
  */

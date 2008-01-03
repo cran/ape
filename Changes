@@ -1,3 +1,81 @@
+		CHANGES IN APE VERSION 2.1
+
+
+NEW FEATURES
+
+    o The new function identify.phylo identifies clades on a plotted
+      tree using the mouse.
+
+    o It is now possible to subset a list of trees (object of class
+      "multiPhylo") with "[" while keeping its class correct.
+
+    o The new function as.DNAbin.alignment converts DNA sequences
+      stored in the "alignment" format of the package seqinr into
+      an object of class "DNAbin".
+
+    o The new function weight.taxo2 helps to build similarity matrices
+      given two taxonomic levels (usually called by other functions).
+
+    o write.tree() can now take a list of trees (class "multiPhylo")
+      as its main argument.
+
+    o plot.correlogram() and plot.correlogramList() have been
+      improved, and gain several options (see the help page for
+      details). A legend is now plotted by default.
+
+
+BUG FIXES
+
+    o dist.dna() returned some incorrect values with `model = "JC69"'
+      and `pairwise.deletion = TRUE'. This affected only the
+      distances involving sequences with missing values. (Thanks
+      to Bruno Toupance for digging this bug out.)
+
+    o write.tree() failed with some trees: this is fixed by removing
+      the `multi.line' option (trees are now always printed on a
+      single line).
+
+    o read.nexus() did not correctly detect trees with multiple root
+      edges (see OTHER CHANGES).
+
+
+OTHER CHANGES
+
+    o The code of mlphylo() has almost entirely rewritten, and should
+      much stabler now. The options have been also greatly simplified
+      (see ?mlphylo and ?DNAmodel for details).
+
+    o The internal function nTips has been renamed klastorin_nTips.
+
+    o The code of is.ultrametric() contained redundancies and has
+      been cleaned-up.
+
+    o The code of Moran.I() and of correlogram.formula() have been
+      improved.
+
+    o read.tree() and read.nexus() now return an error when trying to
+      read a tree with multiple root edges (see BUG FIXES). The
+      correction applied in previous version did not work in all
+      situations.
+
+    o The class c("multi.tree", "phylo") has been renamed
+      "multiPhylo".
+
+
+DOCUMENTATION
+
+    o There is now a vignette in ape: see vignette("MoranI", "ape").
+
+
+DEPRECATED & DEFUNCT
+
+    o as.matching() and as.phylo.matching() do not support branch
+      lengths.
+
+    o correlogram.phylo() and discrete.dist() have been removed.
+
+
+
 		CHANGES IN APE VERSION 2.0-2
 
 

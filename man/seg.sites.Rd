@@ -7,8 +7,7 @@
 seg.sites(x)
 }
 \arguments{
-  \item{x}{a matrix, a data frame, or a list which contains the DNA
-    sequences.}
+  \item{x}{a matrix or a list which contains the DNA sequences.}
 }
 \description{
   This function gives the indices of segregating (polymorphic) sites in

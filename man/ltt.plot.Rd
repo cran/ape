@@ -11,8 +11,7 @@ mltt.plot(phy, ..., dcol = TRUE, dlty = FALSE,
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}; this could be an object
-    of class \code{c("multi.tree", "phylo")} in the case of
-    \code{mltt.plot}.}
+    of class \code{"multiPhylo"} in the case of \code{mltt.plot}.}
   \item{xlab}{a character string (or a variable of mode character)
     giving the label for the x-axis (default is "Time").}
   \item{ylab}{idem for the y-axis (default is "N").}
@@ -50,13 +49,13 @@ mltt.plot(phy, ..., dcol = TRUE, dlty = FALSE,
 
   \code{mltt.plot} does a multiple LTT plot taking as arguments one or
   several trees. These trees may be given as objects of class
-  \code{"phylo"} (single trees) or \code{c("multi.tree", "phylo")}
-  (multiple trees). Any number of objects may be given. This function is
-  mainly for exploratory analyses with the advantages that the axes are
-  set properly to view all lines, and the legend is plotted by
-  default. For more flexible settings of line drawings, it is probably
-  better to combine \code{ltt.plot()} with successive calls of
-  \code{ltt.lines()} (see \code{Examples:}).
+  \code{"phylo"} (single trees) or \code{"multiPhylo"} (multiple
+  trees). Any number of objects may be given. This function is mainly
+  for exploratory analyses with the advantages that the axes are set
+  properly to view all lines, and the legend is plotted by default. For
+  more flexible settings of line drawings, it is probably better to
+  combine \code{ltt.plot()} with successive calls of \code{ltt.lines()}
+  (see \code{Examples:}).
 }
 \references{
   Harvey, P. H., May, R. M. and Nee, S. (1994) Phylogenies without
@@ -97,12 +96,11 @@ TR <- replicate(10, rcoal(23), FALSE)
 names(TR) <- paste("random tree", 1:10)
 ### And specify the class of the list so that mltt.plot()
 ### does not trash it!
-class(TR) <- c("multi.tree", "phylo")
-mltt.plot(TR)
+class(TR) <- "multiPhylo"
+mltt.plot(TR, bird.orders)
 ### And now for something (not so) completely different:
 ltt.plot(bird.orders, lwd = 2)
-lapply(TR, ltt.lines, lty = 2) # same as:
-### for (i in 1:10) ltt.lines(TR[[i]], lty = 2)
+for (i in 1:10) ltt.lines(TR[[i]], lty = 2)
 legend(-10, 5, lwd = c(2, 1), lty = c(1, 2), bty = "n",
        legend = c("Bird orders", "Random trees"))
 }

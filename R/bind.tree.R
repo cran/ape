@@ -1,8 +1,8 @@
-## bind.tree.R (2006-10-06)
+## bind.tree.R (2007-12-21)
 
 ##    Bind Trees
 
-## Copyright 2003-2006 Emmanuel Paradis
+## Copyright 2003-2007 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -68,8 +68,8 @@ bind.tree <- function(x, y, where = "root", position = 0)
         else y$root.edge <- y$root.edge + position
     }
 
-    X <- write.tree(x, multi.line = FALSE)
-    Y <- write.tree(y, multi.line = FALSE)
+    X <- write.tree(x)
+    Y <- write.tree(y)
     Y <- substr(Y, 1, nchar(Y) - 1)
 
     if (where <= nb.tip) {

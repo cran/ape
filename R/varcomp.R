@@ -1,4 +1,4 @@
-## MoranI.R (2004-10-29)
+## varcomp.R (2004-10-29)
 
 ##   Variance Component of Mixed-Effect Linear Model
 

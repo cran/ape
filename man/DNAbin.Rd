@@ -13,15 +13,10 @@
 }
 \usage{
 \method{print}{DNAbin}(x, \dots)
-
 \method{summary}{DNAbin}(object, printlen = 6, digits = 3, \dots)
-
 \method{rbind}{DNAbin}(\dots)
-
 \method{cbind}{DNAbin}(\dots, check.names = TRUE)
-
 \method{[}{DNAbin}(x, i, j, drop = TRUE)
-
 \method{as.matrix}{DNAbin}(x, \dots)
 }
 \arguments{
@@ -67,7 +62,7 @@
   \code{cbind}, and \code{[}.
 }
 \references{
-  Paradis E. 2007. A Bit-Level Coding Scheme for Nucleotides.
+  Paradis ,E. (2007) A Bit-Level Coding Scheme for Nucleotides.
   \url{http://pbil.univ-lyon1.fr/R/ape/misc/BitLevelCodingScheme_20April2007.pdf}
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}

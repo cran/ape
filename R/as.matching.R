@@ -1,8 +1,8 @@
-## as.matching.R (2006-10-13)
+## as.matching.R (2007-12-23)
 
 ##    Conversion Between Phylo and Matching Objects
 
-## Copyright 2005-2006 Emmanuel Paradis
+## Copyright 2005-2007 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -26,13 +26,8 @@ as.matching.phylo <- function(x, labels = TRUE, ...)
     mat <- cbind(t(apply(mat, 1, sort)), new.nodes, deparse.level = 0)
 
     obj <- list(matching = mat)
-    if (!is.null(x$edge.length)) {
-        nod2 <- x$edge[, 2]
-        O <- match(nod2, nodes)
-        sel <- !is.na(O)
-        nod2[sel] <- new.nodes[O[sel]]
-        obj$edge.length <- x$edge.length[nod2]
-    }
+    if (!is.null(x$edge.length))
+        warning("branch lengths have been ignored")
     if (labels) {
         obj$tip.label <- x$tip.label
         if (!is.null(x$node.label))
@@ -46,10 +41,6 @@ as.phylo.matching <- function(x, ...)
 {
     N <- 2*dim(x$matching)[1]
     edge <- matrix(NA, N, 2)
-    if (!is.null(x$edge.length)) {
-        edge.length <- numeric(N)
-        br <- TRUE
-    } else br <- FALSE
     nb.tip <- (N + 2)/2
     nb.node <- nb.tip - 1
     new.nodes <- numeric(N + 1)
@@ -63,15 +54,12 @@ as.phylo.matching <- function(x, ...)
                 edge[j + k - 1, 2] <- new.nodes[x$matching[i, k]] <- nextnode
                 nextnode <- nextnode + 1
             } else edge[j + k - 1, 2] <- x$matching[i, k]
-            if (br)
-              edge.length[j + k - 1] <- x$edge.length[x$matching[i, k]]
         }
         j <- j + 2
     }
     obj <- list(edge = edge)
     if (!is.null(x$tip.label)) obj$tip.label <- x$tip.label
     else obj$tip.label <- as.character(1:nb.tip)
-    if (br) obj$edge.length <- edge.length
     class(obj) <- "phylo"
-    read.tree(text = write.tree(obj, multi.line = FALSE))
+    read.tree(text = write.tree(obj))
 }

@@ -62,8 +62,7 @@ read.tree(file = "", text = NULL, tree.names = NULL,
     branch at the root if it exists.}
 
   If several trees are read in the file, the returned object is of class
-  \code{c("multi.tree", "phylo")}, and is a list of objects of class
-  \code{"phylo"}.
+  \code{"multiPhylo"}, and is a list of objects of class \code{"phylo"}.
 }
 \references{
   Felsenstein, J. The Newick tree format.

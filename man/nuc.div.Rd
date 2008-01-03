@@ -9,8 +9,7 @@
 nuc.div(x, variance = FALSE, pairwise.deletion = FALSE)
 }
 \arguments{
-  \item{x}{a matrix, a data frame, or a list which contains the DNA
-    sequences.}
+  \item{x}{a matrix or a list which contains the DNA sequences.}
   \item{variance}{a logical indicating whether to compute the variance
     of the estimated nucleotide diversity.}
   \item{pairwise.deletion}{a logical indicating whether to delete the

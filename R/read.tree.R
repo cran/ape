@@ -1,8 +1,8 @@
-## read.tree.R (2006-12-11)
+## read.tree.R (2007-12-22)
 
 ##   Read Tree Files in Parenthetic Format
 
-## Copyright 2002-2006 Emmanuel Paradis
+## Copyright 2002-2007 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -130,24 +130,14 @@ read.tree <- function(file = "", text = NULL, tree.names = NULL,
         ## is a bifurcation at the root
         ROOT <- length(obj[[i]]$tip.label) + 1
         if(sum(obj[[i]]$edge[, 1] == ROOT) == 1 && dim(obj[[i]]$edge)[1] > 1) {
-            warning("The root edge is apparently not correctly represented\nin your tree: this may be due to an extra pair of\nparentheses in your file; the returned object has been\ncorrected but your file may not be in a valid Newick\nformat")
-            ind <- which(obj[[i]]$edge[, 1] == ROOT)
-            obj[[i]]$root.edge <- obj[[i]]$edge.length[ind]
-            obj[[i]]$edge.length <- obj[[i]]$edge.length[-ind]
-            obj[[i]]$edge <- obj[[i]]$edge[-ind, ]
-            for (j in 1:length(obj[[i]]$edge))
-              if (as.numeric(obj[[i]]$edge[j]) < 0)
-                obj[[i]]$edge[j] <- as.character(as.numeric(obj[[i]]$edge[j]) + 1)
-            ## Check a second time and if there is still a problem...!!!
-            if (sum(obj[[i]]$edge[, 1] == ROOT) == 1)
-              stop("There is apparently two root edges in your file: cannot read tree file")
+            stop(paste("There is apparently two root edges in your file: cannot read tree file.\n  Reading Newick file aborted at tree no.", i, sep = ""))
         }
     }
     if (nb.tree == 1) obj <- obj[[1]] else {
         if (is.null(tree.names))
           tree.names <- paste("tree", 1:nb.tree, sep = "")
         names(obj) <- tree.names
-        class(obj) <- c("multi.tree", "phylo")
+        class(obj) <- "multiPhylo"
     }
     obj
 }

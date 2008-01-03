@@ -1,16 +1,20 @@
 \name{print.phylo}
 \alias{print.phylo}
-\alias{print.multi.tree}
+\alias{print.multiPhylo}
+\alias{[.multiPhylo}
 \title{Compact Display of a Phylogeny}
 \usage{
 \method{print}{phylo}(x, printlen = 6 ,...)
-\method{print}{multi.tree}(x, details = FALSE ,...)
+\method{print}{multiPhylo}(x, details = FALSE ,...)
+\method{[}{multiPhylo}(x, i)
 }
 \arguments{
-  \item{x}{an object of class \code{"phylo"}.}
+  \item{x}{an object of class \code{"phylo"} or \code{"multiPhylo"}.}
   \item{printlen}{the number of labels to print (6 by default).}
   \item{details}{a logical indicating whether to print information on
     all trees.}
+  \item{i}{indices of the trees to select from a list; this may be a
+    vector of integers, logicals, or names.}
   \item{...}{further arguments passed to or from other methods.}
 }
 \description{
@@ -18,7 +22,7 @@
   on the console.
 }
 \value{
-  A NULL value is returned, the results are simply printed.
+  An object of class \code{"multiPhylo"} or NULL.
 }
 \author{Ben Bolker \email{bolker@zoo.ufl.edu} and Emmanuel Paradis
   \email{Emmanuel.Paradis@mpl.ird.fr}}

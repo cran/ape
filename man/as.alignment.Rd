@@ -3,6 +3,7 @@
 \alias{as.DNAbin}
 \alias{as.DNAbin.character}
 \alias{as.DNAbin.list}
+\alias{as.DNAbin.alignment}
 \alias{as.character.DNAbin}
 \title{Conversion Among DNA Sequence Internal Formats}
 \description{
@@ -17,10 +18,13 @@ as.DNAbin(x, ...)
 
 \method{as.DNAbin}{list}(x, ...)
 
+\method{as.DNAbin}{alignment}(x, ...)
+
 \method{as.character}{DNAbin}(x, ...)
 }
 \arguments{
-  \item{x}{a matrix or a list containing the DNA sequences.}
+  \item{x}{a matrix or a list containing the DNA sequences, or an object
+    of class \code{"alignment"}.}
   \item{...}{further arguments to be passed to or from other methods.}
 }
 \details{

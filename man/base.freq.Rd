@@ -5,8 +5,8 @@
 base.freq(x)
 }
 \arguments{
-  \item{x}{a vector, a matrix, a data frame, or a list which contains
-    the DNA sequences.}
+  \item{x}{a vector, a matrix, or a list which contains the DNA
+    sequences.}
 }
 \description{
   This function computes the relative frequencies (i.e. percentages) of
@@ -19,12 +19,12 @@ base.freq(x)
   computations.
 }
 \value{
-  A table of relative frequencies with the names \code{"a"}, \code{"c"},
-  \code{"g"}, and \code{"t"}.
+  A numeric vector stoting the relative frequencies with names
+  \code{c("a", "c", "g", "t")}.
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{GC.content}}, \code{\link{seg.sites}},
-  \code{\link{nuc.div}}
+  \code{\link{nuc.div}}, \code{\link{DNAbin}}
 }
 \keyword{univar}

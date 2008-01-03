@@ -1,4 +1,4 @@
-## root.R (2007-10-09)
+## root.R (2007-12-21)
 
 ##   Root of Phylogenetic Trees
 
@@ -144,5 +144,5 @@ root <- function(phy, outgroup)
       ## to keep the positions of the other nodes
       phy$node.label[1] <- phy$node.label[newroot - nb.tip]
     ## Not needed: phy$Nnode <- phy$Nnode - 1
-    read.tree(text = write.tree(phy, multi.line = FALSE))
+    read.tree(text = write.tree(phy))
 }

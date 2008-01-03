@@ -33,12 +33,9 @@ as.matching(x, ...)
   \code{as.matching} returns an object of class \code{"matching"} with
   the following component:
 
-  \item{matching}{a three-columns numeric matrix where the first two
+  \item{matching}{a three-column numeric matrix where the first two
     columns represent the sibling pairs, and the third one the
     corresponding ancestor.}
-  \item{edge.length}{(optional) a numeric vector representing the branch
-    lengths where the ith element is the length of the branch below the
-    element (tip or node) numbered i in \code{matching}.}
   \item{tip.label}{(optional) a character vector giving the tip labels
     where the ith element is the label of the tip numbered i in
     \code{matching}.}
@@ -48,6 +45,9 @@ as.matching(x, ...)
     with n the number of tips).}
 
   \code{as.phylo.matching} returns an object of class \code{"phylo"}.
+}
+\note{
+  Branch lengths are not supported in the present version.
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \references{
@@ -62,6 +62,6 @@ m <- as.matching(bird.orders)
 str(m)
 m
 tr <- as.phylo(m)
-all.equal(tr, bird.orders)
+all.equal(tr, bird.orders, use.edge.length = FALSE)
 }
 \keyword{manip}
