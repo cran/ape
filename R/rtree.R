@@ -1,8 +1,8 @@
-## rtree.R (2007-12-22)
+## rtree.R (2008-01-13)
 
 ##   Generates Random Trees
 
-## Copyright 2004-2007 Emmanuel Paradis
+## Copyright 2004-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -100,11 +100,13 @@ rtree <- function(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
     phy
 }
 
-rcoal <- function(n, tip.label = NULL, br = rexp, ...)
+rcoal <- function(n, tip.label = NULL, br = "coalescent", ...)
 {
     nbr <- 2*n - 2
     edge <- matrix(NA, nbr, 2)
-    x <- br(n - 1, ...) # coalescence times
+    ## coalescence times by default:
+    x <- if (is.character(br)) 2*rexp(n - 1)/(n:2 * (n - 1):1)
+    else br(n - 1, ...)
     if (n == 2) {
         edge[] <- c(3, 3, 1:2)
         edge.length <- rep(x, 2)
@@ -137,4 +139,12 @@ rcoal <- function(n, tip.label = NULL, br = rexp, ...)
     ##reorder(phy)
     ## to avoid crossings when converting with as.hclust:
     read.tree(text = write.tree(phy))
+}
+
+rmtree <- function(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)
+{
+    a <- replicate(N, rtree(n, rooted = rooted, tip.label =  tip.label,
+                            br = br, ...), simplify = FALSE)
+    class(a) <- "multiPhylo"
+    a
 }

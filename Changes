@@ -1,3 +1,30 @@
+		CHANGES IN APE VERSION 2.1-1
+
+
+NEW FEATURES
+
+    o The new function rmtree generates lists of random trees.
+
+    o rcoal() now generates a genuine coalescent tree by default
+      (thanks to Vladimir Minin for the code).
+
+
+BUG FIXES
+
+    o nuc.div() returned an incorrect value with the default
+      pairwise.deletion = FALSE.
+
+
+OTHER CHANGES
+
+    o The internal codes of bionj(), fastme.bal(), and fastme.ols()
+      have been improved so that they are stabler and faster.
+
+    o R packages used by ape are now loaded silently; lattice and gee
+      are loaded only when needed.
+
+
+
 		CHANGES IN APE VERSION 2.1
 
 

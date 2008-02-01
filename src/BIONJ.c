@@ -1,3 +1,11 @@
+/* BIONJ.c    2008-01-14 */
+
+/* Copyright 2007-2008 Olivier Gascuel, Hoa Sien Cuong,
+   R port by Vincent Lefort, bionj() below modified by Emmanuel Paradis */
+
+/* This file is part of the R-package `ape'. */
+/* See the file ../COPYING for licensing issues. */
+
 /*;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;                                                                           ;
 ;                         BIONJ program                                     ;
@@ -15,12 +23,11 @@
 ;                                                                           ;
 \*;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;*/
 
-//#include "BIONJ.h"
 #include "me.h"
 
 void Initialize(float **delta, double *X, char **labels, int n, POINTERS *trees);
 void Print_outputChar(int i, POINTERS *trees, char *output);
-void bionj (double *X, int *N, char **labels, char **treeStr);
+void bionj(double *X, int *N, char **labels, int *edge1, int *edge2, double *el, char **tl);
 int Symmetrize(float **delta, int n);
 void Concatenate(char chain1[MAX_LABEL_LENGTH], int ind, POINTERS *trees, int post);
 float Distance(int i, int j, float **delta);
@@ -159,46 +166,33 @@ void Print_outputChar(int i, POINTERS *trees, char *output)
   return;
 }
 
-/*;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;                                                                           ;
-;                         Main program                                      ;
-;                                                                           ;
-;                         argc is the number of arguments                   ;
-;                         **argv contains the arguments:                    ;
-;                         the first argument has to be BIONJ;               ;
-;                         the second is the inptu-file;                     ;
-;                         the third is the output-file.                     ;
-;                         When the input and output files are               ;
-;                         not given, the user is asked for them.            ;
-;                                                                           ;
-\*;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;*/
-
-
 //tree *bionj (FILE *input, boolean isNJ)
-void bionj (double *X, int *N, char **labels, char **treeStr)
+void bionj(double *X, int *N, char **labels,
+	   int *edge1, int *edge2, double *el, char **tl)
 {
-  POINTERS *trees;                          /* list of subtrees            */
-  tree *T;                                  /* the returned tree           */
-  char *chain1;                             /* stringized branch-length    */
-//  char *chain2;                             /* idem                        */
-  char *str;                                /* the string containing final tree */
-  int *a, *b;                               /* pair to be agglomerated     */
-  float **delta;                            /* delta matrix                */
-  float la;                                 /* first taxon branch-length   */
-  float lb;                                 /* second taxon branch-length  */
-  float vab;                                /* variance of Dab             */
+  POINTERS *trees;            /* list of subtrees            */
+  tree *T;                    /* the returned tree           */
+  char *chain1;               /* stringized branch-length    */
+  char *str;                  /* the string containing final tree */
+  int *a, *b;                 /* pair to be agglomerated     */
+  float **delta;              /* delta matrix                */
+  float la;                   /* first taxon branch-length   */
+  float lb;                   /* second taxon branch-length  */
+  float vab;                  /* variance of Dab             */
   float lamda = 0.5;
   int i;
 //  int ok;
-  int r;                                    /* number of subtrees          */
-  int n;                                    /* number of taxa              */
+  int r;                      /* number of subtrees          */
+  int n;                      /* number of taxa              */
   int x, y;
 //  double t;
   a=(int*)calloc(1,sizeof(int));
   b=(int*)calloc(1,sizeof(int));
-  chain1=(char *)calloc(MAX_LABEL_LENGTH,sizeof(char));
+  chain1=(char *)R_alloc(MAX_LABEL_LENGTH, sizeof(char));
   str = (char *)R_alloc(MAX_INPUT_SIZE, sizeof(char));
   /* added by EP */
+  if (strlen(chain1))
+    strncpy(chain1, "", strlen(chain1));
   if (strlen(str))
     strncpy(str, "", strlen(str));
   /* end */
@@ -223,15 +217,15 @@ void bionj (double *X, int *N, char **labels, char **treeStr)
       exit(0);
     }
   /*   initialise and symmetrize the running delta matrix    */
-    r=n;
-    *a=0;
-    *b=0;
-    Initialize(delta, X, labels, n, trees);
-//    ok=Symmetrize(delta, n);
+  r=n;
+  *a=0;
+  *b=0;
+  Initialize(delta, X, labels, n, trees);
+//  ok=Symmetrize(delta, n);
 
-//    if(!ok)
-//     Rprintf("\n The matrix is not symmetric.\n ");
-    while (r > 3)                             /* until r=3                 */
+//  if(!ok)
+//   Rprintf("\n The matrix is not symmetric.\n ");
+  while (r > 3)                             /* until r=3                 */
       {
       	Compute_sums_Sx(delta, n);             /* compute the sum Sx       */
 	Best_pair(delta, r, a, b, n);          /* find the best pair by    */
@@ -281,37 +275,31 @@ void bionj (double *X, int *N, char **labels, char **treeStr)
 	r=r-1;
       }
 
-    FinishStr (delta, n, trees, str);       /* compute the branch-lengths*/
-                                            /* of the last three subtrees*/
-				            /* and print the tree in the */
-				            /* output-file               */
-    T = readNewickString (str, n);
-    T = detrifurcate(T);
-//    compareSets(T,species);
-    partitionSizes(T);
-    *treeStr = (char *)R_alloc(MAX_INPUT_SIZE, sizeof(char));
-    /* added by EP */
-    if (strlen(*treeStr))
-      strncpy(*treeStr, "", strlen(*treeStr));
-    /* end */
-    NewickPrintTreeStr (T, *treeStr);
+  FinishStr (delta, n, trees, str);   /* compute the branch-lengths*/
+                                      /* of the last three subtrees*/
+				      /* and print the tree in the */
+				      /* output-file               */
+  T = readNewickString (str, n);
+  T = detrifurcate(T);
+//  compareSets(T,species);
+  partitionSizes(T);
 
-    for(i=1; i<=n; i++)
-      {
-	delta[i][0]=0.0;
-	trees[i].head=NULL;
-	trees[i].tail=NULL;
-      }
+  tree2phylo(T, edge1, edge2, el, tl, n); /* by EP */
+
+  for(i=1; i<=n; i++)
+  {
+      delta[i][0]=0.0;
+      trees[i].head=NULL;
+      trees[i].tail=NULL;
+  }
   free(delta);
   free(trees);
   /* free (str); */
-  free (chain1);
-  free (a);
-  free (b);
+  /* free (chain1); */
+  free(a);
+  free(b);
   freeTree(T);
   T = NULL;
-//  return (ret);
-  return;
 }
 
 /*;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;*\
@@ -319,7 +307,6 @@ void bionj (double *X, int *N, char **labels, char **treeStr)
 ;                             Utilities                                     ;
 ;                                                                           ;
 \*;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;*/
-
 
 
 /*;;;;;;;;;;;;;;;;;;;;;;;;;;; Symmetrize  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;*\
@@ -360,8 +347,6 @@ int Symmetrize(float **delta, int n)
     }
   return(symmetric);
 }
-
-
 
 
 /*;;;;;;;;;;;;;;;;;;;;;;;;;;; Concatenate ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;*\
@@ -599,77 +584,6 @@ float Finish_branch_length(int i, int j, int k, float **delta)
   return(length);
 }
 
-
-/*;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;Finish;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;*\
-;                                                                           ;
-;  Description : This function compute the length of the lasts three        ;
-;                subtrees and write the tree in the output file.            ;
-;                                                                           ;
-;  input       :                                                            ;
-;                float **delta  : the delta matrix                          ;
-;                int n           : the number of taxa                       ;
-;                WORD *trees   : list of subtrees                           ;
-;                                                                           ;
-;                                                                           ;
-\*;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;*/
-/*
-void Finish(float **delta, int n, POINTERS *trees, FILE *output)
-{
-  int l=1;
-  int i=0;
-  float length;
-  WORD *bidon;
-  WORD *ele;
-  int last[3];                            // the last three subtrees
-
-  while(l <= n)
-    {                                     // find the last tree subtree
-      if(!Emptied(l, delta))
-	{
-	  last[i]=l;
-	  i++;
-	}
-      l++;
-    }
-
-  length=Finish_branch_length(last[0],last[1],last[2],delta);
-  fprintf(output,"(");
-  Print_output(last[0],trees,output);
-  fprintf(output,":");
-//   gcvt(length,PREC, str);
-//   fprintf(output,"%s,",str);
-  fprintf(output,"%f,",length);
-
-  length=Finish_branch_length(last[1],last[0],last[2],delta);
-  Print_output(last[1],trees,output);
-  fprintf(output,":");
-//   gcvt(length,PREC, str);
-//   fprintf(output,"%s,",str);
-  fprintf(output,"%f,",length);
-
-  length=Finish_branch_length(last[2],last[1],last[0],delta);
-  Print_output(last[2],trees,output);
-  fprintf(output,":");
-//   gcvt(length,PREC,str);
-//   fprintf(output,"%s",str);
-  fprintf(output,"%f",length);
-  fprintf(output,");");
-  fprintf(output,"\n");
-
-  for(i=0; i < 3; i++)
-    {
-      bidon=trees[last[i]].head;
-      ele=bidon;
-      while(bidon!=NULL)
-	{
-	  ele=ele->suiv;
-	  free(bidon);
-	  bidon=ele;
-	}
-    }
-}
-*/
-
 void FinishStr (float **delta, int n, POINTERS *trees, char *StrTree)
 {
   int l=1;
@@ -717,7 +631,7 @@ void FinishStr (float **delta, int n, POINTERS *trees, char *StrTree)
   }
 
   if (strlen (StrTree) < MAX_INPUT_SIZE-3)
-    strncat (StrTree, ");\n", 3);
+    strncat (StrTree, ");", 3);
 
   free (tmp);
   for(i=0; i < 3; i++)
@@ -794,23 +708,24 @@ float Lamda(int a, int b, float vab, float **delta, int n, int r)
             lamda=lamda + (Variance(b,i,delta) - Variance(a,i,delta));
 	}
       lamda=0.5 + lamda/(2*(r-2)*vab);
-    }                                              /* Formula (9) and the  */
-  if(lamda > 1.0)                                  /* constraint that lamda*/
-    lamda = 1.0;                                   /* belongs to [0,1]     */
+    }                                       /* Formula (9) and the  */
+  if(lamda > 1.0)                           /* constraint that lamda*/
+    lamda = 1.0;                            /* belongs to [0,1]     */
   if(lamda < 0.0)
     lamda=0.0;
   return(lamda);
 }
 
-
-/* void printMat(float **delta, int n) */
-/* { */
-/*   int i, j; */
-/*   for (i=1; i<=n; i++) { */
-/*     for (j=1; j<=n; j++) */
-/*       Rprintf ("%f ", delta[i][j]); */
-/*     Rprintf("\n"); */
-/*   } */
-/*   Rprintf("\n"); */
-/*   return; */
-/* } */
+/*
+void printMat(float **delta, int n)
+{
+  int i, j;
+  for (i=1; i<=n; i++) {
+    for (j=1; j<=n; j++)
+      Rprintf ("%f ", delta[i][j]);
+    Rprintf("\n");
+  }
+  Rprintf("\n");
+  return;
+}
+*/

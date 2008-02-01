@@ -1,10 +1,12 @@
 \name{rtree}
 \alias{rtree}
 \alias{rcoal}
+\alias{rmtree}
 \title{Generates Random Trees}
 \usage{
 rtree(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
-rcoal(n, tip.label = NULL, br = rexp, ...)
+rcoal(n, tip.label = NULL, br = "coalescent", ...)
+rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)
 }
 \arguments{
   \item{n}{an integer giving the number of tips in the tree.}
@@ -13,9 +15,11 @@ rcoal(n, tip.label = NULL, br = rexp, ...)
   \item{tip.label}{a character vector giving the tip labels; if not
     specified, the tips "t1", "t2", ..., are given.}
   \item{br}{either an R function used to generate the branch lengths
-    (\code{rtree}) or the coalescence times (\code{rcoal}), or
-    \code{NULL} to give no branch lengths in the tree.}
+    (\code{rtree} or \code{NULL} to give no branch lengths) or the
+    coalescence times (\code{rcoal}). For the latter, a genuine
+    coalescent tree is simulated by default.}
   \item{...}{further argument(s) to be passed to \code{br}.}
+  \item{N}{an integer giving the number of trees to generate.}
 }
 \description{
   These functions generate trees by splitting randomly the edges
@@ -25,12 +29,18 @@ rcoal(n, tip.label = NULL, br = rexp, ...)
 }
 \details{
   The trees generated are bifurcating. If \code{rooted = FALSE} in
-  (\code{rtree}), the tree is trifurcating at its `root'.
+  (\code{rtree}), the tree is trifurcating at its root.
 
   The default function to generate branch lengths in \code{rtree} is
-  \code{runif}. In \code{rcoal} \code{rexp} is used to generate the
-  inter-node distances. If further arguments are passed to \code{br},
-  they need to be tagged (e.g., \code{min = 0, max = 10}).
+  \code{runif}. If further arguments are passed to \code{br}, they need
+  to be tagged (e.g., \code{min = 0, max = 10}).
+
+  \code{rmtree} calls successively \code{rtree} and set the class of
+  the returned object appropriately.
+}
+\value{
+  An object of class \code{"phylo"} or of class \code{"multiPhylo"} in
+  the case of \code{rmtree}.
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \examples{

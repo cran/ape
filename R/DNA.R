@@ -1,8 +1,8 @@
-## DNA.R (2007-12-21)
+## DNA.R (2008-02-01)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
-## Copyright 2002-2007 Emmanuel Paradis
+## Copyright 2002-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -235,26 +235,12 @@ nuc.div <- function(x, variance = FALSE, pairwise.deletion = FALSE)
 {
     if (pairwise.deletion && variance)
       warning("cannot compute the variance of nucleotidic diversity\nwith pairwise deletion: try 'pairwise.deletion = FALSE' instead.")
-
-    n <- dim(x)
-    s <- n[2]
-    n <- n[1]
-
-    ## <FIXME> this should be safely deleted
-    if (!pairwise.deletion) {
-        keep <- .C("GlobalDeletionDNA", x, as.integer(n),
-                   as.integer(s), as.integer(rep(1, s)),
-                   PACKAGE = "ape")[[4]]
-        x <- x[,  as.logical(keep)]
-        s <- dim(x)[2]
-    }
-    ## </FIXME>
-
-    ans <- .C("NucleotideDiversity", x, as.integer(n), as.integer(s),
-              as.integer(pairwise.deletion), double(1), PACKAGE = "ape")[[5]]
-
+    if (is.list(x)) x <- as.matrix(x)
+    n <- dim(x)[1]
+    ans <- sum(dist.dna(x, "raw", pairwise.deletion = pairwise.deletion))/
+        (n*(n - 1)/2)
     if (variance) {
-        var <- (n + 1)*ans/(3*(n + 1)*s) + 2*(n^2 + n + 3)*ans/(9*n*(n - 1))
+        var <- (n + 1)*ans/(3*(n + 1)*dim(x)[2]) + 2*(n^2 + n + 3)*ans/(9*n*(n - 1))
         ans <- c(ans, var)
     }
     ans

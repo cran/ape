@@ -1,8 +1,8 @@
-## compar.gee.R (2006-10-11)
+## compar.gee.R (2008-01-14)
 
 ##   Comparative Analysis with GEEs
 
-## Copyright 2002-2006 Emmanuel Paradis
+## Copyright 2002-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -10,6 +10,7 @@
 compar.gee <- function(formula, data = NULL, family = "gaussian", phy,
                        scale.fix = FALSE, scale.value = 1)
 {
+    require(gee, quietly = TRUE)
     if (is.null(data)) data <- parent.frame() else {
         if(!any(is.na(match(rownames(data), phy$tip.label))))
           data <- data[phy$tip.label, ]

@@ -1,8 +1,8 @@
-## plot.phylo.R (2007-12-22)
+## plot.phylo.R (2008-01-12)
 
 ##   Plot Phylogenies
 
-## Copyright 2002-2007 Emmanuel Paradis
+## Copyright 2002-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -509,6 +509,7 @@ plot.multiPhylo <- function(x, layout = 1, ...)
 {
     if (layout > 1)
       layout(matrix(1:layout, ceiling(sqrt(layout)), byrow = TRUE))
+    else layout(matrix(1))
     if (!par("ask")) {
         par(ask = TRUE)
         on.exit(par(ask = FALSE))

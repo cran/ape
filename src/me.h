@@ -1,11 +1,10 @@
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <math.h>
-//#include <string.h>
-//#include <sys/types.h>
-//#include <sys/stat.h>
-//#include "main.h"
-//#include "graph.h"
+/* me.h    2008-01-14 */
+
+/* Copyright 2007-2008 Vincent Lefort, modified by Emmanuel Paradis */
+
+/* This file is part of the R-package `ape'. */
+/* See the file ../COPYING for licensing issues. */
+
 #include <R.h>
 
 #ifndef NONE
@@ -38,9 +37,9 @@
 #ifndef MAX_DIGITS
 #define MAX_DIGITS 20
 #endif
-#ifndef INPUT_SIZE
-#define INPUT_SIZE 100
-#endif
+/* #ifndef INPUT_SIZE */
+/* #define INPUT_SIZE 100 */
+/* #endif */
 #ifndef MAX_INPUT_SIZE
 #define MAX_INPUT_SIZE 100000
 #endif
@@ -69,13 +68,13 @@ typedef struct word
 {
   char name[MAX_LABEL_LENGTH];
   struct word *suiv;
-}WORD;
+} WORD;
 
 typedef struct pointers
 {
   WORD *head;
   WORD *tail;
-}POINTERS;
+} POINTERS;
 
 typedef struct node {
   char label[NODE_LABEL_LENGTH];
@@ -110,9 +109,9 @@ typedef struct set
   struct set *secondNode;
 } set;
 
-void me_b(double *X, int *N, char **labels, char **treeStr, int *nni);
-void me_o(double *X, int *N, char **labels, char **treeStr, int *nni);
-int whiteSpace(char c);
+void me_b(double *X, int *N, char **labels, int *nni, int *edge1, int *edge2, double *el, char **tl);
+void me_o(double *X, int *N, char **labels, int *nni, int *edge1, int *edge2, double *el, char **tl);
+//int whiteSpace(char c);
 double **initDoubleMatrix(int d);
 double **loadMatrix (double *X, char **labels, int n, set *S);
 set *addToSet(node *v, set *X);
@@ -135,11 +134,9 @@ void freeMatrix(double **D, int size);
 void freeSet(set *S);
 void freeTree(tree *T);
 void freeSubTree(edge *e);
+int whiteSpace(char c);
 int leaf(node *v);
-tree *readNewickString (char *str, int numLeaves);
 node *decodeNewickSubtree(char *treeString, tree *T, int *uCount);
-void NewickPrintSubtree(tree *T, edge *e, char *str);
-void NewickPrintBinaryTree(tree *T, char *str);
-void NewickPrintTrinaryTree(tree *T, char *str);
-void NewickPrintTreeStr(tree *T, char *str);
-
+tree *readNewickString (char *str, int numLeaves);
+void subtree2phylo(node *parent, int *edge1, int *edge2, double *el, char **tl);
+void tree2phylo(tree *T, int *edge1, int *edge2, double *el, char **tl, int n);

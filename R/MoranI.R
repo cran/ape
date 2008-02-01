@@ -1,8 +1,8 @@
-## MoranI.R (2007-12-26)
+## MoranI.R (2008-01-14)
 
 ##   Moran's I Autocorrelation Index
 
-## Copyright 2004 Julien Dutheil, 2007 Emmanuel Paradis
+## Copyright 2004 Julien Dutheil, 2007-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -180,12 +180,12 @@ plot.correlogramList <-
     BG <- col[(pval < test.level) + 1]
     if (lattice) {
         ## trellis.par.set(list(plot.symbol=list(pch=19)))
-        xyplot(obs ~ gr | vars, xlab = xlab, ylab = ylab,
-               panel = function(x, y) {
-                   panel.lines(x, y, lty = 2)
-                   panel.points(x, y, cex = cex, pch = 19, col = BG)
-                   #panel.abline(h = 0, lty = 3)
-               })
+        lattice::xyplot(obs ~ gr | vars, xlab = xlab, ylab = ylab,
+                        panel = function(x, y) {
+                            lattice::panel.lines(x, y, lty = 2)
+                            lattice::panel.points(x, y, cex = cex, pch = 19, col = BG)
+                            ##lattice::panel.abline(h = 0, lty = 3)
+                        })
     } else {
         if (pch > 20 && pch < 26) {
             bg <- col

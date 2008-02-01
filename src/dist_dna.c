@@ -1,6 +1,6 @@
-/* dist_dna.c       2007-12-01 */
+/* dist_dna.c       2008-01-19 */
 
-/* Copyright 2005-2007 Emmanuel Paradis
+/* Copyright 2005-2008 Emmanuel Paradis
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -986,27 +986,6 @@ void SegSites(unsigned char *x, int *n, int *s, int *seg)
 	    }
 	}
     }
-}
-
-void NucleotideDiversity(unsigned char *x, int *n, int *s,
-			 int *pairdel, double *ans)
-{
-    int i1, i2, s1, s2, Nd, L;
-
-    if (!*pairdel) L = *s;
-
-    for (i1 = 1; i1 < *n; i1++) {
-        for (i2 = i1 + 1; i2 <= *n; i2++) {
-	    Nd = 0;
-	    if (*pairdel) L = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
-                CHECK_PAIRWISE_DELETION
-		if (DifferentBase(x[s1], x[s2])) Nd++;
-	    }
-	    *ans += ((double) Nd/L);
-	}
-    }
-    *ans /= (*n * (*n - 1)/2);
 }
 
 void GlobalDeletionDNA(unsigned char *x, int *n, int *s, int *keep)

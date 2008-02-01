@@ -1,6 +1,6 @@
 ## nodelabels.R (2007-03-05)
 
-##   Labelling the Nodes and the Tips of a Tree
+##   Labelling Trees
 
 ## Copyright 2004-2007 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
 

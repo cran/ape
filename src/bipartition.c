@@ -112,7 +112,8 @@ SEXP bipartition(SEXP edge, SEXP nbtip, SEXP nbnode)
     return ans;
 } /* bipartition */
 
-/* From R-ext: */
+/* From R-ext manual
+   (not the same than in library/stats/src/nls.c) */
 SEXP getListElement(SEXP list, char *str)
 {
     SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);

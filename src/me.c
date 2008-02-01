@@ -1,11 +1,19 @@
+/* me.c    2008-01-14 */
+
+/* Copyright 2007-2008 Olivier Gascuel, Rick Desper,
+   R port by Vincent Lefort, me_*() below modified by Emmanuel Paradis */
+
+/* This file is part of the R-package `ape'. */
+/* See the file ../COPYING for licensing issues. */
+
 #include "me.h"
 
 //functions from me_balanced.c
-tree *BMEaddSpecies(tree *T,node *v, double **D, double **A);
+tree *BMEaddSpecies(tree *T, node *v, double **D, double **A);
 void assignBMEWeights(tree *T, double **A);
 void makeBMEAveragesTable(tree *T, double **D, double **A);
 //functions from me_ols.c
-tree *GMEaddSpecies(tree *T,node *v, double **D, double **A);
+tree *GMEaddSpecies(tree *T, node *v, double **D, double **A);
 void assignOLSWeights(tree *T, double **A);
 void makeOLSAveragesTable(tree *T, double **D, double **A);
 //functions from bNNI.c
@@ -14,13 +22,13 @@ void bNNI(tree *T, double **avgDistArray, int *count, double **D, int numSpecies
 void NNI(tree *T, double **avgDistArray, int *count, double **D, int numSpecies);
 
 
-void me_b(double *X, int *N, char **labels, char **treeStr, int *nni)
+void me_b(double *X, int *N, char **labels, int *nni,
+	  int *edge1, int *edge2, double *el, char **tl)
 {
   double **D, **A;
   set *species, *slooper;
   node *addNode;
   tree *T;
-  char *str;
   int n, nniCount;
 
   n = *N;
@@ -29,53 +37,35 @@ void me_b(double *X, int *N, char **labels, char **treeStr, int *nni)
   species = (set *) malloc(sizeof(set));
   species->firstNode = NULL;
   species->secondNode = NULL;
-  str = (char *)R_alloc(MAX_INPUT_SIZE, sizeof(char));
-  /* added by EP */
-  if (strlen(str))
-    strncpy(str, "", strlen(str));
-  /* end */
-  D = loadMatrix (X, labels, n, species);
-  A = initDoubleMatrix(2 * n - 2);
+  D = loadMatrix(X, labels, n, species);
+  A = initDoubleMatrix(2*n - 2);
 
   for(slooper = species; NULL != slooper; slooper = slooper->secondNode)
   {
     addNode = copyNode(slooper->firstNode);
-    T = BMEaddSpecies(T,addNode,D,A);
+    T = BMEaddSpecies(T, addNode, D, A);
   }
   // Compute bNNI
   if (*nni == 1)
-    bNNI(T,A,&nniCount,D,n);
+    bNNI(T, A, &nniCount, D, n);
   assignBMEWeights(T,A);
 
-  NewickPrintTreeStr(T,str);
+  tree2phylo(T, edge1, edge2, el, tl, n);
 
-  if (strlen (str) < MAX_INPUT_SIZE -1)
-    {
-      *treeStr = (char *)R_alloc(MAX_INPUT_SIZE, sizeof(char));
-      /* added by EP */
-      if (strlen(*treeStr))
-	strncpy(*treeStr, "", strlen(*treeStr));
-      /* end */
-      strncpy (*treeStr, str, strlen(str));
-    }
-
-/*   free (str); */
   freeMatrix(D,n);
   freeMatrix(A,2*n - 2);
   freeSet(species);
   freeTree(T);
   T = NULL;
-
-  /* return; */
 }
 
-void me_o(double *X, int *N, char **labels, char **treeStr, int *nni)
+void me_o(double *X, int *N, char **labels, int *nni,
+	  int *edge1, int *edge2, double *el, char **tl)
 {
   double **D, **A;
   set *species, *slooper;
   node *addNode;
   tree *T;
-  char *str;
   int n, nniCount;
 
   n = *N;
@@ -84,11 +74,6 @@ void me_o(double *X, int *N, char **labels, char **treeStr, int *nni)
   species = (set *) malloc(sizeof(set));
   species->firstNode = NULL;
   species->secondNode = NULL;
-  str = (char *)R_alloc(MAX_INPUT_SIZE, sizeof(char));
-  /* added by EP */
-  if (strlen(str))
-    strncpy(str, "", strlen(str));
-  /* end */
 
   D = loadMatrix (X, labels, n, species);
   A = initDoubleMatrix(2 * n - 2);
@@ -104,26 +89,13 @@ void me_o(double *X, int *N, char **labels, char **treeStr, int *nni)
     NNI(T,A,&nniCount,D,n);
   assignOLSWeights(T,A);
 
-  NewickPrintTreeStr(T,str);
+  tree2phylo(T, edge1, edge2, el, tl, n);
 
-  if (strlen (str) < MAX_INPUT_SIZE -1)
-    {
-      *treeStr = (char *)R_alloc(MAX_INPUT_SIZE, sizeof(char));
-      /* added by EP */
-      if (strlen(*treeStr))
-	strncpy(*treeStr, "", strlen(*treeStr));
-      /* end */
-      strncpy (*treeStr, str, strlen (str));
-    }
-
- /*  free (str); */
   freeMatrix(D,n);
   freeMatrix(A,2*n - 2);
   freeSet(species);
   freeTree(T);
   T = NULL;
-
-  return;
 }
 
 /*************************************************************************
@@ -516,4 +488,3 @@ void freeSubTree(edge *e)
   e->head = NULL;
   free(e);
 }
-

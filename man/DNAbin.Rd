@@ -62,7 +62,7 @@
   \code{cbind}, and \code{[}.
 }
 \references{
-  Paradis ,E. (2007) A Bit-Level Coding Scheme for Nucleotides.
+  Paradis, E. (2007) A Bit-Level Coding Scheme for Nucleotides.
   \url{http://pbil.univ-lyon1.fr/R/ape/misc/BitLevelCodingScheme_20April2007.pdf}
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
