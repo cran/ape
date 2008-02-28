@@ -28,8 +28,7 @@
   Moran's I coefficient is computed using the formula:
   \deqn{I = \frac{n}{S_0} \frac{\sum_{i=1}^n\sum_{j=1}^n w_{i,j}(y_i -
       \overline{y})(y_j - \overline{y})}{\sum_{i=1}^n {(y_i -
-	\overline{y})}^2}}
-  {\code{I = n/S0 * (sum\{i=1..n\} sum\{j=1..n\} wij(yi - ym))(yj - ym)
+	\overline{y})}^2}}{\code{I = n/S0 * (sum\{i=1..n\} sum\{j=1..n\} wij(yi - ym))(yj - ym)
       / (sum\{i=1..n\} (yi - ym)^2)}}
   with
   \itemize{

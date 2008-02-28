@@ -1,13 +1,26 @@
-## read.nexus.R (2007-12-22)
+## read.nexus.R (2008-02-28)
 
 ##   Read Tree File in Nexus Format
 
-## Copyright 2003-2007 Emmanuel Paradis
+## Copyright 2003-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-clado.build <- function(tp) {
+.treeBuildWithTokens <- function(x)
+{
+    phy <- .Call("treeBuildWithTokens", x, PACKAGE = "ape")
+    dim(phy[[1]]) <- c(length(phy[[1]])/2, 2)
+    nms <- c("edge", "edge.length", "Nnode", "node.label")
+    if (length(phy) == 5) nms <- c(nms, "root.edge")
+    names(phy) <- nms
+    if (!sum(phy[[4]])) phy[[4]] <- NULL
+    class(phy) <- "phylo"
+    phy
+}
+
+clado.build <- function(tp)
+{
     add.internal <- function() {
         edge[j, 1] <<- current.node
         node <<- node + 1
@@ -78,82 +91,118 @@ clado.build <- function(tp) {
     edge <- edge[-nb.edge, ]
     obj <- list(edge = edge, tip.label = tip.label,
                 Nnode = nb.node, node.label = node.label)
-    obj$node.label <- if (all(obj$node.label == "NA")) NULL else gsub("^NA", "", obj$node.label)
+    obj$node.label <-
+        if (all(obj$node.label == "NA")) NULL
+        else gsub("^NA", "", obj$node.label)
     class(obj) <- "phylo"
-    return(obj)
+    obj
 }
 
 read.nexus <- function(file, tree.names = NULL)
 {
-    X <- scan(file = file, what = character(), sep = "\n", quiet = TRUE)
-    ## first remove all the comments
+    X <- scan(file = file, what = "", sep = "\n", quiet = TRUE)
+    ## remove all comments
+    ## (this might not work if there are square brackets within the comments)
     LEFT <- grep("\\[", X)
     RIGHT <- grep("\\]", X)
-    if (length(LEFT)) {
-        for (i in length(LEFT):1) {
-            if (LEFT[i] == RIGHT[i]) {
-                X[LEFT[i]] <- gsub("\\[.*\\]", "", X[LEFT[i]])
-            } else {
-                X[LEFT[i]] <- gsub("\\[.*", "", X[LEFT[i]])
-                X[RIGHT[i]] <- gsub(".*\\]", "", X[RIGHT[i]])
-                if (LEFT[i] < RIGHT[i] - 1) X <- X[-((LEFT[i] + 1):(RIGHT[i] - 1))]
-            }
+    if (length(LEFT)) { # in case there are no comments at all
+        w <- LEFT == RIGHT
+        if (any(w)) { # in case all comments use at least 2 lines
+            s <- LEFT[w]
+            X[s] <- gsub("\\[.*\\]", "", X[s])
+        }
+        w <- !w
+        if (any(w)) {
+            s <- LEFT[w]
+            X[s] <- gsub("\\[.*", "", X[s])
+            sb <- RIGHT[w]
+            X[sb] <- gsub(".*\\]", "", X[sb])
+            if (any(s < sb - 1))
+                X <- X[-unlist(mapply(":", (s + 1), (sb - 1)))]
         }
     }
-    X <- gsub("ENDBLOCK;", "END;", X, ignore.case = TRUE)
-    endblock <- grep("END;", X, ignore.case = TRUE)
+    endblock <- grep("END;|ENDBLOCK;", X, ignore.case = TRUE)
     semico <- grep(";", X)
     i1 <- grep("BEGIN TREES;", X, ignore.case = TRUE)
     i2 <- grep("TRANSLATE", X, ignore.case = TRUE)
-    translation <- FALSE
-    if (length(i2) == 1) if (i2 > i1) translation <- TRUE
+    translation <- if (length(i2) == 1 && i2 > i1) TRUE else FALSE
     if (translation) {
         end <- semico[semico > i2][1]
-        x <- paste(X[i2:end], sep = "", collapse = "")
-        x <- gsub("TRANSLATE", "", x, ignore.case = TRUE)
+        x <- X[(i2 + 1):end] # assumes there's a 'new line' after "TRANSLATE"
+        ## x <- gsub("TRANSLATE", "", x, ignore.case = TRUE)
         x <- unlist(strsplit(x, "[,; \t]"))
-        x <- x[x != ""]
+        x <- x[nzchar(x)]
         TRANS <- matrix(x, ncol = 2, byrow = TRUE)
         TRANS[, 2] <- gsub("['\"]", "", TRANS[, 2])
+        n <- dim(TRANS)[1]
     }
-    start <- if (translation)  semico[semico > i2][1] + 1 else semico[semico > i1][1]
+    start <-
+        if (translation) semico[semico > i2][1] + 1
+        else semico[semico > i1][1]
     end <- endblock[endblock > i1][1] - 1
-    tree <- paste(X[start:end], sep = "", collapse = "")
-    tree <- gsub(" ", "", tree)
-    tree <- unlist(strsplit(tree, "[=;]"))
-    tree <- tree[grep("[\\(\\)]", tree)]
-    nb.tree <- length(tree)
-    STRING <- as.list(tree)
-    trees <- list()
-    for (i in 1:nb.tree) {
-        obj <- if (length(grep(":", STRING[[i]]))) tree.build(STRING[[i]]) else clado.build(STRING[[i]])
+    tree <- X[start:end]
+    rm(X)
+    tree <- gsub("^.*= *", "", tree)
+    semico <- grep(";", tree)
+    Ntree <- length(semico)
+    ## are some trees on several lines?
+    if (any(diff(semico) != 1)) {
+        STRING <- character(Ntree)
+        s <- c(1, semico[-Ntree] + 1)
+        j <- mapply(":", s, semico)
+        for (i in 1:Ntree)
+            STRING[i] <- paste(tree[j[, i]], collapse = "")
+    } else STRING <- tree
+    rm(tree)
+    STRING <- gsub(" ", "", STRING)
+    colon <- grep(":", STRING)
+    if (!length(colon)) {
+        trees <- lapply(STRING, clado.build)
+    } else if (length(colon) == Ntree) {
+        trees <-
+            if (translation) lapply(STRING, .treeBuildWithTokens)
+            else lapply(STRING, tree.build)
+    } else {
+        trees <- vector("list", Ntree)
+        trees[colon] <- lapply(STRING[colon], tree.build)
+        nocolon <- (1:Ntree)[!1:Ntree %in% colon]
+        trees[nocolon] <- lapply(STRING[nocolon], clado.build)
         if (translation) {
-            for (j in 1:length(obj$tip.label)) {
-                ind <- which(obj$tip.label[j] == TRANS[, 1])
-                obj$tip.label[j] <- TRANS[ind, 2]
-            }
-            if (!is.null(obj$node.label)) {
-                for (j in 1:length(obj$node.label)) {
-                    ind <- which(obj$node.label[j] == TRANS[, 1])
-                    obj$node.label[j] <- TRANS[ind, 2]
+            for (i in 1:Ntree) {
+                tr <- trees[[i]]
+                for (j in 1:n) {
+                    ind <- which(tr$tip.label[j] == TRANS[, 1])
+                    tr$tip.label[j] <- TRANS[ind, 2]
                 }
+                if (!is.null(tr$node.label)) {
+                    for (j in 1:length(tr$node.label)) {
+                        ind <- which(tr$node.label[j] == TRANS[, 1])
+                        tr$node.label[j] <- TRANS[ind, 2]
+                    }
+                }
+                trees[[i]] <- tr
             }
+            translation <- FALSE
         }
+    }
+    for (i in 1:Ntree) {
+        tr <- trees[[i]]
         ## Check here that the root edge is not incorrectly represented
         ## in the object of class "phylo" by simply checking that there
         ## is a bifurcation at the root
-        ROOT <- length(obj$tip.label) + 1
-        if (sum(obj$edge[, 1] == ROOT) == 1 && dim(obj$edge)[1] > 1) {
+        if (!translation) n <- length(tr$tip.label)
+        ROOT <- n + 1
+        if (sum(tr$edge[, 1] == ROOT) == 1 && dim(tr$edge)[1] > 1) {
             stop(paste("There is apparently two root edges in your file: cannot read tree file.\n  Reading NEXUS file aborted at tree no.", i, sep = ""))
         }
-        trees[[i]] <- obj
     }
-    if (nb.tree == 1) trees <- trees[[1]] else {
-        names(trees) <- if (is.null(tree.names))
-            paste("tree", 1:nb.tree, sep = "") else tree.names
+    if (Ntree == 1) trees <- trees[[1]] else {
+        if (!is.null(tree.names)) names(trees) <- tree.names
+        if (translation) attr(trees, "TipLabel") <- TRANS[, 2]
         class(trees) <- "multiPhylo"
     }
-    if (length(grep("[\\/]", file)) == 1) attr(trees, "origin") <- file
-    else attr(trees, "origin") <- paste(getwd(), file, sep = "/")
+    if (length(grep("[\\/]", file)) == 1)
+        file <- paste(getwd(), file, sep = "/")
+    attr(trees, "origin") <- file
     trees
 }

@@ -1,9 +1,9 @@
-## dist.topo.R (2007-07-04)
+## dist.topo.R (2008-02-27)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
 
-## Copyright 2005-2007 Emmanuel Paradis
+## Copyright 2005-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -165,12 +165,15 @@ prop.clades <- function(phy, ..., part = NULL)
 boot.phylo <- function(phy, x, FUN, B = 100, block = 1)
 {
     if (is.list(x)) {
-        nm <- names(x)
-        n <- length(x)
-        x <- unlist(x)
-        nL <- length(x)
-        x <- matrix(x, n, nL/n, byrow = TRUE)
-        rownames(x) <- nm
+        if (class(x) == "DNAbin") x <- as.matrix(x)
+        else {
+            nm <- names(x)
+            n <- length(x)
+            x <- unlist(x)
+            nL <- length(x)
+            x <- matrix(x, n, nL/n, byrow = TRUE)
+            rownames(x) <- nm
+        }
     }
     boot.tree <- vector("list", B)
     for (i in 1:B) {

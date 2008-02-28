@@ -4,7 +4,7 @@
 \alias{is.rooted}
 \title{Roots Phylogenetic Trees}
 \usage{
-root(phy, outgroup)
+root(phy, outgroup, node = NULL, resolve.root = FALSE)
 unroot(phy)
 is.rooted(phy)
 }
@@ -12,10 +12,13 @@ is.rooted(phy)
   \item{phy}{an object of class \code{"phylo"}.}
   \item{outgroup}{a vector of mode numeric or character specifying the
     new outgroup.}
+  \item{node}{alternatively, a node number where to root the tree.}
+  \item{resolve.root}{a logical specifying whether to resolve the new
+    root as a bifurcating node.}
 }
 \description{
   \code{root} reroots a phylogenetic tree with respect to the specified
-  outgroup.
+  outgroup or at the node specified in \code{node}.
 
   \code{unroot} unroots a phylogenetic tree, or returns it unchanged if
   it is already unrooted.
@@ -38,6 +41,9 @@ is.rooted(phy)
   one (see examples). If \code{outgroup} is not monophyletic, the
   operation fails and an error message is issued.
 
+  If \code{resolve.root = TRUE}, \code{root} adds a zero-length branch
+  below the MRCA of the ingroup.
+
   A tree is considered rooted if either only two branches connect to the
   root, or if there is a \code{root.edge} element. In all other cases,
   \code{is.rooted} returns \code{FALSE}.
@@ -48,7 +54,8 @@ is.rooted(phy)
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
-  \code{\link{bind.tree}}, \code{\link{drop.tip}}
+  \code{\link{bind.tree}}, \code{\link{drop.tip}},
+  \code{\link{nodelabels}}, \code{\link{identify.phylo}}
 }
 \examples{
 data(bird.orders)
@@ -61,8 +68,9 @@ is.rooted(tr)          # no!
 ### This is because the tree has been unrooted first before rerooting.
 ### You can delete the outgroup...
 is.rooted(drop.tip(tr, "Struthioniformes"))
-### ... or resolve the basal trichotomy:
+### ... or resolve the basal trichotomy in two ways:
 is.rooted(multi2di(tr))
+is.rooted(root(bird.orders, 1, r = TRUE))
 ### To keep the basal trichotomy but forcing the tree as rooted:
 tr$root.edge <- 0
 is.rooted(tr)

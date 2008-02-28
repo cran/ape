@@ -6,8 +6,8 @@
 \usage{
 ltt.plot(phy, xlab = "Time", ylab = "N", ...)
 ltt.lines(phy, ...)
-mltt.plot(phy, ..., dcol = TRUE, dlty = FALSE,
-          legend = TRUE, xlab = "Time", ylab = "N")
+mltt.plot(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
+          xlab = "Time", ylab = "N", log = "")
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}; this could be an object
@@ -27,6 +27,9 @@ mltt.plot(phy, ..., dcol = TRUE, dlty = FALSE,
     \code{FALSE}).}
   \item{legend}{a logical specifying whether a legend should be
     plotted.}
+  \item{log}{a character string specifying which axis(es) to be
+    log-transformed; must be one of the followings: \code{""},
+    \code{"x"}, \code{"y"}, or \code{"xy"}.}
 }
 \description{
   These functions plot, on the current graphical device, the minimum

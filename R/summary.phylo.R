@@ -1,8 +1,8 @@
-## summary.phylo.R (2007-12-29)
+## summary.phylo.R (2008-02-28)
 
 ##   Print Summary of a Phylogeny
 
-## Copyright 2003-2007 Emmanuel Paradis, and 2006 Ben Bolker
+## Copyright 2003-2008 Emmanuel Paradis, and 2006 Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -121,8 +121,26 @@ print.multiPhylo <- function(x, details = FALSE, ...)
     cat("\n")
 }
 
+"[[.multiPhylo" <- function(x, i)
+{
+    class(x) <- NULL
+    phy <- x[[i]]
+    if (!is.null(attr(x, "TipLabel")))
+        phy$tip.label <- attr(x, "TipLabel")
+    phy
+}
+
+`$.multiPhylo` <- function(x, name) x[[name]]
+
 "[.multiPhylo" <- function(x, i)
 {
     class(x) <- NULL
-    structure(x[i], class = "multiPhylo")
+    structure(x[i], TipLabel = attr(x, "TipLabel"),
+              class = "multiPhylo")
+}
+
+str.multiPhylo <- function(object, ...)
+{
+    class(object) <- NULL
+    str(object, ...)
 }

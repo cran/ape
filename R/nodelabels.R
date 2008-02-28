@@ -1,8 +1,8 @@
-## nodelabels.R (2007-03-05)
+## nodelabels.R (2008-02-28)
 
 ##   Labelling Trees
 
-## Copyright 2004-2007 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
+## Copyright 2004-2008 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -106,9 +106,10 @@ BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
     if (!is.null(pie)) {
         if (is.vector(pie)) pie <- cbind(pie, 1 - pie)
         xrad <- CEX * diff(par("usr")[1:2]) / 50
+        xrad <- rep(xrad, length(sel))
         for (i in 1:length(sel))
           floating.pie.asp(XX[i], YY[i], pie[i, ],
-                           radius = xrad, col = piecol)
+                           radius = xrad[i], col = piecol)
     }
     if (!is.null(text)) text(XX, YY, text, adj = adj, col = col, ...)
     if (!is.null(pch)) points(XX + adj[1] - 0.5, YY + adj[2] - 0.5,
@@ -119,10 +120,10 @@ nodelabels <- function(text, node, adj = c(0.5, 0.5), frame = "rect",
                        pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
                        col = "black", bg = "lightblue", ...)
 {
-    if (missing(node))
-      node <- (.last_plot.phylo$Ntip + 1):length(.last_plot.phylo$xx)
-    XX <- .last_plot.phylo$xx[node]
-    YY <- .last_plot.phylo$yy[node]
+    lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
+    if (missing(node)) node <- (lastPP$Ntip + 1):length(lastPP$xx)
+    XX <- lastPP$xx[node]
+    YY <- lastPP$yy[node]
     BOTHlabels(text, node, XX, YY, adj, frame, pch, thermo,
                pie, piecol, col, bg, ...)
 }
@@ -131,9 +132,10 @@ tiplabels <- function(text, tip, adj = c(0.5, 0.5), frame = "rect",
                       pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
                       col = "black", bg = "yellow", ...)
 {
-    if (missing(tip)) tip <- 1:.last_plot.phylo$Ntip
-    XX <- .last_plot.phylo$xx[tip]
-    YY <- .last_plot.phylo$yy[tip]
+    lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
+    if (missing(tip)) tip <- 1:lastPP$Ntip
+    XX <- lastPP$xx[tip]
+    YY <- lastPP$yy[tip]
     BOTHlabels(text, tip, XX, YY, adj, frame, pch, thermo,
                pie, piecol, col, bg, ...)
 }
@@ -142,28 +144,25 @@ edgelabels <- function(text, edge, adj = c(0.5, 0.5), frame = "rect",
                       pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
                       col = "black", bg = "lightgreen", ...)
 {
+    lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
     if (missing(edge)) {
-        sel <- 1:dim(.last_plot.phylo$edge)[1]
-        subedge <- .last_plot.phylo$edge
+        sel <- 1:dim(lastPP$edge)[1]
+        subedge <- lastPP$edge
     } else {
         sel <- edge
-        subedge <- .last_plot.phylo$edge[sel, , drop = FALSE]
+        subedge <- lastPP$edge[sel, , drop = FALSE]
     }
-    if (.last_plot.phylo$type == "phylogram") {
-        if(.last_plot.phylo$direction %in% c("rightwards", "leftwards")) {
-            XX <- (.last_plot.phylo$xx[subedge[, 1]] +
-                   .last_plot.phylo$xx[subedge[, 2]]) / 2
-            YY <- .last_plot.phylo$yy[subedge[, 2]]
+    if (lastPP$type == "phylogram") {
+        if (lastPP$direction %in% c("rightwards", "leftwards")) {
+            XX <- (lastPP$xx[subedge[, 1]] + lastPP$xx[subedge[, 2]]) / 2
+            YY <- lastPP$yy[subedge[, 2]]
         } else {
-            XX <- .last_plot.phylo$xx[subedge[, 2]]
-            YY <- (.last_plot.phylo$yy[subedge[, 1]] +
-                   .last_plot.phylo$yy[subedge[, 2]]) / 2
+            XX <- lastPP$xx[subedge[, 2]]
+            YY <- (lastPP$yy[subedge[, 1]] + lastPP$yy[subedge[, 2]]) / 2
         }
     } else {
-        XX <- (.last_plot.phylo$xx[subedge[, 1]] +
-               .last_plot.phylo$xx[subedge[, 2]]) / 2
-        YY <- (.last_plot.phylo$yy[subedge[, 1]] +
-               .last_plot.phylo$yy[subedge[, 2]]) / 2
+        XX <- (lastPP$xx[subedge[, 1]] + lastPP$xx[subedge[, 2]]) / 2
+        YY <- (lastPP$yy[subedge[, 1]] + lastPP$yy[subedge[, 2]]) / 2
     }
     BOTHlabels(text, sel, XX, YY, adj, frame, pch, thermo,
                pie, piecol, col, bg, ...)

@@ -1,4 +1,4 @@
-## DNA.R (2008-02-01)
+## DNA.R (2008-02-08)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -210,7 +210,7 @@ base.freq <- function(x)
     if (is.list(x)) x <- unlist(x)
     n <- length(x)
     BF <- .C("BaseProportion", as.raw(x), as.integer(n),
-             double(4), PACKAGE = "ape")[[3]]
+             double(4), DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")[[3]]
     names(BF) <- letters[c(1, 3, 7, 20)]
     BF
 }
@@ -227,7 +227,7 @@ seg.sites <- function(x)
     s <- n[2]
     n <- n[1]
     ans <- .C("SegSites", x, as.integer(n), as.integer(s),
-              integer(s), PACKAGE = "ape")
+              integer(s), DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
     which(as.logical(ans[[4]]))
 }
 
@@ -281,7 +281,8 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     d <- .C("dist_dna", x, as.integer(n), as.integer(s),
             as.integer(imod), double(Ndist), BF,
             as.integer(pairwise.deletion), as.integer(variance),
-            var, as.integer(gamma), alpha, PACKAGE = "ape")
+            var, as.integer(gamma), alpha, DUP = FALSE, NAOK = TRUE,
+            PACKAGE = "ape")
     if (variance) var <- d[[9]]
     d <- d[[5]]
     if (imod == 11) {

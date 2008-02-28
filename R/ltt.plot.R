@@ -1,8 +1,8 @@
-## ltt.plot.R (2007-12-22)
+## ltt.plot.R (2008-02-22)
 
 ##    Lineages Through Time Plot
 
-## Copyright 2002-2007 Emmanuel Paradis
+## Copyright 2002-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -12,8 +12,8 @@ ltt.plot <- function(phy, xlab = "Time", ylab = "N", ...)
     if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
     time <- sort(branching.times(phy), decreasing = TRUE)
     N <- 1:(length(time) + 1)
-    plot(-c(time, 0), N, xlab = xlab, ylab = ylab,
-         xaxs = "r", yaxs = "r", type = "S", ...)
+    plot.default(-c(time, 0), N, xlab = xlab, ylab = ylab,
+                 xaxs = "r", yaxs = "r", type = "S", ...)
 }
 
 ltt.lines <- function(phy, ...)
@@ -24,7 +24,7 @@ ltt.lines <- function(phy, ...)
 }
 
 mltt.plot <- function(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
-                      xlab = "Time", ylab = "N")
+                      xlab = "Time", ylab = "N", log = "")
 {
     ltt.xy <- function(phy) {
         x <- -c(sort(branching.times(phy), decreasing = TRUE), 0)
@@ -38,6 +38,9 @@ mltt.plot <- function(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
     } else { # a list of trees
         TREES <- lapply(phy, ltt.xy)
         names(TREES) <- names(phy)
+        if (is.null(names(TREES)))
+            names(TREES) <-
+                paste(deparse(substitute(phy)), "-", 1:length(TREES))
     }
     dts <- list(...)
     n <- length(dts)
@@ -51,6 +54,9 @@ mltt.plot <- function(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
             } else { # a list of trees
                 a <- lapply(dts[[i]], ltt.xy)
                 names(a) <- names(dts[[i]])
+                if (is.null(names(a)))
+                    names(a) <-
+                        paste(deparse(substitute(phy)), "-", 1:length(a))
             }
             TREES <- c(TREES, a)
         }
@@ -59,8 +65,8 @@ mltt.plot <- function(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
     xl <- c(min(unlist(lapply(TREES, function(x) min(x[, 1])))), 0)
     yl <- c(1, max(unlist(lapply(TREES, function(x) max(x[, 2])))))
 
-    plot(0, 0, type = "n", xlim = xl, ylim = yl, xaxs = "r", yaxs = "r",
-         xlab = xlab, ylab = ylab)
+    plot.default(1, 1, type = "n", xlim = xl, ylim = yl, xaxs = "r",
+                 yaxs = "r", xlab = xlab, ylab = ylab, log = log)
 
     lty <- if (!dlty) rep(1, n) else 1:n
     col <- if (!dcol) rep(1, n) else topo.colors(n)

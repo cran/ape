@@ -30,8 +30,7 @@
   function, \code{read.tree}, \code{read.nexus}
 }
 \examples{
-TR <- replicate(50, rtree(4), simplify = FALSE)
-class(TR) <- "multiPhylo" # set the class!
+TR <- rmtree(50, 4)
 length(unique(TR)) # not always 15...
 howmanytrees(4)
 }

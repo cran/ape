@@ -1,8 +1,8 @@
-## root.R (2007-12-21)
+## root.R (2008-02-12)
 
 ##   Root of Phylogenetic Trees
 
-## Copyright 2004-2007 Emmanuel Paradis
+## Copyright 2004-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -62,87 +62,222 @@ unroot <- function(phy)
     phy
 }
 
-root <- function(phy, outgroup)
+root <- function(phy, outgroup, node = NULL, resolve.root = FALSE)
 {
     if (class(phy) != "phylo")
       stop('object "phy" is not of class "phylo"')
-    if (is.character(outgroup))
-      outgroup <- which(phy$tip.label %in% outgroup)
-    nb.tip <- length(phy$tip.label)
-    if (length(outgroup) == nb.tip) return(phy)
-
-    ## First check that the outgroup is monophyletic--
-    ## unless there's only one tip specified of course
-    ROOT <- nb.tip + 1
-    if (length(outgroup) > 1) {
-        msg <- "the specified outgroup is not monophyletic!"
-        ## If all tips in `tip' are not contiguous, then
-        ## no need to go further:
-        if (!all(diff(outgroup) == 1)) stop(msg)
-        seq.nod <- .Call("seq_root2tip", phy$edge, nb.tip,
-                         phy$Nnode, PACKAGE = "ape")
-        sn <- seq.nod[outgroup]
-        ## We go from the root to the tips: the sequence of nodes
-        ## is identical until the MRCA:
-        newroot <- ROOT
-        i <- 2 # we start at the 2nd position since the root
-               # of the tree is a common ancestor to all tips
-        repeat {
-            x <- unique(unlist(lapply(sn, "[", i)))
-            if (length(x) != 1) break
-            newroot <- x
-            i <- i + 1
+    ord <- attr(phy, "order")
+    if (!is.null(ord) && ord == "pruningwise") phy <- reorder(phy)
+    n <- length(phy$tip.label)
+    ROOT <- n + 1
+    if (!is.null(node)) {
+        if (node <= n)
+            stop("incorrect node#: should be greater than the number of taxa")
+        outgroup <- NULL
+        newroot <- node
+    } else {
+        if (is.numeric(outgroup)) {
+            if (any(outgroup > n))
+                stop("incorrect taxa#: should not be greater than the number of taxa")
+            outgroup <- sort(outgroup) # used below
         }
-        ## Check that all descendants of this node
-        ## are included in the outgroup
-        ## (1st solution... there may be something smarter)
-        desc <- which(unlist(lapply(seq.nod,
-                                    function(x) any(x %in% newroot))))
-        if (length(outgroup) != length(desc)) stop(msg)
-        if (!all(sort(outgroup) == sort(desc))) stop(msg)
+        if (is.character(outgroup))
+            outgroup <- which(phy$tip.label %in% outgroup)
+        if (length(outgroup) == n) return(phy)
 
-    } else newroot <- phy$edge[which(phy$edge[, 2] == outgroup), 1]
-
+        ## First check that the outgroup is monophyletic--
+        ## unless there's only one tip specified of course
+        if (length(outgroup) > 1) {
+            msg <- "the specified outgroup is not monophyletic"
+            seq.nod <- .Call("seq_root2tip", phy$edge, n,
+                             phy$Nnode, PACKAGE = "ape")
+            sn <- seq.nod[outgroup]
+            ## We go from the root to the tips: the sequence of nodes
+            ## is identical until the MRCA:
+            newroot <- ROOT
+            i <- 2 # we start at the 2nd position since the root
+                   # of the tree is a common ancestor to all tips
+            repeat {
+                x <- unique(unlist(lapply(sn, "[", i)))
+                if (length(x) != 1) break
+                newroot <- x
+                i <- i + 1
+            }
+            ## Check that all descendants of this node
+            ## are included in the outgroup.
+            ## (below is slightly faster than calling "bipartition")
+            desc <- which(unlist(lapply(seq.nod,
+                                        function(x) any(x %in% newroot))))
+            if (length(outgroup) != length(desc)) stop(msg)
+            ## both vectors below are already sorted:
+            if (!all(outgroup == desc)) stop(msg)
+        } else newroot <- phy$edge[which(phy$edge[, 2] == outgroup), 1]
+    }
     if (newroot == ROOT) return(phy)
 
-### <FIXME>
-### The remaining part of the code has not been improved; this
-### does not seem obvious. This is delayed...     (2006-09-23)
-### </FIXME>
+    phy$root.edge <- NULL # just in case...
+    Nclade <- tabulate(phy$edge[, 1])[ROOT] # degree of the root node
+    ## if only 2 edges connect to the root, we have to fuse them:
+    fuseRoot <- Nclade == 2
 
-    ## Invert all branches from the new root to the old one
-    i <- which(phy$edge[, 2] == newroot)
-    nod <- phy$edge[i, 1]
-    while (nod != ROOT) {
-        j <- which(phy$edge[, 2] == nod)
-        phy$edge[i, 1] <- phy$edge[i, 2]
-        phy$edge[i, 2] <- nod
-        i <- j
-        nod <- phy$edge[i, 1]
-    }
+    N <- Nedge(phy)
+    start <- which(phy$edge[, 1] == ROOT)
+    end <- c(start[-1] - 1, N)
+    o <- integer(N)
+    INV <- logical(N)
 
-    i.oroot <- which(phy$edge[, 1] == ROOT)
-    ## Unroot the tree if there's a basal dichotomy...
-    if (length(i.oroot) == 2) {
-        j <- i.oroot[which(i.oroot != i)]
-        phy$edge[j, 1] <- phy$edge[i, 2]
-        phy$edge <- phy$edge[-i, ]
-        if (!is.null(phy$edge.length)) {
-            phy$edge.length[j] <- phy$edge.length[j] + phy$edge.length[i]
-            phy$edge.length <- phy$edge.length[-i]
+    w <- which(phy$edge[, 2] == newroot)
+    nod <- phy$edge[w, 1]
+    i <- w
+    NEXT <- 1L
+
+    ## The loop below starts from the new root and goes up in the edge
+    ## matrix reversing the edges that need to be as well as well
+    ## inverting their order. The other edges must not be changed, so
+    ## their indices are stored in `stack'.
+    ## We then bind the other edges in a straightforward way.
+
+    if (nod != ROOT) {
+        ## it is important that the 3 next lines
+        ## are inside this "if" statement
+        o[NEXT] <- w
+        NEXT <- NEXT + 1L
+        INV[w] <- TRUE
+        i <- w - 1L
+        stack <- 0L
+        repeat {
+            if (phy$edge[i, 2] == nod) {
+                if (stack) {
+                    o[NEXT:(NEXT + stack - 1L)] <- (i + 1L):(i + stack)
+                    NEXT <- NEXT + stack
+                    stack <- 0L
+                }
+                if (phy$edge[i, 1] == ROOT) break
+                o[NEXT] <- i
+                NEXT <- NEXT + 1L
+                INV[i] <- TRUE
+                nod <- phy$edge[i, 1]
+            } else stack <- stack + 1L
+            i <- i - 1L
         }
-        phy$edge[which(phy$edge == newroot)] <- ROOT
-    } else {
-        ## ... otherwise just invert the root with the newroot
-        phy$edge[which(phy$edge == newroot)] <- ROOT
-        phy$edge[i.oroot] <- newroot
-        ## ... and invert finally! (fixed 2005-11-07)
-        phy$edge[i, ] <- rev(phy$edge[i, ])
     }
-    if (!is.null(phy$node.label))
-      ## It's important to not delete the label of the newroot
-      ## to keep the positions of the other nodes
-      phy$node.label[1] <- phy$node.label[newroot - nb.tip]
-    ## Not needed: phy$Nnode <- phy$Nnode - 1
-    read.tree(text = write.tree(phy))
+
+    ## we keep the edge leading to the old root if needed:
+    if (!fuseRoot) {
+        o[NEXT] <- i
+        INV[i] <- TRUE
+        NEXT <- NEXT + 1L
+    }
+
+    endOfOutgroup <- which(phy$edge[(w+1):N, 1] < newroot)[1] + w - 1
+    if (is.na(endOfOutgroup)) endOfOutgroup <- N
+    endOfClade <- end[end >= endOfOutgroup][1]
+
+    ## bind the other clades...
+    for (j in 1:Nclade) {
+        if (end[j] == endOfClade) next
+        ## do we have to fuse the two basal edges?
+        if (fuseRoot) {
+            phy$edge[start[j], 1] <- phy$edge[i, 2]
+            if (!is.null(phy$edge.length))
+                phy$edge.length[start[j]] <- phy$edge.length[start[j]] +
+                    phy$edge.length[i]
+        } #else {
+          #  o[NEXT] <- i#start[j]
+          #  NEXT <- NEXT + 1L
+        #}
+        s <- start[j]:end[j]
+        ne <- length(s)
+        o[NEXT:(NEXT + ne - 1L)] <- s
+        NEXT <- NEXT + ne
+    }
+
+    ## possibly bind the edges below the outgroup till the end of the clade
+    if (all(endOfOutgroup != end)) {
+        j <- (endOfOutgroup + 1L):endOfClade
+        ## we must take care that the branch inversions done above
+        ## may have changed the hierarchy of clades here, so we
+        ## travel from the bottom of this series of edges
+        stack <- 0L
+        inverted <- phy$edge[INV, 1] # <- fails if ', 2]' is used
+        for (k in rev(j)) {
+            if (any(phy$edge[k, 1] == inverted)) {
+                o[NEXT] <- k
+                NEXT <- NEXT + 1L
+                if (stack){
+                    o[NEXT:(NEXT + stack - 1L)] <- (k + 1L):(k + stack)
+                    NEXT <- NEXT + stack
+                    stack <- 0L
+                }
+            } else stack <- stack + 1L
+        }
+    }
+
+    ## ... and the outgroup
+    s <- (w + 1L):endOfOutgroup
+    ne <- length(s)
+    o[NEXT:(NEXT + ne - 1L)] <- s
+
+    oldNnode <- phy$Nnode
+    if (fuseRoot) {
+        phy$Nnode <- oldNnode - 1
+        N <- N - 1L
+    }
+    phy$edge[INV, ] <- phy$edge[INV, 2:1]
+    phy$edge <- phy$edge[o, ]
+    if (!is.null(phy$edge.length))
+        phy$edge.length <- phy$edge.length[o]
+
+    if (resolve.root) {
+        newnod <- oldNnode + n + 1
+        if (length(outgroup) == 1L) {
+            wh <- which(phy$edge[, 2] == outgroup)
+            phy$edge[1] <- newnod
+            phy$edge <-
+                rbind(c(newroot, newnod), phy$edge[-wh, ], phy$edge[wh, ])
+            snw <- which(phy$edge[, 1] == newroot)
+            phy$edge[snw[length(snw) - 1], 1] <- newnod
+            if (!is.null(phy$edge.length)) {
+                phy$edge.length <-
+                    c(0, phy$edge.length[-wh], phy$edge.length[wh])
+            }
+        } else {
+            wh <- which(phy$edge[, 1] == newroot)
+            phy$edge[wh[-1], 1] <- newnod
+            s1 <- 1:(wh[2] - 1)
+            s2 <- wh[2]:N
+            phy$edge <-
+                rbind(phy$edge[s1, ], c(newroot, newnod), phy$edge[s2, ])
+            if (!is.null(phy$edge.length)) {
+                tmp <- phy$edge.length[1]
+                phy$edge.length[1] <- 0
+                phy$edge.length <-
+                    c(phy$edge.length[s1], tmp, phy$edge.length[s2])
+            }
+        }
+        ## N <- N + 1L ... not needed
+        phy$Nnode <- phy$Nnode + 1
+    }
+
+    ## The block below renumbers the nodes so that they conform
+    ## to the "phylo" format
+    newNb <- integer(n + oldNnode)
+    newNb[newroot] <- n + 1L
+    sndcol <- phy$edge[, 2] > n
+    ## executed from right to left, so newNb is modified before phy$edge:
+    phy$edge[sndcol, 2] <- newNb[phy$edge[sndcol, 2]] <-
+        (n + 2):(n + phy$Nnode)
+    phy$edge[, 1] <- newNb[phy$edge[, 1]]
+
+    if (!is.null(phy$node.label)) {
+        newNb <- newNb[-(1:n)]
+        if (fuseRoot) {
+            newNb <- newNb[-1]
+            phy$node.label <- phy$node.label[-1]
+        }
+        phy$node.label <- phy$node.label[order(newNb)]
+        if (resolve.root)
+             phy$node.label <- c(phy$node.label[1], NA, phy$node.label[-1])
+    }
+    phy
 }

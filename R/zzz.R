@@ -1,4 +1,4 @@
-## zzz.R (2008-01-14)
+## zzz.R (2008-02-08)
 
 ##   Library Loading
 
@@ -6,6 +6,8 @@
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
+
+.PlotPhyloEnv <- new.env()
 
 .First.lib <- function(lib, pkg) {
     require(nlme, quietly = TRUE)

@@ -1,3 +1,43 @@
+		CHANGES IN APE VERSION 2.1-2
+
+
+NEW FEATURES
+
+    o root() gains the options 'node' and 'resolve.root'
+      (FALSE by default) as well as its code being improved.
+
+    o mltt.plot() has now an option 'log' used in the same way
+      than in plot.default().
+
+
+BUG FIXES
+
+    o mltt.plot() failed to display the legend with an unnamed
+      list of trees.
+
+    o nodelabels() with pies now correcly uses the argument
+      'cex' to draw symbols of different sizes (which has
+      worked already for thermometers).
+
+    o read.nexus() generally failed to read very big files.
+
+
+OTHER CHANGES
+
+    o The argument 'family' of compar.gee() can now be a function
+      as well as a character string.
+
+    o read.tree() and read.nexus() now return an unnamed list if
+      'tree.names = NULL'.
+
+    o read.nexus() now returns a modified object of class "multiPhylo"
+      when there is a TRANSLATE block in the NEXUS file: the individual
+      trees have no 'tip.label' vector, but the list has a 'TipLabel'
+      attribute. The new methods '$' and '[[' set these elements
+      correctly when extracting trees.
+
+
+
 		CHANGES IN APE VERSION 2.1-1
 
 

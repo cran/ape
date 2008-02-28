@@ -1,8 +1,8 @@
-## unique.multiPhylo.R (2007-11-16)
+## unique.multiPhylo.R (2008-02-06)
 
 ##   Revomes Duplicate Trees from a List
 
-## Copyright 2007 Emmanuel Paradis
+## Copyright 2007-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -25,5 +25,5 @@ unique.multiPhylo <- function(x, incomparables = FALSE,
             j <- j + 1
         }
     }
-    structure(x[keep], class = "multiPhylo")
+    x[keep]
 }

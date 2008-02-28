@@ -1,4 +1,4 @@
-## plot.phylo.R (2008-01-12)
+## plot.phylo.R (2008-02-28)
 
 ##   Plot Phylogenies
 
@@ -356,7 +356,8 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
               label.offset = label.offset, x.lim = x.lim, y.lim = y.lim,
               direction = direction, tip.color = tip.color,
               Ntip = Ntip, Nnode = Nnode)
-    .last_plot.phylo <<- c(L, list(edge = xe, xx = xx, yy = yy))
+    assign("last_plot.phylo", c(L, list(edge = xe, xx = xx, yy = yy)),
+           envir = .PlotPhyloEnv)
     invisible(L)
 }
 
@@ -514,5 +515,5 @@ plot.multiPhylo <- function(x, layout = 1, ...)
         par(ask = TRUE)
         on.exit(par(ask = FALSE))
     }
-    for (i in x) plot(i, ...)
+    for (i in 1:length(x)) plot(x[[i]], ...)
 }

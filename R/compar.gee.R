@@ -1,4 +1,4 @@
-## compar.gee.R (2008-01-14)
+## compar.gee.R (2008-02-21)
 
 ##   Comparative Analysis with GEEs
 
@@ -30,7 +30,9 @@ do not match: the former were ignored in the analysis.")
                                   corstr = "fixed", scale.fix = scale.fix,
                                   scale.value = scale.value))
     W <- geemod$naive.variance
-    if (family == "binomial")
+    fname <-
+        if (is.function(family)) deparse(substitute(family)) else family
+    if (fname == "binomial")
       W <- summary(glm(formula, family = quasibinomial, data = data))$cov.scaled
     N <- geemod$nobs
     dfP <- sum(phy$edge.length)*N / sum(diag(vcv.phylo(phy)))
