@@ -4,7 +4,7 @@
 \title{Collapse and Resolve Multichotomies}
 \description{
   These two functions collapse or resolve multichotomies in phylogenetic
-  trees (objects of class \code{"phylo"}).
+  trees.
 }
 \usage{
 multi2di(phy, random = TRUE)

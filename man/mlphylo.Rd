@@ -97,6 +97,6 @@ mlphylo(x, phy, model = DNAmodel(), search.tree = FALSE,
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{DNAmodel}}, \code{\link{nj}}, \code{\link{read.dna}},
-  \code{\link{summary.phylo}}
+  \code{\link{summary.phylo}}, \code{\link{bionj}}, \code{\link{fastme}}
 }
 \keyword{models}

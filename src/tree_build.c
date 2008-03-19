@@ -1,4 +1,4 @@
-/* tree_build.c    2008-02-28 */
+/* tree_build.c    2008-03-09 */
 
 /* Copyright 2008 Emmanuel Paradis */
 
@@ -21,7 +21,7 @@ static int str2int(char *x, int n)
 void decode_edge(const char *x, int a, int b, int *node, double *w)
 {
 	int i, k, co = a;
-	char **endstr, str[100];
+	char *endstr, str[100];
 
 	while (x[co] != ':') co++;
 	if (a == co) *node = 0;
@@ -32,7 +32,7 @@ void decode_edge(const char *x, int a, int b, int *node, double *w)
 	}
 	for (i = co + 1, k = 0; i <= b; i++, k++) str[k] = x[i];
 	str[k] = '\0';
-	*w = R_strtod(str, endstr);
+	*w = R_strtod(str, &endstr);
 }
 
 #define ADD_INTERNAL_EDGE\

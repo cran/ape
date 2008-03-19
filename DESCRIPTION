@@ -1,6 +1,6 @@
 Package: ape
-Version: 2.1-2
-Date: 2008-02-28
+Version: 2.1-3
+Date: 2008-03-19
 Title: Analyses of Phylogenetics and Evolution
 Author: Emmanuel Paradis, Ben Bolker, Julien Claude, Hoa Sien Cuong,
   Richard Desper, Benoit Durand, Julien Dutheil, Olivier Gascuel,
@@ -23,5 +23,5 @@ Description: ape provides functions for reading, writing, plotting,
   the Klastorin-Misawa-Tajima approach. Phylogeny estimation can be done
   with the NJ, BIONJ, ME, and ML methods.
 License: GPL (>= 2)
-URL: http://pbil.univ-lyon1.fr/R/ape/
-Packaged: Thu Feb 28 22:58:23 2008; paradis
+URL: http://ape.mlp.ird.fr/
+Packaged: Thu Mar 20 09:50:56 2008; paradis

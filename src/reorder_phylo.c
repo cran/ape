@@ -1,6 +1,6 @@
-/* reorder_phylo.c       2006-10-11 */
+/* reorder_phylo.c       2008-03-17 */
 
-/* Copyright 2006 Emmanuel Paradis */
+/* Copyright 2008 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -22,10 +22,9 @@ void neworder_cladewise(int *n, int *edge1, int *edge2,
 
     done = (int*)R_alloc(*N, sizeof(int));
     node_back = (int*)R_alloc(*N + 2 - *n, sizeof(int));
-    for (i = 0; i < *N; i++) done[i] = 0;
+    memset(done, 0, *N * sizeof(int));
 
-    j = 0;
-    k = 0;
+    j = k = 0;
     node = *n + 1;
     while (j < *N) {
         for (i = 0; i < *N; i++) {
@@ -71,7 +70,7 @@ void neworder_pruningwise(int *ntip, int *nnode, int *edge1,
     /* use `nextI' temporarily because need an address for R_tabulate */
     nextI = *ntip +  *nnode;
     Ndegr = (int*)R_alloc(nextI, sizeof(int));
-    for (i = 0; i < nextI; i++) Ndegr[i] = 0;
+    memset(Ndegr, 0, nextI*sizeof(int));
     R_tabulate(edge1, nedge, &nextI, Ndegr);
 
     /* `ready' indicates whether an edge is ready to be */

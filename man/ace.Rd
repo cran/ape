@@ -65,9 +65,9 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   can be fitted by maximum likelihood (the default, Schluter et
   al. 1997), least squares (\code{method = "pic"}, Felsenstein 1985), or
   generalized least squares (\code{method = "GLS"}, Martins and Hansen
-  1997). In the latter case, the specification of \code{phy} and
-  \code{model} are actually ignored: it is instead given through a
-  correlation structure with the option \code{corStruct}.
+  1997, Cunningham et al. 1998). In the latter case, the specification
+  of \code{phy} and \code{model} are actually ignored: it is instead
+  given through a correlation structure with the option \code{corStruct}.
 
   For discrete characters (\code{type = "discrete"}), only maximum
   likelihood estimation is available (Pagel 1994). The model is
@@ -108,6 +108,11 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   \item{call}{the function call.}
 }
 \references{
+  Cunningham, C. W., Omland, K. E. and Oakley, T. H. (1998)
+  Reconstructing ancestral character states: a critical
+  reappraisal. \emph{Trends in Ecology & Evolution}, \bold{13},
+  361--366.
+
   Felsenstein, J. (1985) Phylogenies and the comparative
   method. \emph{American Naturalist}, \bold{125}, 1--15.
 

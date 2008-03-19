@@ -1,8 +1,8 @@
-## multi2di.R (2007-08-02)
+## multi2di.R (2008-03-17)
 
 ##   Collapse and Resolve Multichotomies
 
-## Copyright 2005-2007 Emmanuel Paradis
+## Copyright 2005-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -62,6 +62,12 @@ multi2di <- function(phy, random = TRUE)
     phy$edge <- rbind(phy$edge[-edge2delete, ], new.edge)
     if (wbl)
       phy$edge.length <- c(phy$edge.length[-edge2delete], new.edge.length)
+    if (!is.null(attr(phy, "order"))) attr(phy, "order") <- NULL
+    print(phy$node.label)
+    if (!is.null(phy$node.label))
+        phy$node.label <-
+            c(phy$node.label, rep("", phy$Nnode - length(phy$node.label)))
+    print(phy$node.label)
     reorder(phy)
     ##read.tree(text = write.tree(phy))
 }
@@ -96,5 +102,7 @@ di2multi <- function(phy, tol = 1e-8)
     sel <- phy$edge > min(node2del)
     for (i in which(sel))
       phy$edge[i] <- phy$edge[i] - sum(node2del < phy$edge[i])
+    if (!is.null(phy$node.label))
+        phy$node.label <- phy$node.label[-(node2del - length(phy$tip.label))]
     phy
 }

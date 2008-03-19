@@ -1,7 +1,27 @@
+		CHANGES IN APE VERSION 2.1-3
+
+
+BUG FIXES
+
+    o A bug in read.nexus() made the Windows R-GUI crash.
+
+    o An error was fixed in the computation of ancestral character
+      states by generalized least squares in ace().
+
+    o di2multi() did not modify node labels correctly.
+
+    o multi2di() failed if the tree had its attribute "order" set to
+      "cladewise".
+
+
+
 		CHANGES IN APE VERSION 2.1-2
 
 
 NEW FEATURES
+
+    o There three new methods for the "multiPhylo" class: str, $,
+      and [[.
 
     o root() gains the options 'node' and 'resolve.root'
       (FALSE by default) as well as its code being improved.

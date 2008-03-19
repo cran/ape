@@ -196,7 +196,10 @@ read.nexus <- function(file, tree.names = NULL)
             stop(paste("There is apparently two root edges in your file: cannot read tree file.\n  Reading NEXUS file aborted at tree no.", i, sep = ""))
         }
     }
-    if (Ntree == 1) trees <- trees[[1]] else {
+    if (Ntree == 1) {
+        trees <- trees[[1]]
+        trees$tip.label <- TRANS[, 2]
+    } else {
         if (!is.null(tree.names)) names(trees) <- tree.names
         if (translation) attr(trees, "TipLabel") <- TRANS[, 2]
         class(trees) <- "multiPhylo"
