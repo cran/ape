@@ -1,4 +1,4 @@
-## dist.topo.R (2008-02-27)
+## dist.topo.R (2008-05-07)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -54,47 +54,50 @@ dist.topo <- function(x, y, method = "PH85")
     dT
 }
 
+.compressTipLabel <- function(x)
+{
+    ## 'x' is a list of objects of class "phylo" possibly with no class
+    if (!is.null(attr(x, "TipLabel"))) return(x)
+    ref <- x[[1]]$tip.label
+    if (any(table(ref) != 1))
+        stop("some tip labels are duplicated in tree no. 1")
+    n <- length(ref)
+    for (i in 2:length(x)) {
+        if (identical(x[[i]]$tip.label, ref)) next
+        ilab <- match(x[[i]]$tip.label, ref)
+        ## can use tabulate here because 'ilab' contains integers
+        if (any(tabulate(ilab) > 1))
+            stop(paste("some tip labels are duplicated in tree no.", i))
+        if (any(is.na(ilab)))
+            stop(paste("tree no.", i, "has different tip labels"))
+        ie <- match(1:n, x[[i]]$edge[, 2])
+        x[[i]]$edge[ie, 2] <- ilab
+    }
+    for (i in 1:length(x)) x[[i]]$tip.label <- NULL
+    attr(x, "TipLabel") <- ref
+    x
+}
+
 prop.part <- function(..., check.labels = FALSE)
 {
     obj <- list(...)
     if (length(obj) == 1 && class(obj[[1]]) != "phylo")
-      obj <- unlist(obj, recursive = FALSE)
+        obj <- obj[[1]]
+    ## <FIXME>
+    ## class(obj) <- NULL # needed?
+    ## </FIXME>
     ntree <- length(obj)
-    if (!check.labels) {
-        for (i in 1:ntree) storage.mode(obj[[i]]$Nnode) <- "integer"
-        clades <- .Call("prop_part", obj, ntree, TRUE, PACKAGE = "ape")
-        attr(clades, "number") <- attr(clades, "number")[1:length(clades)]
-        attr(clades, "labels") <- obj[[1]]$tip.label
-    } else {
-        bp <- .Call("bipartition", obj[[1]]$edge, length(obj[[1]]$tip.label),
-                    obj[[1]]$Nnode, PACKAGE = "ape")
-        clades <- lapply(bp, function(xx) sort(obj[[1]]$tip.label[xx]))
-        no <- rep(1, length(clades))
-
-        if (ntree > 1) {
-            for (k in 2:ntree) {
-                bp <- .Call("bipartition", obj[[k]]$edge,
-                            length(obj[[k]]$tip.label), obj[[k]]$Nnode,
-                            PACKAGE = "ape")
-                bp <- lapply(bp, function(xx) sort(obj[[k]]$tip.label[xx]))
-                for (i in 1:length(bp)) {
-                    done <- FALSE
-                    for (j in 1:length(clades)) {
-                        if (identical(all.equal(bp[[i]], clades[[j]]), TRUE)) {
-                            no[j] <- no[j] + 1
-                            done <- TRUE
-                            break
-                        }
-                    }
-                    if (!done) {
-                        clades <- c(clades, bp[i])
-                        no <- c(no, 1)
-                    }
-                }
-            }
-        }
-        attr(clades, "number") <- no
-    }
+    if (check.labels) obj <- .compressTipLabel(obj)
+    for (i in 1:ntree) storage.mode(obj[[i]]$Nnode) <- "integer"
+    ## <FIXME>
+    ## The 1st must have tip labels
+    ## Maybe simply pass the number of tips to the C code??
+    if (!is.null(attr(obj, "TipLabel")))
+        for (i in 1:ntree) obj[[i]]$tip.label <- attr(obj, "TipLabel")
+    ## </FIXME>
+    clades <- .Call("prop_part", obj, ntree, TRUE, PACKAGE = "ape")
+    attr(clades, "number") <- attr(clades, "number")[1:length(clades)]
+    attr(clades, "labels") <- obj[[1]]$tip.label
     class(clades) <- "prop.part"
     clades
 }
@@ -128,7 +131,7 @@ plot.prop.part <- function(x, barcol = "blue", leftmar = 4, ...)
     layout(matrix(1:2, 2, 1), heights = c(1, 3))
     par(mar = c(0.1, leftmar, 0.1, 0.1))
     plot(1:L, attr(x, "number"), type = "h", col = barcol, xlim = c(1, L),
-         xlab = "", ylab = "Number", xaxt = "n", bty = "n")
+         xlab = "", ylab = "Frequency", xaxt = "n", bty = "n")
     plot(0, type = "n", xlim = c(1, L), ylim = c(1, n),
          xlab = "", ylab = "", xaxt = "n", yaxt = "n")
     for (i in 1:L) points(rep(i, length(x[[i]])), x[[i]], ...)
@@ -162,7 +165,7 @@ prop.clades <- function(phy, ..., part = NULL)
     n
 }
 
-boot.phylo <- function(phy, x, FUN, B = 100, block = 1)
+boot.phylo <- function(phy, x, FUN, B = 100, block = 1, trees = FALSE)
 {
     if (is.list(x)) {
         if (class(x) == "DNAbin") x <- as.matrix(x)
@@ -189,42 +192,71 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1)
     }
     for (i in 1:B) storage.mode(boot.tree[[i]]$Nnode) <- "integer"
     storage.mode(phy$Nnode) <- "integer"
-    attr(.Call("prop_part", c(list(phy), boot.tree), B + 1, FALSE,
-               PACKAGE = "ape"), "number") - 1
+    ans <- attr(.Call("prop_part", c(list(phy), boot.tree),
+                      B + 1, FALSE, PACKAGE = "ape"), "number") - 1
+    if (trees) ans <- list(BP = ans, trees = boot.tree)
+    ans
 }
 
-consensus <- function(..., p = 1)
+consensus <- function(..., p = 1, check.labels = FALSE)
 {
+    foo <- function(ic, node) {
+        ## ic: index of 'pp'
+        ## node: node number in the final tree
+        pool <- pp[[ic]]
+        if (ic < m) {
+            for (j in (ic + 1):m) {
+                wh <- match(pp[[j]], pool)
+                if (!any(is.na(wh))) {
+                    edge[pos, 1] <<- node
+                    pool <- pool[-wh]
+                    edge[pos, 2] <<- nextnode <<- nextnode + 1L
+                    pos <<- pos + 1L
+                    foo(j, nextnode)
+                }
+            }
+        }
+        size <- length(pool)
+        if (size) {
+            ind <- pos:(pos + size - 1)
+            edge[ind, 1] <<- node
+            edge[ind, 2] <<- pool
+            pos <<- pos + size
+        }
+    }
     obj <- list(...)
-    if (length(obj) == 1 && class(obj[[1]]) != "phylo")
-      obj <- unlist(obj, recursive = FALSE)
+    if (length(obj) == 1) {
+        ## better than unlist(obj, recursive = FALSE)
+        ## because "[[" keeps the class of 'obj':
+        obj <- obj[[1]]
+        if (class(obj) == "phylo") return(obj)
+    }
+    if (!is.null(attr(obj, "TipLabel")))
+        labels <- attr(obj, "TipLabel")
+    else {
+        labels <- obj[[1]]$tip.label
+        if (check.labels) obj <- .compressTipLabel(obj)
+    }
     ntree <- length(obj)
     ## Get all observed partitions and their frequencies:
-    pp <- prop.part(obj, check.labels = TRUE)
+    pp <- prop.part(obj, check.labels = FALSE)
     ## Drop the partitions whose frequency is less than 'p':
     pp <- pp[attr(pp, "number") >= p * ntree]
     ## Get the order of the remaining partitions by decreasing size:
-    ind <- rev(sort(unlist(lapply(pp, length)),
-                    index.return = TRUE)$ix)
-    pp <- lapply(pp, function(xx) paste("IMPROBABLE_PREFIX", xx,
-                                        "IMPROBABLE_SUFFIX", sep = "_"))
-    STRING <- paste(pp[[1]], collapse = ",")
-    STRING <- paste("(", STRING, ");", sep = "")
-    for (i in ind[-1]) {
-        ## 1. Delete all tips in the focus partition:
-        STRING <- unlist(strsplit(STRING, paste(pp[[i]], collapse = "|")))
-        ## 2. Put the partition in any of the created gaps:
-        STRING <- c(STRING[1],
-                    paste("(", paste(pp[[i]], collapse = ","), ")", sep = ""),
-                    STRING[-1])
-        ## 3. Stick back the Newick string:
-        STRING <- paste(STRING, collapse = "")
+    ind <- sort(unlist(lapply(pp, length)), decreasing = TRUE,
+                index.return = TRUE)$ix
+    pp <- pp[ind]
+    n <- length(labels)
+    m <- length(pp)
+    edge <- matrix(0L, n + m - 1, 2)
+    if (m == 1) {
+        edge[, 1] <- n + 1L
+        edge[, 2] <- 1:n
+    } else {
+        nextnode <- n + 1L
+        pos <- 1L
+        foo(1, nextnode)
     }
-    ## Remove the extra commas:
-    STRING <- gsub(",{2,}", ",", STRING)
-    STRING <- gsub("\\(,", "\\(", STRING)
-    STRING <- gsub(",\\)", "\\)", STRING)
-    STRING <- gsub("IMPROBABLE_PREFIX_", "", STRING)
-    STRING <- gsub("_IMPROBABLE_SUFFIX", "", STRING)
-    read.tree(text = STRING)
+    structure(list(edge = edge, tip.label = labels,
+              Nnode = m), class = "phylo")
 }

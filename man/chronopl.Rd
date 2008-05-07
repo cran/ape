@@ -2,22 +2,36 @@
 \alias{chronopl}
 \title{Molecular Dating With Penalized Likelihood}
 \usage{
-chronopl(phy, lambda, node.age = 1, node = "root", CV = FALSE)
+chronopl(phy, lambda, age.min = 1, age.max = NULL,
+         node = "root", S = 1, tol = 1e-8,
+         CV = FALSE, eval.max = 500, iter.max = 500, ...)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
-  \item{lambda}{value of the smoothng parameter.}
-  \item{node.age}{numeric values specifying the fixed node ages.}
+  \item{lambda}{value of the smoothing parameter.}
+  \item{age.min}{numeric values specifying the fixed node ages (if
+    \code{age.max = NULL}) or the youngest bound of the nodes known to
+    be within an interval.}
+  \item{age.max}{numeric values specifying the oldest bound of the nodes
+    known to be within an interval.}
   \item{node}{the numbers of the nodes whose ages are given by
-    \code{node.age}; \code{"root"} is a short-cut the number of the
-    node.}
+    \code{age.min}; \code{"root"} is a short-cut for the root.}
+  \item{S}{the number of sites in the sequences; leave the default if
+    branch lengths are in mean number of substitutions.}
+  \item{tol}{the value below which branch lengths are considered
+    effectively zero.}
   \item{CV}{whether to perform cross-validation.}
+  \item{eval.max}{the maximal number of evaluations of the penalized
+    likelihood function.}
+  \item{iter.max}{the maximal number of iterations of the optimization
+    algorithm.}
+  \item{\dots}{further arguments passed to control \code{nlminb}.}
 }
 \description{
-  This function estimates the node ages of a tree using semi-parametric
-  method based on penalized likelihood (Sanderson 2002). The branch
-  lengths of the input tree are interpreted as (mean) numbers of
-  substitutions.
+  This function estimates the node ages of a tree using a
+  semi-parametric method based on penalized likelihood (Sanderson
+  2002). The branch lengths of the input tree are interpreted as mean
+  numbers of substitutions (i.e., per site).
 }
 \details{
   The idea of this method is to use a trade-off between a parametric
@@ -30,10 +44,25 @@ chronopl(phy, lambda, node.age = 1, node = "root", CV = FALSE)
   rate for all branches).
 
   \code{lambda} must be given. The known ages are given in
-  \code{node.age}, and the correponding node numbers in \code{node}.
+  \code{age.min}, and the correponding node numbers in \code{node}.
   These two arguments must obviously be of the same length. By default,
   an age of 1 is assumed for the root, and the ages of the other nodes
   are estimated.
+
+  If \code{age.max = NULL} (the default), it is assumed that
+  \code{age.min} gives exactly known ages. Otherwise, \code{age.max} and
+  \code{age.min} must be of the same length and give the intervals for
+  each node. Some node may be known exactly while the others are
+  known within some bounds: the values will be identical in both
+  arguments for the former (e.g., \code{age.min = c(10, 5), age.max =
+    c(10, 6), node = c(15, 18)} means that the age of node 15 is 10
+  units of time, and the age of node 18 is between 5 and 6).
+
+  The input tree may have multichotomies. If some internal branches are
+  of zero-length, they are collapsed (with a warning), and the returned
+  tree will have less nodes than the input one. The presence of
+  zero-lengthed terminal branches of results in an error since it makes
+  little sense to have zero-rate branches.
 
   The cross-validation used here is different from the one proposed by
   Sanderson (2002). Here, each tip is dropped successively and the
@@ -47,13 +76,19 @@ chronopl(phy, lambda, node.age = 1, node = "root", CV = FALSE)
   with the full phylogeny, \eqn{t_j^{-i}}{tj[-i]} is the estimated date
   for the \eqn{j}{j}th node after removing tip \eqn{i}{i} from the tree,
   and \eqn{n}{n} is the number of tips.
+
+  The present version uses the \code{\link[stats]{nlminb}} to optimise
+  the penalized likelihood function: see its help page for details on
+  parameters controlling the optimisation procedure.
 }
 \value{
   an object of class \code{"phylo"} with branch lengths as estimated by
-  the function. There are two or three further attributes:
+  the function. There are three or four further attributes:
 
   \item{ploglik}{the maximum penalized log-likelihood.}
   \item{rates}{the estimated rates for each branch.}
+  \item{message}{the message returned by \code{nlminb} indicating
+    whether the optimisation converged.}
   \item{D2}{the influence of each observation on overall date
     estimates (if \code{CV = TRUE}).}
 }

@@ -44,6 +44,8 @@
 \alias{floating.pie.asp}
 \alias{checkLabel}
 \alias{getMRCA}
+\alias{plotCophylo2}
+\alias{plotPhyloCoor}
 \title{Internal Ape Functions}
 \description{
   Internal ape functions.

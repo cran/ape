@@ -102,8 +102,7 @@
   \code{...} and could be any one of those listed above for a single
   tree.
 
-  The formatting of the labels of both the nodes and the tips is the
-  same.
+  The font format of the labels of the nodes and the tips is the same.
 
   If \code{no.margin = TRUE}, the margins are set to zero and are not
   restored after plotting the tree, so that the user can access the
@@ -131,8 +130,11 @@
   give a nice result: the user may check these values with the
   (invisibly) returned list (see ``Value:'').
 
-  Note that if you resize manually the graphical device (windows or X11)
-  you may need to replot the tree.
+  If you resize manually the graphical device (windows or X11) you may
+  need to replot the tree.
+}
+\note{
+  The argument \code{asp} cannot be passed with \code{\dots}.
 }
 \value{
   \code{plot.phylo} returns invisibly a list with the following

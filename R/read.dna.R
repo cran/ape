@@ -1,8 +1,8 @@
-## read.dna.R (2007-05-01)
+## read.dna.R (2008-03-28)
 
 ##   Read DNA Sequences in a File
 
-## Copyright 2003-2007 Emmanuel Paradis
+## Copyright 2003-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -43,7 +43,7 @@ read.dna <- function(file, format = "interleaved", skip = 0,
     if (format == "interleaved") {
         fl <- X[1]
         fl <- unlist(strsplit(fl, NULL))
-        bases <- grep("[-AaCcGgTtUuMmRrWwSsYyKkVvHhDdBbNn]", fl)
+        bases <- grep("[-AaCcGgTtUuMmRrWwSsYyKkVvHhDdBbNn?]", fl)
         z <- diff(bases)
         for (i in 1:length(z)) if (all(z[i:(i + 8)] == 1)) break
         start.seq <- bases[i]
@@ -60,7 +60,7 @@ read.dna <- function(file, format = "interleaved", skip = 0,
         taxa <- character(n)
         j <- 1
         for (i in 1:n) {
-            bases <- grep("[-AaCcGgTtUuMmRrWwSsYyKkVvHhDdBbNn]",
+            bases <- grep("[-AaCcGgTtUuMmRrWwSsYyKkVvHhDdBbNn?]",
                           unlist(strsplit(X[j], NULL)))
             z <- diff(bases)
             for (k in 1:length(z)) if (all(z[k:(k + 8)] == 1)) break

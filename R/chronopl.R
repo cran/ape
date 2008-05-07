@@ -1,33 +1,58 @@
-## chronopl.R (2007-01-17)
+## chronopl.R (2008-03-26)
 
 ##   Molecular Dating With Penalized Likelihood
 
-## Copyright 2005-2007 Emmanuel Paradis
+## Copyright 2005-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-chronopl <- function(phy, lambda, node.age = 1, node = "root",
-                     CV = FALSE)
+chronopl <- function(phy, lambda, age.min = 1, age.max = NULL,
+                     node = "root", S = 1, tol = 1e-8,
+                     CV = FALSE, eval.max = 500, iter.max = 500, ...)
 {
     n <- length(phy$tip.label)
-    n.node <- phy$Nnode
-    if (n != n.node + 1)
-      stop("the tree must be rooted AND dichotomous")
-    if (any(phy$edge.length == 0))
-      stop("some branch lengths are equal to zero;
-you must remove them beforehand.")
-    N <- dim(phy$edge)[1]
     ROOT <- n + 1
-    if (node == "root") node <- ROOT
-    ini.rate <- phy$edge.length
-    ## `known.ages' contains the index of all nodes (internal and
-    ## terminal) of known age:
-    known.ages <- c(1:n, node)
-    ## `unknown.ages' contains the index of the nodes of unknown age:
-    unknown.ages <- ((n + 1):(n + n.node))[-(node - n)]
-    ## `basal' contains the indices of the basal edges (ie, linked to the root):
-    basal <- which(phy$edge[, 1] == ROOT)
+    if (length(node) == 1 && node == "root") node <- ROOT
+    if (any(node <= n))
+        stop("node numbers should be greater than the number of tips")
+    zerobl <- which(phy$edge.length <= 0)
+    if (length(zerobl)) {
+        if (any(phy$edge[zerobl, 2] <= n))
+            stop("at least one terminal branch is of length zero:
+  you should remove it to have a meaningful estimation.")
+        else {
+            warning("at least one internal branch is of length zero:
+  it was collapsed and some nodes have been deleted.")
+            if (length(node) == 1 && node == ROOT)
+                phy <- di2multi(phy)
+            else {
+                tmp <- FALSE
+                if (is.null(phy$node.label)) {
+                    tmp <- !tmp
+                    phy$node.label <- paste("node", 1:phy$Nnode)
+                }
+                node.lab <- phy$node.label[node - n]
+                phy <- di2multi(phy)
+                node <- match(node.lab, phy$node.label) + n
+                if (tmp) phy$node.label <- NULL
+            }
+        }
+    }
+    m <- phy$Nnode
+    el <- phy$edge.length
+    e <- phy$edge
+    N <- dim(e)[1]
+    TIPS <- 1:n
+    EDGES <- 1:N
+
+    ini.rate <- el
+    el <- el/S
+
+    ## `basal' contains the indices of the basal edges
+    ## (ie, linked to the root):
+    basal <- which(e[, 1] == ROOT)
+    Nbasal <- length(basal)
 
     ## `ind' contains in its 1st column the index of all nonbasal
     ## edges, and in its second column the index of the edges
@@ -40,63 +65,149 @@ you must remove them beforehand.")
     ##        |           | c | a |
     ##        |___c___    |   |   |
 
-    ind <- matrix(NA, N - 2, 2)
-    j <- 1
-    for (i in 1:N) {
-        if (phy$edge[i, 1] == ROOT) next
-        ind[j, 1] <- i
-        ind[j, 2] <- which(phy$edge[, 2] == phy$edge[i, 1])
-        j <- j + 1
+    ind <- matrix(0L, N - Nbasal, 2)
+    ind[, 1] <- EDGES[-basal]
+    ind[, 2] <- match(e[EDGES[-basal], 1], e[, 2])
+
+    age <- numeric(n + m)
+
+    ##ini.time <- node.depth(phy)[-TIPS] - 1
+    ini.time <- node.depth(phy) - 1
+
+    ## first, rescale all times with respect to
+    ## the age of the 1st element of `node':
+    ratio <- age.min[1]/ini.time[node[1]]
+    ini.time <- ini.time*ratio
+
+    if (length(node) > 1) {
+        ini.time[node] <- age.min
+        real.edge.length <- ini.time[e[, 1]] - ini.time[e[, 2]]
+        while (any(real.edge.length <= 0)) {
+            for (i in EDGES) {
+                if (real.edge.length[i] <= 0) {
+                    if (e[i, 1] %in% node) {
+                        ini.time[e[i, 2]] <-
+                            ini.time[e[, 2]] - 2*real.edge.length[i]
+                        next
+                    }
+                    if (e[i, 2] %in% node) {
+                        ini.time[e[i, 1]] <-
+                            ini.time[e[, 1]] + 2*real.edge.length[i]
+                        next
+                    }
+                    ini.time[e[i, 2]] <-
+                        ini.time[e[, 2]] - real.edge.length[i]
+                    ini.time[e[i, 1]] <-
+                        ini.time[e[, 1]] + real.edge.length[i]
+                }
+            }
+            real.edge.length <- ini.time[e[, 1]] - ini.time[e[, 2]]
+        }
     }
 
-    age <- rep(0, 2*n - 1)
-    age[node] <- node.age
+    ## `unknown.ages' will contain the index of the nodes of unknown age:
+    unknown.ages <- n + 1:m
 
-    tmp <- reorder(phy, "pruningwise")
-    ini.time <- .C("node_depth", as.integer(n), as.integer(n.node),
-                   as.integer(tmp$edge[, 1]), as.integer(tmp$edge[, 2]),
-                   as.integer(N), double(n + n.node), DUP = FALSE,
-                   PACKAGE = "ape")[[6]][-(1:n)] - 1
-    ini.time <- ini.time/max(ini.time)
-    ini.time <- ini.time*node.age/ini.time[known.ages[-(1:n)] - n]
-    ## check that there are no negative branch lengths:
-    ini.time[known.ages[-(1:n)] - n] <- node.age
-    it <- c(age[1:n], ini.time)
-    ibl <- it[phy$edge[, 1]] - it[phy$edge[, 2]]
-    if (any(ibl < 0)) {
-        for (i in which(ibl < 0))
-          if (phy$edge[i, 1] %in% node)
-            ini.time[phy$edge[i, 2]] <- ini.time[phy$edge[i, 1]] - 1e-3
-          else
-            ini.time[phy$edge[i, 1]] <- ini.time[phy$edge[i, 2]] + 1e-3
+    ## define the bounds for the node ages:
+    lower <- rep(tol, length(unknown.ages))
+    upper <- rep(1/tol, length(unknown.ages))
+
+    if (!is.null(age.max)) { # are some nodes known within some intervals?
+        lower[node - n] <- age.min
+        upper[node - n] <- age.max
+        interv <- which(age.min != age.max)
+        node <- node[-interv]
+        if (length(node)) age[node] <- age.min[-interv]
+    } else age[node] <- age.min
+
+    if (length(node)) {
+        unknown.ages <- unknown.ages[n - node]
+        lower <- lower[n - node]
+        upper <- upper[n - node]
     }
 
-    ploglik <- function(rate, node.time) {
+    ## `known.ages' contains the index of all nodes (internal and
+    ## terminal) of known age:
+    known.ages <- c(TIPS, node)
+
+    ## concatenate the bounds for the rates:
+    lower <- c(rep(tol, N), lower)
+    upper <- c(rep(1 - tol, N), upper)
+
+    minusploglik.gr <- function(rate, node.time) {
+        grad <- numeric(N + length(unknown.ages))
         age[unknown.ages] <- node.time
-        real.edge.length <- age[phy$edge[, 1]] - age[phy$edge[, 2]]
-        B <- rate*real.edge.length
-        loglik <- sum(-B + phy$edge.length*log(B) -
-                      lfactorial(phy$edge.length))
-        loglik - lambda * (sum((rate[ind[, 1]] - rate[ind[, 2]])^2)
-                           + var(rate[basal]))
+        real.edge.length <- age[e[, 1]] - age[e[, 2]]
+        if (any(real.edge.length < 0)) {
+            grad[] <- 0
+            return(grad)
+        }
+        ## gradient for the rates:
+        ## the parametric part can be calculated without a loop:
+        grad[EDGES] <- real.edge.length - el/rate
+        if (Nbasal == 2) { # the simpler formulae if there's a basal dichotomy
+            grad[basal[1]] <-
+                grad[basal[1]] + lambda*(rate[basal[1]] - rate[basal[2]])
+            grad[basal[2]] <-
+                grad[basal[2]] + lambda*(rate[basal[2]] - rate[basal[1]])
+        } else { # the general case
+            for (i in 1:Nbasal)
+                grad[basal[i]] <- grad[basal[i]] +
+                    lambda*(2*rate[basal[i]]*(1 - 1/Nbasal) -
+                            2*sum(rate[basal[-i]])/Nbasal)/(Nbasal - 1)
+        }
+
+        for (i in EDGES) {
+            ii <- c(which(e[, 2] == e[i, 1]), which(e[, 1] == e[i, 2]))
+            if (!length(ii)) next
+            grad[i] <- grad[i] + lambda*(2*length(ii)*rate[i] - 2*sum(rate[ii]))
+        }
+
+        ## gradient for the 'node times'
+        for (i in 1:length(unknown.ages)) {
+            nd <- unknown.ages[i]
+            ii <- which(e[, 1] == nd)
+            grad[i + N] <-
+                sum(rate[ii] - el[ii]/real.edge.length[ii])#, na.rm = TRUE)
+            if (nd != ROOT) {
+                ii <- which(e[, 2] == nd)
+                grad[i + N] <- grad[i + N] -
+                    rate[ii] + el[ii]/real.edge.length[ii]
+            }
+        }
+        grad
     }
 
-    out <- nlm(function(p) -ploglik(p[1:N], p[-(1:N)]),
-               p = c(ini.rate, ini.time[unknown.ages - n]),
-               iterlim = 500)
+    minusploglik <- function(rate, node.time) {
+        age[unknown.ages] <- node.time
+        real.edge.length <- age[e[, 1]] - age[e[, 2]]
+        if (any(real.edge.length < 0)) return(1e50)
+        B <- rate*real.edge.length
+        loglik <- sum(-B + el*log(B) - lfactorial(el))
+        -(loglik - lambda*(sum((rate[ind[, 1]] - rate[ind[, 2]])^2)
+                           + var(rate[basal])))
+    }
 
-    attr(phy, "ploglik") <- -out$minimum
-    attr(phy, "rates") <- out$estimate[1:N]
-    age[unknown.ages] <- out$estimate[-(1:N)]
+    out <- nlminb(c(ini.rate, ini.time[unknown.ages]),
+                  function(p) minusploglik(p[EDGES], p[-EDGES]),
+                  function(p) minusploglik.gr(p[EDGES], p[-EDGES]),
+                  control = list(eval.max = eval.max, iter.max = iter.max, ...),
+                  lower = lower, upper = upper)
+
+    attr(phy, "ploglik") <- -out$objective
+    attr(phy, "rates") <- out$par[EDGES]
+    attr(phy, "message") <- out$message
+    age[unknown.ages] <- out$par[-EDGES]
     if (CV) ophy <- phy
-    phy$edge.length <- age[phy$edge[, 1]] - age[phy$edge[, 2]]
-    if (CV)
-      attr(phy, "D2") <-
-        chronopl.cv(ophy, lambda, node.age, node, n)
+    phy$edge.length <- age[e[, 1]] - age[e[, 2]]
+    if (CV) attr(phy, "D2") <-
+        chronopl.cv(ophy, lambda, age.min, age.max, node,
+                    n, S, tol, eval.max, iter.max, ...)
     phy
 }
 
-chronopl.cv <- function(ophy, lambda, node.age, nodes, n)
+chronopl.cv <- function(ophy, lambda, age.min, age.max, nodes,
+                        n, S, tol, eval.max, iter.max, ...)
 ### ophy: the original phylogeny
 ### n: number of tips
 ### Note that we assume here that the order of the nodes
@@ -106,23 +217,23 @@ chronopl.cv <- function(ophy, lambda, node.age, nodes, n)
     BT <- branching.times(ophy)
     D2 <- numeric(n)
 
+    cat("  dropping tip")
     for (i in 1:n) {
-        cat("  dropping tip", i, "\n")
+        cat(" ", i, sep = "")
         tr <- drop.tip(ophy, i)
         j <- which(ophy$edge[, 2] == i)
         if (ophy$edge[j, 1] %in% nodes) {
             k <- which(nodes == ophy$edge[j, 1])
-            nodes <- nodes[-k]
-            node.age <- node.age[-k]
-        }
-        if (length(nodes)) {
-            chr <- chronopl(tr, lambda, node.age, nodes)
-            ## <FIXME> à vérifier:
-            ## tmp <- BT[as.character(ophy$edge[j, 1])]
-            tmp <- BT[-(ophy$edge[j, 1] - n)]
-            ## </FIXME>
+            node <- nodes[-k]
+            agemin <- age.min[-k]
+            agemax <- age.max[-k]
+        } else node <- nodes
+        if (length(node)) {
+            chr <- chronopl(tr, lambda, age.min, age.max, node,
+                            S, tol, FALSE, eval.max, iter.max, ...)
             D2[i] <- sum((tmp - branching.times(chr))^2 / tmp)
         } else D2[i] <- 0
     }
+    cat("\n")
     D2
 }

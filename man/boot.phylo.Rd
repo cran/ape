@@ -7,7 +7,7 @@
 \alias{plot.prop.part}
 \title{Tree Bipartition and Bootstrapping Phylogenies}
 \usage{
-boot.phylo(phy, x, FUN, B = 100, block = 1)
+boot.phylo(phy, x, FUN, B = 100, block = 1, trees = FALSE)
 prop.part(..., check.labels = FALSE)
 prop.clades(phy, ..., part = NULL)
 \method{print}{prop.part}(x, ...)
@@ -23,6 +23,8 @@ prop.clades(phy, ..., part = NULL)
   \item{B}{the number of bootstrap replicates.}
   \item{block}{the number of columns in \code{x} that will be resampled
     together (see details).}
+  \item{trees}{a logical specifying whether to return the bootstraped
+    trees (\code{FALSE} by default).}
   \item{\dots}{either (i) a single object of class \code{"phylo"}, (ii) a
     series of such objects separated by commas, or (iii) a list
     containing such objects. In the case of \code{plot} further
@@ -95,7 +97,10 @@ prop.clades(phy, ..., part = NULL)
 
   \code{prop.clades} and \code{boot.phylo} return a numeric vector
   which \emph{i}th element is the number associated to the \emph{i}th
-  node of \code{phy}.
+  node of \code{phy}. If \code{trees = TRUE}, \code{boot.phylo} returns
+  a list whose first element (named \code{"BP"}) is like before, and the
+  second element (\code{"trees"}) is a list with the bootstraped
+  trees.
 
   \code{summary} returns a numeric vector.
 }

@@ -1,8 +1,8 @@
-## PGLS.R (2006-10-12)
+## PGLS.R (2008-05-08)
 
 ##   Phylogenetic Generalized Least Squares
 
-## Copyright 2004 Julien Dutheil, and 2006 Emmanuel Paradis
+## Copyright 2004 Julien Dutheil, and 2006-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -195,4 +195,84 @@ compute.brlen <- function(phy, method = "Grafen", power = 1, ...)
           (xx[phy$edge[, 1]]/m)^power - (xx[phy$edge[, 2]]/m)^power
         return(phy)
     }
+}
+
+## by EP:
+
+corPagel <- function(value, phy, form = ~1, fixed = FALSE)
+{
+    if (value < 0 || value > 1)
+        stop("the value of lambda must be between 0 and 1.")
+    if (!("phylo" %in% class(phy)))
+        stop('object "phy" is not of class "phylo"')
+    attr(value, "formula") <- form
+    attr(value, "fixed") <- fixed
+    attr(value, "tree") <- phy
+    class(value) <- c("corPagel", "corPhyl", "corStruct")
+    value
+}
+
+corMatrix.corPagel <-
+    function(object, covariate = getCovariate(object), corr = TRUE, ...)
+{
+    if (!any(attr(object, "index")))
+        stop("object has not been initialized")
+    mat <- vcv.phylo(attr(object, "tree"), cor = corr)
+    index <- attr(object, "index")
+    mat <- mat[index, index]
+    tmp <- diag(mat)
+    mat <- object[1]*mat
+    diag(mat) <- tmp
+    mat
+}
+
+coef.corPagel <- function(object, unconstrained = TRUE, ...)
+{
+    if (unconstrained) {
+        if (attr(object, "fixed")) return(numeric(0))
+        else return(object[1])
+    }
+    aux <- object[1]
+    names(aux) <- "lambda"
+    aux
+}
+
+corBlomberg <- function(value, phy, form = ~1, fixed = FALSE)
+{
+    if (value <= 0)
+        stop("the value of g must be greater than 0.")
+    if (!("phylo" %in% class(phy)))
+        stop('object "phy" is not of class "phylo"')
+    attr(value, "formula") <- form
+    attr(value, "fixed") <- fixed
+    attr(value, "tree") <- phy
+    class(value) <- c("corBlomberg", "corPhyl", "corStruct")
+    value
+}
+
+corMatrix.corBlomberg <-
+    function(object, covariate = getCovariate(object), corr = TRUE, ...)
+{
+    index <- attr(object, "index")
+    if (is.null(index))
+        stop("object has not been initialized")
+    if (object[1] <= 0)
+        stop("the optimization has reached a value <= 0 for parameter 'g':
+probably need to set 'fixed = TRUE' in corBlomberg().")
+    phy <- attr(object, "tree")
+    d <- (dist.nodes(phy)[length(phy$tip.label) + 1, ])^(1/object[1])
+    phy$edge.length <- d[phy$edge[, 2]] - d[phy$edge[, 1]]
+    mat <- vcv.phylo(phy, cor = corr)
+    mat[index, index]
+}
+
+coef.corBlomberg <- function(object, unconstrained = TRUE, ...)
+{
+    if (unconstrained) {
+        if (attr(object, "fixed")) return(numeric(0))
+        else return(object[1])
+    }
+    aux <- object[1]
+    names(aux) <- "g"
+    aux
 }

@@ -1,8 +1,8 @@
-## zoom.R (2004-12-17)
+## zoom.R (2008-04-16)
 
 ##   Zoom on a Portion of a Phylogeny
 
-## Copyright 2003-2004 Emmanuel Paradis
+## Copyright 2003-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -13,7 +13,7 @@ zoom <- function(phy, focus, subtree = FALSE, col = rainbow, ...)
     n <- length(focus)
     for (i in 1:n)
       if (is.character(focus[[i]]))
-        focus[[i]] <- which(phy$tip.label == focus[[i]])
+        focus[[i]] <- which(phy$tip.label %in% focus[[i]]) # fix by Yan Wong
     if (is.function(col))
       if (deparse(substitute(col)) == "grey")
         col <- grey(1:n/n) else col <- col(n)
@@ -27,7 +27,7 @@ zoom <- function(phy, focus, subtree = FALSE, col = rainbow, ...)
     M <- matrix(0, nr, nc)
     x <- c(rep(1, nr), 2:(n + 1))
     M[1:length(x)] <- x
-    layout(M, c(1, rep(3 / (nc - 1), nc - 1)))
+    layout(M, c(1, rep(3/(nc - 1), nc - 1)))
     phy$tip.label <- rep("", length(phy$tip.label))
     colo <- rep("black", dim(phy$edge)[1])
     for (i in 1:n)

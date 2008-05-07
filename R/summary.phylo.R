@@ -1,4 +1,4 @@
-## summary.phylo.R (2008-02-28)
+## summary.phylo.R (2008-04-22)
 
 ##   Print Summary of a Phylogeny
 
@@ -142,5 +142,6 @@ print.multiPhylo <- function(x, details = FALSE, ...)
 str.multiPhylo <- function(object, ...)
 {
     class(object) <- NULL
+    cat('Class "multiPhylo"\n')
     str(object, ...)
 }

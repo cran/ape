@@ -3,20 +3,27 @@
 \alias{corPhyl}
 \title{Phylogenetic Correlation Structures}
 \description{
-  Standard classes of phylogenetic correlation structures (\code{corPhyl}) available in \pkg{ape}.
-}
-\value{
-	Available standard classes:
-	\item{corBrownian}{Brownian model (Felsenstein 1985),}
-	\item{corMartins}{The covariance matrix defined in Martins and Hansen (1997),}
-	\item{corGrafen}{The covariance matrix defined in Grafen (1989).}
-	See classes documentation for reference and detailed description.
+  Classes of phylogenetic correlation structures (\code{"corPhyl"})
+  available in \pkg{ape}.
+
+  \item{corBrownian}{Brownian motion model (Felsenstein 1985)}
+  \item{corMartins}{The covariance matrix defined in Martins and Hansen
+    (1997)}
+  \item{corGrafen}{The covariance matrix defined in Grafen (1989)}
+  \item{corPagel}{The covariance matrix defined in Freckelton et al. (2002)}
+  \item{corBlomberg}{The covariance matrix defined in Blomberg et al. (2003)}
+
+  See the help page of each class for references and detailed
+  description.
 }
 \seealso{
-	\code{\link[nlme]{corClasses}} and \code{\link[nlme]{gls}} in the \pkg{nlme} librarie,
-	\code{\link{corBrownian}}, \code{\link{corMartins}}, \code{\link{corGrafen}}.
+  \code{\link[nlme]{corClasses}} and \code{\link[nlme]{gls}} in the
+  \pkg{nlme} librarie, \code{\link{corBrownian}},
+  \code{\link{corMartins}}, \code{\link{corGrafen}},
+  \code{\link{corPagel}}, \code{\link{corBlomberg}}
 }
-\author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
+\author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}, Emmanuel
+  Paradis}
 \examples{
 library(nlme)
 cat("((((Homo:0.21,Pongo:0.21):0.28,",

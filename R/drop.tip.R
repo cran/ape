@@ -1,8 +1,8 @@
-## drop.tip.R (2007-12-21)
+## drop.tip.R (2008-04-17)
 
 ##   Remove Tips in a Phylogenetic Tree
 
-## Copyright 2003-2007 Emmanuel Paradis
+## Copyright 2003-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -18,7 +18,9 @@ drop.tip <- function(phy, tip, trim.internal = TRUE, subtree = FALSE,
     }
     tmp <- as.numeric(phy$edge)
     nb.tip <- max(tmp)
-    nb.node <- -min(tmp)
+    ## fix by Yan Wong:
+    nodes <- setdiff(tmp,1:nb.tip) #not sure if this also needs sorting into order
+    ## end
     nobr <- is.null(phy$edge.length)
     if (is.numeric(tip)) tip <- phy$tip.label[tip]
     ## find the tips to drop...:
@@ -76,15 +78,15 @@ drop.tip <- function(phy, tip, trim.internal = TRUE, subtree = FALSE,
             if (!nobr) phy$edge.length <- phy$edge.length[!ind]
         }
     } else {
-        temp <- phy$edge[, 2][as.numeric(phy$edge[, 2]) < 0]
-        k <- temp %in% phy$edge[, 1]
-        ind <- phy$edge[, 2] %in% temp[!k]
+        ## fix by Yan Wong:
+        k <- nodes %in% phy$edge[, 1] #nodes that have descendants
+        ind <- phy$edge[, 2] %in% nodes[!k]
         phy$edge[which(ind), 2] <- as.character(nb.tip + (1:sum(ind)))
-        if (is.null(phy$node.label)) new.tip.label <- rep("NA", sum(ind)) else {
-            new.tip.label <- phy$node.label[!k]
-            phy$node.label <- phy$node.label[k]
-        }
+        if (is.null(phy$node.label)) new.tip.label <- rep("NA", sum(ind))
+        else new.tip.label <- phy$node.label[!k]
         phy$tip.label <- c(phy$tip.label, new.tip.label)
+        #N.B. phy$node.label can be left: it is altered later
+        ## end
     }
     useless.nodes <- names(which(table(phy$edge[, 1]) == 1))
     if (subtree) {

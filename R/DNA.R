@@ -1,4 +1,4 @@
-## DNA.R (2008-03-10)
+## DNA.R (2008-04-24)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -215,14 +215,11 @@ base.freq <- function(x)
     BF
 }
 
-GC.content <- function(x)
-{
-    BF <- base.freq(x)
-    sum(BF[2:3])
-}
+GC.content <- function(x) sum(base.freq(x)[2:3])
 
 seg.sites <- function(x)
 {
+    if (is.list(x)) x <- as.matrix(x)
     n <- dim(x)
     s <- n[2]
     n <- n[1]

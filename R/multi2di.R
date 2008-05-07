@@ -1,4 +1,4 @@
-## multi2di.R (2008-03-17)
+## multi2di.R (2008-04-09)
 
 ##   Collapse and Resolve Multichotomies
 
@@ -63,11 +63,9 @@ multi2di <- function(phy, random = TRUE)
     if (wbl)
       phy$edge.length <- c(phy$edge.length[-edge2delete], new.edge.length)
     if (!is.null(attr(phy, "order"))) attr(phy, "order") <- NULL
-    print(phy$node.label)
     if (!is.null(phy$node.label))
         phy$node.label <-
             c(phy$node.label, rep("", phy$Nnode - length(phy$node.label)))
-    print(phy$node.label)
     reorder(phy)
     ##read.tree(text = write.tree(phy))
 }

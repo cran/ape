@@ -1,3 +1,49 @@
+		CHANGES IN APE VERSION 2.2
+
+
+NEW FEATURES
+
+    o Four new functions have been written by Damien de Vienne for the
+      graphical exploration of large trees (cophyloplot, subtrees,
+      subtreeplot), and to return the graphical coordinates of tree
+      (without plotting).
+
+    o The new functions corPagel and corBlomberg implement the Pagel's
+      "lambda" and Blomberg et al.'s "ACDC" correlation structures.
+
+    o chronopl() has been improved and gains several options: see its
+      help page for details.
+
+    o boot.phylo() has now an option 'trees' to possibly return the
+      bootstraped trees (the default is FALSE).
+
+    o prop.part() has been improved and should now be faster in all
+      situations.
+
+
+BUG FIXES
+
+    o read.dna() failed if "?" occurred in the first 10 sites of the
+      first sequence.
+
+    o The x/y aspect of the plot is now respected when plotting a
+      circular tree (type = "r" or "f").
+
+    o Drawing the tip labels sometimes failed when plotting circular
+      trees.
+
+    o zoom() failed when tip labels were used instead of their numbers
+      (thanks to Yan Wong for the fix).
+
+    o drop.tip() failed with some trees  (fixed by Yan Wong).
+
+    o seg.sites() failed with a list.
+
+    o consensus() failed in some cases. The function has been improved
+      as well and is faster.
+
+
+
 		CHANGES IN APE VERSION 2.1-3
 
 
@@ -129,7 +175,7 @@ BUG FIXES
 OTHER CHANGES
 
     o The code of mlphylo() has almost entirely rewritten, and should
-      much stabler now. The options have been also greatly simplified
+      be much stabler. The options have been also greatly simplified
       (see ?mlphylo and ?DNAmodel for details).
 
     o The internal function nTips has been renamed klastorin_nTips.
