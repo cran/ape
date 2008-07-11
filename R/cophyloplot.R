@@ -1,4 +1,4 @@
-## cophyloplot.R (2008-04-30)
+## cophyloplot.R (2008-07-08)
 
 ##   Plots two phylogenetic trees face to
 ##   face with the links between the tips
@@ -151,7 +151,7 @@ plotCophylo2 <-
             decx[i] <- strwidth(x$tip.label[lsa[x$tip.label ==
                 assoc[i, 1]]])
             decy[i] <- strwidth(y$tip.label[lsb[y$tip.label ==
-                assoc[i, 1]]])
+                assoc[i, 2]]])
         } else {
             decx[i] <- decy[i] <- 0
         }

@@ -1,4 +1,4 @@
-## read.dna.R (2008-03-28)
+## read.dna.R (2008-07-03)
 
 ##   Read DNA Sequences in a File
 
@@ -12,68 +12,54 @@ read.dna <- function(file, format = "interleaved", skip = 0,
                      as.character = FALSE)
 {
     getTaxaNames <- function(x) {
-        x <- sub("^ +", "", x) # remove the leading spaces
-        x <- sub(" +$", "", x) # remove the trailing spaces
-        x <- sub("^['\"]", "", x) # remove the leading quotes
-        x <- sub("['\"]$", "", x) # remove the trailing quotes
+        x <- sub("^['\" ]+", "", x) # remove the leading quotes and spaces
+        x <- sub("['\" ]+$", "", x) #   "     "  trailing  "     "    "
         x
     }
-    format <- match.arg(format, c("interleaved", "sequential", "fasta"))
-    phylip <- if (format %in% c("interleaved", "sequential")) TRUE else FALSE
-    X <- scan(file = file, what = character(), sep = "\n", quiet = TRUE,
+    getNucleotide <- function(x) {
+        x <- gsub(" ", "", x)
+        x <- strsplit(x, NULL)
+        unlist(x)
+    }
+    formats <- c("interleaved", "sequential", "fasta", "clustal")
+    format <- match.arg(format, formats)
+    phylip <- if (format %in% formats[1:2]) TRUE else FALSE
+    X <- scan(file = file, what = "", sep = "\n", quiet = TRUE,
               skip = skip, nlines = nlines, comment.char = comment.char)
+    pat.base <- "[-AaCcGgTtUuMmRrWwSsYyKkVvHhDdBbNn?]{10}"
     if (phylip) {
-        fl <- X[1]
-        oop <- options(warn = -1)
         ## need to remove the possible leading spaces in the first line
-        fl.num <- as.numeric(unlist(strsplit(gsub("^ +", "", fl), " +")))
-        options(oop)
-        if (all(is.na(fl.num)))
-          stop("the first line of the file must contain the dimensions of the data")
-        if (length(fl.num) != 2)
-          stop("the first line of the file must contain TWO numbers")
-        else {
-            n <- fl.num[1]
-            s <- fl.num[2]
-        }
+        fl <- gsub("^ +", "", X[1])
+        fl <- as.numeric(unlist(strsplit(fl, " +")))
+        if (length(fl) != 2 || any(is.na(fl)))
+            stop("the first line of the file must contain the dimensions of the data")
+        n <- fl[1]
+        s <- fl[2]
+        obj <- matrix("", n, s)
         X <- X[-1]
-        obj <- vector("character", n*s)
-        dim(obj) <- c(n, s)
     }
     if (format == "interleaved") {
-        fl <- X[1]
-        fl <- unlist(strsplit(fl, NULL))
-        bases <- grep("[-AaCcGgTtUuMmRrWwSsYyKkVvHhDdBbNn?]", fl)
-        z <- diff(bases)
-        for (i in 1:length(z)) if (all(z[i:(i + 8)] == 1)) break
-        start.seq <- bases[i]
+        start.seq <- regexpr(pat.base, X[1])[1]
         if (is.null(seq.names))
-          seq.names <- getTaxaNames(substr(X[1:n], 1, start.seq - 1))
+            seq.names <- getTaxaNames(substr(X[1:n], 1, start.seq - 1))
         X[1:n] <- substr(X[1:n], start.seq, nchar(X[1:n]))
-        X <- gsub(" ", "", X)
         nl <- length(X)
         for (i in 1:n)
-          obj[i, ] <- unlist(strsplit(X[seq(i, nl, n)], NULL))
+            obj[i, ] <- getNucleotide(X[seq(i, nl, n)])
     }
     if (format == "sequential") {
-        fl <- X[1]
         taxa <- character(n)
         j <- 1
         for (i in 1:n) {
-            bases <- grep("[-AaCcGgTtUuMmRrWwSsYyKkVvHhDdBbNn?]",
-                          unlist(strsplit(X[j], NULL)))
-            z <- diff(bases)
-            for (k in 1:length(z)) if (all(z[k:(k + 8)] == 1)) break
-            start.seq <- bases[k]
+            start.seq <- regexpr(pat.base, X[j])[1]
             taxa[i] <- substr(X[j], 1, start.seq - 1)
-            sequ <- substr(X[j], start.seq, nchar(X[j]))
-            sequ <- gsub(" ", "", sequ)
+            sequ <- getNucleotide(substr(X[j], start.seq, nchar(X[j])))
             j <- j + 1
-            while (nchar(sequ) < s) {
-                sequ <- paste(sequ, gsub(" " , "", X[j]), sep = "")
+            while (length(sequ) < s) {
+                sequ <- c(sequ, getNucleotide(X[j]))
                 j <- j + 1
             }
-            obj[i, ] <- unlist(strsplit(sequ, NULL))
+            obj[i, ] <- sequ
         }
         if (is.null(seq.names)) seq.names <- getTaxaNames(taxa)
     }
@@ -88,11 +74,32 @@ read.dna <- function(file, format = "interleaved", skip = 0,
         }
         start <- c(start, length(X) + 1) # this avoids the following to crash when `i = n'
         for (i in 1:n)
-          obj[[i]] <- unlist(strsplit(gsub(" ", "",
-                                           X[(start[i] + 1):(start[i + 1] - 1)]),
-                                      NULL))
+            obj[[i]] <- getNucleotide(X[(start[i] + 1):(start[i + 1] - 1)])
     }
-    if (phylip) {
+    if (format == "clustal") {
+        X <- X[-1]
+        ## find where the 1st sequence starts
+        start.seq <- regexpr(pat.base, X[1])[1]
+        ## find the lines with *********....
+        nspaces <- paste("^ {", start.seq - 1, "}", sep = "", collapse = "")
+        stars <- grep(nspaces, X)
+        ## we now know how many sequences in the file:
+        n <- stars[1] - 1
+        ## get the sequence names in the same way than "interleaved":
+        if (is.null(seq.names))
+            seq.names <- getTaxaNames(substr(X[1:n], 1, start.seq - 1))
+        ## need to remove the sequence names before getting the sequences:
+        X <- substr(X, start.seq, nchar(X))
+        nl <- length(X)
+        ## find the length of the 1st sequence:
+        tmp <- getNucleotide(X[seq(1, nl, n + 1)])
+        s <- length(tmp)
+        obj <- matrix("", n, s)
+        obj[1, ] <- tmp
+        for (i in 2:n)
+            obj[i, ] <- getNucleotide(X[seq(i, nl, n + 1)])
+    }
+    if (format != "fasta") {
         rownames(obj) <- seq.names
         obj <- tolower(obj)
     } else {

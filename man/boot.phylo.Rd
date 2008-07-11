@@ -8,7 +8,7 @@
 \title{Tree Bipartition and Bootstrapping Phylogenies}
 \usage{
 boot.phylo(phy, x, FUN, B = 100, block = 1, trees = FALSE)
-prop.part(..., check.labels = FALSE)
+prop.part(..., check.labels = TRUE)
 prop.clades(phy, ..., part = NULL)
 \method{print}{prop.part}(x, ...)
 \method{summary}{prop.part}(object, ...)
@@ -30,9 +30,8 @@ prop.clades(phy, ..., part = NULL)
     containing such objects. In the case of \code{plot} further
     arguments for the plot (see details).}
   \item{check.labels}{a logical specifying whether to check the labels
-    of each tree. If \code{FALSE} (the default), it is assumed that all
-    trees have the same tip labels, and that they are in the same order
-    (see details).}
+    of each tree. If \code{FALSE}, it is assumed that all trees have the
+    same tip labels, and that they are in the same order (see details).}
   \item{part}{a list of partitions as returned by \code{prop.part}; if
     this is used then \code{\dots} is ignored.}
   \item{object}{an object of class \code{"prop.part"}.}
@@ -63,11 +62,11 @@ prop.clades(phy, ..., part = NULL)
   be resampled altogether. For instance, if one wants to resample at the
   codon-level, then \code{block = 3} must be used.
 
-  Using (the default) \code{check.labels = FALSE} in \code{prop.part}
-  results in considerable decrease in computing times. This requires that
-  (i) all trees have the same tip labels, \emph{and} (ii) these labels
-  are ordered similarly in all trees (in other words, the element
-  \code{tip.label} are identical in all trees).
+  Using \code{check.labels = FALSE} in \code{prop.part} decreases
+  computing times. This requires that (i) all trees have the same tip
+  labels, \emph{and} (ii) these labels are ordered similarly in all
+  trees (in other words, the element \code{tip.label} are identical in
+  all trees).
 
   The plot function represents a contingency table of the different
   partitions (on the \emph{x}-axis) in the lower panel, and their observed

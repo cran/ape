@@ -1,4 +1,4 @@
-## dist.topo.R (2008-05-07)
+## dist.topo.R (2008-06-28)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -78,7 +78,7 @@ dist.topo <- function(x, y, method = "PH85")
     x
 }
 
-prop.part <- function(..., check.labels = FALSE)
+prop.part <- function(..., check.labels = TRUE)
 {
     obj <- list(...)
     if (length(obj) == 1 && class(obj[[1]]) != "phylo")
@@ -198,7 +198,7 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1, trees = FALSE)
     ans
 }
 
-consensus <- function(..., p = 1, check.labels = FALSE)
+consensus <- function(..., p = 1, check.labels = TRUE)
 {
     foo <- function(ic, node) {
         ## ic: index of 'pp'

@@ -35,7 +35,7 @@ corPagel(value, phy, form = ~1, fixed = FALSE)
 \value{
   an object of class \code{"corPagel"}, the coefficients from an object
   of this class, or the correlation matrix of an initialized object of
-  this class. In most situations, only \code{corPagel()} will be called
+  this class. In most situations, only \code{corPagel} will be called
   by the user.
 }
 \author{Emmanuel Paradis}

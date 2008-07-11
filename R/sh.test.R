@@ -1,8 +1,8 @@
-## sh.test.R (2006-07-06)
+## sh.test.R (2008-07-11)
 
 ##   Shimodaira-Hasegawa Test
 
-## Copyright 2006 Emmanuel Paradis
+## Copyright 2006-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -27,7 +27,7 @@ sh.test <- function(..., x, model = DNAmodel(), B = 100)
 
     ## Step 1:
     foo <- function(PHY)
-      attr(mlphylo(model, x, PHY, search.tree = FALSE, quiet = TRUE), "loglik")
+      attr(mlphylo(x, PHY, model, search.tree = FALSE, quiet = TRUE), "loglik")
     Talpha <- sapply(phy, foo)
     Talpha <- max(Talpha) - Talpha
 
@@ -36,7 +36,7 @@ sh.test <- function(..., x, model = DNAmodel(), B = 100)
     for (i in 1:B) {
         boot.samp <- x[, sample(ncol(x), replace = TRUE)]
         for (j in 1:ntree)
-          M[j, i] <- attr(mlphylo(model, boot.samp, phy[[j]],
+          M[j, i] <- attr(mlphylo(boot.samp, phy[[j]], model,
                                   search.tree = FALSE, quiet = TRUE),
                           "loglik")
     }

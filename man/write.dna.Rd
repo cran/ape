@@ -33,20 +33,17 @@ write.dna(x, file, format = "interleaved", append = FALSE,
 }
 \description{
   This function writes in a file a list of DNA sequences in sequential,
-  interleaved, or FASTA format. The names of the vectors of the list are
-  used as taxa names.
+  interleaved, or FASTA format.
 }
 \details{
-  The same three formats are supported in the present function than in
-  \code{\link{read.dna}}: see its help page and the references below for
-  a description of these formats.
+  Three formats are supported in the present function: see the help page
+  of \code{\link{read.dna}} and the references below for a description.
 
   If the sequences have no names, then they are given "1", "2", ... as
   names in the file.
 
   With the interleaved and sequential formats, the sequences must be all
-  of the same length; if the taxon names are longer than 10 characters,
-  they are truncated and a warning message is issued.
+  of the same length. The names of the sequences are not truncated.
 
   The argument `indent' specifies how the rows of nucleotides are
   indented. In the interleaved and sequential formats, the rows with
@@ -58,17 +55,23 @@ write.dna(x, file, format = "interleaved", append = FALSE,
   it is a numeric). For example, specifying `indent = "   "' or `indent
   = 3' will have exactly the same effect (use `indent = "\t"' for a
   tabulation).
+
+  The different options are intended to give flexibility in formatting
+  the sequences. For instance, if the sequences are very long it may be
+  judicious to remove all the spaces beween columns (colsep = ""), in
+  the margins (indent = 0), and between the blocks (blocksep = 0) to
+  produce a smaller file.
 }
 \note{
   Specifying a negative value for `nbcol' (meaning that the nucleotides
   are printed on a single line) gives the same result for the
   interleaved and sequential formats.
 
-  The different options are intended to give flexibility in formatting
-  the sequences. For instance, if the sequences are very long it may be
-  judicious to remove all the spaces beween columns `(colsep = ""), in
-  the margins (indent = 0), and between the blocks (blocksep = 0) to
-  produce a smaller file.
+  The names of the sequences may be truncated with the function
+  \code{\link{makeLabel}}. In particular, Clustal is limited to 30
+  characters, whereas PHYML seems limited to 99 characters.
+
+  The FASTA format may be used as input for Clustal.
 }
 \value{
   None (invisible `NULL').
@@ -86,6 +89,7 @@ write.dna(x, file, format = "interleaved", append = FALSE,
   \url{http://evolution.genetics.washington.edu/phylip/phylip.html}
 }
 \seealso{
-  \code{\link{read.dna}}, \code{\link{read.GenBank}}
+  \code{\link{read.dna}}, \code{\link{read.GenBank}},
+  \code{\link{makeLabel}}
 }
 \keyword{IO}

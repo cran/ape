@@ -1,4 +1,4 @@
-## collapse.singles.R (2006-07-15)
+## collapse.singles.R (2008-06-19)
 
 ##    Collapse "Single" Nodes
 
@@ -11,6 +11,11 @@ collapse.singles <- function(tree)
 {
     elen <- tree$edge.length
     xmat <- tree$edge
+    ## added by Elizabeth Purdom (2008-06-19):
+    node.lab<-tree$node.label
+    nnode<-tree$Nnode
+    ntip<-length(tree$tip.label)
+    ## end
     singles <- NA
     while (length(singles) > 0) {
         ## changed by EP to make it slightly more efficient:
@@ -30,10 +35,18 @@ collapse.singles <- function(tree)
             xmat[xmat > i] <- xmat[xmat > i] - 1 ## adjust indices
             ## END
             elen[prev.node] <- elen[prev.node] + elen[next.node]
+            ## added by Elizabeth Purdom (2008-06-19):
+            if(!is.null(node.lab)) node.lab<-node.lab[-c(i-ntip)]
+            nnode<-nnode-1
+            ## end
             elen <- elen[-next.node]
         }
     }
     tree$edge <- xmat
     tree$edge.length <- elen
+    ## added by Elizabeth Purdom (2008-06-19):
+    tree$node.label<-node.lab
+    tree$Nnode<-nnode
+    ## end
     tree
 }

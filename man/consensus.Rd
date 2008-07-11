@@ -2,7 +2,7 @@
 \alias{consensus}
 \title{Concensus Trees}
 \usage{
-consensus(..., p = 1, check.labels = FALSE)
+consensus(..., p = 1, check.labels = TRUE)
 }
 \arguments{
   \item{...}{either (i) a single object of class \code{"phylo"}, (ii) a

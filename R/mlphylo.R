@@ -1,4 +1,4 @@
-## mlphylo.R (2008-01-03)
+## mlphylo.R (2008-06-18)
 
 ##   Estimating Phylogenies by Maximum Likelihood
 
@@ -45,7 +45,6 @@ mlphylo <-
       stop("some branch lengths are greater than one.")
     phy <- reorder(phy, "pruningwise")
     if (!quiet) cat("Preparing the sequences...\n")
-    BF <- if (model$model %in% 1:2) rep(0.25, 4) else base.freq(x)
     if (is.list(x)) x <- as.matrix(x)
     if (is.null(rownames(x)))
         stop("DNA sequences have no names") # safe...
@@ -54,6 +53,7 @@ mlphylo <-
 of the tree do not match") # safe here also
     x <- x[phy$tip.label, ]
     Y <- prepareDNA(x, model)
+    BF <- if (Y$model %in% 1:2) rep(0.25, 4) else base.freq(x)
     S <- length(Y$weight)
     npart <- dim(Y$partition)[2] # the number of overall partitions
     ## in case of negative branch lengths:
@@ -74,7 +74,7 @@ of the tree do not match") # safe here also
 
     loglik <- 0
     if (!quiet) cat("Fitting in progress... ")
-    res <- .C("mlphylo_DNAmodel", as.integer(nb.tip), as.integer(S),
+    res <<- res <- .C("mlphylo_DNAmodel", as.integer(nb.tip), as.integer(S),
               as.raw(Y$SEQ), as.double(Y$ANC), as.double(Y$w),
               as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
               as.double(phy$edge.length), as.integer(npart),
@@ -83,7 +83,7 @@ of the tree do not match") # safe here also
               as.double(alpha), as.integer(Y$nalpha),
               as.integer(Y$ncat), as.double(invar), as.integer(Y$ninvar),
               as.double(BF), as.integer(search.tree), as.integer(fixed),
-              as.double(loglik), NAOK = TRUE, PACKAGE = "ape")
+              as.double(loglik), NAOK = TRUE, PACKAGE = "mlphylo")
     if (!quiet) cat("DONE!\n")
     phy$edge.length = res[[8]]
     attr(phy, "loglik") <- res[[23]]
@@ -148,7 +148,7 @@ prepareDNA <- function(X, DNAmodel)
     }
 
     class(SEQ) <- "DNAbin"
-    ANC <- array(1, c(nrow(SEQ) - 2, ncol(SEQ), 4))
+    ANC <- array(0, c(nrow(SEQ) - 2, ncol(SEQ), 4))
 
     ## 'partition' gives the start and end of each partition:
     partition <- matrix(1, 2, npart)

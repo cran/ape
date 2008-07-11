@@ -1,3 +1,54 @@
+		CHANGES IN APE VERSION 2.2-1
+
+
+NEW FEATURES
+
+    o The new function makeLabel() helps to modify labels of trees,
+      lists of trees, or DNA sequences, with several utilities to
+      truncate and/or make them unique, substituting some
+      characters, and so on.
+
+    o The new function del.gaps() removes insertion gaps ("-") in a
+      set of DNA sequences.
+
+    o read.dna() can now read Clustal files (*.aln).
+
+
+BUG FIXES
+
+    o root() failed with 'resolve.root = TRUE' when the root was
+      already the specified root.
+
+    o Several bugs were fixed in mlphylo().
+
+    o collapsed.singles() did not propagate the 'Nnode' and
+      'node.labels' elements (thanks to Elizabeth Purdom for the fix).
+
+    o read.nexus() failed to remove correctly the comments within
+      trees.
+
+    o read.nexus() failed to read a file with a single tree and no
+      translation of tip labels.
+
+    o read.nexus() failed to place correctly tip labels when reading
+      a single tree with no edge lengths.
+
+    o A bug was fixed in sh.test().
+
+
+OTHER CHANGES
+
+    o unique.multiPhylo() is faster thanks to a suggestion by Vladimir
+      Minin.
+
+    o The option 'check.labels' of consensus() and prop.part() is now
+      TRUE by default.
+
+    o write.dna() now does not truncate names to 10 characters with
+      the Phylip formats.
+
+
+
 		CHANGES IN APE VERSION 2.2
 
 
@@ -35,7 +86,7 @@ BUG FIXES
     o zoom() failed when tip labels were used instead of their numbers
       (thanks to Yan Wong for the fix).
 
-    o drop.tip() failed with some trees  (fixed by Yan Wong).
+    o drop.tip() failed with some trees (fixed by Yan Wong).
 
     o seg.sites() failed with a list.
 

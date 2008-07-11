@@ -7,7 +7,7 @@ bind.tree(x, y, where = "root", position = 0)
 \arguments{
   \item{x}{an object of class \code{"phylo"}.}
   \item{y}{an object of class \code{"phylo"}.}
-  \item{where}{an) integer giving the number of the node or tip of the
+  \item{where}{an integer giving the number of the node or tip of the
     tree \code{x} where the tree \code{y} is binded (\code{"root"} is a
     short-cut for the root).}
   \item{position}{a numeric value giving the position from the tip or

@@ -1,4 +1,4 @@
-## DNA.R (2008-04-24)
+## DNA.R (2008-06-08)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -6,6 +6,27 @@
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
+
+del.gaps <- function(x)
+{
+    deleteGaps <- function(x) {
+        i <- which(x == 4)
+        x[-i]
+    }
+
+    if (class(x) != "DNAbin") x <- as.DNAbin(x)
+    if (is.matrix(x)) {
+        n <- dim(x)[1]
+        y <- vector("list", n)
+        for (i in 1:n) y[[i]] <- x[i, ]
+        x <- y
+        rm(y)
+    }
+    if (!is.list(x)) return(deleteGaps(x))
+    x <- lapply(x, deleteGaps)
+    class(x) <- "DNAbin"
+    x
+}
 
 as.alignment <- function(x)
 {

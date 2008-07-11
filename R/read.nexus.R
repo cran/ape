@@ -1,4 +1,4 @@
-## read.nexus.R (2008-02-28)
+## read.nexus.R (2008-07-11)
 
 ##   Read Tree File in Nexus Format
 
@@ -109,7 +109,17 @@ read.nexus <- function(file, tree.names = NULL)
         w <- LEFT == RIGHT
         if (any(w)) { # in case all comments use at least 2 lines
             s <- LEFT[w]
-            X[s] <- gsub("\\[.*\\]", "", X[s])
+            X[s] <- gsub("\\[[^]]*\\]", "", X[s])
+            ## The above regexp was quite tough to find: it makes
+            ## possible to delete series of comments on the same line:
+            ##       ...[...]xxx[...]...
+            ## without deleting the "xxx". This regexp is in three parts:
+            ##       \\[      [^]]*       \\]
+            ## where [^]]* means "any character, except "]", repeated zero
+            ## or more times" (note that the ']' is not escaped here).
+            ## The previous version was:
+            ##       X[s] <- gsub("\\[.*\\]", "", X[s])
+            ## which deleted the "xxx". (EP  2008-06-24)
         }
         w <- !w
         if (any(w)) {
@@ -198,7 +208,11 @@ read.nexus <- function(file, tree.names = NULL)
     }
     if (Ntree == 1) {
         trees <- trees[[1]]
-        trees$tip.label <- TRANS[, 2]
+        if (translation) {
+            trees$tip.label <-
+                if (length(colon)) TRANS[, 2] else
+                TRANS[, 2][as.numeric(trees$tip.label)]
+        }
     } else {
         if (!is.null(tree.names)) names(trees) <- tree.names
         if (translation) attr(trees, "TipLabel") <- TRANS[, 2]

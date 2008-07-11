@@ -10,9 +10,9 @@ read.dna(file, format = "interleaved", skip = 0,
   \item{file}{a file name specified by either a variable of mode character,
     or a double-quoted string.}
   \item{format}{a character string specifying the format of the DNA
-    sequences. Three choices are possible: \code{"interleaved"},
-    \code{"sequential"}, or \code{"fasta"}, or any unambiguous
-    abbreviation of these.}
+    sequences. Four choices are possible: \code{"interleaved"},
+    \code{"sequential"}, \code{"clustal"}, or \code{"fasta"}, or any
+    unambiguous abbreviation of these.}
   \item{skip}{the number of lines of the input file to skip before
     beginning to read data.}
   \item{nlines}{the number of lines to be read (by default the file is
@@ -34,8 +34,7 @@ read.dna(file, format = "interleaved", skip = 0,
 \details{
   This function follows the interleaved and sequential formats defined
   in PHYLIP (Felsenstein, 1993) but with the original feature than there
-  is no restriction on the lengths of the taxa names (though a data file
-  with 10-characters-long taxa names is fine as well). For these two
+  is no restriction on the lengths of the taxa names. For these two
   formats, the first line of the file must contain the dimensions of the
   data (the numbers of taxa and the numbers of nucleotides); the
   sequences are considered as aligned and thus must be of the same
@@ -62,6 +61,11 @@ read.dna(file, format = "interleaved", skip = 0,
     is used to start reading the sequences and the taxa names; the
     sequences are then read until the number of nucleotides specified in
     the first line of the file is reached. This is repeated for each taxa.}
+
+  \item{Clustal:}{this is the format output by the Clustal programs
+    (.aln). It is somehow similar to the interleaved format: the
+    differences being that the dimensions of the data are not indicated
+    in the file, and the names of the sequences are repeated in each block.}
 
   \item{FASTA:}{This looks like the sequential format but the taxa names
     (or rather a description of the sequence) are on separate lines
@@ -111,6 +115,14 @@ cat("3 40",
 "          ACTAAAAATT ATCAATCACT",
 file = "exdna.txt", sep = "\n")
 ex.dna2 <- read.dna("exdna.txt")
+### ... in clustal format...
+cat("CLUSTAL (ape) multiple sequence alignment", "",
+"No305     NTTCGAAAAACACACCCACTACTAAAANTTATCAGTCACT",
+"No304     ATTCGAAAAACACACCCACTACTAAAAATTATCAACCACT",
+"No306     ATTCGAAAAACACACCCACTACTAAAAATTATCAATCACT",
+"           ************************** ******  ****",
+file = "exdna.txt", sep = "\n")
+ex.dna3 <- read.dna("exdna.txt", format = "clustal")
 ### ... and in FASTA format
 cat("> No305",
 "NTTCGAAAAACACACCCACTACTAAAANTTATCAGTCACT",
@@ -119,10 +131,11 @@ cat("> No305",
 "> No306",
 "ATTCGAAAAACACACCCACTACTAAAAATTATCAATCACT",
 file = "exdna.txt", sep = "\n")
-ex.dna3 <- read.dna("exdna.txt", format = "fasta")
-### These are the same!
+ex.dna4 <- read.dna("exdna.txt", format = "fasta")
+### The first three are the same!
 identical(ex.dna, ex.dna2)
 identical(ex.dna, ex.dna3)
+identical(ex.dna, ex.dna4)
 unlink("exdna.txt") # clean-up
 }
 \keyword{IO}

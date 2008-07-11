@@ -1,4 +1,4 @@
-## unique.multiPhylo.R (2008-02-06)
+## unique.multiPhylo.R (2008-06-09)
 
 ##   Revomes Duplicate Trees from a List
 
@@ -12,18 +12,18 @@ unique.multiPhylo <- function(x, incomparables = FALSE,
                               use.tip.label = TRUE, ...)
 {
     n <- length(x)
-    keep <- !logical(n)
+    keep <- 1L
     for (i in 2:n) {
-        j <- 1
-        while (j < i) {
-            if (all.equal(x[[j]], x[[i]],
+        already.seen <- FALSE
+        for (s in x[keep]) {
+            if (all.equal(s, x[[i]],
                           use.edge.length = use.edge.length,
                           use.tip.label = use.tip.label)) {
-                keep[i] <- FALSE
+                already.seen <- TRUE
                 break
             }
-            j <- j + 1
         }
+        if (!already.seen) keep <- c(keep, i)
     }
     x[keep]
 }

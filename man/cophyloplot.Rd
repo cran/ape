@@ -1,6 +1,6 @@
 \name{cophyloplot}
 \alias{cophyloplot}
-\title{Plots two phylogenetic trees face to face with the links between the tips.}
+\title{Plots two phylogenetic trees face to face with links between the tips.}
 \description{
   This function plots two trees face to face with the links if specified. It is possible to rotate the branches of each tree around the nodes by clicking.
 }

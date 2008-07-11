@@ -1,4 +1,4 @@
-## root.R (2008-02-12)
+## root.R (2008-06-12)
 
 ##   Root of Phylogenetic Trees
 
@@ -113,14 +113,39 @@ root <- function(phy, outgroup, node = NULL, resolve.root = FALSE)
             if (!all(outgroup == desc)) stop(msg)
         } else newroot <- phy$edge[which(phy$edge[, 2] == outgroup), 1]
     }
-    if (newroot == ROOT) return(phy)
+    N <- Nedge(phy)
+    oldNnode <- phy$Nnode
+    if (newroot == ROOT) {
+        if (resolve.root) {
+            snw <- which(phy$edge[, 1] == newroot)
+            if (length(snw) > 2) {
+                a <- snw[1]:(snw[2] - 1)
+                b <- snw[2]:N
+                newnod <- oldNnode + n + 1
+                phy$edge[snw[-1], 1] <- newnod
+                phy$edge <- rbind(phy$edge[a, ], c(ROOT, newnod),
+                                  phy$edge[b, ])
+                if (!is.null(phy$edge.length))
+                phy$edge.length <-
+                    c(phy$edge.length[a], 0, phy$edge.length[b])
+                phy$Nnode <- phy$Nnode + 1
+                ## node renumbering (see comments below)
+                newNb <- integer(n + oldNnode)
+                newNb[newroot] <- n + 1L
+                sndcol <- phy$edge[, 2] > n
+                phy$edge[sndcol, 2] <- newNb[phy$edge[sndcol, 2]] <-
+                    (n + 2):(n + phy$Nnode)
+                phy$edge[, 1] <- newNb[phy$edge[, 1]]
+            }
+        }
+        return(phy)
+    }
 
     phy$root.edge <- NULL # just in case...
     Nclade <- tabulate(phy$edge[, 1])[ROOT] # degree of the root node
     ## if only 2 edges connect to the root, we have to fuse them:
     fuseRoot <- Nclade == 2
 
-    N <- Nedge(phy)
     start <- which(phy$edge[, 1] == ROOT)
     end <- c(start[-1] - 1, N)
     o <- integer(N)
@@ -218,7 +243,6 @@ root <- function(phy, outgroup, node = NULL, resolve.root = FALSE)
     ne <- length(s)
     o[NEXT:(NEXT + ne - 1L)] <- s
 
-    oldNnode <- phy$Nnode
     if (fuseRoot) {
         phy$Nnode <- oldNnode - 1
         N <- N - 1L
