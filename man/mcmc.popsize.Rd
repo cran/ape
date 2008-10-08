@@ -78,7 +78,7 @@ extract.popsize(mcmc.out, credible.interval=0.95, time.points=200, thinning=1, b
 }
 
 \details{
- Please refer to Opgen-Rhein et al. (2004) for methodological details, and the help page of
+ Please refer to Opgen-Rhein et al. (2005) for methodological details, and the help page of
  \code{\link{skyline}} for information on a related approach.
 }
 

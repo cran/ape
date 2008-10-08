@@ -40,9 +40,8 @@ theta.s(s, n, variance = FALSE)
 }
 \examples{
 data(woodmouse)
-y <- seg.sites(woodmouse)
-s <- length(y)
-n <- length(woodmouse)
+s <- length(seg.sites(woodmouse))
+n <- nrow(woodmouse)
 theta.s(s, n)
 theta.s(s, n, variance = TRUE)
 }

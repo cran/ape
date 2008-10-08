@@ -1,4 +1,4 @@
-## mlphylo.R (2008-06-18)
+## mlphylo.R (2008-07-15)
 
 ##   Estimating Phylogenies by Maximum Likelihood
 
@@ -74,7 +74,7 @@ of the tree do not match") # safe here also
 
     loglik <- 0
     if (!quiet) cat("Fitting in progress... ")
-    res <<- res <- .C("mlphylo_DNAmodel", as.integer(nb.tip), as.integer(S),
+    res <- .C("mlphylo_DNAmodel", as.integer(nb.tip), as.integer(S),
               as.raw(Y$SEQ), as.double(Y$ANC), as.double(Y$w),
               as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
               as.double(phy$edge.length), as.integer(npart),
@@ -83,7 +83,7 @@ of the tree do not match") # safe here also
               as.double(alpha), as.integer(Y$nalpha),
               as.integer(Y$ncat), as.double(invar), as.integer(Y$ninvar),
               as.double(BF), as.integer(search.tree), as.integer(fixed),
-              as.double(loglik), NAOK = TRUE, PACKAGE = "mlphylo")
+              as.double(loglik), NAOK = TRUE, PACKAGE = "ape")
     if (!quiet) cat("DONE!\n")
     phy$edge.length = res[[8]]
     attr(phy, "loglik") <- res[[23]]

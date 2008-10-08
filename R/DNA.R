@@ -1,4 +1,4 @@
-## DNA.R (2008-06-08)
+## DNA.R (2008-10-08)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -11,7 +11,7 @@ del.gaps <- function(x)
 {
     deleteGaps <- function(x) {
         i <- which(x == 4)
-        x[-i]
+        if (length(i)) x[-i] else x
     }
 
     if (class(x) != "DNAbin") x <- as.DNAbin(x)
@@ -86,39 +86,59 @@ rbind.DNAbin <- function(...)
 ### works only with matrices for the moment
 {
     obj <- list(...)
-    nobj <- length(obj)
-    if (nobj == 1) stop("only one matrix to bind.")
-    NC <- ncol(obj[[1]])
-    for (i in 2:nobj)
-      if(ncol(obj[[i]]) != NC)
+    n <- length(obj)
+    if (n == 1) return(obj[[1]])
+    NC <- unlist(lapply(obj, ncol))
+    if (length(unique(NC)) > 1)
         stop("matrices do not have the same number of columns.")
-    for (i in 1:nobj) class(obj[[i]]) <- NULL
-    ans <- obj[[1]]
-    for (i in 2:nobj) ans <- rbind(ans, obj[[i]])
-    structure(ans, class = "DNAbin")
+    for (i in 1:n) class(obj[[i]]) <- NULL
+    for (i in 2:n) obj[[1]] <- rbind(obj[[1]], obj[[i]])
+    structure(obj[[1]], class = "DNAbin")
 }
 
-cbind.DNAbin <- function(..., check.names = TRUE)
+cbind.DNAbin <-
+    function(..., check.names = TRUE, fill.with.gaps = FALSE,
+             quiet = FALSE)
 ### works only with matrices for the moment
 {
     obj <- list(...)
-    nobj <- length(obj)
-    if (nobj == 1) stop("only one matrix to bind.")
-    NR <- nrow(obj[[1]])
-    for (i in 2:nobj)
-      if(nrow(obj[[i]]) != NR)
-        stop("matrices do not have the same number of rows.")
-    for (i in 1:nobj) class(obj[[i]]) <- NULL
-    nms <- rownames(obj[[1]])
+    n <- length(obj)
+    if (n == 1) return(obj[[1]])
+    NR <- unlist(lapply(obj, nrow))
+    for (i in 1:n) class(obj[[i]]) <- NULL
     if (check.names) {
-        for (i in 2:nobj)
-          if (all(rownames(obj[[i]]) %in% nms))
-            obj[[i]] <- obj[[i]][nms, ]
-        else stop("rownames do not match among matrices.")
+        nms <- unlist(lapply(obj, rownames))
+        if (fill.with.gaps) {
+            NC <- unlist(lapply(obj, ncol))
+            nms <- unique(nms)
+            ans <- matrix(as.raw(4), length(nms), sum(NC))
+            rownames(ans) <- nms
+            from <- 1
+            for (i in 1:n) {
+                to <- from + NC[i] - 1
+                tmp <- rownames(obj[[i]])
+                nmsi <- tmp[tmp %in% nms]
+                ans[nmsi, from:to] <- obj[[i]][nmsi, , drop = FALSE]
+                from <- to + 1
+            }
+        } else {
+            tab <- table(nms)
+            ubi <- tab == n
+            nms <- names(tab)[which(ubi)]
+            ans <- obj[[1]][nms, , drop = FALSE]
+            for (i in 2:n)
+                ans <- cbind(ans, obj[[i]][nms, , drop = FALSE])
+            if (!quiet && !all(ubi))
+                warning("some rows were dropped.")
+        }
+    } else {
+        if (length(unique(NR)) > 1)
+            stop("matrices do not have the same number of rows.")
+        ans <- matrix(unlist(obj), NR)
+        rownames(ans) <- rownames(obj[[1]])
     }
-    ans <- matrix(unlist(obj), NR)
-    rownames(ans) <- nms
-    structure(ans, class = "DNAbin")
+    class(ans) <- "DNAbin"
+    ans
 }
 
 print.DNAbin <- function(x, ...)
@@ -141,8 +161,16 @@ summary.DNAbin <- function(object, printlen = 6, digits = 3, ...)
             cat("Label:", nms, "\n\n")
         } else {
             cat(n, "DNA sequences in binary format stored in a list.\n\n")
-            cat("Summary of sequence lengths:\n")
-            print(summary(unlist(lapply(object, length))))
+            tmp <- unlist(lapply(object, length))
+            mini <- min(tmp)
+            maxi <- max(tmp)
+            if (mini == maxi)
+                cat("All sequences of same length:", maxi, "\n")
+            else {
+                cat("Mean sequence length:", round(mean(tmp), 3), "\n")
+                cat("   Shortest sequence:", mini, "\n")
+                cat("    Longest sequence:", maxi, "\n")
+            }
             TAIL <- "\n\n"
             if (printlen < n) {
                 nms <- nms[1:printlen]

@@ -3,32 +3,33 @@
 \alias{print.phymltest}
 \alias{summary.phymltest}
 \alias{plot.phymltest}
-\title{Fits a Bunch of Models with PHYML}
+\title{Fits a Bunch of Models with PhyML}
 \usage{
 phymltest(seqfile, format = "interleaved", itree = NULL,
-          exclude = NULL, execname, path2exec = NULL)
+          exclude = NULL, execname = NULL, append = TRUE)
 \method{print}{phymltest}(x, ...)
 \method{summary}{phymltest}(object, ...)
 \method{plot}{phymltest}(x, main = NULL, col = "blue", ...)
 }
 \arguments{
   \item{seqfile}{a character string giving the name of the file that
-    contains the DNA sequences to be analysed by PHYML.}
+    contains the DNA sequences to be analysed by PhyML.}
   \item{format}{a character string specifying the format of the DNA
     sequences: either \code{"interleaved"} (the default), or
     \code{"sequential"}.}
   \item{itree}{a character string giving the name of a file with a tree
-    in Newick format to be used as an initial tree by PHYML. If
-    \code{NULL} (the default), PHYML uses a ``BIONJ'' tree.}
+    in Newick format to be used as an initial tree by PhyML. If
+    \code{NULL} (the default), PhyML uses a ``BIONJ'' tree.}
   \item{exclude}{a vector of mode character giving the models to be
     excluded from the analysis. These must be among those below, and
     follow the same syntax.}
-  \item{execname}{a character string specifying the name of the PHYML
-    binary file. This argument can be left missing under Windows: the
-    default name \code{"phyml_w32"} will then be used.}
-  \item{path2exec}{a character string giving the path to the PHYML
-    binary file. If \code{NULL} the file must be accessible to R (either
-    it is in the computer path, or it is in R's working directory).}
+  \item{execname}{a character string specifying the name of the PhyML
+    executable. This argument can be left as \code{NULL} if PhyML's
+    default names are used: \code{"phyml_3.0_linux32"},
+    \code{"phyml_3.0_macintel"}, or \code{"phyml_3.0_win32.exe"}, under
+    Linux, MacOS, or Windows respectively.}
+  \item{append}{a logical indicating whether to erase previous PhyML
+    output files if present; the default is to not erase.}
   \item{x}{an object of class \code{"phymltest"}.}
   \item{object}{an object of class \code{"phymltest"}.}
   \item{main}{a title for the plot; if left \code{NULL}, a title is made
@@ -39,26 +40,19 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
   \item{...}{further arguments passed to or from other methods.}
 }
 \description{
-  This function calls the software PHYML and fits successively 28 models
-  of DNA evolution. The results are saved on disk, as PHYML usually
-  does, and returned in R as a vector with the log-likelihood value of
-  each model.
+  This function calls PhyML and fits successively 28 models of DNA
+  evolution. The results are saved on disk, as PhyML usually does, and
+  returned in R as a vector with the log-likelihood value of each model.
 }
 \details{
-  The present function has been tested with version 2.4 of PHYML; it
-  should also work with version 2.3, but it won't work with version 2.1.
-
-  Under unix-like systems, it seems necessary to run R from csh or a
-  similar shell (sh might not work).
+  The present function requires version 3.0 of PhyML; it won't work with
+  older versions.
 
   The user must take care to set correctly the three different paths
-  involved here: the path to PHYML's binary, the path to the sequence
+  involved here: the path to PhyML's binary, the path to the sequence
   file, and the path to R's working directory. The function should work
   if all three paths are different. Obviously, there should be no problem
   if they are all the same.
-
-  If the usual output files of PHYML already exist, they are not
-  deleted and PHYML's results are appended.
 
   The following syntax is used for the models:
 
@@ -79,16 +73,20 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
   are described in the help page of \code{\link{dist.dna}}.
 
   When a gamma distribution of substitution rates is specified, four
-  categories are used (which is PHYML's default behaviour), and the
+  categories are used (which is PhyML's default behaviour), and the
   ``alpha'' parameter is estimated from the data.
 
   For the models with a different substition rate for transitions and
   transversions, these rates are left free and estimated from the data
-  (and not constrained with a ratio of 4 as in PHYML's default).
+  (and not constrained with a ratio of 4 as in PhyML's default).
+
+  The option \code{path2exec} has been removed in the present version:
+  the path to PhyML's executable can be specified with the option
+  \code{execname}.
 }
 \note{
   It is important to note that the models fitted by this function is
-  only a small fraction of the models possible with PHYML. For instance,
+  only a small fraction of the models possible with PhyML. For instance,
   it is possible to vary the number of categories in the (discretized)
   gamma distribution of substitution rates, and many parameters can be
   fixed by the user. The results from the present function should rather
@@ -126,7 +124,7 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
 }
 \examples{
 ### A `fake' example with random likelihood values: it does not
-### make sense, but does not need PHYML and gives you a flavour
+### make sense, but does not need PhyML and gives you a flavour
 ### of what the output looks like:
 x <- runif(28, -100, -50)
 names(x) <- .phymltest.model
@@ -135,7 +133,7 @@ x
 summary(x)
 plot(x)
 plot(x, main = "", col = "red")
-### This example needs PHYML, copy/paste or type the
+### This example needs PhyML, copy/paste or type the
 ### following commands if you want to try them, eventually
 ### changing setwd() and the options of phymltest()
 \dontrun{

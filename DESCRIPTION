@@ -1,13 +1,13 @@
 Package: ape
-Version: 2.2-1
-Date: 2008-07-11
+Version: 2.2-2
+Date: 2008-10-08
 Title: Analyses of Phylogenetics and Evolution
 Author: Emmanuel Paradis, Ben Bolker, Julien Claude, Hoa Sien Cuong,
   Richard Desper, Benoit Durand, Julien Dutheil, Olivier Gascuel,
   Gangolf Jobb, Christoph Heibl, Vincent Lefort, Jim Lemon,
   Yvonnick Noel, Johan Nylander, Rainer Opgen-Rhein, Korbinian Strimmer,
   Damien de Vienne
-Maintainer: Emmanuel Paradis <Emmanuel.Paradis@mpl.ird.fr>
+Maintainer: Emmanuel Paradis <Emmanuel.Paradis@ird.fr>
 Depends: R (>= 2.6.0)
 Suggests: gee, nlme, lattice
 ZipData: no
@@ -25,4 +25,4 @@ Description: ape provides functions for reading, writing, plotting,
   with the NJ, BIONJ, ME, and ML methods.
 License: GPL (>= 2)
 URL: http://ape.mpl.ird.fr/
-Packaged: Fri Jul 11 17:41:32 2008; paradis
+Packaged: Wed Oct  8 21:29:17 2008; paradis

@@ -15,7 +15,8 @@
 \method{print}{DNAbin}(x, \dots)
 \method{summary}{DNAbin}(object, printlen = 6, digits = 3, \dots)
 \method{rbind}{DNAbin}(\dots)
-\method{cbind}{DNAbin}(\dots, check.names = TRUE)
+\method{cbind}{DNAbin}(\dots, check.names = TRUE, fill.with.gaps = FALSE,
+             quiet = FALSE)
 \method{[}{DNAbin}(x, i, j, drop = TRUE)
 \method{as.matrix}{DNAbin}(x, \dots)
 }
@@ -29,6 +30,12 @@
   \item{digits}{the number of digits to print (3 by default).}
   \item{check.names}{a logical specifying whether to check the rownames
     before binding the columns (see details).}
+  \item{fill.with.gaps}{a logical indicating whether to keep all
+    possible individuals as indicating by the rownames, and eventually
+    filling the missing data with insertion gaps (ignored if
+    \code{check.names = FALSE}).}
+  \item{quiet}{a logical to switch off warning messages when some rows
+    are dropped.}
   \item{i, j}{indices of the rows and/or columns to select or to drop.
     They may be numeric, logical, or character (in the same way than for
     standard R objects).}
@@ -47,11 +54,14 @@
   comparisons of sequences, as well as storing them in less memory
   compared to the format used before \pkg{ape} 1.10.
 
-  For \code{cbind}, if \code{"check.names = TRUE"}, the rownames of each
-  matrix are checked, and the rows are reordered if necessary. If the
-  rownames differ among matrices, an error occurs. If
-  \code{"check.names = FALSE"}, the matrices are simply binded and the
-  rownames of the first matrix are used.
+  For \code{cbind}, the default behaviour is to keep only individuals
+  (as indicated by the rownames) for which there are no missing data. If
+  \code{fill.with.gaps = TRUE}, a `complete' matrix is returned,
+  enventually with insertion gaps as missing data. If \code{check.names
+  = TRUE} (the default), the rownames of each matrix are checked, and
+  the rows are reordered if necessary. If \code{check.names = FALSE},
+  the matrices must all have the same number of rows, and are simply
+  binded; the rownames of the first matrix are used. See the examples.
 
   \code{as.matrix} may be used to convert DNA sequences (of the same
   length) stored in a list into a matrix while keeping the names and the
@@ -82,5 +92,13 @@ summary(woodmouse[1:5, 1:300], 15, 6)
 ### Just to show how distances could be influenced by sampling:
 dist.dna(woodmouse[1:2, ])
 dist.dna(woodmouse[1:3, ])
+### cbind and its options:
+x <- woodmouse[1:2, 1:5]
+y <- woodmouse[2:4, 6:10]
+as.character(cbind(x, y)) # gives warning
+as.character(cbind(x, y, fill.with.gaps = TRUE))
+\dontrun{
+as.character(cbind(x, y, check.names = FALSE)) # gives an error
+}
 }
 \keyword{manip}

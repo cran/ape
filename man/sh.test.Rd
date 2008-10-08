@@ -7,8 +7,7 @@ sh.test(..., x, model = DNAmodel(), B = 100)
 \arguments{
   \item{...}{either a series of objects of class \code{"phylo"}
     separated by commas, or a list containing such objects.}
-  \item{x}{a list, a matrix, or a data frame containing the (aligned)
-    DNA sequences.}
+  \item{x}{a list or a matrix containing the (aligned) DNA sequences.}
   \item{model}{the model to be fitted to each tree (as an object of
     \code{"DNAmodel"}).}
   \item{B}{the number of bootstrap replicates.}
@@ -19,9 +18,9 @@ sh.test(..., x, model = DNAmodel(), B = 100)
 }
 \details{
   The present implementation follows the original formulation of
-  Shimodaira and Hasegawa (1999). A difference is that the bootstrap
+  Shimodaira and Hasegawa (1999) with the difference that the bootstrap
   resampling is done on the original sequence data rather than the RELL
-  method as sugested by Shimodaira and Hasegawa.
+  method suggested by Shimodaira and Hasegawa.
 }
 \value{
   a numeric vector with the P-value associated with each tree given in

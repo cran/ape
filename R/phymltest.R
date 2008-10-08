@@ -1,86 +1,67 @@
-## phymltest.R (2005-11-10)
+## phymltest.R (2008-10-08)
 
-##   Fits a Bunch of Models with PHYML
+##   Fits a Bunch of Models with PhyML
 
-## Copyright 2004-2005 Emmanuel Paradis
+## Copyright 2004-2008 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-.phymltest.model <- c("JC69", "JC69+I", "JC69+G", "JC69+I+G",
-                      "K80", "K80+I", "K80+G", "K80+I+G",
-                      "F81", "F81+I", "F81+G", "F81+I+G",
-                      "F84", "F84+I", "F84+G", "F84+I+G",
-                      "HKY85", "HKY85+I", "HKY85+G", "HKY85+I+G",
-                      "TN93", "TN93+I", "TN93+G", "TN93+I+G",
-                      "GTR", "GTR+I", "GTR+G", "GTR+I+G")
+.phymltest.model <-
+    c("JC69", "JC69+I", "JC69+G", "JC69+I+G",
+      "K80", "K80+I", "K80+G", "K80+I+G",
+      "F81", "F81+I", "F81+G", "F81+I+G",
+      "F84", "F84+I", "F84+G", "F84+I+G",
+      "HKY85", "HKY85+I", "HKY85+G", "HKY85+I+G",
+      "TN93", "TN93+I", "TN93+G", "TN93+I+G",
+      "GTR", "GTR+I", "GTR+G", "GTR+I+G")
 
-.phymltest.nfp <- c(1, 2, 2, 3, 2, 3, 3, 4, 4, 5, 5, 6, 5, 6, 6, 7,
-                    5, 6, 6, 7, 6, 7, 7, 8, 9, 10, 10, 11)
+.phymltest.nfp <-
+    c(1, 2, 2, 3, 2, 3, 3, 4, 4, 5, 5, 6, 5, 6, 6, 7,
+      5, 6, 6, 7, 6, 7, 7, 8, 9, 10, 10, 11)
 
 phymltest <- function(seqfile, format = "interleaved", itree = NULL,
-                      exclude = NULL, execname, path2exec = NULL)
+                      exclude = NULL, execname = NULL, append = TRUE)
 {
-    windoz <- .Platform$OS.type == "windows"
-    if (missing(execname)) {
-        if (windoz) execname <- "phyml_w32"
-        else stop("you must give an executable file name for PHYML")
+    os <- Sys.info()[1]
+    ## default names of PhyML:
+    if (is.null(execname)) {
+        if (os == "Linux") execname <- "phyml_3.0_linux32"
+        if (os == "Darwin") execname <- "phyml_3.0_macintel"
+        if (os == "Windows") execname <- "phyml_3.0_win32"
     }
-    outfile <- paste(seqfile, "_phyml_stat.txt", sep = "")
-    inp <- seqfile
-    if (file.exists(outfile)) inp <- c(inp, "A")
-    if (file.exists(paste(seqfile, "_phyml_tree.txt", sep = "")))
-      inp <- c(inp, "A")
-    if (format != "interleaved") inp <- c(inp, "I")
-    if (!is.null(itree)) inp <- c(inp, "U", itree)
+    if (is.null(execname))
+        stop("you must give an executable file name for PHYML")
     N <- length(.phymltest.model)
-    input.model <- list(c(rep("M", 5), "Y"),
-                        c(rep("M", 5), "V", rep("Y", 2)),
-                        c(rep("M", 5), "R", "A", rep("Y", 2)),
-                        c(rep("M", 5), "R", "A", "Y", "V", rep("Y", 2)),
-                        c(rep("M", 6), "T", rep("Y", 2)),
-                        c(rep("M", 6), "T", "Y", "V", rep("Y", 2)),
-                        c(rep("M", 6), "T", "Y", "R", "A", rep("Y", 2)),
-                        c(rep("M", 6), "T", "Y", "R", "A", "Y", "V", rep("Y", 2)),
-                        c(rep("M", 7), "Y"),
-                        c(rep("M", 7), "V", rep("Y", 2)),
-                        c(rep("M", 7), "R", "A", rep("Y", 2)),
-                        c(rep("M", 7), "V", "Y", "R", "A", rep("Y", 2)),
-                        c("M", "T", rep("Y", 2)),
-                        c("M", "T", "Y", "V", rep("Y", 2)),
-                        c("M", "T", "Y", "R", "A", rep("Y", 2)),
-                        c("M", "T", "Y", "V", "Y", "R", "A", rep("Y", 2)),
-                        c("T", rep("Y", 2)),
-                        c("T", "Y", "V", rep("Y", 2)),
-                        c("T", "Y", "R", "A", rep("Y", 2)),
-                        c("T", "Y", "V", "Y", "R", "A", rep("Y", 2)),
-                        c(rep("M", 2), "T", rep("Y", 2)),
-                        c(rep("M", 2), "T", "Y", "V", rep("Y", 2)),
-                        c(rep("M", 2), "T", "Y", "R", "A", rep("Y", 2)),
-                        c(rep("M", 2), "T", "Y", "R", "A", "Y", "V", rep("Y", 2)),
-                        c(rep("M", 3), "Y"),
-                        c(rep("M", 3), "V", rep("Y", 2)),
-                        c(rep("M", 3), "R", "A", rep("Y", 2)),
-                        c(rep("M", 3), "V", "Y", "R", "A", rep("Y", 2)))
-    loglik <- numeric(N)
-    names(input.model) <- names(loglik) <- .phymltest.model
-    if (is.null(path2exec)) exec <- execname
-    else exec <- paste(path2exec, execname, sep = "/")
-    imod <- if (is.null(exclude)) 1:N else (1:N)[!.phymltest.model %in% exclude]
-    for (i in imod) {
-        if (i == 2) {
-            if (length(inp) == 1) inp <- c(inp, rep("A", 2))
-            else if (inp[2] != "A") inp <- c(inp[1], rep("A", 2), inp[2:length(inp)])
-        }
-        if (windoz) system(exec, input = c(inp, input.model[[i]]))
-        else {
-            cat(c(inp, input.model[[i]]), file = "f", sep = "\n")
-            system(paste(exec, "f", sep = " < "))
-        }
-        loglik[i] <- scan(paste(seqfile, "_phyml_lk.txt", sep = ""), quiet = TRUE)
+    format <- match.arg(format, c("interleaved", "sequential"))
+    fmt <- rep("", N)
+    if (format != "interleaved") fmt[] <- "-q"
+    boot <- rep("-b 0", N) # to avoid any testing
+    mdl <- paste("-m", rep(c("JC69", "K80", "F81", "HKY85", "F84", "TN93", "GTR"), each = 4))
+    tstv <- rep("-t e", N) # ignored by PhyML with JC69 or F81
+    inv <- rep(c("", "-v e"), length.out = N)
+    ## no need to use the -c option of PhyML (4 categories by default if '-a e' is set):
+    alpha <- rep(rep(c("", "-a e"), each = 2), length.out = N)
+    tree <- rep("", N)
+    if (!is.null(itree)) tree[] <- paste("-u ", itree)
+
+    cmd <- paste(execname, "-i", seqfile, fmt, boot, mdl, tstv, inv, alpha, tree, "--append ")
+    outfile <- paste(seqfile, "_phyml_stats.txt", sep = "")
+    if (!append) {
+        unlink(outfile)
+        unlink(paste(seqfile, "_phyml_tree.txt", sep = ""))
     }
-    unlink("f")
-    loglik <- loglik[imod]
+    imod <- 1:N
+    if (!is.null(exclude)) imod <- imod[!.phymltest.model %in% exclude]
+
+    for (i in imod) system(cmd[i])
+
+    l <- readLines(outfile)
+    l <- grep("Log-likelihood:", l, value = TRUE)
+    ## in case there were already some results in the output file:
+    if (dd <- length(l) - length(imod)) l <- l[-(1:dd)]
+    loglik <- as.numeric(sub(". Log-likelihood:", "", l))
+    names(loglik) <- .phymltest.model[imod]
     class(loglik) <- "phymltest"
     loglik
 }

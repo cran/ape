@@ -1,4 +1,4 @@
-## dist.topo.R (2008-06-28)
+## dist.topo.R (2008-07-18)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -87,6 +87,7 @@ prop.part <- function(..., check.labels = TRUE)
     ## class(obj) <- NULL # needed?
     ## </FIXME>
     ntree <- length(obj)
+    if (ntree == 1) check.labels <- FALSE
     if (check.labels) obj <- .compressTipLabel(obj)
     for (i in 1:ntree) storage.mode(obj[[i]]$Nnode) <- "integer"
     ## <FIXME>

@@ -1,4 +1,4 @@
-## read.nexus.R (2008-07-11)
+## read.nexus.R (2008-09-17)
 
 ##   Read Tree File in Nexus Format
 
@@ -156,13 +156,15 @@ read.nexus <- function(file, tree.names = NULL)
     semico <- grep(";", tree)
     Ntree <- length(semico)
     ## are some trees on several lines?
-    if (any(diff(semico) != 1)) {
-        STRING <- character(Ntree)
-        s <- c(1, semico[-Ntree] + 1)
-        j <- mapply(":", s, semico)
-        for (i in 1:Ntree)
-            STRING[i] <- paste(tree[j[, i]], collapse = "")
-    } else STRING <- tree
+    if (Ntree == 1 && length(tree) > 1) STRING <- paste(tree, collapse = "") else {
+        if (any(diff(semico) != 1)) {
+            STRING <- character(Ntree)
+            s <- c(1, semico[-Ntree] + 1)
+            j <- mapply(":", s, semico)
+            for (i in 1:Ntree)
+                STRING[i] <- paste(tree[j[, i]], collapse = "")
+        } else STRING <- tree
+    }
     rm(tree)
     STRING <- gsub(" ", "", STRING)
     colon <- grep(":", STRING)

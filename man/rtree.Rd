@@ -14,8 +14,8 @@ rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)
     (the default).}
   \item{tip.label}{a character vector giving the tip labels; if not
     specified, the tips "t1", "t2", ..., are given.}
-  \item{br}{either an R function used to generate the branch lengths
-    (\code{rtree} or \code{NULL} to give no branch lengths) or the
+  \item{br}{an R function used to generate the branch lengths
+    (\code{rtree}; use \code{NULL} to simulate only a topology), or the
     coalescence times (\code{rcoal}). For the latter, a genuine
     coalescent tree is simulated by default.}
   \item{...}{further argument(s) to be passed to \code{br}.}

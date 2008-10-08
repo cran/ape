@@ -1,3 +1,45 @@
+		CHANGES IN APE VERSION 2.2-2
+
+
+NEW FEATURES
+
+    o dist.gene() has been substantially improved and gains an option
+      'pairwise.deletion'.
+
+    o cbind.DNAbin() has a new option 'fill.with.gaps' and is now
+      more flexible.
+
+
+BUG FIXES
+
+    o prop.part() failed with a single tree with the default option
+     'check.labels = TRUE'.
+
+   o summary.DNAbin() failed to display correctly the summary of
+     sequence lengths with lists of sequences of 10,000 bases or more
+     (because summary.default uses 4 significant digits by default).
+
+   o read.nexus() failed to read a file with a single tree with line
+     breaks in the Newick string.
+
+   o del.gaps() returned a list of empty sequences when there were no
+     gaps.
+
+
+OTHER CHANGES
+
+    o phymltest() has been updated for PhyML 3.0 and gains an option
+      'append', whereas the option 'path2exec' has been removed.
+
+    o rbind.DNAbin() and cbind.DNAbin() now accept a single matrix
+      which is returned unchanged (instead of an error).
+
+    o The data sets bird.orders and bird.families are now stored as
+      Newick strings; i.e., the command data(bird.orders) calls
+      read.tree().
+
+
+
 		CHANGES IN APE VERSION 2.2-1
 
 
@@ -225,9 +267,9 @@ BUG FIXES
 
 OTHER CHANGES
 
-    o The code of mlphylo() has almost entirely rewritten, and should
-      be much stabler. The options have been also greatly simplified
-      (see ?mlphylo and ?DNAmodel for details).
+    o The code of mlphylo() has been almost entirely rewritten, and
+      should be much stabler. The options have been also greatly
+      simplified (see ?mlphylo and ?DNAmodel for details).
 
     o The internal function nTips has been renamed klastorin_nTips.
 

@@ -1,28 +1,28 @@
 \name{dist.gene}
 \alias{dist.gene}
-\alias{dist.gene.pairwise}
-\alias{dist.gene.percentage}
 \title{Pairwise Distances from Genetic Data}
 \usage{
-dist.gene(x, method = "pairwise", variance = FALSE)
-dist.gene.pairwise(x, variance = FALSE)
-dist.gene.percentage(x, variance = FALSE)
+dist.gene(x, method = "pairwise", pairwise.deletion = FALSE,
+          variance = FALSE)
 }
 \arguments{
   \item{x}{a matrix or a data frame.}
   \item{method}{a character string specifying the method used to compute
-    the distances; only two choices are available: \code{"pairwise"},
-    and \code{"percentage"}.}
+    the distances; two choices are available: \code{"pairwise"} and
+    \code{"percentage"}, or any unambiguous abbreviation of these.}
+  \item{pairwise.deletion}{a logical indicating whether to delete the
+    columns with missing data on a pairwise basis. The default is to
+    delete the columns with at least one missing observation.}
   \item{variance}{a logical, indicates whether the variance of the
-    distances should be returned (default to FALSE).}
+    distances should be returned (default to \code{FALSE}).}
 }
 \description{
-  These functions compute a matrix of distances between pairs of
+  This function computes a matrix of distances between pairs of
   individuals from a matrix or a data frame of genetic data.
 }
 \details{
   This function is meant to be very general and accepts different kinds
-  of data (alleles, haplotypes, DNA sequences, and so on). The rows of
+  of data (alleles, haplotypes, SNP, DNA sequences, \dots). The rows of
   the data matrix represent the individuals, and the columns the loci.
 
   In the case of the pairwise method, the distance \eqn{d} between two
@@ -36,16 +36,17 @@ dist.gene.percentage(x, variance = FALSE)
   For more elaborate distances with DNA sequences, see the function
   \code{dist.dna}.
 }
+\note{
+  Missing data (\code{NA}) are coded and treated in R's usual way.
+}
 \value{
-  either a numeric matrix with possibly the names of the individuals (as
-  given by the rownames of the argument \code{x}) as colnames and rownames
-  (if \code{variance = FALSE}, the default), or a list of two matrices names
-  \code{distances} and \code{variance}, respectively (if \code{variance =
-    TRUE}).
+  an object of class \link[stats]{"dist"}. If \code{variance = TRUE} an
+  attribute called \code{"variance"} is given to the returned object.
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
-  \code{\link{dist.dna}}, \code{\link{cophenetic.phylo}}
+  \code{\link{dist.dna}}, \code{\link{cophenetic.phylo}},
+  \code{\link[stats]{dist}}
 }
 \keyword{manip}
 
