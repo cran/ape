@@ -1,4 +1,4 @@
-## ltt.plot.R (2008-02-22)
+## ltt.plot.R (2008-12-20)
 
 ##    Lineages Through Time Plot
 
@@ -10,6 +10,7 @@
 ltt.plot <- function(phy, xlab = "Time", ylab = "N", ...)
 {
     if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
+    if (!is.binary.tree(phy)) phy <- multi2di(phy)
     time <- sort(branching.times(phy), decreasing = TRUE)
     N <- 1:(length(time) + 1)
     plot.default(-c(time, 0), N, xlab = xlab, ylab = ylab,
@@ -18,6 +19,7 @@ ltt.plot <- function(phy, xlab = "Time", ylab = "N", ...)
 
 ltt.lines <- function(phy, ...)
 {
+    if (!is.binary.tree(phy)) phy <- multi2di(phy)
     time <- sort(branching.times(phy), decreasing = TRUE)
     N <- 1:(length(time) + 1)
     lines(-c(time, 0), N, type = "S", ...)
@@ -27,6 +29,7 @@ mltt.plot <- function(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
                       xlab = "Time", ylab = "N", log = "")
 {
     ltt.xy <- function(phy) {
+        if (!is.binary.tree(phy)) phy <- multi2di(phy)
         x <- -c(sort(branching.times(phy), decreasing = TRUE), 0)
         names(x) <- NULL
         y <- 1:length(x)

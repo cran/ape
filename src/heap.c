@@ -1,8 +1,3 @@
-/*#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "main.h"*/
-
 #include "me.h"
 
 int *initPerm(int size)
@@ -35,7 +30,7 @@ void swap(int *p, int *q, int i, int j)
 
 /*The usual Heapify function, tailored for our use with a heap of scores*/
 /*will use array p to keep track of indexes*/
-/*after scoreHeapify is called, the subtree rooted at i 
+/*after scoreHeapify is called, the subtree rooted at i
   will be a heap*/
 
 /*p goes from heap to array, q goes from array to heap*/
@@ -55,8 +50,8 @@ void heapify(int *p, int *q, double *HeapArray, int i, int n)
     if ((right <= n) && (HeapArray[p[right]] < HeapArray[p[smallest]]))
       smallest = right;
     if (smallest != i){
-      swap(p,q,i, smallest);     
-      /*push smallest up the heap*/    
+      swap(p,q,i, smallest);
+      /*push smallest up the heap*/
       i = smallest;            /*check next level down*/
     }
     else
@@ -64,7 +59,7 @@ void heapify(int *p, int *q, double *HeapArray, int i, int n)
   } while(moreswap);
 }
 
-/*heap is of indices of elements of v, 
+/*heap is of indices of elements of v,
   popHeap takes the index at position i and pushes it out of the heap
   (by pushing it to the bottom of the heap, where it is not noticed)*/
 

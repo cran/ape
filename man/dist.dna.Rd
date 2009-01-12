@@ -9,10 +9,10 @@ dist.dna(x, model = "K80", variance = FALSE,
 \arguments{
   \item{x}{a matrix or a list containing the DNA sequences.}
   \item{model}{a character string specifying the evlutionary model to be
-    used; must be one of \code{"raw"}, \code{"JC69"}, \code{"K80"} (the
-    default), \code{"F81"}, \code{"K81"}, \code{"F84"}, \code{"BH87"},
-    \code{"T92"}, \code{"TN93"}, \code{"GG95"}, \code{"logdet"}, or
-    \code{"paralin"}.}
+    used; must be one of \code{"raw"}, \code{"N"}, \code{"JC69"},
+    \code{"K80"} (the default), \code{"F81"}, \code{"K81"},
+    \code{"F84"}, \code{"BH87"}, \code{"T92"}, \code{"TN93"},
+    \code{"GG95"}, \code{"logdet"}, or \code{"paralin"}.}
   \item{variance}{a logical indicating whether to compute the variances
     of the distances; defaults to \code{FALSE} so the variances are not
     computed.}
@@ -40,10 +40,11 @@ dist.dna(x, model = "K80", variance = FALSE,
   brief description is given below; more details can be found in the
   References.
 
-  \item{``raw''}{This is simply the proportion of sites that differ
-    between each pair of sequences. This may be useful to draw
-    ``saturation plots''. The options \code{variance} and \code{gamma}
-    have no effect, but \code{pairwise.deletion} can.}
+\itemize{
+  \item{``raw'', ``N''}{This is simply the proportion or the number of
+    sites that differ between each pair of sequences. This may be useful
+    to draw ``saturation plots''. The options \code{variance} and
+    \code{gamma} have no effect, but \code{pairwise.deletion} can.}
 
   \item{``JC69''}{This model was developed by Jukes and Cantor (1969). It
     assumes that all substitutions (i.e. a change of a base by another
@@ -110,7 +111,7 @@ dist.dna(x, model = "K80", variance = FALSE,
 
   \item{``paralin''}{Lake (1994) developed the paralinear distance which
     can be viewed as another variant of the Barry--Hartigan distance.}
-}
+}}
 \value{
   an object of class \link[stats]{dist} (by default), or a numeric
   matrix if \code{as.matrix = TRUE}. If \code{model = "BH87"}, a numeric

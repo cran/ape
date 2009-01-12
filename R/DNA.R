@@ -1,4 +1,4 @@
-## DNA.R (2008-10-08)
+## DNA.R (2008-12-22)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -297,7 +297,7 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
                      as.matrix = FALSE)
 {
     MODELS <- c("RAW", "JC69", "K80", "F81", "K81", "F84", "T92", "TN93",
-                "GG95", "LOGDET", "BH87", "PARALIN")
+                "GG95", "LOGDET", "BH87", "PARALIN", "N")
     imod <- which(MODELS == toupper(model))
     if (imod == 11 && variance) {
         warning("computing variance temporarily not available for model BH87.")

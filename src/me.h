@@ -109,7 +109,7 @@ typedef struct set
   struct set *secondNode;
 } set;
 
-void me_b(double *X, int *N, char **labels, int *nni, int *edge1, int *edge2, double *el, char **tl);
+void me_b(double *X, int *N, char **labels, int *nni, int *spr, int *tbr, int *edge1, int *edge2, double *el, char **tl);
 void me_o(double *X, int *N, char **labels, int *nni, int *edge1, int *edge2, double *el, char **tl);
 //int whiteSpace(char c);
 double **initDoubleMatrix(int d);

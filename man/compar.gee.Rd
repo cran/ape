@@ -52,7 +52,7 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
   \code{compar.gee} returns an object of class \code{"compar.gee"} with
   the following components:
   \item{call}{the function call, including the formula.}
-  \code{effect.assign}{a vector of integers assigning the coefficients
+  \item{effect.assign}{a vector of integers assigning the coefficients
     to the effects (used by \code{drop1}).}
   \item{nobs}{the number of observations.}
   \item{coefficients}{the estimated coefficients (or regression parameters).}

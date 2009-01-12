@@ -46,7 +46,8 @@ read.dna(file, format = "interleaved", skip = 0,
   sequential formats, see below). The names of the sequences are read in
   the file unless the `seq.names' option is used. Particularities for
   each format are detailed below.
-
+  
+\itemize{
   \item{Interleaved:}{the function starts to read the sequences when it
     finds 10 contiguous characters belonging to the ambiguity code of
     the IUPAC (namely A, C, G, T, U, M, R, W, S, Y, K, V, H, D, B, and
@@ -73,7 +74,7 @@ read.dna(file, format = "interleaved", skip = 0,
     leading spaces before this character). These lines are taken as taxa
     names after removing the ``>'' and the possible leading and trailing
     spaces. All the data in the file before the first sequence is ignored.}
-}
+}}
 \value{
   a matrix or a list (if \code{format = "fasta"}) of DNA sequences
   stored in binary format, or of mode character (if \code{as.character =

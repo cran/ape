@@ -10,12 +10,14 @@
   Minimum Evolution algorithm of Desper and Gascuel (2002).
 }
 \usage{
-  fastme.bal(X, nni = TRUE)
+  fastme.bal(X, nni = TRUE, spr = TRUE, tbr = TRUE)
   fastme.ols(X, nni = TRUE)
 }
 \arguments{
   \item{X}{a distance matrix; may be an object of class \code{"dist"}.}
   \item{nni}{a boolean value; TRUE to do NNIs (default).}
+  \item{spr}{ditto for SPRs.}
+  \item{tbr}{ditto for TBRs.}
 }
 \value{
   an object of class \code{"phylo"}.

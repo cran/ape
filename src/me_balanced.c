@@ -1,6 +1,3 @@
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <math.h>
 #include "me.h"
 
 void BalWFext(edge *e, double **A) /*works except when e is the one edge
@@ -48,18 +45,18 @@ void assignBMEWeights(tree *T, double **A)
       BalWFint(e,A);
     e = depthFirstTraverse(T,e);
   }
-}      
+}
 
 void BMEcalcDownAverage(tree *T, node *v, edge *e, double **D, double **A)
 {
   edge  *left, *right;
   if (leaf(e->head))
-    A[e->head->index][v->index] = D[v->index2][e->head->index2]; 
+    A[e->head->index][v->index] = D[v->index2][e->head->index2];
   else
     {
       left = e->head->leftEdge;
       right = e->head->rightEdge;
-      A[e->head->index][v->index] = 0.5 * A[left->head->index][v->index] 
+      A[e->head->index][v->index] = 0.5 * A[left->head->index][v->index]
 	+ 0.5 * A[right->head->index][v->index];
     }
 }
@@ -95,8 +92,8 @@ void BMEcalcNewvAverages(tree *T, node *v, double **D, double **A)
       BMEcalcDownAverage(T,v,e,D,A);
       e = depthFirstTraverse(T,e);
     }
-  
-  e = topFirstTraverse(T,e);   /*the upward averages need to be calculated 
+
+  e = topFirstTraverse(T,e);   /*the upward averages need to be calculated
 				 from top to bottom */
   while(NULL != e)
     {
@@ -117,7 +114,7 @@ void updatePair(double **A, edge *nearEdge, edge *farEdge, node *v,
   switch(direction) /*the various cases refer to where the new vertex has
 		      been inserted, in relation to the edge nearEdge*/
     {
-    case UP: /*this case is called when v has been inserted above 
+    case UP: /*this case is called when v has been inserted above
 	       or skew to farEdge*/
       /*do recursive calls first!*/
       if (NULL != farEdge->head->leftEdge)
@@ -129,7 +126,7 @@ void updatePair(double **A, edge *nearEdge, edge *farEdge, node *v,
 	= A[farEdge->head->index][nearEdge->head->index]
 	+ dcoeff*A[farEdge->head->index][v->index]
 	- dcoeff*A[farEdge->head->index][root->index];
-      break; 
+      break;
     case DOWN: /*called when v has been inserted below farEdge*/
       if (NULL != farEdge->tail->parentEdge)
 	updatePair(A,nearEdge,farEdge->tail->parentEdge,v,root,dcoeff,DOWN);
@@ -140,7 +137,7 @@ void updatePair(double **A, edge *nearEdge, edge *farEdge, node *v,
 	A[nearEdge->head->index][farEdge->head->index]
 	= A[farEdge->head->index][nearEdge->head->index]
 	+ dcoeff*A[v->index][farEdge->head->index]
-	- dcoeff*A[farEdge->head->index][root->index];	  
+	- dcoeff*A[farEdge->head->index][root->index];
     }
 }
 
@@ -152,9 +149,9 @@ void updateSubTree(double **A, edge *nearEdge, node *v, node *root,
     {
     case UP: /*newNode is above the edge nearEdge*/
       A[v->index][nearEdge->head->index] = A[nearEdge->head->index][v->index];
-      A[newNode->index][nearEdge->head->index] = 
+      A[newNode->index][nearEdge->head->index] =
 	A[nearEdge->head->index][newNode->index] =
-	A[nearEdge->head->index][root->index];	
+	A[nearEdge->head->index][root->index];
       if (NULL != nearEdge->head->leftEdge)
 	updateSubTree(A, nearEdge->head->leftEdge, v, root, newNode, 0.5*dcoeff, UP);
       if (NULL != nearEdge->head->rightEdge)
@@ -163,9 +160,9 @@ void updateSubTree(double **A, edge *nearEdge, node *v, node *root,
       break;
     case DOWN: /*newNode is below the edge nearEdge*/
       A[nearEdge->head->index][v->index] = A[v->index][nearEdge->head->index];
-      A[newNode->index][nearEdge->head->index] = 
+      A[newNode->index][nearEdge->head->index] =
 	A[nearEdge->head->index][newNode->index] =
-	0.5*(A[nearEdge->head->index][root->index] 
+	0.5*(A[nearEdge->head->index][root->index]
 	     + A[v->index][nearEdge->head->index]);
       sib = siblingEdge(nearEdge);
       if (NULL != sib)
@@ -176,10 +173,10 @@ void updateSubTree(double **A, edge *nearEdge, node *v, node *root,
       break;
     case SKEW: /*newNode is neither above nor below nearEdge*/
       A[v->index][nearEdge->head->index] = A[nearEdge->head->index][v->index];
-      A[newNode->index][nearEdge->head->index] = 
+      A[newNode->index][nearEdge->head->index] =
 	A[nearEdge->head->index][newNode->index] =
-	0.5*(A[nearEdge->head->index][root->index] + 
-	     A[nearEdge->head->index][v->index]);	
+	0.5*(A[nearEdge->head->index][root->index] +
+	     A[nearEdge->head->index][v->index]);
       if (NULL != nearEdge->head->leftEdge)
 	updateSubTree(A, nearEdge->head->leftEdge, v, root, newNode, 0.5*dcoeff,SKEW);
       if (NULL != nearEdge->head->rightEdge)
@@ -189,7 +186,7 @@ void updateSubTree(double **A, edge *nearEdge, node *v, node *root,
 }
 
 
-/*we update all the averages for nodes (u1,u2), where the insertion point of 
+/*we update all the averages for nodes (u1,u2), where the insertion point of
   v is in "direction" from both u1 and u2 */
 /*The general idea is to proceed in a direction from those edges already corrected
  */
@@ -202,9 +199,9 @@ void BMEupdateAveragesMatrix(double **A, edge *e, node *v,node *newNode)
   /*first, update the v,newNode entries*/
   A[newNode->index][newNode->index] = 0.5*(A[e->head->index][e->head->index]
 					   + A[v->index][e->head->index]);
-  A[v->index][newNode->index] = A[newNode->index][v->index] = 
+  A[v->index][newNode->index] = A[newNode->index][v->index] =
     A[v->index][e->head->index];
-  A[v->index][v->index] = 
+  A[v->index][v->index] =
     0.5*(A[e->head->index][v->index] + A[v->index][e->head->index]);
   left = e->head->leftEdge;
   right = e->head->rightEdge;
@@ -226,7 +223,7 @@ void BMEupdateAveragesMatrix(double **A, edge *e, node *v,node *newNode)
   A[v->index][e->head->index] = A[e->head->index][v->index];
 
   updatePair(A,e,e,v,e->head,0.5,UP); /*updates e->head fields only*/
-}      
+}
 
 /*A is tree below sibling, B is tree below edge, C is tree above edge*/
 double wf3(double D_AB, double D_AC, double D_kB, double D_kC)
@@ -259,7 +256,6 @@ void BMEsplitEdge(tree *T, node *v, edge *e, double **A)
   //sprintf(edgeLabel2,"E%d",T->size+1);
   snprintf(edgeLabel1,EDGE_LABEL_LENGTH,"E%d",T->size);
   snprintf(edgeLabel2,EDGE_LABEL_LENGTH,"E%d",T->size+1);
-  
 
   /*make the new node and edges*/
   newNode = makeNewNode(nodeLabel,T->size+1);
@@ -275,9 +271,9 @@ void BMEsplitEdge(tree *T, node *v, edge *e, double **A)
   v->parentEdge = newPendantEdge;
   e->head = newNode;
 
-  T->size = T->size + 2;    
+  T->size = T->size + 2;
 
-  if (e->tail->leftEdge == e) 
+  if (e->tail->leftEdge == e)
     /*actually this is totally arbitrary and probably unnecessary*/
     {
       newNode->leftEdge = newInternalEdge;
@@ -290,7 +286,7 @@ void BMEsplitEdge(tree *T, node *v, edge *e, double **A)
     }
 }
 
-tree *BMEaddSpecies(tree *T,node *v, double **D, double **A) 
+tree *BMEaddSpecies(tree *T,node *v, double **D, double **A)
      /*the key function of the program addSpeices inserts
        the node v to the tree T.  It uses testEdge to see what the relative
        weight would be if v split a particular edge.  Once insertion point
@@ -302,19 +298,19 @@ tree *BMEaddSpecies(tree *T,node *v, double **D, double **A)
   edge *e; /*loop variable*/
   edge *e_min; /*points to best edge seen thus far*/
   double w_min = 0.0;   /*used to keep track of tree weights*/
-  
+
   /*initialize variables as necessary*/
-  
+
   /*CASE 1: T is empty, v is the first node*/
   if (NULL == T)  /*create a tree with v as only vertex, no edges*/
     {
       T_e = newTree();
-      T_e->root = v;  
-      /*note that we are rooting T arbitrarily at a leaf.  
+      T_e->root = v;
+      /*note that we are rooting T arbitrarily at a leaf.
 	T->root is not the phylogenetic root*/
       v->index = 0;
       T_e->size = 1;
-      return(T_e);      
+      return(T_e);
     }
   /*CASE 2: T is a single-vertex tree*/
   if (1 == T->size)
@@ -326,22 +322,22 @@ tree *BMEaddSpecies(tree *T,node *v, double **D, double **A)
 	  A[v->index][v->index] = D[v->index2][T->root->index2];
 	  T->root->leftEdge = v->parentEdge = e;
 	  T->size = 2;
-	  return(T); 
+	  return(T);
 	}
   /*CASE 3: T has at least two nodes and an edge.  Insert new node
     by breaking one of the edges*/
-  
+
   v->index = T->size;
   BMEcalcNewvAverages(T,v,D,A);
-  /*calcNewvAverages will update A for the row and column 
+  /*calcNewvAverages will update A for the row and column
     include the node v.  Will do so using pre-existing averages in T and
     information from A,D*/
   e_min = T->root->leftEdge;
   e = e_min->head->leftEdge;
   while (NULL != e)
     {
-      BMEtestEdge(e,v,A); 
-      /*testEdge tests weight of tree if loop variable 
+      BMEtestEdge(e,v,A);
+      /*testEdge tests weight of tree if loop variable
 	e is the edge split, places this value in the e->totalweight field */
       if (e->totalweight < w_min)
 	{
@@ -405,7 +401,7 @@ void makeBMEAveragesTable(tree *T, double **D, double **A)
       else if (leaf(e->head))
 	{
 	  if (leaf(f->head))
-	    A[e->head->index][f->head->index] = 
+	    A[e->head->index][f->head->index] =
 	      A[f->head->index][e->head->index]
 	      = D[e->head->index2][f->head->index2];
 	  else
@@ -414,8 +410,8 @@ void makeBMEAveragesTable(tree *T, double **D, double **A)
 					     depth-first search, other values
 					     have been calculated*/
 	      v = f->head->rightEdge->head;
-	      A[e->head->index][f->head->index] 
-		= A[f->head->index][e->head->index] 
+	      A[e->head->index][f->head->index]
+		= A[f->head->index][e->head->index]
 		= 0.5*(A[e->head->index][u->index] + A[e->head->index][v->index]);
 	    }
 	}
@@ -426,15 +422,15 @@ void makeBMEAveragesTable(tree *T, double **D, double **A)
 	  A[e->head->index][f->head->index] = A[f->head->index][e->head->index] = 0.5*(A[f->head->index][u->index] + A[f->head->index][v->index]);
 	}
       f = depthFirstTraverse(T,f);
-    }    
+    }
     e = depthFirstTraverse(T,e);
   }
   e = depthFirstTraverse(T,NULL);
   while (T->root->leftEdge != e)
     {
-      calcUpAverages(D,A,e,e); /*calculates averages for 
+      calcUpAverages(D,A,e,e); /*calculates averages for
 				 A[e->head->index][g->head->index] for
-				 any edge g in path from e to root of tree*/ 
+				 any edge g in path from e to root of tree*/
       e = depthFirstTraverse(T,e);
     }
 } /*makeAveragesMatrix*/

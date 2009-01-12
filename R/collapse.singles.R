@@ -12,9 +12,9 @@ collapse.singles <- function(tree)
     elen <- tree$edge.length
     xmat <- tree$edge
     ## added by Elizabeth Purdom (2008-06-19):
-    node.lab<-tree$node.label
-    nnode<-tree$Nnode
-    ntip<-length(tree$tip.label)
+    node.lab <- tree$node.label
+    nnode <- tree$Nnode
+    ntip <- length(tree$tip.label)
     ## end
     singles <- NA
     while (length(singles) > 0) {
@@ -36,8 +36,8 @@ collapse.singles <- function(tree)
             ## END
             elen[prev.node] <- elen[prev.node] + elen[next.node]
             ## added by Elizabeth Purdom (2008-06-19):
-            if(!is.null(node.lab)) node.lab<-node.lab[-c(i-ntip)]
-            nnode<-nnode-1
+            if (!is.null(node.lab)) node.lab <- node.lab[-c(i - ntip)]
+            nnode <- nnode - 1
             ## end
             elen <- elen[-next.node]
         }
@@ -45,8 +45,8 @@ collapse.singles <- function(tree)
     tree$edge <- xmat
     tree$edge.length <- elen
     ## added by Elizabeth Purdom (2008-06-19):
-    tree$node.label<-node.lab
-    tree$Nnode<-nnode
+    tree$node.label <- node.lab
+    tree$Nnode <- nnode
     ## end
     tree
 }

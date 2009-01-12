@@ -1,9 +1,3 @@
-/*#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "graph.h"
-#include "main.h"*/
-
 #include "me.h"
 
 //boolean leaf(node *v);
@@ -12,7 +6,7 @@ edge *depthFirstTraverse(tree *T, edge *e);
 edge *findBottomLeft(edge *e);
 edge *topFirstTraverse(tree *T, edge *e);
 edge *moveUpRight(edge *e);
-double wf(double lambda, double D_LR, double D_LU, double D_LD, 
+double wf(double lambda, double D_LR, double D_LU, double D_LD,
 	  double D_RU, double D_RD, double D_DU);*/
 /*NNI functions for unweighted OLS topological switches*/
 
@@ -24,29 +18,29 @@ void fillTableUp(edge *e, edge *f, double **A, double **D, tree *T)
   if (T->root == f->tail)
     {
       if (leaf(e->head))
-	A[e->head->index][f->head->index] = 
-	  A[f->head->index][e->head->index] = 
+	A[e->head->index][f->head->index] =
+	  A[f->head->index][e->head->index] =
 	  D[e->head->index2][f->tail->index2];
       else
 	{
 	  g = e->head->leftEdge;
 	  h = e->head->rightEdge;
-	  A[e->head->index][f->head->index] = 
-	    A[f->head->index][e->head->index] =  
+	  A[e->head->index][f->head->index] =
+	    A[f->head->index][e->head->index] =
 	    (g->bottomsize*A[f->head->index][g->head->index]
 	     + h->bottomsize*A[f->head->index][h->head->index])
-	    /e->bottomsize;  
+	    /e->bottomsize;
 	}
     }
-  else 
+  else
     {
       g = f->tail->parentEdge;
       fillTableUp(e,g,A,D,T); /*recursive call*/
       h = siblingEdge(f);
-      A[e->head->index][f->head->index] = 
-	A[f->head->index][e->head->index] =  
+      A[e->head->index][f->head->index] =
+	A[f->head->index][e->head->index] =
 	(g->topsize*A[e->head->index][g->head->index]
-	 + h->bottomsize*A[e->head->index][h->head->index])/f->topsize;    
+	 + h->bottomsize*A[e->head->index][h->head->index])/f->topsize;
     }
 }
 
@@ -84,20 +78,20 @@ int NNIEdgeTest(edge *e, tree *T, double **A, double *weight)
   double *lambda;
   double D_LR, D_LU, D_LD, D_RD, D_RU, D_DU;
   double w1,w2,w0;
-  
+
   if ((leaf(e->tail)) || (leaf(e->head)))
     return(NONE);
   lambda = (double *)malloc(3*sizeof(double));
   a = e->tail->parentEdge->topsize;
   f = siblingEdge(e);
-  b = f->bottomsize;  
+  b = f->bottomsize;
   c = e->head->leftEdge->bottomsize;
   d = e->head->rightEdge->bottomsize;
 
   lambda[0] = ((double) b*c + a*d)/((a + b)*(c+d));
-  lambda[1] = ((double) b*c + a*d)/((a + c)*(b+d));    
+  lambda[1] = ((double) b*c + a*d)/((a + c)*(b+d));
   lambda[2] = ((double) c*d + a*b)/((a + d)*(b+c));
-  
+
   D_LR = A[e->head->leftEdge->head->index][e->head->rightEdge->head->index];
   D_LU = A[e->head->leftEdge->head->index][e->tail->index];
   D_LD = A[e->head->leftEdge->head->index][f->head->index];
@@ -148,69 +142,68 @@ int NNIEdgeTest(edge *e, tree *T, double **A, double *weight)
 	  printf("Weight dropping by %lf.\n",w0 - w1);
 	  printf("New weight should be %lf.\n",T->weight + w1 - w0);
 	}*/
-      return(LEFT);	
+      return(LEFT);
     }
 }
- 
 
 int *initPerm(int size);
 
-void NNIupdateAverages(double **A, edge *e, edge *par, edge *skew, 
+void NNIupdateAverages(double **A, edge *e, edge *par, edge *skew,
 		       edge *swap, edge *fixed, tree *T)
 {
   node *v;
   edge *elooper;
   v = e->head;
   /*first, v*/
-  A[e->head->index][e->head->index] =  
-    (swap->bottomsize* 
+  A[e->head->index][e->head->index] =
+    (swap->bottomsize*
      ((skew->bottomsize*A[skew->head->index][swap->head->index]
-       + fixed->bottomsize*A[fixed->head->index][swap->head->index]) 
+       + fixed->bottomsize*A[fixed->head->index][swap->head->index])
       / e->bottomsize) +
      par->topsize*
      ((skew->bottomsize*A[skew->head->index][par->head->index]
-       + fixed->bottomsize*A[fixed->head->index][par->head->index]) 
+       + fixed->bottomsize*A[fixed->head->index][par->head->index])
       / e->bottomsize)
-     ) / e->topsize; 
-  
-  elooper = findBottomLeft(e); /*next, we loop over all the edges 
+     ) / e->topsize;
+
+  elooper = findBottomLeft(e); /*next, we loop over all the edges
 				 which are below e*/
-  while (e != elooper)  
+  while (e != elooper)
     {
-      A[e->head->index][elooper->head->index] = 
-	A[elooper->head->index][v->index] 
+      A[e->head->index][elooper->head->index] =
+	A[elooper->head->index][v->index]
 	= (swap->bottomsize*A[elooper->head->index][swap->head->index] +
-	   par->topsize*A[elooper->head->index][par->head->index]) 
+	   par->topsize*A[elooper->head->index][par->head->index])
 	/ e->topsize;
       elooper = depthFirstTraverse(T,elooper);
     }
   elooper = findBottomLeft(swap); /*next we loop over all the edges below and
-				    including swap*/  
+				    including swap*/
   while (swap != elooper)
   {
-    A[e->head->index][elooper->head->index] = 
+    A[e->head->index][elooper->head->index] =
       A[elooper->head->index][e->head->index]
-      = (skew->bottomsize * A[elooper->head->index][skew->head->index] + 
-	 fixed->bottomsize*A[elooper->head->index][fixed->head->index]) 
+      = (skew->bottomsize * A[elooper->head->index][skew->head->index] +
+	 fixed->bottomsize*A[elooper->head->index][fixed->head->index])
       / e->bottomsize;
     elooper = depthFirstTraverse(T,elooper);
   }
   /*now elooper = skew */
-  A[e->head->index][elooper->head->index] = 
+  A[e->head->index][elooper->head->index] =
     A[elooper->head->index][e->head->index]
-    = (skew->bottomsize * A[elooper->head->index][skew->head->index] + 
-       fixed->bottomsize* A[elooper->head->index][fixed->head->index])	
+    = (skew->bottomsize * A[elooper->head->index][skew->head->index] +
+       fixed->bottomsize* A[elooper->head->index][fixed->head->index])
     / e->bottomsize;
-  
-  /*finally, we loop over all the edges in the tree 
-    on the far side of parEdge*/ 
+
+  /*finally, we loop over all the edges in the tree
+    on the far side of parEdge*/
   elooper = T->root->leftEdge;
   while ((elooper != swap) && (elooper != e)) /*start a top-first traversal*/
     {
-      A[e->head->index][elooper->head->index] = 
+      A[e->head->index][elooper->head->index] =
 	A[elooper->head->index][e->head->index]
-	= (skew->bottomsize * A[elooper->head->index][skew->head->index] 
-	   + fixed->bottomsize* A[elooper->head->index][fixed->head->index]) 
+	= (skew->bottomsize * A[elooper->head->index][skew->head->index]
+	   + fixed->bottomsize* A[elooper->head->index][fixed->head->index])
 	/ e->bottomsize;
       elooper = topFirstTraverse(T,elooper);
     }
@@ -220,14 +213,13 @@ void NNIupdateAverages(double **A, edge *e, edge *par, edge *skew,
   elooper = moveUpRight(par);
   while (NULL != elooper)
     {
-      A[e->head->index][elooper->head->index] 
+      A[e->head->index][elooper->head->index]
 	= A[elooper->head->index][e->head->index]
-	= (skew->bottomsize * A[elooper->head->index][skew->head->index] + 
-	   fixed->bottomsize* A[elooper->head->index][fixed->head->index]) 
+	= (skew->bottomsize * A[elooper->head->index][skew->head->index] +
+	   fixed->bottomsize* A[elooper->head->index][fixed->head->index])
 	/ e->bottomsize;
       elooper = topFirstTraverse(T,elooper);
     }
-  
 }
 
 
@@ -235,7 +227,7 @@ void NNItopSwitch(tree *T, edge *e, int direction, double **A)
 {
   edge *par, *fixed;
   edge *skew, *swap;
-  
+
 /*  if (verbose)
     printf("Branch swap across edge %s.\n",e->label);*/
 
@@ -246,17 +238,17 @@ void NNItopSwitch(tree *T, edge *e, int direction, double **A)
   skew = siblingEdge(e);
   fixed = siblingEdge(swap);
   par = e->tail->parentEdge;
-  
+
 /*  if (verbose)
     {
       printf("Branch swap: switching edges %s and %s.\n",skew->label,swap->label);
     }*/
   /*perform topological switch by changing f from (u,b) to (v,b)
     and g from (v,c) to (u,c), necessitatates also changing parent fields*/
-  
+
   swap->tail = e->tail;
   skew->tail = e->head;
-  
+
   if (LEFT == direction)
     e->head->leftEdge = skew;
   else
@@ -279,17 +271,17 @@ void pushHeap(int *p, int *q, double *v, int length, int i);
 void popHeap(int *p, int *q, double *v, int length, int i);
 
 
-void NNIRetestEdge(int *p, int *q, edge *e,tree *T, double **avgDistArray, 
+void NNIRetestEdge(int *p, int *q, edge *e,tree *T, double **avgDistArray,
 		double *weights, int *location, int *possibleSwaps)
 {
   int tloc;
   tloc = location[e->head->index+1];
-  location[e->head->index+1] = 
+  location[e->head->index+1] =
     NNIEdgeTest(e,T,avgDistArray,weights + e->head->index+1);
   if (NONE == location[e->head->index+1])
     {
       if (NONE != tloc)
-	popHeap(p,q,weights,(*possibleSwaps)--,q[e->head->index+1]);	  
+	popHeap(p,q,weights,(*possibleSwaps)--,q[e->head->index+1]);
     }
   else
     {
@@ -320,32 +312,32 @@ void NNI(tree *T, double **avgDistArray, int *count, double **D, int numSpecies)
   edgeArray = (edge **) malloc((T->size+1)*sizeof(double));
   weights = (double *) malloc((T->size+1)*sizeof(double));
   location = (int *) malloc((T->size+1)*sizeof(int));
-  
+
   double epsilon = 0.0;
   for (i=0; i<numSpecies; i++)
     for (j=0; j<numSpecies; j++)
       epsilon += D[i][j];
   epsilon = (epsilon / (numSpecies * numSpecies)) * EPSILON;
-  
+
   for (i=0;i<T->size+1;i++)
     {
       weights[i] = 0.0;
       location[i] = NONE;
     }
-  e = findBottomLeft(T->root->leftEdge); 
+  e = findBottomLeft(T->root->leftEdge);
   /* *count = 0; */
   while (NULL != e)
     {
       edgeArray[e->head->index+1] = e;
-      location[e->head->index+1] = 
+      location[e->head->index+1] =
 	NNIEdgeTest(e,T,avgDistArray,weights + e->head->index + 1);
       e = depthFirstTraverse(T,e);
-    } 
+    }
   possibleSwaps = makeThreshHeap(p,q,weights,T->size+1,0.0);
   permInverse(p,q,T->size+1);
   /*we put the negative values of weights into a heap, indexed by p
     with the minimum value pointed to by p[1]*/
-  /*p[i] is index (in edgeArray) of edge with i-th position 
+  /*p[i] is index (in edgeArray) of edge with i-th position
     in the heap, q[j] is the position of edge j in the heap */
   while (weights[p[1]] + epsilon < 0)
     {
@@ -361,7 +353,7 @@ void NNI(tree *T, double **avgDistArray, int *count, double **D, int numSpecies)
       e = centerEdge->head->leftEdge;
       NNIRetestEdge(p,q,e,T,avgDistArray,weights,location,&possibleSwaps);
       e = centerEdge->head->rightEdge;
-      NNIRetestEdge(p,q,e,T,avgDistArray,weights,location,&possibleSwaps);     
+      NNIRetestEdge(p,q,e,T,avgDistArray,weights,location,&possibleSwaps);
       e = siblingEdge(centerEdge);
       NNIRetestEdge(p,q,e,T,avgDistArray,weights,location,&possibleSwaps);
       e = centerEdge->tail->parentEdge;

@@ -1,9 +1,3 @@
-/*#include <stdio.h>
-#include <stdlib.h>
-#include <math.h>
-#include "graph.h"
-#include "main.h"
-*/
 #include "me.h"
 
 /*boolean leaf(node *v);
@@ -27,17 +21,17 @@ void pushHeap(int *p, int *q, double *v, int length, int i);
 void popHeap(int *p, int *q, double *v, int length, int i);
 
 
-void bNNIRetestEdge(int *p, int *q, edge *e,tree *T, double **avgDistArray, 
+void bNNIRetestEdge(int *p, int *q, edge *e,tree *T, double **avgDistArray,
 		double *weights, int *location, int *possibleSwaps)
 {
   int tloc;
   tloc = location[e->head->index+1];
-  location[e->head->index+1] = 
+  location[e->head->index+1] =
     bNNIEdgeTest(e,T,avgDistArray,weights + e->head->index+1);
   if (NONE == location[e->head->index+1])
     {
       if (NONE != tloc)
-	popHeap(p,q,weights,(*possibleSwaps)--,q[e->head->index+1]);	  
+	popHeap(p,q,weights,(*possibleSwaps)--,q[e->head->index+1]);
     }
   else
     {
@@ -74,7 +68,7 @@ void bNNI(tree *T, double **avgDistArray, int *count, double **D, int numSpecies
   edgeArray = (edge **) malloc((T->size+1)*sizeof(double));
   weights = (double *) malloc((T->size+1)*sizeof(double));
   location = (int *) malloc((T->size+1)*sizeof(int));
-  
+
   double epsilon = 0.0;
   for (i=0; i<numSpecies; i++)
     for (j=0; j<numSpecies; j++)
@@ -91,19 +85,19 @@ void bNNI(tree *T, double **avgDistArray, int *count, double **D, int numSpecies
       assignBMEWeights(T,avgDistArray);
       weighTree(T);
     }*/
-  e = findBottomLeft(T->root->leftEdge); 
+  e = findBottomLeft(T->root->leftEdge);
   while (NULL != e)
     {
       edgeArray[e->head->index+1] = e;
-      location[e->head->index+1] = 
+      location[e->head->index+1] =
 	bNNIEdgeTest(e,T,avgDistArray,weights + e->head->index + 1);
       e = depthFirstTraverse(T,e);
-    } 
+    }
   possibleSwaps = makeThreshHeap(p,q,weights,T->size+1,0.0);
   permInverse(p,q,T->size+1);
   /*we put the negative values of weights into a heap, indexed by p
     with the minimum value pointed to by p[1]*/
-  /*p[i] is index (in edgeArray) of edge with i-th position 
+  /*p[i] is index (in edgeArray) of edge with i-th position
     in the heap, q[j] is the position of edge j in the heap */
   while (weights[p[1]] + epsilon < 0)
     {
@@ -156,10 +150,10 @@ void updateSubTreeAfterNNI(double **A, node *v, edge *rootEdge, node *closer, no
 	updateSubTreeAfterNNI(A, v, rootEdge->head->rightEdge, closer, further, 0.5*dcoeff,UP);
       updatePair(A, rootEdge, rootEdge, closer, further, dcoeff, UP);
       sib = siblingEdge(v->parentEdge);
-      A[rootEdge->head->index][v->index] = 
-	A[v->index][rootEdge->head->index] = 
+      A[rootEdge->head->index][v->index] =
+	A[v->index][rootEdge->head->index] =
 	0.5*A[rootEdge->head->index][sib->head->index] +
-	0.5*A[rootEdge->head->index][v->parentEdge->tail->index];    
+	0.5*A[rootEdge->head->index][v->parentEdge->tail->index];
       break;
     case DOWN: /*rootEdge is above the center edge of the NNI*/
       sib = siblingEdge(rootEdge);
@@ -168,8 +162,8 @@ void updateSubTreeAfterNNI(double **A, node *v, edge *rootEdge, node *closer, no
       if (NULL != rootEdge->tail->parentEdge)
 	updateSubTreeAfterNNI(A, v, rootEdge->tail->parentEdge, closer, further, 0.5*dcoeff, DOWN);
       updatePair(A, rootEdge, rootEdge, closer, further, dcoeff, DOWN);
-      A[rootEdge->head->index][v->index] = 
-	A[v->index][rootEdge->head->index] = 
+      A[rootEdge->head->index][v->index] =
+	A[v->index][rootEdge->head->index] =
 	0.5*A[rootEdge->head->index][v->leftEdge->head->index] +
 	0.5*A[rootEdge->head->index][v->rightEdge->head->index];
       break;
@@ -179,8 +173,8 @@ void updateSubTreeAfterNNI(double **A, node *v, edge *rootEdge, node *closer, no
       if (NULL != rootEdge->head->rightEdge)
 	updateSubTreeAfterNNI(A, v, rootEdge->head->rightEdge, closer, further, 0.5*dcoeff,SKEW);
       updatePair(A, rootEdge, rootEdge, closer, further, dcoeff, UP);
-      A[rootEdge->head->index][v->index] = 
-	A[v->index][rootEdge->head->index] = 
+      A[rootEdge->head->index][v->index] =
+	A[v->index][rootEdge->head->index] =
 	0.5*A[rootEdge->head->index][v->leftEdge->head->index] +
 	0.5*A[rootEdge->head->index][v->rightEdge->head->index];
       break;
@@ -188,18 +182,17 @@ void updateSubTreeAfterNNI(double **A, node *v, edge *rootEdge, node *closer, no
 }
 
 /*swapping across edge whose head is v*/
-void bNNIupdateAverages(double **A, node *v, edge *par, edge *skew, 
+void bNNIupdateAverages(double **A, node *v, edge *par, edge *skew,
 			edge *swap, edge *fixed)
-{  
-  A[v->index][v->index] = 0.25*(A[fixed->head->index][par->head->index] + 
-				A[fixed->head->index][swap->head->index] + 
-				A[skew->head->index][par->head->index] + 
+{
+  A[v->index][v->index] = 0.25*(A[fixed->head->index][par->head->index] +
+				A[fixed->head->index][swap->head->index] +
+				A[skew->head->index][par->head->index] +
 				A[skew->head->index][swap->head->index]);
   updateSubTreeAfterNNI(A, v, fixed, skew->head, swap->head, 0.25, UP);
   updateSubTreeAfterNNI(A, v, par, swap->head, skew->head, 0.25, DOWN);
-  updateSubTreeAfterNNI(A, v, skew, fixed->head, par->head, 0.25, UP); 
+  updateSubTreeAfterNNI(A, v, skew, fixed->head, par->head, 0.25, UP);
   updateSubTreeAfterNNI(A, v, swap, par->head, fixed->head, 0.25, SKEW);
-  
 }
 
 
@@ -309,11 +302,10 @@ int bNNIEdgeTest(edge *e, tree *T, double **A, double *weight)
 	  printf("Weight dropping by %lf.\n",w0 - w1);
 	  printf("New weight should be %lf.\n",T->weight + w1 - w0);
 	}*/
-      return(LEFT);	
+      return(LEFT);
     }
 }
 
-  
 /*limitedFillTableUp fills all the entries in D associated with
   e->head,f->head and those edges g->head above e->head, working
   recursively and stopping when trigger is reached*/
@@ -324,8 +316,7 @@ void limitedFillTableUp(edge *e, edge *f, double **A, edge *trigger)
   if (f != trigger)
     limitedFillTableUp(e,g,A,trigger);
   h = siblingEdge(f);
-  A[e->head->index][f->head->index] = 
-    A[f->head->index][e->head->index] =  
-    0.5*(A[e->head->index][g->head->index] + A[e->head->index][h->head->index]);    
+  A[e->head->index][f->head->index] =
+    A[f->head->index][e->head->index] =
+    0.5*(A[e->head->index][g->head->index] + A[e->head->index][h->head->index]);
 }
-  

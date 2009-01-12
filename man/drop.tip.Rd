@@ -1,9 +1,11 @@
 \name{drop.tip}
 \alias{drop.tip}
+\alias{extract.clade}
 \title{Remove Tips in a Phylogenetic Tree}
 \usage{
 drop.tip(phy, tip, trim.internal = TRUE, subtree = FALSE,
          root.edge = 0)
+extract.clade(phy, node, root.edge = 0)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -16,16 +18,25 @@ drop.tip(phy, tip, trim.internal = TRUE, subtree = FALSE,
   \item{root.edge}{an integer giving the number of internal branches to
     be used to build the new root edge. This has no effect if
     \code{trim.internal = FALSE}.}
+  \item{node}{a node number or label.}
 }
 \description{
-  This function removes the terminal branches of a phylogenetic tree,
+  \code{drop.tip} removes the terminal branches of a phylogenetic tree,
   possibly removing the corresponding internal branches.
+
+  \code{extract.clade} does the inverse operation: it keeps all the tips
+  from a given node, and deletes all the other tips.
 }
 \details{
   The argument \code{tip} can be either character or numeric. In the
   first case, it gives the labels of the tips to be deleted; in the
   second case the numbers of these labels in the vector
   \code{phy$tip.label} are given.
+
+  This also applies to \code{node}, but if this argument is character
+  and the tree has no node label, this results in an error. If more than
+  one value is given with \code{node} (i.e., a vector of length two or
+  more), only the first one is used with a warning.
 
   If \code{trim.internal = FALSE}, the new tips are given \code{"NA"} as
   labels, unless there are node labels in the tree in which case they

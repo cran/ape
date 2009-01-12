@@ -1,4 +1,4 @@
-## chronopl.R (2008-03-26)
+## chronopl.R (2008-11-04)
 
 ##   Molecular Dating With Penalized Likelihood
 
@@ -231,6 +231,8 @@ chronopl.cv <- function(ophy, lambda, age.min, age.max, nodes,
         if (length(node)) {
             chr <- chronopl(tr, lambda, age.min, age.max, node,
                             S, tol, FALSE, eval.max, iter.max, ...)
+            tmp <-
+                if (Nnode(chr) == Nnode(ophy)) BT else BT[-(ophy$edge[j, 1] - n)]
             D2[i] <- sum((tmp - branching.times(chr))^2 / tmp)
         } else D2[i] <- 0
     }

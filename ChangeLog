@@ -1,3 +1,39 @@
+		CHANGES IN APE VERSION 2.2-3
+
+
+NEW FEATURES
+
+    o The new function extract.clade extracts a clade from a tree by
+      specifying a node number or label.
+
+    o fastme.bal() has two new options 'spr' and 'tbr' to perform tree
+      operations of the same names.
+
+    o dist.dna() can now return the number of site differences by
+      specifying model="N".
+
+
+BUG FIXES
+
+    o chronopl() did not work with CV = TRUE.
+
+    o read.nexus() did not work correctly in some situations (trees on
+      multiple lines with different numbers of lines and/or with
+      comments inserted within the trees).
+
+    o ltt.plot(), ltt.lines(), and mltt.plot() did not count correctly
+      the number of lineages with non-binary trees.
+
+
+OTHER CHANGES
+
+    o ape has now a namespace.
+
+    o drip.tip() has been improved: it should be much faster and work
+      better in some cases (e.g., see the example in ?zoom).
+
+
+
 		CHANGES IN APE VERSION 2.2-2
 
 

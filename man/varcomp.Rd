@@ -26,6 +26,7 @@ varcomp(x, scale = FALSE, cum = FALSE)
 \seealso{\code{\link[nlme]{lme}}}
 \examples{
 data(carnivora)
+library(nlme)
 m <- lme(log10(SW) ~ 1, random = ~ 1|Order/SuperFamily/Family/Genus, data=carnivora)
 v <- varcomp(m, TRUE, TRUE)
 plot(v)

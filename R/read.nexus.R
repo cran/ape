@@ -1,4 +1,4 @@
-## read.nexus.R (2008-09-17)
+## read.nexus.R (2008-11-24)
 
 ##   Read Tree File in Nexus Format
 
@@ -153,6 +153,8 @@ read.nexus <- function(file, tree.names = NULL)
     tree <- X[start:end]
     rm(X)
     tree <- gsub("^.*= *", "", tree)
+    ## check whether there are empty lines from the above manips:
+    tree <- tree[tree == ""]
     semico <- grep(";", tree)
     Ntree <- length(semico)
     ## are some trees on several lines?
@@ -161,8 +163,13 @@ read.nexus <- function(file, tree.names = NULL)
             STRING <- character(Ntree)
             s <- c(1, semico[-Ntree] + 1)
             j <- mapply(":", s, semico)
-            for (i in 1:Ntree)
-                STRING[i] <- paste(tree[j[, i]], collapse = "")
+            if (is.list(j)) {
+                for (i in 1:Ntree)
+                    STRING[i] <- paste(tree[j[[i]]], collapse = "")
+            } else {
+                for (i in 1:Ntree)
+                    STRING[i] <- paste(tree[j[, i]], collapse = "")
+            }
         } else STRING <- tree
     }
     rm(tree)

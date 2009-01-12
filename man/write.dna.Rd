@@ -45,16 +45,16 @@ write.dna(x, file, format = "interleaved", append = FALSE,
   With the interleaved and sequential formats, the sequences must be all
   of the same length. The names of the sequences are not truncated.
 
-  The argument `indent' specifies how the rows of nucleotides are
+  The argument \code{indent} specifies how the rows of nucleotides are
   indented. In the interleaved and sequential formats, the rows with
   the taxon names are never indented; the subsequent rows are indented
-  with 10 spaces by default (i.e. if `indent = NULL)'. In the FASTA
+  with 10 spaces by default (i.e., if \code{indent = NULL}). In the FASTA
   format, the rows are not indented by default. This default behaviour
-  can be modified by specifying a value to `indent': the rows are then
-  indented with `indent' (if it is a character) or `indent' spaces (if
-  it is a numeric). For example, specifying `indent = "   "' or `indent
-  = 3' will have exactly the same effect (use `indent = "\t"' for a
-  tabulation).
+  can be modified by specifying a value to \code{indent}: the rows are then
+  indented with ``indent'' (if it is a character) or `indent' spaces (if
+  it is a numeric). For example, specifying \code{indent = "   "} or
+  \code{indent = 3} will have the same effect (use \code{indent = "\\t"}
+  for a tabulation).
 
   The different options are intended to give flexibility in formatting
   the sequences. For instance, if the sequences are very long it may be

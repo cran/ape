@@ -1,4 +1,4 @@
-/* dist_dna.c       2008-01-19 */
+/* dist_dna.c       2008-12-22 */
 
 /* Copyright 2005-2008 Emmanuel Paradis
 
@@ -64,7 +64,7 @@ double detFourByFour(double *x)
     if (KnownBase(x[s1]) && KnownBase(x[s2])) L++;\
     else continue;
 
-void distDNA_raw(unsigned char *x, int *n, int *s, double *d)
+void distDNA_raw(unsigned char *x, int *n, int *s, double *d, int scaled)
 {
     int i1, i2, s1, s2, target, Nd;
 
@@ -74,13 +74,14 @@ void distDNA_raw(unsigned char *x, int *n, int *s, double *d)
 	    Nd = 0;
 	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n)
 	      if (DifferentBase(x[s1], x[s2])) Nd++;
-	    d[target] = ((double) Nd / *s);
+	    if (scaled) d[target] = ((double) Nd / *s);
+	    else d[target] = ((double) Nd);
 	    target++;
 	}
     }
 }
 
-void distDNA_raw_pairdel(unsigned char *x, int *n, int *s, double *d)
+void distDNA_raw_pairdel(unsigned char *x, int *n, int *s, double *d, int scaled)
 {
     int i1, i2, s1, s2, target, Nd, L;
 
@@ -92,7 +93,8 @@ void distDNA_raw_pairdel(unsigned char *x, int *n, int *s, double *d)
                 CHECK_PAIRWISE_DELETION
 		if (DifferentBase(x[s1], x[s2])) Nd++;
 	    }
-	    d[target] = ((double) Nd/L);
+	    if (scaled) d[target] = ((double) Nd/L);
+	    else d[target] = ((double) Nd);
 	    target++;
 	}
     }
@@ -1009,8 +1011,8 @@ void dist_dna(unsigned char *x, int *n, int *s, int *model, double *d,
 	      int *gamma, double *alpha)
 {
     switch (*model) {
-    case 1 : if (pairdel) distDNA_raw_pairdel(x, n, s, d);
-             else distDNA_raw(x, n, s, d); break;
+    case 1 : if (pairdel) distDNA_raw_pairdel(x, n, s, d, 1);
+             else distDNA_raw(x, n, s, d, 1); break;
 
     case 2 : if (pairdel) distDNA_JC69_pairdel(x, n, s, d, variance, var, gamma, alpha);
              else distDNA_JC69(x, n, s, d, variance, var, gamma, alpha); break;
@@ -1043,5 +1045,7 @@ void dist_dna(unsigned char *x, int *n, int *s, int *model, double *d,
 
     case 12 : if (pairdel) distDNA_ParaLin_pairdel(x, n, s, d, variance, var);
               else distDNA_ParaLin(x, n, s, d, variance, var); break;
+    case 13 : if (pairdel) distDNA_raw_pairdel(x, n, s, d, 0);
+             else distDNA_raw(x, n, s, d, 0); break;
     }
 }

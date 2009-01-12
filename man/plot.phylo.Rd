@@ -140,23 +140,23 @@
   \code{plot.phylo} returns invisibly a list with the following
   components which values are those used for the current plot:
 
-  \item{type}
-  \item{use.edge.length}
-  \item{node.pos}
-  \item{show.tip.label}
-  \item{show.node.label}
-  \item{font}
-  \item{cex}
-  \item{adj}
-  \item{srt}
-  \item{no.margin}
-  \item{label.offset}
-  \item{x.lim}
-  \item{y.lim}
-  \item{direction}
-  \item{tip.color}
-  \item{Ntip}
-  \item{Nnode}
+  \item{type}{}
+  \item{use.edge.length}{}
+  \item{node.pos}{}
+  \item{show.tip.label}{}
+  \item{show.node.label}{}
+  \item{font}{}
+  \item{cex}{}
+  \item{adj}{}
+  \item{srt}{}
+  \item{no.margin}{}
+  \item{label.offset}{}
+  \item{x.lim}{}
+  \item{y.lim}{}
+  \item{direction}{}
+  \item{tip.color}{}
+  \item{Ntip}{}
+  \item{Nnode}{}
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{

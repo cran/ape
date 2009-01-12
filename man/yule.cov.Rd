@@ -39,6 +39,7 @@ yule.cov(phy, formula, data = NULL)
 
   The function needs three things:
 
+\itemize{
   \item a phylogenetic tree which may contain multichotomies;
 
   \item a formula which specifies the predictors of the model described
@@ -56,8 +57,9 @@ yule.cov(phy, formula, data = NULL)
   order than for the labels, then the values for the nodes sequentially
   from the root to the most terminal nodes (i.e. in the order given by
   \code{phy$edge}).
+}
 
-  The user must obtain the values for the nodes separately.
+The user must obtain the values for the nodes separately.
 
   Note that the method in its present implementation assumes that the
   change in a species trait is more or less continuous between two nodes

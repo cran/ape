@@ -20,10 +20,10 @@ subtrees(tree, wait=FALSE)
   returns invisibly for each subtree a list with the following
   components:
 
-  \item{tip.label}
-  \item{node.label}
-  \item{Ntip}
-  \item{Nnode}
+  \item{tip.label}{}
+  \item{node.label}{}
+  \item{Ntip}{}
+  \item{Nnode}{}
 }
 \examples{
 ### Random tree with 12 leaves

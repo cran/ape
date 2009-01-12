@@ -20,9 +20,14 @@ void makeOLSAveragesTable(tree *T, double **D, double **A);
 void bNNI(tree *T, double **avgDistArray, int *count, double **D, int numSpecies);
 //functions from NNI.c
 void NNI(tree *T, double **avgDistArray, int *count, double **D, int numSpecies);
+//functions from SPR.c
+void SPR(tree *T, double **D, double **A, int *count);
+//functions from TBR.c
+void TBR(tree *T, double **D, double **A);
 
 
-void me_b(double *X, int *N, char **labels, int *nni,
+void me_b(double *X, int *N, char **labels,
+	  int *nni, int *spr, int *tbr,
 	  int *edge1, int *edge2, double *el, char **tl)
 {
   double **D, **A;
@@ -46,9 +51,11 @@ void me_b(double *X, int *N, char **labels, int *nni,
     T = BMEaddSpecies(T, addNode, D, A);
   }
   // Compute bNNI
-  if (*nni == 1)
-    bNNI(T, A, &nniCount, D, n);
+  if (*nni) bNNI(T, A, &nniCount, D, n);
   assignBMEWeights(T,A);
+
+  if (*spr) SPR(T, D, A, &nniCount);
+  if (*tbr) TBR(T, D, A);
 
   tree2phylo(T, edge1, edge2, el, tl, n);
 
@@ -85,7 +92,7 @@ void me_o(double *X, int *N, char **labels, int *nni,
   }
   makeOLSAveragesTable(T,D,A);
   // Compute NNI
-  if (*nni == 1)
+  if (*nni)
     NNI(T,A,&nniCount,D,n);
   assignOLSWeights(T,A);
 
