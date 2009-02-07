@@ -1,3 +1,19 @@
+		CHANGES IN APE VERSION 2.2-4
+
+BUG FIXES
+
+    o The bug fix in read.nexus() in version 2.2-3 was wrong: this is
+      now fixed. (Thanks to Peter Wragg for the fix!)
+
+    o A warning message occurred for no reason with ace(method="GLS").
+
+
+OTHER CHANGES
+
+    o There is now a general help page displayed with '?ape' 
+
+
+
 		CHANGES IN APE VERSION 2.2-3
 
 

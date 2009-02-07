@@ -1,8 +1,8 @@
-## read.nexus.R (2008-11-24)
+## read.nexus.R (2009-01-19)
 
 ##   Read Tree File in Nexus Format
 
-## Copyright 2003-2008 Emmanuel Paradis
+## Copyright 2003-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -154,7 +154,7 @@ read.nexus <- function(file, tree.names = NULL)
     rm(X)
     tree <- gsub("^.*= *", "", tree)
     ## check whether there are empty lines from the above manips:
-    tree <- tree[tree == ""]
+    tree <- tree[tree != ""]
     semico <- grep(";", tree)
     Ntree <- length(semico)
     ## are some trees on several lines?

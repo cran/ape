@@ -71,8 +71,8 @@ read.tree(file = "", text = NULL, tree.names = NULL,
   Olsen, G. Interpretation of the "Newick's 8:45" tree format standard.
   \url{http://evolution.genetics.washington.edu/phylip/newick_doc.html}
 
-  Paradis, E. (2006) Definition of Formats for Coding Phylogenetic Trees
-  in R. \url{http://ape.mpl.ird.fr/misc/FormatTreeR_4Dec2006.pdf}
+  Paradis, E. (2008) Definition of Formats for Coding Phylogenetic Trees
+  in R. \url{http://ape.mpl.ird.fr/misc/FormatTreeR_28July2008.pdf}
 }
 
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}

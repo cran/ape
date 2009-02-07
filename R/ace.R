@@ -1,8 +1,8 @@
-## ace.R (2008-03-10)
+## ace.R (2009-01-19)
 
 ##     Ancestral Character Estimation
 
-## Copyright 2005-2008 Emmanuel Paradis and Ben Bolker
+## Copyright 2005-2009 Emmanuel Paradis and Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -102,7 +102,7 @@ did not match: the former were ignored in the analysis.')
             V <- corMatrix(Initialize(corStruct, data.frame(x)),
                            corr = FALSE)
             invV <- solve(V)
-            o <- gls(x ~ 1, correlation = Initialize(corStruct, data.frame(x)))
+            o <- gls(x ~ 1, data.frame(x), correlation = corStruct)
             GM <- o$coefficients
             obj$ace <- drop(varAY %*% invV %*% (x - GM) + GM)
             names(obj$ace) <- (nb.tip + 1):(nb.tip + nb.node)
