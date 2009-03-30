@@ -1,29 +1,32 @@
 Package: ape
-Version: 2.2-4
-Date: 2009-02-07
+Version: 2.3
+Date: 2009-03-30
 Title: Analyses of Phylogenetics and Evolution
 Author: Emmanuel Paradis, Ben Bolker, Julien Claude, Hoa Sien Cuong,
-  Richard Desper, Benoit Durand, Julien Dutheil, Olivier Gascuel,
-  Gangolf Jobb, Christoph Heibl, Vincent Lefort, Jim Lemon,
-  Yvonnick Noel, Johan Nylander, Rainer Opgen-Rhein, Korbinian Strimmer,
-  Damien de Vienne
+        Richard Desper, Benoit Durand, Julien Dutheil, Olivier Gascuel,
+        Gangolf Jobb, Christoph Heibl, Daniel Lawson, Vincent Lefort,
+        Pierre Legendre, Jim Lemon, Yvonnick Noel, Johan Nylander,
+        Rainer Opgen-Rhein, Korbinian Strimmer, Damien de Vienne
 Maintainer: Emmanuel Paradis <Emmanuel.Paradis@ird.fr>
 Depends: R (>= 2.6.0)
 Suggests: gee
 Imports: gee, nlme, lattice
 ZipData: no
-Description: ape provides functions for reading, writing, plotting,
-  and manipulating phylogenetic trees, analyses of comparative data
-  in a phylogenetic framework, analyses of diversification and
-  macroevolution, computing distances from allelic and nucleotide
-  data, reading nucleotide sequences, and several tools such as
-  Mantel's test, computation of minimum spanning tree, the population
-  parameter theta based on various approaches, nucleotide diversity,
-  generalized skyline plots, estimation of absolute evolutionary rates
-  and clock-like trees using mean path lengths, non-parametric rate
-  smoothing and penalized likelihood, classifying genes in trees using
-  the Klastorin-Misawa-Tajima approach. Phylogeny estimation can be done
-  with the NJ, BIONJ, and ME methods.
+Description: ape provides functions for reading, writing, plotting, and
+        manipulating phylogenetic trees, analyses of comparative data
+        in a phylogenetic framework, analyses of diversification and
+        macroevolution, computing distances from allelic and nucleotide
+        data, reading nucleotide sequences, and several tools such as
+        Mantel's test, computation of minimum spanning tree, the
+        population parameter theta based on various approaches,
+        nucleotide diversity, generalized skyline plots, estimation of
+        absolute evolutionary rates and clock-like trees using mean
+        path lengths, non-parametric rate smoothing and penalized
+        likelihood, classifying genes in trees using the
+        Klastorin-Misawa-Tajima approach. Phylogeny estimation can be
+        done with the NJ, BIONJ, and ME methods.
 License: GPL (>= 2)
 URL: http://ape.mpl.ird.fr/
-Packaged: Sat Feb  7 10:01:48 2009; paradis
+Packaged: Mon Mar 30 08:46:28 2009; paradis
+Repository: CRAN
+Date/Publication: 2009-03-30 06:56:17

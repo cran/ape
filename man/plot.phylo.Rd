@@ -5,7 +5,7 @@
 \usage{
 \method{plot}{phylo}(x, type = "phylogram", use.edge.length = TRUE,
     node.pos = NULL, show.tip.label = TRUE, show.node.label = FALSE,
-    edge.color = "black", edge.width = 1, font = 3,
+    edge.color = "black", edge.width = 1, edge.lty = 1, font = 3,
     cex = par("cex"), adj = NULL, srt = 0, no.margin = FALSE,
     root.edge = FALSE, label.offset = 0, underscore = FALSE,
     x.lim = NULL, y.lim = NULL, direction = "rightwards",
@@ -42,6 +42,8 @@
     the plotted phylogeny. These are taken to be in the same order than
     the component \code{edge} of \code{phy}. If fewer widths are given
     than the length of \code{edge}, then these are recycled.}
+  \item{edge.lty}{same than the previous argument but for line types;
+    1: plain, 2: dashed, 3: dotted, 4: dotdash, 5: longdash, 6: twodash.}
   \item{font}{an integer specifying the type of font for the labels: 1
     (plain text), 2 (bold), 3 (italic, the default), or 4 (bold
     italic).}
@@ -183,16 +185,6 @@ plot(tree.owls, use.edge.length = FALSE, main = "Without branch lengths")
 plot(tree.owls, type = "c", use.edge.length = FALSE)
 plot(tree.owls, type = "u", use.edge.length = FALSE)
 layout(matrix(1))
-
-data(xenarthra)
-plot(xenarthra)
-### remove the margins...
-plot(xenarthra, no.margin = TRUE)
-### ... and use a smaller font size
-plot(xenarthra, no.margin = TRUE, cex = 0.8)
-plot(xenarthra, type = "c", no.margin = TRUE,
-     use.edge.length = FALSE, cex = 0.8)
-par(mar = c(5.1, 4.1, 4.1, 2.1))
 
 data(bird.orders)
 ### using random colours and thickness

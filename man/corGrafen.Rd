@@ -10,7 +10,7 @@ corGrafen(value, phy, form=~1, fixed = FALSE)
                   covariate = getCovariate(object), corr = TRUE, ...)
 }
 \arguments{
-  \item{value}{The \eqn{\alpha}{rho} parameter}
+  \item{value}{The \eqn{\rho}{rho} parameter}
   \item{phy}{An object of class \code{phylo} representing the phylogeny
     (branch lengths are ignored) to consider}
   \item{object}{An (initialized) object of class \code{corGrafen}}

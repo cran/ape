@@ -45,7 +45,7 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
   returned in R as a vector with the log-likelihood value of each model.
 }
 \details{
-  The present function requires version 3.0 of PhyML; it won't work with
+  The present function requires version 3.0.1 of PhyML; it won't work with
   older versions.
 
   The user must take care to set correctly the three different paths
@@ -115,7 +115,7 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
   Guindon, S. and Gascuel, O. (2003) A simple, fast, and accurate
   algorithm to estimate large phylogenies by maximum likelihood.
   \emph{Systematic Biology}, \bold{52}, 696--704.
-  \url{http://atgc.lirmm.fr/phyml/}
+  \url{http://www.atgc-montpellier.fr/phyml/}
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{

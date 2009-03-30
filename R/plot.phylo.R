@@ -1,8 +1,8 @@
-## plot.phylo.R (2008-05-08)
+## plot.phylo.R (2009-03-27)
 
 ##   Plot Phylogenies
 
-## Copyright 2002-2008 Emmanuel Paradis
+## Copyright 2002-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -10,7 +10,7 @@
 plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                        node.pos = NULL, show.tip.label = TRUE,
                        show.node.label = FALSE, edge.color = "black",
-                       edge.width = 1, font = 3, cex = par("cex"),
+                       edge.width = 1, edge.lty = 1, font = 3, cex = par("cex"),
                        adj = NULL, srt = 0, no.margin = FALSE,
                        root.edge = FALSE, label.offset = 0, underscore = FALSE,
                        x.lim = NULL, y.lim = NULL, direction = "rightwards",
@@ -44,6 +44,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     }
     edge.color <- rep(edge.color, length.out = Nedge)
     edge.width <- rep(edge.width, length.out = Nedge)
+    edge.lty <- rep(edge.lty, length.out = Nedge)
     ## fix from Li-San Wang (2007-01-23):
     xe <- x$edge
     x <- reorder(x, order = "pruningwise")
@@ -277,13 +278,13 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     }
     if (type == "phylogram") {
         phylogram.plot(x$edge, Ntip, Nnode, xx, yy,
-                       horizontal, edge.color, edge.width)
+                       horizontal, edge.color, edge.width, edge.lty)
     } else {
       if (type == "fan")
         circular.plot(x$edge, Ntip, Nnode, xx, yy, theta,
-                      r, edge.color, edge.width)
+                      r, edge.color, edge.width, edge.lty)
       else
-        cladogram.plot(x$edge, xx, yy, edge.color, edge.width)
+        cladogram.plot(x$edge, xx, yy, edge.color, edge.width, edge.lty)
     }
     if (root.edge)
       switch(direction,
@@ -362,8 +363,8 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     invisible(L)
 }
 
-phylogram.plot <- function(edge, Ntip, Nnode, xx, yy,
-                           horizontal, edge.color, edge.width)
+phylogram.plot <- function(edge, Ntip, Nnode, xx, yy, horizontal,
+                           edge.color, edge.width, edge.lty)
 {
     nodes <- (Ntip + 1):(Ntip + Nnode)
     if (!horizontal) {
@@ -390,46 +391,42 @@ phylogram.plot <- function(edge, Ntip, Nnode, xx, yy,
     pos <- match(sq, edge[, 2])
     x0h <- xx[edge[pos, 1]]
 
-    e.w <- unique(edge.width)
-    if (length(e.w) == 1) width.v <- rep(e.w, Nnode)
-    else {
-        width.v <- rep(1, Nnode)
-        for (i in 1:Nnode) {
-            br <- edge[which(edge[, 1] == i + Ntip), 2]
-            width <- unique(edge.width[br])
-            if (length(width) == 1) width.v[i] <- width
+    ## function dispatching the features to the vertical edges
+    foo <- function(edge.feat, default) {
+        e <- unique(edge.feat)
+        if (length(e) == 1) return(rep(e, Nnode)) else {
+            feat.v <- rep(default, Nnode)
+            for (i in 1:Nnode) {
+                br <- which(edge[, 1] == i + Ntip)
+                x <- unique(edge.feat[br])
+                if (length(x) == 1) feat.v[i] <- x
+            }
         }
+        feat.v
     }
-    e.c <- unique(edge.color)
-    if (length(e.c) == 1) color.v <- rep(e.c, Nnode)
-    else {
-        color.v <- rep("black", Nnode)
-        for (i in 1:Nnode) {
-            br <- which(edge[, 1] == i + Ntip)
-            #br <- edge[which(edge[, 1] == i + Ntip), 2]
-            color <- unique(edge.color[br])
-            if (length(color) == 1) color.v[i] <- color
-        }
-    }
+    color.v <- foo(edge.color, "black")
+    width.v <- foo(edge.width, 1)
+    lty.v <- foo(edge.lty, 1)
 
-    ## we need to reorder `edge.color' and `edge.width':
+    ## we need to reorder:
     edge.width <- edge.width[pos]
     edge.color <- edge.color[pos]
+    edge.lty <- edge.lty[pos]
     if (horizontal) {
-        segments(x0v, y0v, x0v, y1v, col = color.v, lwd = width.v) # draws vertical lines
-        segments(x0h, y0h, x1h, y0h, col = edge.color, lwd = edge.width) # draws horizontal lines
+        segments(x0v, y0v, x0v, y1v, col = color.v, lwd = width.v, lty = lty.v) # draws vertical lines
+        segments(x0h, y0h, x1h, y0h, col = edge.color, lwd = edge.width, lty = edge.lty) # draws horizontal lines
     } else {
-        segments(y0v, x0v, y1v, x0v, col = color.v, lwd = width.v) # draws horizontal lines
-        segments(y0h, x0h, y0h, x1h, col = edge.color, lwd = edge.width) # draws vertical lines
+        segments(y0v, x0v, y1v, x0v, col = color.v, lwd = width.v, lty = lty.v) # draws horizontal lines
+        segments(y0h, x0h, y0h, x1h, col = edge.color, lwd = edge.width, lty = edge.lty) # draws vertical lines
     }
 }
 
-cladogram.plot <- function(edge, xx, yy, edge.color, edge.width)
+cladogram.plot <- function(edge, xx, yy, edge.color, edge.width, edge.lty)
   segments(xx[edge[, 1]], yy[edge[, 1]], xx[edge[, 2]], yy[edge[, 2]],
-           col = edge.color, lwd = edge.width)
+           col = edge.color, lwd = edge.width, lty = edge.lty)
 
 circular.plot <- function(edge, Ntip, Nnode, xx, yy, theta,
-                          r, edge.color, edge.width)
+                          r, edge.color, edge.width, edge.lty)
 {
     r0 <- r[edge[, 1]]
     r1 <- r[edge[, 2]]
@@ -440,7 +437,7 @@ circular.plot <- function(edge, Ntip, Nnode, xx, yy, theta,
     x1 <- r1*cos(theta0)
     y1 <- r1*sin(theta0)
 
-    segments(x0, y0, x1, y1, col = edge.color, lwd = edge.width)
+    segments(x0, y0, x1, y1, col = edge.color, lwd = edge.width, lty = edge.lty)
 
     tmp <- which(diff(edge[, 1]) != 0)
     start <- c(1, tmp + 1)
@@ -453,7 +450,8 @@ circular.plot <- function(edge, Ntip, Nnode, xx, yy, theta,
         Y <- seq(theta[edge[i, 2]], theta[edge[j, 2]], length.out = 100)
         co <- if (edge.color[i] == edge.color[j]) edge.color[i] else "black"
         lw <- if (edge.width[i] == edge.width[j]) edge.width[i] else 1
-        lines(X*cos(Y), X*sin(Y), col = co, lwd = lw)
+        ly <- if (edge.lty[i] == edge.lty[j]) edge.lty[i] else 1
+        lines(X*cos(Y), X*sin(Y), col = co, lwd = lw, lty = ly)
     }
 }
 

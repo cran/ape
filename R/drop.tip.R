@@ -1,4 +1,4 @@
-## drop.tip.R (2009-01-07)
+## drop.tip.R (2009-03-22)
 
 ##   Remove Tips in a Phylogenetic Tree
 
@@ -22,7 +22,8 @@ extract.clade <- function(phy, node, root.edge = 0)
             stop("the tree has no node labels")
         node <- which(phy$node.label %in% node) + Ntip
     }
-    if (node <= Ntip) stop("node number must be greater than the number of tips")
+    if (node <= Ntip)
+        stop("node number must be greater than the number of tips")
     if (node == ROOT) return(phy)
     phy <- reorder(phy) # insure it is in cladewise order
     root.node <- which(phy$edge[, 2] == node)
@@ -75,6 +76,7 @@ drop.tip <-
 {
     if (class(phy) != "phylo")
         stop('object "phy" is not of class "phylo"')
+    phy <- reorder(phy)
     Ntip <- length(phy$tip.label)
     NEWROOT <- ROOT <- Ntip + 1
     Nnode <- phy$Nnode
@@ -143,8 +145,11 @@ drop.tip <-
     ## 2) renumber the remaining tips now
     TIPS <- phy$edge[, 2] <= Ntip
     ## keep the ordering so no need to reorder tip.label:
-    phy$edge[TIPS, 2] <- order(phy$edge[TIPS, 2])
-    Ntip <- length(phy$tip.label) # update Ntip
+    phy$edge[TIPS, 2] <- rank(phy$edge[TIPS, 2])
+    ## 3) update node.label if needed
+    if (!is.null(phy$node.label))
+        phy$node.label <- phy$node.label[sort(unique(phy$edge[, 1])) - Ntip]
+    Ntip <- length(phy$tip.label) # 4) update Ntip
 
     ## make new tip labels if necessary
     if (subtree || !trim.internal) {
@@ -176,6 +181,6 @@ drop.tip <-
     phy$edge[sndcol, 2] <- newNb[phy$edge[sndcol, 2]] <-
         (Ntip + 2):(Ntip + phy$Nnode)
     phy$edge[, 1] <- newNb[phy$edge[, 1]]
-
+    storage.mode(phy$edge) <- "integer"
     collapse.singles(phy)
 }

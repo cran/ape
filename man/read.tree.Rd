@@ -2,8 +2,8 @@
 \alias{read.tree}
 \title{Read Tree File in Parenthetic Format}
 \usage{
-read.tree(file = "", text = NULL, tree.names = NULL,
-          skip = 0, comment.char = "#", ...)
+read.tree(file = "", text = NULL, tree.names = NULL, skip = 0,
+    comment.char = "#", keep.multi = FALSE, ...)
 }
 \arguments{
   \item{file}{a file name specified by either a variable of mode character,
@@ -24,7 +24,10 @@ read.tree(file = "", text = NULL, tree.names = NULL,
   \item{comment.char}{a single character, the remaining of the line
     after this character is ignored (this is passed directly to
     \code{scan()}).}
-  \item{...}{Further arguments to be passed to \code{scan()}.}
+  \item{keep.multi}{if \code{TRUE} and \code{tree.names = NULL} then
+    single trees are returned in \code{"multiPhylo"} format, with any
+    name that is present (see details). Default is \code{FALSE}.}
+  \item{\dots}{further arguments to be passed to \code{scan()}.}
 }
 \description{
   This function reads a file which contains one or several trees in
@@ -42,6 +45,10 @@ read.tree(file = "", text = NULL, tree.names = NULL,
   apparently not a valid Newick format. If there are two root edges
   (e.g., "(((A:1,B:1):10):10);"), then the tree is not read and an error
   message is issued.
+
+  If there are any characters preceding the first "(" in a line then
+  this is assigned to the name. This is returned when a "multiphylo"
+  object is returned and \code{tree.names = NULL}.
 }
 \value{
   an object of class \code{"phylo"} with the following components:
@@ -63,6 +70,8 @@ read.tree(file = "", text = NULL, tree.names = NULL,
 
   If several trees are read in the file, the returned object is of class
   \code{"multiPhylo"}, and is a list of objects of class \code{"phylo"}.
+  The name of each tree can be specified by \code{tree.names}, or can be
+  read from the file (see details).
 }
 \references{
   Felsenstein, J. The Newick tree format.
@@ -75,7 +84,8 @@ read.tree(file = "", text = NULL, tree.names = NULL,
   in R. \url{http://ape.mpl.ird.fr/misc/FormatTreeR_28July2008.pdf}
 }
 
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr} and Daniel
+  Lawson \email{dan.lawson@bristol.ac.uk}}
 \seealso{
   \code{\link{write.tree}}, \code{\link{read.nexus}},
   \code{\link{write.nexus}}, \code{\link[base]{scan}} for the basic R
@@ -83,12 +93,13 @@ read.tree(file = "", text = NULL, tree.names = NULL,
 }
 \examples{
 ### An extract from Sibley and Ahlquist (1990)
-cat("(((Strix_aluco:4.2,Asio_otus:4.2):3.1,",
-   "Athene_noctua:7.3):6.3,Tyto_alba:13.5);",
-   file = "ex.tre", sep = "\n")
+cat("owls(((Strix_aluco:4.2,Asio_otus:4.2):3.1,Athene_noctua:7.3):6.3,Tyto_alba:13.5);", file = "ex.tre", sep = "\n")
 tree.owls <- read.tree("ex.tre")
 str(tree.owls)
 tree.owls
+tree.owls <- read.tree("ex.tre", keep.multi = TRUE)
+tree.owls
+names(tree.owls)
 unlink("ex.tre") # delete the file "ex.tre"
 ### Only the first three species using the option `text'
 TREE <- "((Strix_aluco:4.2,Asio_otus:4.2):3.1,Athene_noctua:7.3);"

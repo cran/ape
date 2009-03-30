@@ -3,7 +3,7 @@
 \title{Write Tree File in Parenthetic Format}
 \usage{
 write.tree(phy, file = "", append = FALSE,
-           digits = 10)
+           digits = 10, tree.names = FALSE)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -15,6 +15,10 @@ write.tree(phy, file = "", append = FALSE,
     the file (if it exists) is overwritten (\code{FALSE} the default).}
   \item{digits}{a numeric giving the number of digits used for printing
     branch lengths.}
+  \item{tree.names}{either a logical or a vector of mode character. If
+    \code{TRUE} then any tree names will be written prior to the tree on
+    each line. If character, specifies the name of \code{"phylo"}
+    objects which can be written to the file.}
 }
 \description{
   This function writes in a file a tree in parenthetic format using the
@@ -27,6 +31,10 @@ write.tree(phy, file = "", append = FALSE,
 \details{
   The node labels and the root edge length, if available, are written in
   the file.
+
+  If \code{tree.names == TRUE} then a variant of the Newick format is
+  written for which the name of a tree precedes the Newick format tree
+  (parentheses are eventually deleted beforehand).
 }
 \references{
   Felsenstein, J. The Newick tree format.
@@ -36,7 +44,8 @@ write.tree(phy, file = "", append = FALSE,
   \url{http://evolution.genetics.washington.edu/phylip/newick_doc.html}
 }
 
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr} and Daniel
+  Lawson \email{dan.lawson@bristol.ac.uk}}
 \seealso{
   \code{\link{read.tree}}, \code{\link{read.nexus}},
   \code{\link{write.nexus}}

@@ -1,8 +1,8 @@
-## phymltest.R (2008-10-08)
+## phymltest.R (2009-03-29)
 
 ##   Fits a Bunch of Models with PhyML
 
-## Copyright 2004-2008 Emmanuel Paradis
+## Copyright 2004-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -26,9 +26,9 @@ phymltest <- function(seqfile, format = "interleaved", itree = NULL,
     os <- Sys.info()[1]
     ## default names of PhyML:
     if (is.null(execname)) {
-        if (os == "Linux") execname <- "phyml_3.0_linux32"
-        if (os == "Darwin") execname <- "phyml_3.0_macintel"
-        if (os == "Windows") execname <- "phyml_3.0_win32"
+        if (os == "Linux") execname <- "phyml_3.0.1_linux32"
+        if (os == "Darwin") execname <- "phyml_3.0.1_macintel"
+        if (os == "Windows") execname <- "phyml_3.0.1_win32"
     }
     if (is.null(execname))
         stop("you must give an executable file name for PHYML")
@@ -41,7 +41,7 @@ phymltest <- function(seqfile, format = "interleaved", itree = NULL,
     tstv <- rep("-t e", N) # ignored by PhyML with JC69 or F81
     inv <- rep(c("", "-v e"), length.out = N)
     ## no need to use the -c option of PhyML (4 categories by default if '-a e' is set):
-    alpha <- rep(rep(c("", "-a e"), each = 2), length.out = N)
+    alpha <- rep(rep(c("-c 1", "-a e"), each = 2), length.out = N)
     tree <- rep("", N)
     if (!is.null(itree)) tree[] <- paste("-u ", itree)
 

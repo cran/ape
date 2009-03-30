@@ -1,6 +1,6 @@
 \name{rotate}
 \alias{rotate}
-\title{Swopping sister clades}
+\title{Swapping sister clades}
 \description{
 For a given node, rotate exchanges the position of two clades descending from this node. It can handle dichotomies as well as polytomies. In the latter case, two clades from the polytomy are selected for swapping.}
 \usage{

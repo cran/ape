@@ -41,7 +41,7 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   \item{k}{a numeric value giving the penalty per estimated parameter;
     the default is \code{k = 2} which is the classical Akaike
     information criterion.}
-  \item{...}{further arguments passed to or from other methods.}
+  \item{\dots}{further arguments passed to or from other methods.}
 }
 \description{
   This function estimates ancestral character states, and the associated

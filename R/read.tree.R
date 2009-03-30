@@ -1,8 +1,8 @@
-## read.tree.R (2008-02-18)
+## read.tree.R (2009-03-29)
 
 ##   Read Tree Files in Parenthetic Format
 
-## Copyright 2002-2008 Emmanuel Paradis
+## Copyright 2002-2009 Emmanuel Paradis and Daniel Lawson
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -94,9 +94,19 @@ tree.build <- function(tp)
     obj
 }
 
-read.tree <- function(file = "", text = NULL, tree.names = NULL,
-                      skip = 0, comment.char = "#", ...)
+read.tree <- function(file = "", text = NULL, tree.names = NULL, skip = 0,
+    comment.char = "#", keep.multi = FALSE, ...)
 {
+    unname <- function(treetext) {
+        nc <- nchar(treetext)
+	tstart <- 1
+	while (substr(treetext, tstart, tstart) != "(" && tstart <= nc)
+            tstart <- tstart + 1
+	if (tstart > 1)
+            return(c(substr(treetext, 1, tstart - 1),
+                     substr(treetext, tstart, nc)))
+	return(c("", treetext))
+    }
     if (!is.null(text)) {
         if (!is.character(text))
           stop("argument `text' must be of mode character")
@@ -120,6 +130,13 @@ read.tree <- function(file = "", text = NULL, tree.names = NULL,
     STRING <- character(Ntree)
     for (i in 1:Ntree)
         STRING[i] <- paste(tree[x[i]:y[i]], sep = "", collapse = "")
+
+    tmp <- unlist(lapply(STRING, unname))
+    tmpnames <- tmp[c(TRUE, FALSE)]
+    tree <- tmp[c(FALSE, TRUE)]
+    if (is.null(tree.names) && any(nzchar(tmpnames)))
+        tree.names <- tmpnames
+
     colon <- grep(":", STRING)
     if (!length(colon)) {
         obj <- lapply(STRING, clado.build)
@@ -139,7 +156,7 @@ read.tree <- function(file = "", text = NULL, tree.names = NULL,
         if(sum(obj[[i]]$edge[, 1] == ROOT) == 1 && dim(obj[[i]]$edge)[1] > 1)
             stop(paste("There is apparently two root edges in your file: cannot read tree file.\n  Reading Newick file aborted at tree no.", i, sep = ""))
     }
-    if (Ntree == 1) obj <- obj[[1]] else {
+    if (Ntree == 1 && !keep.multi) obj <- obj[[1]] else {
         if (!is.null(tree.names)) names(obj) <- tree.names
         class(obj) <- "multiPhylo"
     }

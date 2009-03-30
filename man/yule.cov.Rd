@@ -65,8 +65,7 @@ The user must obtain the values for the nodes separately.
   change in a species trait is more or less continuous between two nodes
   or between a node and a tip. Thus reconstructing the ancestral values
   with a Brownian motion model may be consistent with the present
-  method. This can be done with the function \code{\link{pic}} but
-  currently needs some hacking!
+  method. This can be done with the function \code{\link{ace}}.
 }
 \value{
   A NULL value is returned, the results are simply printed.
@@ -92,9 +91,9 @@ yule.cov(bird.orders, ~ x)
 ### with a likelihood ratio test
 yule(bird.orders)
 ### another example with a tree that has a multichotomy
-### but we cannot run yule() because of this!
 data(bird.families)
 y <- rnorm(272) # 137 tips + 135 nodes
 yule.cov(bird.families, ~ y)
+yule(multi2di(bird.families))
 }
 \keyword{models}

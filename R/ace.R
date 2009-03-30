@@ -1,4 +1,4 @@
-## ace.R (2009-01-19)
+## ace.R (2009-03-22)
 
 ##     Ancestral Character Estimation
 
@@ -170,13 +170,18 @@ as the number of categories in `x'")
             if (output.liks) return(liks[-(1:nb.tip), ])
             - 2 * log(sum(liks[nb.tip + 1, ]))
         }
-        out <- nlm(function(p) dev(p), p = rep(ip, length.out = np),
-                   hessian = TRUE)
-        obj$loglik <- -out$minimum / 2
-        obj$rates <- out$estimate
-        if (any(out$gradient == 0))
+        out <- nlminb(rep(ip, length.out = np), function(p) dev(p),
+                      lower = rep(0, np), upper = rep(Inf, np))
+        obj$loglik <- -out$objective/2
+        obj$rates <- out$par
+        oldwarn <- options("warn")
+        options(warn = -1)
+        h <- nlm(function(p) dev(p), p = obj$rates, iterlim = 1,
+                 stepmax = 0, hessian = TRUE)$hessian
+        options(oldwarn)
+        if (any(h == 0))
           warning("The likelihood gradient seems flat in at least one dimension (gradient null):\ncannot compute the standard-errors of the transition rates.\n")
-        else obj$se <- sqrt(diag(solve(out$hessian)))
+        else obj$se <- sqrt(diag(solve(h)))
         obj$index.matrix <- index.matrix
         if (CI) {
             lik.anc <- dev(obj$rates, TRUE)

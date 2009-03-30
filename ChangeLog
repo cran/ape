@@ -1,3 +1,46 @@
+		CHANGES IN APE VERSION 2.3
+
+
+NEW FEATURES
+
+    o The new functions CADM.global and CADM.post, contributed by
+      Pierre Legendre, test the congruence among several distance
+      matrices.
+
+    o The new function yule.time fits a user-defined time-dependent
+      Yule model by maximum likelihood.
+
+    o The new function makeNodeLabel creates and/or modifies node
+      labels in a flexible way.
+
+    o read.tree() and write.tree() have been modified so that they can
+      handle individual tree names.
+
+    o plot.phylo() has a new argument 'edge.lty' that specifies the
+      types of lines used for the edges (plain, dotted, dashed, ...)
+
+    o phymltest() has been updated to work with PhyML 3.0.1.
+
+
+BUG FIXES
+
+    o drop.tip() shuffled tip labels in some cases.
+
+    o drop.tip() did not handle node.label correctly.
+
+    o is.ultrametric() now checks the ordering of the edge matrix.
+
+    o ace() sometimes returned negative values of likelihoods of
+      ancestral states (thanks to Dan Rabosky for solving this long
+      lasting bug).
+
+
+OTHER CHANGES
+
+    o The data set xenarthra has been removed.
+
+
+
 		CHANGES IN APE VERSION 2.2-4
 
 BUG FIXES

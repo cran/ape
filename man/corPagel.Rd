@@ -11,11 +11,11 @@ corPagel(value, phy, form = ~1, fixed = FALSE)
 }
 \arguments{
   \item{value}{the (initial) value of the parameter
-    \eqn{\gamma}{gamma}.}
+    \eqn{\lambda}{lambda}.}
   \item{phy}{an object of class \code{"phylo"}.}
   \item{form}{(ignored).}
   \item{fixed}{a logical specifying whether \code{gls} should
-    estimate \eqn{\gamma}{gamma} (the default) or keep it fixed.}
+    estimate \eqn{\lambda}{lambda} (the default) or keep it fixed.}
   \item{object}{an (initialized) object of class \code{"corPagel"}.}
   \item{covariate}{(ignored).}
   \item{corr}{a logical value specifying whether to return the
@@ -29,7 +29,7 @@ corPagel(value, phy, form = ~1, fixed = FALSE)
 \description{
   The correlation structure from the present model is derived from the
   Brownian motion model by multiplying the off-diagonal elements (i.e.,
-  the covariances) by \eqn{\gamma}{gamma}. The variances are thus the
+  the covariances) by \eqn{\lambda}{lambda}. The variances are thus the
   same than for a Brownian motion model.
 }
 \value{

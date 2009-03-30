@@ -18,7 +18,7 @@
 
   The diagonal [i, i] is always set to 0.
 
-  This returned matrix can be used as a weight matrix in
+  The returned matrix can be used as a weight matrix in
   \code{\link{Moran.I}}. \code{x} and \code{y} may be vectors of
   factors.
 
