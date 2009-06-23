@@ -1,8 +1,8 @@
-## DNA.R (2008-12-22)
+## DNA.R (2009-05-19)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
-## Copyright 2002-2008 Emmanuel Paradis
+## Copyright 2002-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -14,11 +14,12 @@ del.gaps <- function(x)
         if (length(i)) x[-i] else x
     }
 
-    if (class(x) != "DNAbin") x <- as.DNAbin(x)
+    if (!inherits(x, "DNAbin")) x <- as.DNAbin(x)
     if (is.matrix(x)) {
         n <- dim(x)[1]
         y <- vector("list", n)
         for (i in 1:n) y[[i]] <- x[i, ]
+        names(y) <- rownames(x)
         x <- y
         rm(y)
     }
@@ -50,6 +51,7 @@ as.alignment <- function(x)
 
 "[.DNAbin" <- function(x, i, j, drop = TRUE)
 {
+    oc <- oldClass(x)
     class(x) <- NULL
     if (is.matrix(x)) {
         if (nargs() == 2 && !missing(i)) ans <- x[i]
@@ -63,12 +65,12 @@ as.alignment <- function(x)
         if (missing(i)) i <- 1:length(x)
         ans <- x[i]
     }
-    structure(ans, class = "DNAbin")
+    class(ans) <- oc
+    ans
 }
 
 as.matrix.DNAbin <- function(x, ...)
 {
-    if (is.matrix(x)) return(x)
     if (is.list(x)) {
         if (length(unique(unlist(lapply(x, length)))) != 1)
           stop("DNA sequences in list not of the same length.")
@@ -140,6 +142,9 @@ cbind.DNAbin <-
     class(ans) <- "DNAbin"
     ans
 }
+
+c.DNAbin <- function(..., recursive = FALSE)
+    structure(NextMethod("c"), class = "DNAbin")
 
 print.DNAbin <- function(x, ...)
 {

@@ -1,4 +1,4 @@
-## read.tree.R (2009-03-29)
+## read.tree.R (2009-04-27)
 
 ##   Read Tree Files in Parenthetic Format
 
@@ -133,7 +133,7 @@ read.tree <- function(file = "", text = NULL, tree.names = NULL, skip = 0,
 
     tmp <- unlist(lapply(STRING, unname))
     tmpnames <- tmp[c(TRUE, FALSE)]
-    tree <- tmp[c(FALSE, TRUE)]
+    STRING <- tmp[c(FALSE, TRUE)]
     if (is.null(tree.names) && any(nzchar(tmpnames)))
         tree.names <- tmpnames
 

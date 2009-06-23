@@ -1,15 +1,15 @@
-## pic.R (2006-10-29)
+## pic.R (2009-05-10)
 
 ##   Phylogenetically Independent Contrasts
 
-## Copyright 2002-2006 Emmanuel Paradis
+## Copyright 2002-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
 {
-    if (class(phy) != "phylo")
+    if (!inherits(phy, "phylo"))
       stop("object 'phy' is not of class \"phylo\"")
     if (is.null(phy$edge.length))
       stop("your tree has no branch lengths: you may consider setting them equal to one, or using the function `compute.brlen'.")

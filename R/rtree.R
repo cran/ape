@@ -1,8 +1,8 @@
-## rtree.R (2008-05-07)
+## rtree.R (2000-05-13)
 
 ##   Generates Random Trees
 
-## Copyright 2004-2008 Emmanuel Paradis
+## Copyright 2004-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -113,7 +113,7 @@ rcoal <- function(n, tip.label = NULL, br = "coalescent", ...)
         edge.length <- rep(x, 2)
     } else if (n == 3) {
         edge[] <- c(4L, 5L, 5L, 4L, 5L, 1:3)
-        edge.length <- c(x[2], x[1], x[1], sum(x))
+        edge.length <- c(x[c(2, 1, 1)], sum(x))
     } else {
         edge.length <- numeric(nbr)
         h <- numeric(2*n - 1) # initialized with 0's
@@ -132,14 +132,15 @@ rcoal <- function(n, tip.label = NULL, br = "coalescent", ...)
         }
     }
     phy <- list(edge = edge, edge.length = edge.length)
-    phy$tip.label <-
-      if (is.null(tip.label)) paste("t", 1:n, sep = "")
-      else tip.label
+    if (is.null(tip.label))
+        tip.label <- paste("t", 1:n, sep = "")
+    phy$tip.label <- sample(tip.label)
     phy$Nnode <- n - 1L
     class(phy) <- "phylo"
-    ##reorder(phy)
+    phy <- reorder(phy)
     ## to avoid crossings when converting with as.hclust:
-    read.tree(text = write.tree(phy))
+    phy$edge[phy$edge[, 2] <= n, 2] <- 1:n
+    phy
 }
 
 rmtree <- function(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)

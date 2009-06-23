@@ -1,31 +1,31 @@
-## summary.phylo.R (2008-04-22)
+## summary.phylo.R (2009-05-10)
 
 ##   Print Summary of a Phylogeny
 
-## Copyright 2003-2008 Emmanuel Paradis, and 2006 Ben Bolker
+## Copyright 2003-2009 Emmanuel Paradis, and 2006 Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 Ntip <- function(phy)
 {
-    if (class(phy) != "phylo")
-      stop('object "phy" is not of class "phylo"')
+    if (!inherits(phy, "phylo"))
+        stop('object "phy" is not of class "phylo"')
     length(phy$tip.label)
 }
 
 Nnode <- function(phy, internal.only = TRUE)
 {
-    if (class(phy) != "phylo")
-      stop('object "phy" is not of class "phylo"')
+    if (!inherits(phy, "phylo"))
+        stop('object "phy" is not of class "phylo"')
     if (internal.only) return(phy$Nnode)
     phy$Nnode + length(phy$tip.label)
 }
 
 Nedge <- function(phy)
 {
-    if (class(phy) != "phylo")
-      stop('object "phy" is not of class "phylo"')
+    if (!inherits(phy, "phylo"))
+        stop('object "phy" is not of class "phylo"')
     dim(phy$edge)[1]
 }
 
@@ -134,9 +134,10 @@ print.multiPhylo <- function(x, details = FALSE, ...)
 
 "[.multiPhylo" <- function(x, i)
 {
+    oc <- oldClass(x)
     class(x) <- NULL
     structure(x[i], TipLabel = attr(x, "TipLabel"),
-              class = "multiPhylo")
+              class = oc)
 }
 
 str.multiPhylo <- function(object, ...)

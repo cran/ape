@@ -1,15 +1,15 @@
-## ltt.plot.R (2008-12-20)
+## ltt.plot.R (2009-05-10)
 
 ##    Lineages Through Time Plot
 
-## Copyright 2002-2008 Emmanuel Paradis
+## Copyright 2002-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 ltt.plot <- function(phy, xlab = "Time", ylab = "N", ...)
 {
-    if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
+    if (!inherits(phy, "phylo")) stop('object "phy" is not of class "phylo"')
     if (!is.binary.tree(phy)) phy <- multi2di(phy)
     time <- sort(branching.times(phy), decreasing = TRUE)
     N <- 1:(length(time) + 1)
@@ -35,7 +35,7 @@ mltt.plot <- function(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
         y <- 1:length(x)
         cbind(x, y)
     }
-    if (class(phy) == "phylo") {
+    if (inherits(phy, "phylo")) { # if a tree of class "phylo"
         TREES <- list(ltt.xy(phy))
         names(TREES) <- deparse(substitute(phy))
     } else { # a list of trees

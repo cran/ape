@@ -1,15 +1,15 @@
-## vcv.phylo.R (2006-10-04)
+## vcv.phylo.R (2009-05-10)
 
 ##   Phylogenetic Variance-Covariance or Correlation Matrix
 
-## Copyright 2002-2006 Emmanuel Paradis
+## Copyright 2002-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 vcv.phylo <- function(phy, model = "Brownian", cor = FALSE)
 {
-    if (class(phy) != "phylo")
+    if (!inherits(phy, "phylo"))
       stop('object "phy" is not of class "phylo"')
     if (is.null(phy$edge.length))
       stop("the tree has no branch lengths")

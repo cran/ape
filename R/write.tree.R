@@ -1,4 +1,4 @@
-## write.tree.R (2009-03-23)
+## write.tree.R (2009-06-16)
 
 ##   Write Tree File in Parenthetic Format
 
@@ -30,24 +30,25 @@ checkLabel <- function(x, ...)
 write.tree <-
     function (phy, file = "", append = FALSE, digits = 10, tree.names = FALSE)
 {
+    output.tree.names <- FALSE
     if (is.logical(tree.names)) {
         output.tree.names <- tree.names
         tree.names <- NULL
     } else if (is.character(tree.names)) {
         output.tree.names <- TRUE
-        names(tree) <- tree.names
+        names(phy) <- tree.names
     }
     if (output.tree.names)
-        names(tree) <- checkLabel(names(tree))
-    if (class(phy) == "multiPhylo") {
+        names(phy) <- checkLabel(names(phy))
+    if (inherits(phy, "multiPhylo")) {
         write.tree(phy[[1]], file = file, append = append,
-                   digits = digits, tree.names = names[1])
+                   digits = digits, tree.names = names(phy)[1])
         if (length(phy) > 1)
             for (i in 2:length(phy)) write.tree(phy[[i]], file = file,
                 append = TRUE, digits = digits, tree.names = names(phy)[i])
         return(invisible(NULL))
     }
-    if (class(phy) != "phylo")
+    if (!inherits(phy, "phylo"))
         stop("object \"phy\" is not of class \"phylo\"")
     brl <- !is.null(phy$edge.length)
     nodelab <- !is.null(phy$node.label)

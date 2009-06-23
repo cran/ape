@@ -1,4 +1,5 @@
 \name{ape-internal}
+\alias{klastorin}
 \alias{tree.build}
 \alias{f.cherry.yule}
 \alias{f.cherry.uniform}
@@ -19,13 +20,8 @@
 \alias{phylogram}
 \alias{prepareTree}
 \alias{setTree}
-\alias{buildTreeFromPhylo}
-\alias{destroyTree}
-\alias{getError}
 \alias{nEdges}
 \alias{nNodes}
-\alias{klastorin_nTips}
-\alias{getMisawaTajima}
 \alias{phylogram.plot}
 \alias{cladogram.plot}
 \alias{circular.plot}
@@ -51,7 +47,6 @@
   Internal ape functions.
 }
 \note{
-  These are not to be called by the user (or in some cases are just
-  waiting for proper documentation to be written).
+  These are not to be called by the user (unless you know what you're doing).
 }
 \keyword{internal}

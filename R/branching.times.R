@@ -1,8 +1,8 @@
-## branching.times.R (2006-10-04)
+## branching.times.R (2009-05-10)
 
 ##    Branching Times of a Phylogenetic Tree
 
-## Copyright 2002-2006 Emmanuel Paradis
+## Copyright 2002-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -10,7 +10,7 @@
 branching.times <- function(phy)
 {
 ### the tree must be in cladewise order
-    if (class(phy) != "phylo")
+    if (!inherits(phy, "phylo"))
       stop('object "phy" is not of class "phylo"')
     n <- length(phy$tip.label)
     N <- dim(phy$edge)[1]

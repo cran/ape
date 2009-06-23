@@ -22,9 +22,9 @@ consensus(..., p = 1, check.labels = TRUE)
   0.5 and 1 can be used.
 }
 \details{
-  Using (the default) \code{check.labels = FALSE} results in
-  considerable decrease in computing times. This requires that (i) all
-  trees have the same tip labels, \emph{and} (ii) these labels are
+  Using \code{check.labels = FALSE} results in
+  considerable decrease in computing times. This requires that all
+  trees have the same tip labels, \emph{and} these labels are
   ordered similarly in all trees (in other words, the element
   \code{tip.label} are identical in all trees).
 }

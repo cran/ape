@@ -1,4 +1,4 @@
-## birthdeath.R (2007-10-30)
+## birthdeath.R (2009-05-10)
 
 ##   Estimation of Speciation and Extinction Rates
 ##             with Birth-Death Models
@@ -6,14 +6,14 @@
 ## birthdeath: standard model
 ## bd.ext: extended version
 
-## Copyright 2002-2007 Emmanuel Paradis
+## Copyright 2002-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 birthdeath <- function(phy)
 {
-    if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
+    if (!inherits(phy, "phylo")) stop('object "phy" is not of class "phylo"')
     N <- length(phy$tip.label)
     x <- c(NA, branching.times(phy))
     dev <- function(a, r) {
@@ -80,7 +80,7 @@ print.birthdeath <- function(x, ...)
 
 bd.ext <- function(phy, S)
 {
-    if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
+    if (!inherits(phy, "phylo")) stop('object "phy" is not of class "phylo"')
     if (!is.null(names(S))) {
         if (all(names(S) %in% phy$tip.label)) S <- S[phy$tip.label]
         else warning('the names of argument "S" and the names of the tip labels

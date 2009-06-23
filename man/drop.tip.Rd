@@ -4,7 +4,7 @@
 \title{Remove Tips in a Phylogenetic Tree}
 \usage{
 drop.tip(phy, tip, trim.internal = TRUE, subtree = FALSE,
-         root.edge = 0)
+         root.edge = 0, rooted = is.rooted(phy))
 extract.clade(phy, node, root.edge = 0)
 }
 \arguments{
@@ -18,6 +18,9 @@ extract.clade(phy, node, root.edge = 0)
   \item{root.edge}{an integer giving the number of internal branches to
     be used to build the new root edge. This has no effect if
     \code{trim.internal = FALSE}.}
+  \item{rooted}{a logical indicated whether the tree must be treated as
+    rooted or not. This allows to force the tree to be considered as
+    unrooted (see examples).}
   \item{node}{a node number or label.}
 }
 \description{
@@ -77,9 +80,10 @@ tip <- c(
 plot(drop.tip(bird.families, tip))
 plot(drop.tip(bird.families, tip, trim.internal = FALSE))
 data(bird.orders)
-plot(drop.tip(bird.orders, 6:23, subtree = TRUE), font = 1)
-plot(drop.tip(bird.orders, c(1:5, 20:23), subtree = TRUE), font = 1)
-
+plot(drop.tip(bird.orders, 6:23, subtree = TRUE))
+plot(drop.tip(bird.orders, c(1:5, 20:23), subtree = TRUE))
+plot(drop.tip(bird.orders, c(1:20, 23), subtree = TRUE))
+plot(drop.tip(bird.orders, c(1:20, 23), subtree = TRUE, rooted = FALSE))
 ### Examples of the use of `root.edge'
 tr <- read.tree(text = "(A:1,(B:1,(C:1,(D:1,E:1):1):1):1):1;")
 drop.tip(tr, c("A", "B"), root.edge = 0) # = (C:1,(D:1,E:1):1);

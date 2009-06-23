@@ -61,14 +61,18 @@ yule.cov(phy, formula, data = NULL)
 
 The user must obtain the values for the nodes separately.
 
-  Note that the method in its present implementation assumes that the
-  change in a species trait is more or less continuous between two nodes
-  or between a node and a tip. Thus reconstructing the ancestral values
-  with a Brownian motion model may be consistent with the present
-  method. This can be done with the function \code{\link{ace}}.
+Note that the method in its present implementation assumes that the
+change in a species trait is more or less continuous between two nodes
+or between a node and a tip. Thus reconstructing the ancestral values
+with a Brownian motion model may be consistent with the present
+method. This can be done with the function \code{\link{ace}}.
 }
 \value{
-  A NULL value is returned, the results are simply printed.
+  A NULL value is returned, the results are simply printed. The output
+  includes the deviance of the null (intercept-only) model and a
+  likelihood-ratio test of the fitted model against the null model.
+  Note that the deviance of the null model is different from the one
+  returned by \code{\link{yule}} because of the different parametrizations.
 }
 \references{
   Paradis, E. (2005) Statistical analysis of diversification with
@@ -87,13 +91,9 @@ x <- rnorm(45) # the tree has 23 tips and 22 nodes
 ### the standard-error for x should be as large as
 ### the estimated parameter
 yule.cov(bird.orders, ~ x)
-### compare with the simple Yule model, eventually
-### with a likelihood ratio test
-yule(bird.orders)
 ### another example with a tree that has a multichotomy
 data(bird.families)
 y <- rnorm(272) # 137 tips + 135 nodes
 yule.cov(bird.families, ~ y)
-yule(multi2di(bird.families))
 }
 \keyword{models}

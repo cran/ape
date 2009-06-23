@@ -1,15 +1,15 @@
-## mrca.R (2006-10-12)
+## mrca.R (2009-05-10)
 
 ##   Find Most Recent Common Ancestors Between Pairs
 
-## Copyright 2005-2006 Emmanuel Paradis
+## Copyright 2005-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 mrca <- function(phy, full = FALSE)
 {
-    if (class(phy) != "phylo") stop('object "phy" is not of class "phylo"')
+    if (!inherits(phy, "phylo")) stop('object "phy" is not of class "phylo"')
     ##    if (!is.rooted(phy)) stop("the tree must be rooted.")
     ## Get all clades:
     nb.tip <- length(phy$tip.label)

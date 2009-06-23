@@ -1,8 +1,8 @@
-## dist.gene.R (2008-07-18)
+## dist.gene.R (2009-04-01)
 
 ##   Pairwise Distances from Genetic Data
 
-## Copyright 2002-2008 Emmanuel Paradis
+## Copyright 2002-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -18,7 +18,7 @@ dist.gene <-
     if (!pairwise.deletion) {
         ## delete the columns with at least one NA:
         del <- apply(x, 2, function(xx) any(is.na(xx)))
-        x <- x[, -del]
+        x <- x[, !del]
     }
     n <- dim(x)
     L <- n[2]

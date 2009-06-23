@@ -7,7 +7,9 @@ dist.dna(x, model = "K80", variance = FALSE,
          base.freq = NULL, as.matrix = FALSE)
 }
 \arguments{
-  \item{x}{a matrix or a list containing the DNA sequences.}
+  \item{x}{a matrix or a list containing the DNA sequences; this must be
+    of class \code{"DNAbin"} (use \code{\link{as.DNAbin}} is they are
+    stored as character).}
   \item{model}{a character string specifying the evlutionary model to be
     used; must be one of \code{"raw"}, \code{"N"}, \code{"JC69"},
     \code{"K80"} (the default), \code{"F81"}, \code{"K81"},

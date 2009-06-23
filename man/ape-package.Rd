@@ -13,16 +13,17 @@ Analyses of Phylogenetics and Evolution
   provided for programming new phylogenetic methods.
 
   The complete list of functions can be displayed with
-  \code{library(help = "splines")}.
+  \code{library(help = ape)}.
 
-  More information on \pkg{ape} can be at \url{http://ape.mpl.ird.fr/}.
+  More information on \pkg{ape} can be found at \url{http://ape.mpl.ird.fr/}.
 }
 
 \author{
   Emmanuel Paradis, Ben Bolker, Julien Claude, Hoa Sien Cuong, Richard
   Desper, Benoit Durand, Julien Dutheil, Olivier Gascuel, Gangolf Jobb,
-  Christoph Heibl, Vincent Lefort, Jim Lemon, Yvonnick Noel, Johan
-  Nylander, Rainer Opgen-Rhein, Korbinian Strimmer, Damien de Vienne
+  Christoph Heibl, Daniel Lawson, Vincent Lefort, Pierre Legendre, Jim
+  Lemon, Yvonnick Noel, Johan Nylander, Rainer Opgen-Rhein, Korbinian
+  Strimmer, Damien de Vienne
 
   Maintainer: Emmanuel Paradis <Emmanuel.Paradis@ird.fr>
 }

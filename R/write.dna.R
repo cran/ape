@@ -1,8 +1,8 @@
-## write.dna.R (2008-07-03)
+## write.dna.R (2009-05-10)
 
 ##   Write DNA Sequences in a File
 
-## Copyright 2003-2008 Emmanuel Paradis
+## Copyright 2003-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -13,7 +13,7 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
 {
     format <- match.arg(format, c("interleaved", "sequential", "fasta"))
     phylip <- if (format %in% c("interleaved", "sequential")) TRUE else FALSE
-    if (class(x) == "DNAbin") x <- as.character(x)
+    if (inherits(x, "DNAbin")) x <- as.character(x)
     aligned <- TRUE
     if (is.matrix(x)) {
         N <- dim(x)

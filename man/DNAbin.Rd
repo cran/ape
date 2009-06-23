@@ -6,6 +6,7 @@
 \alias{rbind.DNAbin}
 \alias{cbind.DNAbin}
 \alias{as.matrix.DNAbin}
+\alias{c.DNAbin}
 \title{Manipulate DNA Sequences in Bit-Level Format}
 \description{
   These functions help to manipulate DNA sequences coded in the
@@ -19,13 +20,14 @@
              quiet = FALSE)
 \method{[}{DNAbin}(x, i, j, drop = TRUE)
 \method{as.matrix}{DNAbin}(x, \dots)
+\method{c}{DNAbin}(\dots, recursive = FALSE)
 }
 \arguments{
   \item{x, object}{an object of class \code{"DNAbin"}.}
   \item{\dots}{either further arguments to be passed to or from other
     methods in the case of \code{print}, \code{summary}, and
     \code{as.matrix}, or a series of objects of class \code{"DNAbin"} in
-    the case of \code{rbind} and \code{cbind}.}
+    the case of \code{rbind}, \code{cbind}, and \code{c}.}
   \item{printlen}{the number of labels to print (6 by default).}
   \item{digits}{the number of digits to print (3 by default).}
   \item{check.names}{a logical specifying whether to check the rownames
@@ -41,6 +43,7 @@
     standard R objects).}
   \item{drop}{logical; if \code{TRUE} (the default), the returned object
     is of the lowest possible dimension.}
+  \item{recursive}{for compatibility with the generic (unused).}
 }
 \details{
   These are all `methods' of generic functions which are here applied to

@@ -1,3 +1,57 @@
+		CHANGES IN APE VERSION 2.3-1
+
+
+NEW FEATURES
+
+    o The new function is.monophyletic tests the monophyly of a group.
+
+    o There is now a c() method for lists of class "DNAbin".
+
+    o yule.cov() now fits the null model, and its help page has been
+      corrected with respect to this change.
+
+    o drop.tip() has a new option 'rooted' to force (or not) a tree
+      to be treated as (un)rooted.
+
+
+BUG FIXES
+
+    o dist.gene() failed on most occasions with the default
+      pairwise.deletion = FALSE.
+
+    o read.tree() failed to read correctly the tree name(s).
+
+    o boot.phylo() now treats correctly data frames.
+
+    o del.gaps() did not copy the rownames of a matrix.
+
+    o A small bug was fixed in CDAM.global().
+
+    o ace() failed with large data sets. Thanks to Rich FitzJohn for
+      the fix. With other improvements, this function is now about 6
+      times faster.
+
+    o write.tree() failed with objects of class "multiPhylo".
+
+    o drop.tip(, subtree = TRUE) sometimes shuffled tip labels.
+
+
+OTHER CHANGES
+
+    o [.multiPhylo and [.DNAbin now respect the original class.
+
+    o Instances of the form class(phy) == "phylo" have been replaced
+      by inherits(phy, "phylo").
+
+    o rcoal() is now faster.
+
+
+DEPRECATED & DEFUNCT
+
+    o klastorin() has been removed.
+
+
+
 		CHANGES IN APE VERSION 2.3
 
 

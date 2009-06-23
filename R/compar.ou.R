@@ -1,15 +1,15 @@
-## compar.ou.R (2006-10-05)
+## compar.ou.R (2009-05-10)
 
 ##   Ornstein--Uhlenbeck Model for Continuous Characters
 
-## Copyright 2005-2006 Emmanuel Paradis
+## Copyright 2005-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 compar.ou <- function(x, phy, node = NULL, alpha = NULL)
 {
-    if (class(phy) != "phylo")
+    if (!inherits(phy, "phylo"))
       stop('object "phy" is not of class "phylo".')
     if (!is.numeric(x)) stop("'x' must be numeric.")
     if (!is.null(names(x))) {

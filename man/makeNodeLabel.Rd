@@ -23,7 +23,7 @@ makeNodeLabel(phy, method = "number", prefix = "Node", nodeList = list(), ...)
   The three methods are described below:
 
   \itemize{
-    \item{``number''}{The labels are created with 1, 2, \dots suffixed
+    \item{``number''}{The labels are created with 1, 2, \dots prefixed
       with the argument \code{prefix}; thus the default is to have
       Node1, Node2, \dots Set \code{prefix = ""} to have only numbers.}
     \item{``md5sum''}{For each node, the labels of the tips descendant

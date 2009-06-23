@@ -1,4 +1,4 @@
-## read.nexus.R (2009-01-19)
+## read.nexus.R (2009-04-01)
 
 ##   Read Tree File in Nexus Format
 
@@ -228,7 +228,8 @@ read.nexus <- function(file, tree.names = NULL)
         class(trees) <- "multiPhylo"
     }
     if (length(grep("[\\/]", file)) == 1)
-        file <- paste(getwd(), file, sep = "/")
+        if (!file.exists(file)) # suggestion by Francois Michonneau
+            file <- paste(getwd(), file, sep = "/")
     attr(trees, "origin") <- file
     trees
 }

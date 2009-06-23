@@ -1,4 +1,4 @@
-## is.ultrametric.R (2009-03-09)
+## is.ultrametric.R (2009-05-10)
 
 ##   Test if a Tree is Ultrametric
 
@@ -9,7 +9,7 @@
 
 is.ultrametric <- function(phy, tol = .Machine$double.eps^0.5)
 {
-    if (class(phy) != "phylo")
+    if (!inherits(phy, "phylo"))
       stop('object "phy" is not of class "phylo".')
     if (is.null(phy$edge.length))
       stop("the tree has no branch lengths.")

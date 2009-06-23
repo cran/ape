@@ -28,7 +28,7 @@ rotate <- function(phy, node, polytom = c(1,2)){
 		}
 # function starts here	
 # definitions
-	if (class(phy) != "phylo") # is phy of class phylo?
+	if (!inherits(phy, "phylo")) # is phy of class phylo?
         stop("object \"phy\" is not of class \"phylo\"")
     nb.tips <- length(phy$tip.label) # number of tiplabels
 	max.int.node <- phy$Nnode+nb.tips # number of last internal node

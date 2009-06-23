@@ -143,7 +143,7 @@
 	Rmat <- apply(Y,2,rank)
 
 	## Correction factors for tied ranks (eq. 3.3)
-	t.ranks <- apply(Rmat, 2, function(x) summary(as.factor(x)))
+	t.ranks <- apply(Rmat, 2, function(x) summary(as.factor(x), maxsum=nd))
 	TT <- sum(unlist(lapply(t.ranks, function(x) sum((x^3)-x))))
 	# if(!silent) cat("TT = ",TT,'\n')
 	

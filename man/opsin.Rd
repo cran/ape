@@ -16,9 +16,6 @@ data(opsin.newick)
   This tree is described in Misawa and Tajima (2000) as an example
   for application of the Klastorin (1982) classification method.
 }
-\seealso{
-\code{\link{klastorin}}.
-}
 \references{
   Misawa, K. (2000) A simple method for classifying genes and a bootstrap
   test for classifications. \emph{Molecular

@@ -1,6 +1,6 @@
 \name{Initialize.corPhyl}
 \alias{Initialize.corPhyl}
-\title{Initialize a 'corPhyl' Structure Object}
+\title{Initialize a `corPhyl' Structure Object}
 \usage{
 	\method{Initialize}{corPhyl}(object, data, ...)
 }

@@ -1,6 +1,6 @@
-## ace.R (2009-03-22)
+## ace.R (2009-06-10)
 
-##     Ancestral Character Estimation
+##   Ancestral Character Estimation
 
 ## Copyright 2005-2009 Emmanuel Paradis and Ben Bolker
 
@@ -11,7 +11,7 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
                 model = if (type == "continuous") "BM" else "ER",
                 scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1)
 {
-    if (class(phy) != "phylo")
+    if (!inherits(phy, "phylo"))
       stop('object "phy" is not of class "phylo".')
     if (is.null(phy$edge.length))
         stop("tree has no branch lengths")
@@ -149,10 +149,13 @@ as the number of categories in `x'")
         rate[rate == 0] <- np + 1 # to avoid 0's since we will use this an numeric indexing
 
         liks <- matrix(0, nb.tip + nb.node, nl)
-        for (i in 1:nb.tip) liks[i, x[i]] <- 1
+        TIPS <- 1:nb.tip
+        liks[cbind(TIPS, x)] <- 1
         phy <- reorder(phy, "pruningwise")
 
         Q <- matrix(0, nl, nl)
+        ## from Rich FitzJohn:
+        comp <- numeric(nb.tip + nb.node) # Storage...
         dev <- function(p, output.liks = FALSE) {
             Q[] <- c(p, 0)[rate]
             diag(Q) <- -rowSums(Q)
@@ -161,14 +164,14 @@ as the number of categories in `x'")
                 anc <- phy$edge[i, 1]
                 des1 <- phy$edge[i, 2]
                 des2 <- phy$edge[j, 2]
-                tmp <- eigen(Q * phy$edge.length[i], symmetric = FALSE)
-                P1 <- tmp$vectors %*% diag(exp(tmp$values)) %*% solve(tmp$vectors)
-                tmp <- eigen(Q * phy$edge.length[j], symmetric = FALSE)
-                P2 <- tmp$vectors %*% diag(exp(tmp$values)) %*% solve(tmp$vectors)
-                liks[anc, ] <- P1 %*% liks[des1, ] * P2 %*% liks[des2, ]
+                v.l <- matexpo(Q * phy$edge.length[i]) %*% liks[des1, ]
+                v.r <- matexpo(Q * phy$edge.length[j]) %*% liks[des2, ]
+                v <- v.l * v.r
+                comp[anc] <- sum(v)
+                liks[anc, ] <- v/comp[anc]
             }
-            if (output.liks) return(liks[-(1:nb.tip), ])
-            - 2 * log(sum(liks[nb.tip + 1, ]))
+            if (output.liks) return(liks[-TIPS, ])
+            -2 * sum(log(comp[-TIPS]))
         }
         out <- nlminb(rep(ip, length.out = np), function(p) dev(p),
                       lower = rep(0, np), upper = rep(Inf, np))
@@ -184,10 +187,8 @@ as the number of categories in `x'")
         else obj$se <- sqrt(diag(solve(h)))
         obj$index.matrix <- index.matrix
         if (CI) {
-            lik.anc <- dev(obj$rates, TRUE)
-            lik.anc <- lik.anc / rowSums(lik.anc)
-            colnames(lik.anc) <- lvls
-            obj$lik.anc <- lik.anc
+            obj$lik.anc <- dev(obj$rates, TRUE)
+            colnames(obj$lik.anc) <- lvls
         }
     }
     obj$call <- match.call()

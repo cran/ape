@@ -1,15 +1,15 @@
-## root.R (2008-06-12)
+## root.R (2009-05-10)
 
 ##   Root of Phylogenetic Trees
 
-## Copyright 2004-2008 Emmanuel Paradis
+## Copyright 2004-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 is.rooted <- function(phy)
 {
-    if (!"phylo" %in% class(phy))
+    if (!inherits(phy, "phylo"))
       stop('object "phy" is not of class "phylo"')
     if (!is.null(phy$root.edge)) return(TRUE)
     else
@@ -20,7 +20,7 @@ is.rooted <- function(phy)
 
 unroot <- function(phy)
 {
-    if (class(phy) != "phylo")
+    if (!inherits(phy, "phylo"))
       stop('object "phy" is not of class "phylo"')
     if (dim(phy$edge)[1] < 3)
       stop("cannot unroot a tree with two edges.")
@@ -64,7 +64,7 @@ unroot <- function(phy)
 
 root <- function(phy, outgroup, node = NULL, resolve.root = FALSE)
 {
-    if (class(phy) != "phylo")
+    if (!inherits(phy, "phylo"))
       stop('object "phy" is not of class "phylo"')
     ord <- attr(phy, "order")
     if (!is.null(ord) && ord == "pruningwise") phy <- reorder(phy)
