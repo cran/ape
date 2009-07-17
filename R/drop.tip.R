@@ -1,4 +1,4 @@
-## drop.tip.R (2009-06-23)
+## drop.tip.R (2009-07-06)
 
 ##   Remove Tips in a Phylogenetic Tree
 
@@ -29,7 +29,7 @@ extract.clade <- function(phy, node, root.edge = 0)
     root.node <- which(phy$edge[, 2] == node)
     start <- root.node + 1 # start of the clade looked for
     anc <- phy$edge[root.node, 1] # the ancestor of 'node'
-    next.anc <- which(phy$edge[-(1:start), 1] == anc) # find the next occurence of 'anc'
+    next.anc <- which(phy$edge[-(1:start), 1] <= anc) # find the next occurence of 'anc' or an 'older' node
 
     keep <- if (length(next.anc)) start + 0:(next.anc[1] - 1) else start:Nedge
 

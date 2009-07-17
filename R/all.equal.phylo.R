@@ -1,4 +1,4 @@
-## all.equal.phylo.R (2006-09-12)
+## all.equal.phylo.R (2009-07-05)
 ##
 ##     Global Comparison of two Phylogenies
 
@@ -8,18 +8,18 @@
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-### Recherche de la correspondance entre deux arbres
-### Parcours en profondeur et en parallèle des deux arbres (current et target)
-### current, target: les deux arbres à comparer
-### use.edge.length: faut-il comparer les longueurs de branches ?
-### use.tip.label: faut-il comparer les étiquettes de feuilles ou seulement la
-###	topologie des deux arbres ?
-### index.return: si TRUE, retourner la matrice de correspondance entre noeuds
-###	et feuilles, une matrice à deux colonnes (current et target) avec pour
-###	chaque ligne des paires d'identifiants de noeuds/feuilles, tels qu'ils
-###	apparaissent dans l'attribut 'edge' des objets phylo
-### tolerance, scale: paramètres de comparaison des longueurs de branches
-###	(voir 'all.equal')
+## Recherche de la correspondance entre deux arbres
+## Parcours en profondeur et en parallèle des deux arbres (current et target)
+## current, target: les deux arbres à comparer
+## use.edge.length: faut-il comparer les longueurs de branches ?
+## use.tip.label: faut-il comparer les étiquettes de feuilles ou seulement la
+##	topologie des deux arbres ?
+## index.return: si TRUE, retourner la matrice de correspondance entre noeuds
+##	et feuilles, une matrice à deux colonnes (current et target) avec pour
+##	chaque ligne des paires d'identifiants de noeuds/feuilles, tels qu'ils
+##	apparaissent dans l'attribut 'edge' des objets phylo
+## tolerance, scale: paramètres de comparaison des longueurs de branches
+##	(voir 'all.equal')
 all.equal.phylo <- function(target, current,
                         use.edge.length = TRUE,
                         use.tip.label = TRUE,
@@ -66,6 +66,14 @@ all.equal.phylo <- function(target, current,
         root1 <- Ntip1 + 1
         root2 <- Ntip2 + 1
         if (root1 != root2) return(FALSE)
+        ## Fix by EP so that unrooted trees are correctly compared:
+        if (!is.rooted(target) && !is.rooted(current)) {
+            outg <- target$tip.label[1]
+            if (! outg %in% current$tip.label) return(FALSE)
+            target <- root(target, outg)
+            current <- root(current, outg)
+        }
+        ## End
 	result <- same.node(root1, root2)
 	if (!isTRUE(index.return)) return(!is.null(result))
 	if (is.null(result)) return(result)

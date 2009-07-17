@@ -1,15 +1,16 @@
-## chronopl.R (2008-11-04)
+## chronopl.R (2009-07-06)
 
 ##   Molecular Dating With Penalized Likelihood
 
-## Copyright 2005-2008 Emmanuel Paradis
+## Copyright 2005-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-chronopl <- function(phy, lambda, age.min = 1, age.max = NULL,
-                     node = "root", S = 1, tol = 1e-8,
-                     CV = FALSE, eval.max = 500, iter.max = 500, ...)
+chronopl <-
+    function(phy, lambda, age.min = 1, age.max = NULL,
+             node = "root", S = 1, tol = 1e-8,
+             CV = FALSE, eval.max = 500, iter.max = 500, ...)
 {
     n <- length(phy$tip.label)
     ROOT <- n + 1
@@ -84,27 +85,23 @@ chronopl <- function(phy, lambda, age.min = 1, age.max = NULL,
         real.edge.length <- ini.time[e[, 1]] - ini.time[e[, 2]]
         while (any(real.edge.length <= 0)) {
             for (i in EDGES) {
-                if (real.edge.length[i] <= 0) {
-                    if (e[i, 1] %in% node) {
-                        ini.time[e[i, 2]] <-
-                            ini.time[e[, 2]] - 2*real.edge.length[i]
-                        next
-                    }
-                    if (e[i, 2] %in% node) {
-                        ini.time[e[i, 1]] <-
-                            ini.time[e[, 1]] + 2*real.edge.length[i]
-                        next
-                    }
-                    ini.time[e[i, 2]] <-
-                        ini.time[e[, 2]] - real.edge.length[i]
-                    ini.time[e[i, 1]] <-
-                        ini.time[e[, 1]] + real.edge.length[i]
+                if (real.edge.length[i] > 0) next
+                if (e[i, 1] %in% node) {
+                    ini.time[e[i, 2]] <- ini.time[e[1, 2]] - 2 * real.edge.length[i]
+                    next
                 }
+                if (e[i, 2] %in% node) {
+                    ini.time[e[i, 1]] <- ini.time[e[1, 1]] + 2 * real.edge.length[i]
+                    next
+                }
+                browser()
+                ini.time[e[i, 2]] <- ini.time[e[1, 2]] - real.edge.length[i]
+                ini.time[e[i, 1]] <- ini.time[e[1, 1]] + real.edge.length[i]
             }
             real.edge.length <- ini.time[e[, 1]] - ini.time[e[, 2]]
+            print(min(real.edge.length))
         }
     }
-
     ## `unknown.ages' will contain the index of the nodes of unknown age:
     unknown.ages <- n + 1:m
 

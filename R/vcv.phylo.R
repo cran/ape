@@ -1,4 +1,4 @@
-## vcv.phylo.R (2009-05-10)
+## vcv.phylo.R (2009-07-06)
 
 ##   Phylogenetic Variance-Covariance or Correlation Matrix
 
@@ -37,6 +37,7 @@ vcv.phylo <- function(phy, model = "Brownian", cor = FALSE)
         }
     }
 
+    phy <- reorder(phy)
     n <- length(phy$tip.label)
     n.node <- phy$Nnode
     N <- n.node + n

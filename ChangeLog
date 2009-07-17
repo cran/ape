@@ -1,3 +1,27 @@
+		CHANGES IN APE VERSION 2.3-2
+
+
+BUG FIXES
+
+    o all.equal.phylo() did not compare unrooted trees correctly.
+
+    o dist.topo(... method = "PH85") did not treat unrooted trees
+      correctly (thanks to Tim Wallstrom for the fix).
+
+    o root() sometimes failed to test for the monophyly of the
+      outgroup correctly.
+
+    o extract.clade() sometimes included too many edges.
+
+    o vcv.phylo() did not work correctly when the tree is in
+      "pruningwise" order.
+
+    o nj() did not handle correctly distance matrices with many 0's.
+      The code has also been significantly improved: 7, 70, 160 times
+      faster with n = 100, 500, 1000, respectively.
+
+
+
 		CHANGES IN APE VERSION 2.3-1
 
 

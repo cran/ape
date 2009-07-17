@@ -1,4 +1,4 @@
-## dist.topo.R (2009-05-10)
+## dist.topo.R (2009-07-06)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -15,21 +15,27 @@ dist.topo <- function(x, y, method = "PH85")
     n <- length(x$tip.label)
     bp1 <- .Call("bipartition", x$edge, n, x$Nnode, PACKAGE = "ape")
     bp1 <- lapply(bp1, function(xx) sort(x$tip.label[xx]))
-    bp2 <- .Call("bipartition", y$edge, n, y$Nnode, PACKAGE = "ape")
-    bp2 <- lapply(bp2, function(xx) sort(y$tip.label[xx]))
+    ## fix by Tim Wallstrom:
+    bp2.tmp <- .Call("bipartition", y$edge, n, y$Nnode, PACKAGE = "ape")
+    bp2 <- lapply(bp2.tmp, function(xx) sort(y$tip.label[xx]))
+    bp2.comp <- lapply(bp2.tmp, function(xx) setdiff(1:n, xx))
+    bp2.comp <- lapply(bp2.comp, function(xx) sort(y$tip.label[xx]))
+    ## End
     q1 <- length(bp1)
     q2 <- length(bp2)
     if (method == "PH85") {
         p <- 0
         for (i in 1:q1) {
             for (j in 1:q2) {
-                if (identical(all.equal(bp1[[i]], bp2[[j]]), TRUE)) {
+                if (identical(bp1[[i]], bp2[[j]]) |
+                    identical(bp1[[i]], bp2.comp[[j]])) {
                     p <- p + 1
                     break
                 }
             }
         }
-        dT <- if (q1 == q2) 2*(q1 - p) else 2*(min(q1, q2) - p) + abs(q1 - q2)
+        dT <- q1 + q2 - 2 * p # same than:
+        ##dT <- if (q1 == q2) 2*(q1 - p) else 2*(min(q1, q2) - p) + abs(q1 - q2)
     }
     if (method == "BHV01") {
         dT <- 0

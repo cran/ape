@@ -1,4 +1,4 @@
-## root.R (2009-05-10)
+## root.R (2009-07-06)
 
 ##   Root of Phylogenetic Trees
 
@@ -11,11 +11,10 @@ is.rooted <- function(phy)
 {
     if (!inherits(phy, "phylo"))
       stop('object "phy" is not of class "phylo"')
-    if (!is.null(phy$root.edge)) return(TRUE)
+    if (!is.null(phy$root.edge)) TRUE
     else
       if (tabulate(phy$edge[, 1])[length(phy$tip.label) + 1] > 2)
-        return(FALSE)
-      else return(TRUE)
+        FALSE else TRUE
 }
 
 unroot <- function(phy)
@@ -66,8 +65,7 @@ root <- function(phy, outgroup, node = NULL, resolve.root = FALSE)
 {
     if (!inherits(phy, "phylo"))
       stop('object "phy" is not of class "phylo"')
-    ord <- attr(phy, "order")
-    if (!is.null(ord) && ord == "pruningwise") phy <- reorder(phy)
+    phy <- reorder(phy)
     n <- length(phy$tip.label)
     ROOT <- n + 1
     if (!is.null(node)) {
@@ -88,7 +86,6 @@ root <- function(phy, outgroup, node = NULL, resolve.root = FALSE)
         ## First check that the outgroup is monophyletic--
         ## unless there's only one tip specified of course
         if (length(outgroup) > 1) {
-            msg <- "the specified outgroup is not monophyletic"
             seq.nod <- .Call("seq_root2tip", phy$edge, n,
                              phy$Nnode, PACKAGE = "ape")
             sn <- seq.nod[outgroup]
@@ -108,9 +105,15 @@ root <- function(phy, outgroup, node = NULL, resolve.root = FALSE)
             ## (below is slightly faster than calling "bipartition")
             desc <- which(unlist(lapply(seq.nod,
                                         function(x) any(x %in% newroot))))
-            if (length(outgroup) != length(desc)) stop(msg)
-            ## both vectors below are already sorted:
-            if (!all(outgroup == desc)) stop(msg)
+            msg <- "the specified outgroup is not monophyletic"
+            ingroup <- (1:n)[-outgroup]
+            ## 'outgroup' and 'desc' are already sorted:
+            if (newroot != ROOT) {
+                if (!identical(outgroup, desc) && !identical(ingroup, desc))
+                    stop(msg)
+            } else { # otherwise check monophyly of the ingroup
+                if (!is.monophyletic(phy, ingroup)) stop(msg)
+            }
         } else newroot <- phy$edge[which(phy$edge[, 2] == outgroup), 1]
     }
     N <- Nedge(phy)
@@ -128,7 +131,7 @@ root <- function(phy, outgroup, node = NULL, resolve.root = FALSE)
                 if (!is.null(phy$edge.length))
                 phy$edge.length <-
                     c(phy$edge.length[a], 0, phy$edge.length[b])
-                phy$Nnode <- phy$Nnode + 1
+                phy$Nnode <- phy$Nnode + 1L
                 ## node renumbering (see comments below)
                 newNb <- integer(n + oldNnode)
                 newNb[newroot] <- n + 1L
