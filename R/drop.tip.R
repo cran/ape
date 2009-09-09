@@ -1,4 +1,4 @@
-## drop.tip.R (2009-07-06)
+## drop.tip.R (2009-09-09)
 
 ##   Remove Tips in a Phylogenetic Tree
 
@@ -167,8 +167,9 @@ drop.tip <-
 
     n <- length(oldNo.ofNewTips) # the new number of tips in the tree
 
-    ## assumes that the ordering of tips is unchanged:
-    phy$edge[TERMS, 2] <- 1:n
+    ## the tips may not be sorted in increasing order of their
+    ## in the 2nd col of edge, so no need to reorder $tip.label
+    phy$edge[TERMS, 2] <- rank(phy$edge[TERMS, 2])
 
     ## make new tip labels if necessary:
     if (subtree || !trim.internal) {

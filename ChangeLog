@@ -1,3 +1,28 @@
+		CHANGES IN APE VERSION 2.3-3
+
+
+BUG FIXES
+
+    o add.scale.bar() always drew a horizontal bar.
+
+    o zoom() shuffled tips with unrooted trees.
+
+    o write.nexus() failed to write correctly trees with a "TipLabel"
+      attribute.
+
+    o rcoal() failed to compute branch lengths with very large n.
+
+    o A small bug was fixed in compar.cheverud() (thanks to Michael
+      Phelan for the fix).
+
+    o seg.sites() failed when passing a vector.
+
+    o drop.tip() sometimes shuffled tip labels.
+
+    o root() shuffled node labels with 'resolve.root = TRUE'.
+
+
+
 		CHANGES IN APE VERSION 2.3-2
 
 

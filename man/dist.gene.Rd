@@ -40,7 +40,7 @@ dist.gene(x, method = "pairwise", pairwise.deletion = FALSE,
   Missing data (\code{NA}) are coded and treated in R's usual way.
 }
 \value{
-  an object of class \link[stats]{"dist"}. If \code{variance = TRUE} an
+  an object of class \code{"dist"}. If \code{variance = TRUE} an
   attribute called \code{"variance"} is given to the returned object.
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}

@@ -40,7 +40,9 @@ compar.ou <- function(x, phy, node = NULL, alpha = NULL)
     }
     W <- cophenetic.phylo(phy)
     dev <- function(p) {
-        M <- rowSums(exp(-p[1] * Wstart) - exp(-p[1] * Wend) * p[-(1:2)])
+        ##M <- rowSums(exp(-p[1] * Wstart) - exp(-p[1] * Wend) * p[-(1:2)])
+        ##M <- -rowSums(exp(-p[1] * Wstart) - exp(-p[1] * Wend) * p[-(1:2)])
+        M <- rowSums((exp(-p[1] * Wend) - exp(-p[1] * Wstart)) * p[-(1:2)])
         V <- exp(-p[1]*W) * (1 - exp(-2*p[1]*(Tmax - W/2)))
         nb.tip*log(2*pi*p[2]) + log(det(V)) +
           (t(x - M) %*% chol2inv(V) %*% (x - M)) / p[2]

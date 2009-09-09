@@ -1,4 +1,4 @@
-## DNA.R (2009-05-19)
+## DNA.R (2009-09-06)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -274,9 +274,13 @@ GC.content <- function(x) sum(base.freq(x)[2:3])
 seg.sites <- function(x)
 {
     if (is.list(x)) x <- as.matrix(x)
-    n <- dim(x)
-    s <- n[2]
-    n <- n[1]
+    if (is.vector(x)) n <- 1
+    else { # 'x' is a matrix
+        n <- dim(x)
+        s <- n[2]
+        n <- n[1]
+    }
+    if (n == 1) return(integer(0))
     ans <- .C("SegSites", x, n, s, integer(s),
               DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
     which(as.logical(ans[[4]]))

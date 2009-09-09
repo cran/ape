@@ -106,7 +106,7 @@ rcoal <- function(n, tip.label = NULL, br = "coalescent", ...)
     nbr <- 2*n - 2
     edge <- matrix(NA, nbr, 2)
     ## coalescence times by default:
-    x <- if (is.character(br)) 2*rexp(n - 1)/(n:2 * (n - 1):1)
+    x <- if (is.character(br)) 2*rexp(n - 1)/(as.double(n:2) * as.double((n - 1):1))
     else br(n - 1, ...)
     if (n == 2) {
         edge[] <- c(3L, 3L, 1:2)

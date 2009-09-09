@@ -19,7 +19,7 @@ read.nexus(file, tree.names = NULL)
   The present implementation tries to follow as much as possible the
   NEXUS standard. Only the block ``TREES'' is read; the other data can be
   read with other functions (e.g., \code{\link{read.dna}},
-  \code{\link[base]{read.table}}, ...). A trace of the original data is
+  \code{\link[utils]{read.table}}, ...). A trace of the original data is
   kept with the attribute \code{"origin"} (see below).
 
   `read.nexus' tries to represent correctly trees with a badly

@@ -2,11 +2,11 @@
 \alias{add.scale.bar}
 \title{Add a Scale Bar to a Phylogeny Plot}
 \usage{
-add.scale.bar(x = 0, y = 1, length = NULL, ...)
+add.scale.bar(x, y, length = NULL, ...)
 }
 \arguments{
-  \item{x}{x location of the bar.}
-  \item{y}{y location of the bar.}
+  \item{x}{x location of the bar (can be left missing).}
+  \item{y}{y location of the bar (can be left missing).}
   \item{length}{a numeric value giving the length of the scale bar. If
     none is supplied, a value is calculated from the data.}
   \item{...}{further arguments to be passed to \code{text}.}
@@ -17,9 +17,9 @@ add.scale.bar(x = 0, y = 1, length = NULL, ...)
   device.
 }
 \details{
-  As from version 1.4 of ape, the options of this function have been
-  redefined, and have now default values. By default, the scale bar is
-  plotted on the left bottom corner of the plot.
+  By default, the bar is placed in a corner of the graph depending on
+  the direction of the tree. Otherwise both \code{x} and \code{y} must
+  be specified (if only one  is given it is ignored).
 
   The further arguments (\code{...}) are used to format the text. They
   may be \code{font}, \code{cex}, \code{col}, and so on (see examples

@@ -34,14 +34,14 @@ zoom(phy, focus, subtree = FALSE, col = rainbow, ...)
   If the argument `col' is a vector of colours, as many colours as the
   number of subtrees must be given. The alternative is to give a
   function that will create colours or grey levels from the number of
-  subtrees: see \code{\link[graphics]{rainbow}} for some possibilities
+  subtrees: see \code{\link[grDevices]{rainbow}} for some possibilities
   with colours.
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{plot.phylo}}, \code{\link{drop.tip}},
-  \code{\link[graphics]{layout}}, \code{\link[graphics]{rainbow}},
-  \code{\link[graphics]{grey}}
+  \code{\link[graphics]{layout}}, \code{\link[grDevices]{rainbow}},
+  \code{\link[grDevices]{grey}}
 }
 \examples{
 \dontrun{

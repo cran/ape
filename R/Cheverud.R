@@ -12,7 +12,9 @@
 # Evolution 55(11): 2143-2160
 compar.cheverud <- function(y, W, tolerance=1e-6, gold.tol=1e-4)
 {
-  W <- W - diag(W) # ensure diagonal is zero
+  ## fix by Michael Phelan
+  diag(W) <- 0 # ensure diagonal is zero
+  ## end of fix
   y <- as.matrix(y)
   if(dim(y)[2] != 1) stop("Error: y must be a single column vector.")
   D <- solve(diag(apply(t(W),2,sum)))

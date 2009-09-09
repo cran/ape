@@ -135,7 +135,7 @@ void nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
 			for (i = OTU1 - 1; i > 0; i--)
 				otu_label[i] = otu_label[i - 1];
 		if (OTU2 != n)
-			for (i = OTU2; i <= n; i++)
+			for (i = OTU2; i < n; i++)
 				otu_label[i - 1] = otu_label[i];
 		otu_label[0] = cur_nod;
 

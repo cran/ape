@@ -1,4 +1,4 @@
-## root.R (2009-07-06)
+## root.R (2009-09-09)
 
 ##   Root of Phylogenetic Trees
 
@@ -297,14 +297,19 @@ root <- function(phy, outgroup, node = NULL, resolve.root = FALSE)
     phy$edge[, 1] <- newNb[phy$edge[, 1]]
 
     if (!is.null(phy$node.label)) {
+        #browser()
         newNb <- newNb[-(1:n)]
         if (fuseRoot) {
             newNb <- newNb[-1]
             phy$node.label <- phy$node.label[-1]
         }
         phy$node.label <- phy$node.label[order(newNb)]
-        if (resolve.root)
-             phy$node.label <- c(phy$node.label[1], NA, phy$node.label[-1])
+        if (resolve.root) {
+            phy$node.label[is.na(phy$node.label)] <- phy$node.label[1]
+            phy$node.label[1] <- NA
+            ##phy$node.label <- c(phy$node.label[1], NA, phy$node.label[-1])
+            ##phy$node.label <- c("NA", phy$node.label)
+        }
     }
     phy
 }

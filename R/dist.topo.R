@@ -11,7 +11,7 @@
 dist.topo <- function(x, y, method = "PH85")
 {
     if (method == "BHV01" && (is.null(x$edge.length) || is.null(y$edge.length)))
-      stop("trees must have branch lengths for Billera et al.'s distance.")
+        stop("trees must have branch lengths for Billera et al.'s distance.")
     n <- length(x$tip.label)
     bp1 <- .Call("bipartition", x$edge, n, x$Nnode, PACKAGE = "ape")
     bp1 <- lapply(bp1, function(xx) sort(x$tip.label[xx]))

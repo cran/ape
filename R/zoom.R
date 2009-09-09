@@ -1,4 +1,4 @@
-## zoom.R (2009-06-12)
+## zoom.R (2009-07-27)
 
 ##   Zoom on a Portion of a Phylogeny
 
@@ -20,7 +20,7 @@ zoom <- function(phy, focus, subtree = FALSE, col = rainbow, ...)
     ext <- vector("list", n)
     for (i in 1:n)
       ext[[i]] <- drop.tip(phy, phy$tip.label[-focus[[i]]],
-                           subtree = subtree)
+                           subtree = subtree, rooted = TRUE)
     nc <- round(sqrt(n)) + 1
     nr <- ceiling(sqrt(n))
     M <- matrix(0, nr, nc)

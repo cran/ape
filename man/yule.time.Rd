@@ -38,7 +38,7 @@ yule.time(phy, birth, BIRTH = NULL, root.time = 0, opti = "nlm", start = 0.01)
   It is recommended to use \code{BIRTH} if possible, and required if
   speciation probability is constant on some time interval. If this
   primitive cannot be provided, a numerical integration is done with
-  \code{\link[base]{integrate}}.
+  \code{\link[stats]{integrate}}.
 
   The standard-errors of the parameters are computed with the Hessian of
   the log-likelihood function.
