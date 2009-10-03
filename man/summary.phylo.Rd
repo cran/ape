@@ -31,10 +31,6 @@ Nedge(phy)
   optional elements (branch lengths, node labels, and root edge) are not
   found in the tree.
 
-  If the tree was estimated by maximum likelihood with
-  \code{\link{mlphylo}}, a summary of the model fit and the parameter
-  estimated is printed.
-
   \code{summary} simply prints its results on the standard output and is
   not meant for programming.
 }

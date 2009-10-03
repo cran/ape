@@ -30,9 +30,10 @@ edgelabels(text, edge, adj = c(0.5, 0.5), frame = "rect",
   \item{edge}{a vector of mode numeric giving the numbers of the edges
     where the text or the symbols are to be printed. Can be left empty.}
   \item{adj}{one or two numeric values specifying the horizontal and
-    vertical, respectively, justification of the text. By default, the
-    text is centered horizontally and vertically. If a single value is
-    given, this alters only the horizontal position of the text.}
+    vertical, respectively, justification of the text or symbols. By
+    default, the text is centered horizontally and vertically. If a
+    single value is given, this alters only the horizontal position of
+    the text.}
   \item{frame}{a character string specifying the kind of frame to be
     printed around the text. This must be one of "rect" (the default),
     "circle", "none", or any unambiguous abbreviation of these.}

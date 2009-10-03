@@ -1,4 +1,4 @@
-/* dist_dna.c       2008-12-22 */
+/* dist_dna.c       2009-09-16 */
 
 /* Copyright 2005-2008 Emmanuel Paradis
 
@@ -12,7 +12,7 @@
 #define LN4 1.386294361119890572454
 
 /* returns 8 if the base is known surely, 0 otherwise */
-#define KnownBase(a) a & 8
+#define KnownBase(a) (a & 8)
 
 /* returns 1 if the base is adenine surely, 0 otherwise */
 #define IsAdenine(a) a == 136
@@ -951,7 +951,7 @@ void distDNA_ParaLin_pairdel(unsigned char *x, int *n, int *s, double *d,
     }
 }
 
-void BaseProportion(unsigned char *x, int *n, double *BF)
+void BaseProportion(unsigned char *x, int *n, double *BF, int *freq)
 {
     int i, m;
 
@@ -967,7 +967,7 @@ void BaseProportion(unsigned char *x, int *n, double *BF)
 	    }
 	}
     }
-    for (i = 0; i < 4; i++) BF[i] /= m;
+    if (! *freq) for (i = 0; i < 4; i++) BF[i] /= m;
 }
 
 void SegSites(unsigned char *x, int *n, int *s, int *seg)
@@ -981,7 +981,7 @@ void SegSites(unsigned char *x, int *n, int *s, int *seg)
 	basis = x[i];
 	i++;
 	while (i < *n * (j + 1)) {
-	    if (x[i] == basis) i++;
+	    if (!KnownBase(x[i]) || x[i] == basis) i++;
 	    else {
 	        seg[j] = 1;
 		break;

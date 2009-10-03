@@ -34,7 +34,7 @@
 \seealso{
   \code{\link{nj}}, \code{\link{bionj}},
   \code{\link{write.tree}}, \code{\link{read.tree}},
-  \code{\link{dist.dna}}, \code{\link{mlphylo}}
+  \code{\link{dist.dna}}
 }
 \examples{
 ### From Saitou and Nei (1987, Table 1):

@@ -1,4 +1,4 @@
-## DNA.R (2009-09-06)
+## DNA.R (2009-10-02)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -259,11 +259,11 @@ as.character.DNAbin <- function(x, ...)
     if (is.list(x)) lapply(x, f) else f(x)
 }
 
-base.freq <- function(x)
+base.freq <- function(x, freq = FALSE)
 {
     if (is.list(x)) x <- unlist(x)
     n <- length(x)
-    BF <- .C("BaseProportion", x, n, double(4),
+    BF <- .C("BaseProportion", x, n, double(4), freq,
              DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")[[3]]
     names(BF) <- letters[c(1, 3, 7, 20)]
     BF
@@ -286,28 +286,16 @@ seg.sites <- function(x)
     which(as.logical(ans[[4]]))
 }
 
-nuc.div <- function(x, variance = FALSE, pairwise.deletion = FALSE)
-{
-    if (pairwise.deletion && variance)
-      warning("cannot compute the variance of nucleotidic diversity\nwith pairwise deletion: try 'pairwise.deletion = FALSE' instead.")
-    if (is.list(x)) x <- as.matrix(x)
-    n <- dim(x)[1]
-    ans <- sum(dist.dna(x, "raw", pairwise.deletion = pairwise.deletion))/
-        (n*(n - 1)/2)
-    if (variance) {
-        var <- (n + 1)*ans/(3*(n + 1)*dim(x)[2]) + 2*(n^2 + n + 3)*ans/(9*n*(n - 1))
-        ans <- c(ans, var)
-    }
-    ans
-}
-
 dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
                      pairwise.deletion = FALSE, base.freq = NULL,
                      as.matrix = FALSE)
 {
     MODELS <- c("RAW", "JC69", "K80", "F81", "K81", "F84", "T92", "TN93",
                 "GG95", "LOGDET", "BH87", "PARALIN", "N")
-    imod <- which(MODELS == toupper(model))
+    imod <- pmatch(toupper(model), MODELS)
+    if (is.na(imod))
+        stop(paste("'model' must be one of:",
+                   paste("\"", MODELS, "\"", sep = "", collapse = " ")))
     if (imod == 11 && variance) {
         warning("computing variance temporarily not available for model BH87.")
         variance <- FALSE

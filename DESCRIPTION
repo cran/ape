@@ -1,6 +1,6 @@
 Package: ape
-Version: 2.3-3
-Date: 2009-09-09
+Version: 2.4
+Date: 2009-10-03
 Title: Analyses of Phylogenetics and Evolution
 Author: Emmanuel Paradis, Ben Bolker, Julien Claude, Hoa Sien Cuong,
         Richard Desper, Benoit Durand, Julien Dutheil, Olivier Gascuel,
@@ -17,15 +17,14 @@ Description: ape provides functions for reading, writing, plotting, and
         in a phylogenetic framework, analyses of diversification and
         macroevolution, computing distances from allelic and nucleotide
         data, reading nucleotide sequences, and several tools such as
-        Mantel's test, computation of minimum spanning tree, the
-        population parameter theta based on various approaches,
-        nucleotide diversity, generalized skyline plots, estimation of
-        absolute evolutionary rates and clock-like trees using mean
-        path lengths, non-parametric rate smoothing and penalized
-        likelihood. Phylogeny estimation can be done with the NJ,
-        BIONJ, and ME methods.
+        Mantel's test, computation of minimum spanning tree,
+        generalized skyline plots, estimation of absolute evolutionary
+        rates and clock-like trees using mean path lengths,
+        non-parametric rate smoothing and penalized likelihood.
+        Phylogeny estimation can be done with the NJ, BIONJ, and ME
+        methods.
 License: GPL (>= 2)
 URL: http://ape.mpl.ird.fr/
-Packaged: 2009-09-22 14:14:19 UTC; paradis
+Packaged: 2009-10-03 10:21:41 UTC; paradis
 Repository: CRAN
-Date/Publication: 2009-09-22 15:00:44
+Date/Publication: 2009-10-05 15:01:29

@@ -2,14 +2,16 @@
 \alias{base.freq}
 \title{Base frequencies from DNA Sequences}
 \usage{
-base.freq(x)
+base.freq(x, freq = FALSE)
 }
 \arguments{
   \item{x}{a vector, a matrix, or a list which contains the DNA
     sequences.}
+  \item{freq}{a logical specifying whether to return the proportions
+    (the default) or the absolute frequencies (counts).}
 }
 \description{
-  This function computes the relative frequencies (i.e. percentages) of
+  This function computes the relative frequencies (i.e. proportions) of
   the four DNA bases (adenine, cytosine, guanine, and thymidine) from a
   sample of sequences.
 }
@@ -19,7 +21,7 @@ base.freq(x)
   computations.
 }
 \value{
-  A numeric vector stoting the relative frequencies with names
+  A numeric vector storing the relative frequencies with names
   \code{c("a", "c", "g", "t")}.
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}

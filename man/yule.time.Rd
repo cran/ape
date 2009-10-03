@@ -63,14 +63,18 @@ birth.step <- function(l1, l2, Tcl) { # 2 rates with one break-point
 BIRTH.logis <- function(t) log(exp(-a*t) + exp(b))/a + t
 BIRTH.step <- function(t)
 {
-    if (t <= Tcl) return(t*l1)
-    Tcl*l1 + (t - Tcl)*l2
+    out <- numeric(length(t))
+    sel <- t <= Tcl
+    if (any(sel)) out[sel] <- t[sel] * l1
+    if (any(!sel)) out[!sel] <- Tcl * l1 + (t[!sel] - Tcl) * l2
+    out
 }
 data(bird.families)
 ### fit both models:
 yule.time(bird.families, birth.logis)
 yule.time(bird.families, birth.logis, BIRTH.logis) # same but faster
 \dontrun{yule.time(bird.families, birth.step)}  # fails
-yule.time(bird.families, birth.step, BIRTH.step)
+yule.time(bird.families, birth.step, BIRTH.step,
+          opti = "nlminb", start = c(.01, .01, 100))
 }
 \keyword{models}

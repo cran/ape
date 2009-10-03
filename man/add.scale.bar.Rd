@@ -9,7 +9,7 @@ add.scale.bar(x, y, length = NULL, ...)
   \item{y}{y location of the bar (can be left missing).}
   \item{length}{a numeric value giving the length of the scale bar. If
     none is supplied, a value is calculated from the data.}
-  \item{...}{further arguments to be passed to \code{text}.}
+  \item{\dots}{further arguments to be passed to \code{text}.}
 }
 \description{
   This function adds a horizontal bar giving the scale of the branch
@@ -19,9 +19,9 @@ add.scale.bar(x, y, length = NULL, ...)
 \details{
   By default, the bar is placed in a corner of the graph depending on
   the direction of the tree. Otherwise both \code{x} and \code{y} must
-  be specified (if only one  is given it is ignored).
+  be specified (if only one is given it is ignored).
 
-  The further arguments (\code{...}) are used to format the text. They
+  The further arguments (\code{\dots}) are used to format the text. They
   may be \code{font}, \code{cex}, \code{col}, and so on (see examples
   below, and the help page on \code{\link[graphics]{text}}).
 

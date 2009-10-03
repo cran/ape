@@ -22,7 +22,7 @@ nj(X)
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{write.tree}}, \code{\link{read.tree}},
-  \code{\link{dist.dna}}, \code{\link{mlphylo}}, \code{\link{bionj}},
+  \code{\link{dist.dna}}, \code{\link{bionj}},
   \code{\link{fastme}}
 }
 \examples{

@@ -1,5 +1,4 @@
 \name{ape-internal}
-\alias{klastorin}
 \alias{tree.build}
 \alias{f.cherry.yule}
 \alias{f.cherry.uniform}
@@ -36,7 +35,6 @@
 \alias{pos.move}
 \alias{BOTHlabels}
 \alias{chronopl.cv}
-\alias{prepareDNA}
 \alias{floating.pie.asp}
 \alias{checkLabel}
 \alias{getMRCA}
@@ -44,7 +42,7 @@
 \alias{plotPhyloCoor}
 \title{Internal Ape Functions}
 \description{
-  Internal ape functions.
+  Internal \pkg{ape} functions.
 }
 \note{
   These are not to be called by the user (unless you know what you're doing).

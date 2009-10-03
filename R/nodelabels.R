@@ -1,8 +1,8 @@
-## nodelabels.R (2008-02-28)
+## nodelabels.R (2009-09-30)
 
 ##   Labelling Trees
 
-## Copyright 2004-2008 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
+## Copyright 2004-2009 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -88,16 +88,16 @@ BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
         height <- CEX * (parusr[4] - parusr[3]) / 15
         if (is.vector(thermo)) thermo <- cbind(thermo, 1 - thermo)
         thermo <- height * thermo
-        xl <- XX - width/2
+        xl <- XX - width/2 + adj[1] - 0.5 # added 'adj' from Janet Young (2009-09-30)
         xr <- xl + width
-        yb <- YY - height/2
+        yb <- YY - height/2 + adj[2] - 0.5
         if (is.null(piecol)) piecol <- rainbow(ncol(thermo))
         ## draw the first rectangle:
         rect(xl, yb, xr, yb + thermo[, 1], border = NA, col = piecol[1])
         for (i in 2:ncol(thermo))
-          rect(xl, yb + rowSums(thermo[, 1:(i - 1), drop = FALSE]),
-               xr, yb + rowSums(thermo[, 1:i]),
-               border = NA, col = piecol[i])
+            rect(xl, yb + rowSums(thermo[, 1:(i - 1), drop = FALSE]),
+                 xr, yb + rowSums(thermo[, 1:i]),
+                 border = NA, col = piecol[i])
         rect(xl, yb, xr, yb + height, border = "black")
         segments(xl, YY, xl - width/5, YY)
         segments(xr, YY, xr + width/5, YY)
@@ -107,9 +107,10 @@ BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
         if (is.vector(pie)) pie <- cbind(pie, 1 - pie)
         xrad <- CEX * diff(par("usr")[1:2]) / 50
         xrad <- rep(xrad, length(sel))
+        XX <- XX + adj[1] - 0.5
+        YY <- YY + adj[2] - 0.5
         for (i in 1:length(sel))
-          floating.pie.asp(XX[i], YY[i], pie[i, ],
-                           radius = xrad[i], col = piecol)
+            floating.pie.asp(XX[i], YY[i], pie[i, ], radius = xrad[i], col = piecol)
     }
     if (!is.null(text)) text(XX, YY, text, adj = adj, col = col, ...)
     if (!is.null(pch)) points(XX + adj[1] - 0.5, YY + adj[2] - 0.5,

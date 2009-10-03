@@ -15,10 +15,11 @@ seg.sites(x)
 }
 \details{
   If the sequences are in a list, all the sequences must be of the same
-  length.
+  length. Ambiguous nucleotides are ignored.
 }
 \value{
-  A numeric vector giving the indices of the segregating sites.
+  A numeric (integer) vector giving the indices of the segregating
+  sites.
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \note{

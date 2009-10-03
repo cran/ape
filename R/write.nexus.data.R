@@ -126,7 +126,7 @@
         fcat("BEGIN DATA;\n")
         fcat(indent,"DIMENSIONS", " ", NTAX, " ", NCHAR, ";\n")
         if (format %in% c("dna", "protein")) {
-            fcat(indent, "FORMAT", " ", MISSING, " ", GAP, " ", DATATYPE, " ", INTERLEAVE, ";\n")
+            fcat(indent, "FORMAT", " ", DATATYPE, " ", MISSING, " ", GAP, " ", INTERLEAVE, ";\n") # from François Michonneau (2009-10-02)
         }
         fcat(indent,"MATRIX\n")
         print.matrix(x)

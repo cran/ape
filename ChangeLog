@@ -1,3 +1,53 @@
+		CHANGES IN APE VERSION 2.4
+
+
+NEW FEATURES
+
+    o base.freq() has a new option 'freq' to return the counts; the
+      default is still to return the proportions.
+
+
+BUG FIXES
+
+    o seg.sites() did not handle ambiguous nucleotides correctly: they
+      are now ignored.
+
+    o plot(phy, root.edge = TRUE) failed if there was no $root.edge in
+      the tree: the argument is now ignored.
+
+    o add.scale.bar() failed when 'x' and 'y' were given (thanks to Janet
+      Young for the fix).
+
+
+OTHER CHANGES
+
+    o Trying to plot a tree with a single tip now returns NULL with a
+      warning (it returned an error previously).
+
+    o The way lines representing nodes are coloured in phylograms has
+      been modified (as well as their widths and types) following some
+      users' request; this is only for dichotomous nodes.
+
+    o The argument 'adj' in [node][tip][edge]labels() now works when
+      using 'pie' or 'thermo'.
+
+    o A more informative message error is now returned by dist.dna() when
+      'model' is badly specified (partial matching of this argument is
+      done now).
+
+    o Deprecated functions are now listed in a help page: see
+      help("ape-defunct") with the quotes.
+
+
+DEPRECATED & DEFUNCT
+
+    o The functions heterozygosity, nuc.div, theta.h, theta.k and
+      theta.s have been moved from ape to pegas.
+
+    o The functions mlphylo, DNAmodel and sh.test have been removed.
+
+
+
 		CHANGES IN APE VERSION 2.3-3
 
 
@@ -191,7 +241,7 @@ OTHER CHANGES
 
     o ape has now a namespace.
 
-    o drip.tip() has been improved: it should be much faster and work
+    o drop.tip() has been improved: it should be much faster and work
       better in some cases (e.g., see the example in ?zoom).
 
 

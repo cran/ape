@@ -1,4 +1,5 @@
 \name{CADM.global}
+\alias{CADM}
 \alias{CADM.global}
 \alias{CADM.post}
 \title{ Congruence among distance matrices }
