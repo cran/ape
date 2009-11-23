@@ -1,4 +1,4 @@
-## read.nexus.R (2009-04-01)
+## read.nexus.R (2009-11-21)
 
 ##   Read Tree File in Nexus Format
 
@@ -9,12 +9,20 @@
 
 .treeBuildWithTokens <- function(x)
 {
+    ## remove potential node labels; see ?read.nexus for justification
+    node.label <- gsub("[:;].*$", "", strsplit(x, ")")[[1]][-1])
+    has.node.labels <- FALSE
+    if (any(node.label != "")) {
+        x <- gsub(")[^:]*:", "):", x)
+        x <- gsub(")[^:]*;", ");", x) # if there's no root edge
+        has.node.labels <- TRUE
+    }
     phy <- .Call("treeBuildWithTokens", x, PACKAGE = "ape")
     dim(phy[[1]]) <- c(length(phy[[1]])/2, 2)
-    nms <- c("edge", "edge.length", "Nnode", "node.label")
-    if (length(phy) == 5) nms <- c(nms, "root.edge")
+    nms <- c("edge", "edge.length", "Nnode", "root.edge")
+    if (length(phy) == 3) nms <- nms[-4]
     names(phy) <- nms
-    if (!sum(phy[[4]])) phy[[4]] <- NULL
+    if (has.node.labels) phy$node.label <- node.label
     class(phy) <- "phylo"
     phy
 }
@@ -224,7 +232,16 @@ read.nexus <- function(file, tree.names = NULL)
         }
     } else {
         if (!is.null(tree.names)) names(trees) <- tree.names
-        if (translation) attr(trees, "TipLabel") <- TRANS[, 2]
+        if (translation) {
+            if (length(colon) == Ntree) # .treeBuildWithTokens() was used
+                attr(trees, "TipLabel") <- TRANS[, 2]
+            else { # reassign the tip labels then compress
+                for (i in 1:Ntree)
+                    trees[[i]]$tip.label <-
+                        TRANS[, 2][as.numeric(trees[[i]]$tip.label)]
+                trees <- .compressTipLabel(trees)
+            }
+        }
         class(trees) <- "multiPhylo"
     }
     if (length(grep("[\\/]", file)) == 1)

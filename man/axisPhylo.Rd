@@ -7,7 +7,7 @@ axisPhylo(side = 1, ...)
 \arguments{
   \item{side}{a numeric value specifying the side where the axis is
     plotted: 1: below, 2: left, 3: above, 4: right.}
-  \item{...}{further arguments to be passed to \code{axis}.}
+  \item{\dots}{further arguments to be passed to \code{axis}.}
 }
 \description{
   This function adds a scaled axis on the side of a phylogeny plot.

@@ -32,7 +32,7 @@ find.skyline.epsilon(ci, GRID=1000, MINEPS=1e-6, \dots)
   
   \item{MINEPS}{Parameter for the grid search for \code{epsilon} in \code{find.skyline.epsilon}.}
   
-  \item{...}{Any of the above parameters.}
+  \item{\dots}{Any of the above parameters.}
   
 }
 \description{

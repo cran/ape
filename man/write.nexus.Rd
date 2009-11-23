@@ -5,7 +5,7 @@
 write.nexus(..., file = "", translate = TRUE, original.data = TRUE)
 }
 \arguments{
-  \item{...}{either (i) a single object of class \code{"phylo"}, (ii) a
+  \item{\dots}{either (i) a single object of class \code{"phylo"}, (ii) a
     series of such objects separated by commas, or (iii) a list
     containing such objects.}
   \item{file}{a file name specified by either a variable of mode character,

@@ -30,7 +30,7 @@ makeLabel(x, ...)
     modified; \code{TRUE} by default.}
   \item{nodes}{a logical specifying whether node labels are to be
     modified; \code{TRUE} by default.}
-  \item{...}{further arguments to be passed to or from other methods.}
+  \item{\dots}{further arguments to be passed to or from other methods.}
 }
 \description{
   This is a generic function with methods for character vectors, trees

@@ -1,4 +1,4 @@
-## write.nexus.R (2009-07-27)
+## write.nexus.R (2009-10-27)
 
 ##   Write Tree File in Nexus Format
 
@@ -69,9 +69,11 @@ the original data won't be written with the tree."))
         token <- as.character(1:N)
         names(token) <- obj[[1]]$tip.label
         obj[[1]]$tip.label <- token
-        if (ntree > 1)
-          for (i in 2:ntree)
-            obj[[i]]$tip.label <- token[obj[[i]]$tip.label]
+        if (ntree > 1) {
+            for (i in 2:ntree)
+                obj[[i]]$tip.label <- token[obj[[i]]$tip.label]
+            class(obj) <- NULL
+        }
     } else {
         for (i in 1:ntree)
           obj[[i]]$tip.label <- checkLabel(obj[[i]]$tip.label)

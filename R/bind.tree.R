@@ -1,8 +1,8 @@
-## bind.tree.R (2007-12-21)
+## bind.tree.R (2009-10-08)
 
 ##    Bind Trees
 
-## Copyright 2003-2007 Emmanuel Paradis
+## Copyright 2003-2009 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -64,9 +64,10 @@ bind.tree <- function(x, y, where = "root", position = 0)
               stop("argument 'position' is larger than the specified edge.")
             x$edge.length[i] <- x$edge.length[i] - position
         }
-        if (yHasNoRootEdge ) y$root.edge <- position
-        else y$root.edge <- y$root.edge + position
+        y$root.edge <- if (yHasNoRootEdge) position else y$root.edge + position
     }
+
+    if (is.null(y$root.edge) && where > nb.tip) y$root.edge <- 0
 
     X <- write.tree(x)
     Y <- write.tree(y)

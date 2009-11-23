@@ -16,7 +16,7 @@ new2old.phylo(phy)
 }
 \arguments{
   \item{x}{an object to be converted into another class.}
-  \item{...}{further arguments to be passed to or from other methods.}
+  \item{\dots}{further arguments to be passed to or from other methods.}
   \item{phy}{an object of class \code{"phylo"}.}
 }
 \description{

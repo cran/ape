@@ -12,7 +12,7 @@ mantel.test(m1, m2, nperm = 1000, graph = FALSE, ...)
   \item{nperm}{the number of times to permute the data.}
   \item{graph}{a logical indicating whether to produce a summary graph
     (by default the graph is not plotted).}
-  \item{...}{further arguments to be passed to \code{plot()} (to add a
+  \item{\dots}{further arguments to be passed to \code{plot()} (to add a
     title, change the axis labels, and so on).}
 }
 \description{

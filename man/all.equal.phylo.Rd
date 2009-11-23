@@ -21,7 +21,7 @@
     lengths.}
   \item{scale}{a positive number, comparison of branch lengths is made
     after scaling (i.e., dividing) them by this number.}
-  \item{...}{further arguments passed to or from other methods.}
+  \item{\dots}{further arguments passed to or from other methods.}
 }
 \description{
   This function makes a global comparison of two phylogenetic trees.

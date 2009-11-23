@@ -1,4 +1,4 @@
-## rtree.R (2000-05-13)
+## rtree.R (2009-11-03)
 
 ##   Generates Random Trees
 
@@ -94,7 +94,10 @@ rtree <- function(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
     phy$tip.label <-
       if (is.null(tip.label)) paste("t", sample(n), sep = "")
       else sample(tip.label)
-    if (is.function(br)) phy$edge.length <- br(nbr, ...)
+    if (!is.null(br)) {
+        phy$edge.length <-
+            if (is.function(br)) br(nbr, ...) else rep(br, length.out = nbr)
+    }
     phy$Nnode <- n - 2L + rooted
     class(phy) <- "phylo"
     phy
@@ -107,7 +110,7 @@ rcoal <- function(n, tip.label = NULL, br = "coalescent", ...)
     edge <- matrix(NA, nbr, 2)
     ## coalescence times by default:
     x <- if (is.character(br)) 2*rexp(n - 1)/(as.double(n:2) * as.double((n - 1):1))
-    else br(n - 1, ...)
+    else if (is.numeric(br)) rep(br, length.out = n - 1) else br(n - 1, ...)
     if (n == 2) {
         edge[] <- c(3L, 3L, 1:2)
         edge.length <- rep(x, 2)

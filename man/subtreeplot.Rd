@@ -12,7 +12,7 @@ subtreeplot(x, wait=FALSE, ...)
 \arguments{
   \item{x}{an object of class \code{"phylo"}.}
   \item{wait}{a logical indicating whether the node beeing processed should be printed (useful for big phylogenies).}
-  \item{...}{further arguments passed to \code{plot.phylo}.}
+  \item{\dots}{further arguments passed to \code{plot.phylo}.}
 }
 \details{
   This function aims at easily exploring very large trees. The main argument is

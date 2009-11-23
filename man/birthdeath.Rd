@@ -9,7 +9,7 @@ birthdeath(phy)
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
   \item{x}{an object of class \code{"birthdeath"}.}
-  \item{...}{further arguments passed to the \code{print} function.}
+  \item{\dots}{further arguments passed to the \code{print} function.}
 }
 \description{
   This function fits by maximum likelihood a birth-death model to the

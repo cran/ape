@@ -8,19 +8,27 @@ read.nexus(file, tree.names = NULL)
   \item{file}{a file name specified by either a variable of mode character,
     or a double-quoted string.}
   \item{tree.names}{if there are several trees to be read, a vector of
-    mode character that gives names to the individual trees; if
-    \code{NULL} (the default), the trees are named \code{"tree1"},
-    \code{"tree2"}, ...}
+    mode character that gives names to the individual trees.}
 }
 \description{
   This function reads one or several trees in a NEXUS file.
 }
 \details{
   The present implementation tries to follow as much as possible the
-  NEXUS standard. Only the block ``TREES'' is read; the other data can be
-  read with other functions (e.g., \code{\link{read.dna}},
+  NEXUS standard (but see the restriction below on TRANSLATION
+  tables). Only the block ``TREES'' is read; the other data can be read
+  with other functions (e.g., \code{\link{read.dna}},
   \code{\link[utils]{read.table}}, ...). A trace of the original data is
   kept with the attribute \code{"origin"} (see below).
+
+  If a TRANSLATION table is present it is assumed that only the tip
+  labels are translated and they are all translated with integers
+  without gap. Consequently, if nodes have labels in the tree(s) they
+  are read as they are and not looked for in the translation table. The
+  logic behind this is that in the vast majority of cases, node labels
+  will be support values rather than proper taxa names. This is
+  consistent with \code{\link{write.nexus}} which translates only the
+  tip labels.
 
   `read.nexus' tries to represent correctly trees with a badly
   represented root edge (i.e. with an extra pair of parentheses). For

@@ -1,4 +1,4 @@
-## root.R (2009-09-09)
+## root.R (2009-11-15)
 
 ##   Root of Phylogenetic Trees
 
@@ -35,11 +35,11 @@ unroot <- function(phy)
     ## nodes by adding 1, except the root (this remains the
     ## origin of the tree).
     nb.tip <- length(phy$tip.label)
-    ROOT <- nb.tip + 1
+    ROOT <- nb.tip + 1L
     EDGEROOT <- which(phy$edge[, 1] == ROOT)
     ## j: the target where to stick the edge
     ## i: the edge to delete
-    if (phy$edge[EDGEROOT[1], 2] == ROOT + 1) {
+    if (phy$edge[EDGEROOT[1], 2] == ROOT + 1L) {
         j <- EDGEROOT[2]
         i <- EDGEROOT[1]
     } else {
@@ -50,12 +50,12 @@ unroot <- function(phy)
     ## cladewise order.
     phy$edge <- phy$edge[-i, ]
     nodes <- phy$edge > ROOT # renumber all nodes except the root
-    phy$edge[nodes] <- phy$edge[nodes] - 1
+    phy$edge[nodes] <- phy$edge[nodes] - 1L
     if (!is.null(phy$edge.length)) {
         phy$edge.length[j] <- phy$edge.length[j] + phy$edge.length[i]
         phy$edge.length <- phy$edge.length[-i]
     }
-    phy$Nnode <- phy$Nnode - 1
+    phy$Nnode <- phy$Nnode - 1L
     if (!is.null(phy$node.label))
       phy$node.label <- phy$node.label[-2]
     phy

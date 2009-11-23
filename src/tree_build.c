@@ -1,6 +1,6 @@
-/* tree_build.c    2008-03-09 */
+/* tree_build.c    2009-11-21 */
 
-/* Copyright 2008 Emmanuel Paradis */
+/* Copyright 2008-2009 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -51,16 +51,15 @@ void decode_edge(const char *x, int a, int b, int *node, double *w)
     l = j - 1;\
     while (e[l + nedge] != curnode) l--;\
     decode_edge(x, ps + 1, pt - 1, &tmpi, &tmpd);\
-    nl[curnode - ntip - 1] = tmpi;\
     el[l] = tmpd;\
     curnode = e[l]
 
 SEXP treeBuildWithTokens(SEXP nwk)
 {
 	const char *x;
-	int n, i, ntip = 1, nnode = 0, nedge, *e, *nl, curnode, node, j, *skeleton, nsk = 0, ps, pr, pt, tmpi, l;
+	int n, i, ntip = 1, nnode = 0, nedge, *e, curnode, node, j, *skeleton, nsk = 0, ps, pr, pt, tmpi, l;
 	double *el, tmpd;
-	SEXP node_label, edge, edge_length, Nnode, phy;
+	SEXP edge, edge_length, Nnode, phy;
 
 	PROTECT(nwk = coerceVector(nwk, STRSXP));
 	x = CHAR(STRING_ELT(nwk, 0));
@@ -79,14 +78,11 @@ SEXP treeBuildWithTokens(SEXP nwk)
 	}
 	nedge = ntip + nnode - 1;
 
-	PROTECT(node_label = allocVector(INTSXP, nnode));
 	PROTECT(Nnode = allocVector(INTSXP, 1));
 	PROTECT(edge = allocVector(INTSXP, nedge*2));
 	PROTECT(edge_length = allocVector(REALSXP, nedge));
 	INTEGER(Nnode)[0] = nnode;
 
-	nl = INTEGER(node_label);
-	memset(nl, 0, nnode*sizeof(int));
 	e = INTEGER(edge);
 	el = REAL(edge_length);
 
@@ -130,22 +126,20 @@ SEXP treeBuildWithTokens(SEXP nwk)
 
 /* is there a root edge? */
 	if (ps < n - 2) {
-		PROTECT(phy = allocVector(VECSXP, 5));
+		PROTECT(phy = allocVector(VECSXP, 4));
 		SEXP root_edge;
 		decode_edge(x, ps + 1, n - 2, &tmpi, &tmpd);
 		PROTECT(root_edge = allocVector(REALSXP, 1));
-		nl[0] = tmpi;
 		REAL(root_edge)[0] = tmpd;
-		SET_VECTOR_ELT(phy, 4, root_edge);
+		SET_VECTOR_ELT(phy, 3, root_edge);
 		UNPROTECT(1);
-	} else PROTECT(phy = allocVector(VECSXP, 4));
+	} else PROTECT(phy = allocVector(VECSXP, 3));
 
 	SET_VECTOR_ELT(phy, 0, edge);
 	SET_VECTOR_ELT(phy, 1, edge_length);
 	SET_VECTOR_ELT(phy, 2, Nnode);
-	SET_VECTOR_ELT(phy, 3, node_label);
 
-	UNPROTECT(6);
+	UNPROTECT(5);
 	return phy;
 }
 

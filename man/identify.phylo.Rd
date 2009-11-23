@@ -12,7 +12,7 @@
     information.}
   \item{labels}{a logical specifying whether to return the labels; by
     default only the numbers are returned.}
-  \item{...}{further arguments to be passed to or from other methods.}
+  \item{\dots}{further arguments to be passed to or from other methods.}
 }
 \description{
   This function allows to identify a clade on a plotted tree by clicking

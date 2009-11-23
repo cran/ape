@@ -1,4 +1,4 @@
-## vcv.phylo.R (2009-07-06)
+## vcv.phylo.R (2009-11-19)
 
 ##   Phylogenetic Variance-Covariance or Correlation Matrix
 
@@ -7,10 +7,10 @@
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-vcv.phylo <- function(phy, model = "Brownian", cor = FALSE)
+vcv <- function(phy, ...) UseMethod("vcv")
+
+vcv.phylo <- function(phy, model = "Brownian", corr = FALSE, ...)
 {
-    if (!inherits(phy, "phylo"))
-      stop('object "phy" is not of class "phylo"')
     if (is.null(phy$edge.length))
       stop("the tree has no branch lengths")
 
@@ -45,7 +45,7 @@ vcv.phylo <- function(phy, model = "Brownian", cor = FALSE)
     foo(n + 1, 0, dim(phy$edge)[1])
 
     vcv <- vcv[1:n, 1:n]
-    if (cor) {
+    if (corr) {
         ## This is inspired from the code of `cov2cor' (2005-09-08):
         M <- vcv
         Is <- sqrt(1/M[1 + 0:(n - 1)*(n + 1)])
@@ -54,4 +54,13 @@ vcv.phylo <- function(phy, model = "Brownian", cor = FALSE)
     }
     rownames(vcv) <- colnames(vcv) <- phy$tip.label
     vcv
+}
+
+vcv.corPhyl <- function(phy, corr = FALSE, ...)
+{
+    labels <- attr(phy, "tree")$tip.label
+    dummy.df <- data.frame(1:length(labels), row.names = labels)
+    res <- nlme::corMatrix(Initialize.corPhyl(phy, dummy.df), corr = corr)
+    dimnames(res) <- list(labels, labels)
+    res
 }

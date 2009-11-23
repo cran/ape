@@ -12,7 +12,7 @@ Nedge(phy)
 }
 \arguments{
   \item{object, phy}{an object of class \code{"phylo"}.}
-  \item{...}{further arguments passed to or from other methods.}
+  \item{\dots}{further arguments passed to or from other methods.}
   \item{internal.only}{a logical indicating whether to return the number
     of internal nodes only (the default), or of internal and terminal
     (tips) nodes (if \code{FALSE}).}

@@ -16,7 +16,7 @@ zoom(phy, focus, subtree = FALSE, col = rainbow, ...)
     extracted subtrees.}
   \item{col}{a vector of colours used to show where the subtrees are in
     the main tree, or a function .}
-  \item{...}{further arguments passed to \code{plot.phylo}.}
+  \item{\dots}{further arguments passed to \code{plot.phylo}.}
 }
 \details{
   This function aims at exploring very large trees. The main argument is

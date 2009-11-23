@@ -14,11 +14,13 @@ rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)
     (the default).}
   \item{tip.label}{a character vector giving the tip labels; if not
     specified, the tips "t1", "t2", ..., are given.}
-  \item{br}{an R function used to generate the branch lengths
-    (\code{rtree}; use \code{NULL} to simulate only a topology), or the
-    coalescence times (\code{rcoal}). For the latter, a genuine
-    coalescent tree is simulated by default.}
-  \item{...}{further argument(s) to be passed to \code{br}.}
+  \item{br}{one of the following: (i) an R function used to generate the
+    branch lengths (\code{rtree}; use \code{NULL} to simulate only a
+    topology), or the coalescence times (\code{rcoal}); (ii) a character
+    to simulate a genuine coalescent tree for \code{rcoal} (the
+    default); or (iii) a numeric vector for the branch lengths or the
+    coalescence times.}
+  \item{\dots}{further argument(s) to be passed to \code{br}.}
   \item{N}{an integer giving the number of trees to generate.}
 }
 \description{

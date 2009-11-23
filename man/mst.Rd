@@ -23,7 +23,7 @@ mst(X)
   \item{x2}{a numeric vector giving the coordinates of the observations
     on the \emph{y}-axis. Both \code{x1} and \code{x2} must be specified
     to be used.}
-  \item{...}{further arguments to be passed to \code{plot()}.}
+  \item{\dots}{further arguments to be passed to \code{plot()}.}
 }
 \description{
   The function \code{mst} finds the minimum spanning tree between a set of

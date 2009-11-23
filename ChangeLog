@@ -1,3 +1,44 @@
+		CHANGES IN APE VERSION 2.4-1
+
+
+NEW FEATURES
+
+    o rtree() and rcoal() now accept a numeric vector for the 'br'
+      argument.
+
+    o vcv() is a new generic function with methods for the classes "phylo"
+      and "corPhyl" so that it is possible to calculate the var-cov matrix
+      for "transformation models". vcv.phylo() can still be used for trees
+      of class "phylo"; its argument 'cor' has been renamed 'corr'.
+
+
+BUG FIXES
+
+    o bind.tree() failed when 'y' had no root edge.
+
+    o read.nexus() shuffled tip labels when the trees have no branch
+      lengths and there is a TRANSLATE block.
+
+    o read.nexus() does not try to translate node labels if there is a
+      translation table in the NEXUS file. See ?read.nexus for a
+      clarification on this behaviour.
+
+    o plot.multiPhylo() crashed R when plotting a list of trees with
+      compressed tip labels.
+
+    o write.nexus() did not translate the taxa names when asked for.
+
+    o plot.phylo(type = "fan") did not rotate the tip labels correctly
+      when the tree has branch lengths.
+
+    o ace(type = "continuous", method = "ML") now avoids sigma² being
+      negative (which resulted in an error).
+
+    o nj() crashed with NA/NaN in the distance matrix: an error in now
+      returned.
+
+
+
 		CHANGES IN APE VERSION 2.4
 
 
@@ -206,7 +247,7 @@ BUG FIXES
 
 OTHER CHANGES
 
-    o There is now a general help page displayed with '?ape' 
+    o There is now a general help page displayed with '?ape'.
 
 
 

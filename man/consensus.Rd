@@ -5,7 +5,7 @@
 consensus(..., p = 1, check.labels = TRUE)
 }
 \arguments{
-  \item{...}{either (i) a single object of class \code{"phylo"}, (ii) a
+  \item{\dots}{either (i) a single object of class \code{"phylo"}, (ii) a
     series of such objects separated by commas, or (iii) a list
     containing such objects.}
   \item{p}{a numeric value between 0.5 and 1 giving the proportion for a

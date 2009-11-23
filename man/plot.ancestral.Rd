@@ -20,7 +20,7 @@ ask = prod(par("mfcol")) < length(which) && dev.interactive(),
   \item{col.fun}{the color function to use.}
   \item{plot.node.values}{Should character values used as node labels?}
   \item{ask}{Ask before each plot?}
-  \item{...}{Further parameters to pass to the plot.phylo function.}
+  \item{\dots}{Further parameters to pass to the plot.phylo function.}
 }
 \details{
   This function produces one plot by selected ancestral character. It

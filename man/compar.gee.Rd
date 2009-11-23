@@ -27,7 +27,7 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
   \item{scope}{<unused>.}
   \item{quiet}{a logical specifying whether to display a warning message
     about eventual ``marginality principle violation''.}
-  \item{...}{further arguments to be passed to \code{drop1}.}
+  \item{\dots}{further arguments to be passed to \code{drop1}.}
 }
 \description{
   \code{compar.gee} performs the comparative analysis using generalized

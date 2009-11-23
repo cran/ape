@@ -25,7 +25,7 @@ as.DNAbin(x, ...)
 \arguments{
   \item{x}{a matrix or a list containing the DNA sequences, or an object
     of class \code{"alignment"}.}
-  \item{...}{further arguments to be passed to or from other methods.}
+  \item{\dots}{further arguments to be passed to or from other methods.}
 }
 \details{
   For \code{as.alignment}, the sequences given as argument should be

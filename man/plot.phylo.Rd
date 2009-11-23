@@ -91,7 +91,7 @@
   \item{tip.color}{the colours used for the tip labels, eventually
     recycled (see examples).}
   \item{layout}{the number of trees to be plotted simultaneously.}
-  \item{...}{further arguments to be passed to \code{plot} or to
+  \item{\dots}{further arguments to be passed to \code{plot} or to
     \code{plot.phylo}.}
 }
 \description{

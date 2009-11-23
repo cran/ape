@@ -37,7 +37,7 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
     title).}
   \item{col}{a colour used for the segments showing the AIC values (blue
     by default).}
-  \item{...}{further arguments passed to or from other methods.}
+  \item{\dots}{further arguments passed to or from other methods.}
 }
 \description{
   This function calls PhyML and fits successively 28 models of DNA

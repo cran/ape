@@ -36,27 +36,27 @@ as.phylo <- function (x, ...)
 as.phylo.hclust <- function(x, ...)
 {
     N <- dim(x$merge)[1]
-    edge <- matrix(NA, 2*N, 2)
+    edge <- matrix(0L, 2*N, 2)
     edge.length <- numeric(2*N)
     ## `node' gives the number of the node for the i-th row of x$merge
-    node <- numeric(N)
-    node[N] <- N + 2
-    cur.nod <- N + 3
-    j <- 1
+    node <- integer(N)
+    node[N] <- N + 2L
+    cur.nod <- N + 3L
+    j <- 1L
     for (i in N:1) {
         edge[j:(j + 1), 1] <- node[i]
         for (l in 1:2) {
-            k <- j + l - 1
+            k <- j + l - 1L
             if (x$merge[i, l] > 0) {
                 edge[k, 2] <- node[x$merge[i, l]] <- cur.nod
-                cur.nod <- cur.nod + 1
+                cur.nod <- cur.nod + 1L
                 edge.length[k] <- x$height[i] - x$height[x$merge[i, l]]
             } else {
                 edge[k, 2] <- -x$merge[i, l]
                 edge.length[k] <- x$height[i]
             }
         }
-        j <- j + 2
+        j <- j + 2L
     }
     if (is.null(x$labels))
       x$labels <- as.character(1:(N + 1))

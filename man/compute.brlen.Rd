@@ -10,7 +10,7 @@ compute.brlen(phy, method = "Grafen", power = 1, ...)
     this must be one of the followings: (i) \code{"Grafen"} (the
     default), (ii) a numeric vector, or (iii) a function.}
   \item{power}{The power at which heights must be raised (see below).}
-  \item{...}{further argument(s) to be passed to \code{method} if it is
+  \item{\dots}{further argument(s) to be passed to \code{method} if it is
     a function.}
 }
 \description{

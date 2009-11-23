@@ -15,7 +15,7 @@ mltt.plot(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
   \item{xlab}{a character string (or a variable of mode character)
     giving the label for the x-axis (default is "Time").}
   \item{ylab}{idem for the y-axis (default is "N").}
-  \item{...}{in the cases of \code{ltt.plot()} and \code{ltt.lines()}
+  \item{\dots}{in the cases of \code{ltt.plot()} and \code{ltt.lines()}
     these are further (graphical) arguments to be passed to
     \code{plot()} or \code{lines()}, respectively (see \code{Details:}
     on how to transform the axes); in the case \code{mltt.plot()} these

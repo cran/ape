@@ -1,4 +1,4 @@
-## nj.R (2009-07-10)
+## nj.R (2009-11-23)
 
 ##   Neighbor-Joining Tree Estimation
 
@@ -10,6 +10,8 @@
 nj <- function(X)
 {
     if (is.matrix(X)) X <- as.dist(X)
+    if (any(is.na(X)))
+        stop("missing values are not allowed in the distance matrix")
     N <- attr(X, "Size")
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)

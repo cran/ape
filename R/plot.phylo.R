@@ -1,4 +1,4 @@
-## plot.phylo.R (2009-09-30)
+## plot.phylo.R (2009-11-10)
 
 ##   Plot Phylogenies
 
@@ -363,24 +363,17 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
             }
         }
         if (type %in% c("fan", "radial")) {
-            xx.scaled <- xx[1:Ntip]
-            if (type == "fan") { # no need if type == "radial"
-                maxx <- max(abs(xx.scaled))
-                if (maxx > 1) xx.scaled <- xx.scaled/maxx
-            }
-            angle <- acos(xx.scaled)*180/pi
-            s1 <- angle > 90 & yy[1:Ntip] > 0
-            s2 <- angle < 90 & yy[1:Ntip] < 0
-            s3 <- angle > 90 & yy[1:Ntip] < 0
-            angle[s1] <- angle[s1] + 180
-            angle[s2] <- -angle[s2]
-            angle[s3] <- 180 - angle[s3]
+            xx.tips <- xx[1:Ntip]
+            ## using atan2 considerably facilitates things compared to acos...
+            angle <- atan2(yy[1:Ntip], xx.tips)*180/pi
+            s <- xx.tips < 0
+            angle[s] <- angle[s] + 180
             adj <- numeric(Ntip)
-            adj[xx[1:Ntip] < 0] <- 1
+            adj[xx.tips < 0] <- 1
             ## `srt' takes only a single value, so can't vectorize this:
             for (i in 1:Ntip)
-              text(xx[i], yy[i], x$tip.label[i], font = font, cex = cex,
-                   srt = angle[i], adj = adj[i], col = tip.color[i])
+                text(xx[i], yy[i], x$tip.label[i], font = font, cex = cex,
+                     srt = angle[i], adj = adj[i], col = tip.color[i])
         }
     }
     if (show.node.label)
@@ -590,5 +583,5 @@ plot.multiPhylo <- function(x, layout = 1, ...)
         par(ask = TRUE)
         on.exit(par(ask = FALSE))
     }
-    for (i in x) plot(i, ...)
+    for (i in 1:length(x)) plot(x[[i]], ...)
 }

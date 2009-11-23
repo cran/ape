@@ -23,7 +23,7 @@
   \item{i}{indices of the tree(s) to select from a list; this may be a
     vector of integers, logicals, or names.}
   \item{name}{a character string specifying the tree to be extracted.}
-  \item{...}{further arguments passed to or from other methods.}
+  \item{\dots}{further arguments passed to or from other methods.}
 }
 \description{
   These functions prints a compact summary of a phylogeny, or a list of,

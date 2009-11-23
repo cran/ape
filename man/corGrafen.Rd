@@ -27,7 +27,7 @@ corGrafen(value, phy, form=~1, fixed = FALSE)
     returned in unconstrained form (the same used in the optimization
     algorithm). If 'FALSE' the coefficients are returned in "natural",
     possibly constrained, form. Defaults to 'TRUE'}
-  \item{...}{some methods for these generics require additional
+  \item{\dots}{some methods for these generics require additional
     arguments. None are used in these methods.}
 }
 \description{

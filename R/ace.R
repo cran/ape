@@ -1,4 +1,4 @@
-## ace.R (2009-06-10)
+## ace.R (2009-11-12)
 
 ##   Ancestral Character Estimation
 
@@ -59,6 +59,7 @@ did not match: the former were ignored in the analysis.')
             if (model == "BM") {
                 tip <- phy$edge[, 2] <= nb.tip
                 dev.BM <- function(p) {
+                    if (p[1] < 0) return(1e100) # in case sigma² is negative
                     x1 <- p[-1][phy$edge[, 1] - nb.tip]
                     x2 <- numeric(length(x1))
                     x2[tip] <- x[phy$edge[tip, 2]]

@@ -22,7 +22,7 @@ is.monophyletic(phy, tips, reroot = !is.rooted(phy), plot = FALSE, ...)
     \item{plot}{
         a logical. If \code{TRUE}, then the tree is plotted with the specified group \code{tips} highlighted.
     }
-    \item{...}{
+    \item{\dots}{
        further arguments passed to \code{plot}.
     }
 }

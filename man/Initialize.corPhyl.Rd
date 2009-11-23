@@ -7,7 +7,7 @@
 \arguments{
 	\item{object}{An object inheriting from class \code{corPhyl}.}
 	\item{data}{The data to use. If it contains rownames, they are matched with the tree tip labels, otherwise data are supposed to be in the same order than tip labels and a warning is sent.}
-	\item{...}{some methods for this generic require additional arguments. None are used in this method.}
+	\item{\dots}{some methods for this generic require additional arguments. None are used in this method.}
 }
 \description{
 	Initialize a \code{corPhyl} correlation structure object.
