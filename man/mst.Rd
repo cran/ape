@@ -61,9 +61,8 @@ mst(X)
   \code{\link[stats]{dist}}, \code{\link[graphics]{plot}}
 }
 \examples{
-library(stats)
-n <- 20
-X <- matrix(runif(n * 10), n, 10)
+require(stats)
+X <- matrix(runif(200), 20, 10)
 d <- dist(X)
 PC <- prcomp(X)
 M <- mst(d)

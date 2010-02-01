@@ -1,3 +1,43 @@
+		CHANGES IN APE VERSION 2.5
+
+
+NEW FEATURES
+
+    o The new function parafit by Pierre Legendre tests for the
+      coevolution between hosts and parasites. It has a companion
+      function, pcoa, that does principal coordinate decomposition.
+      The latter has a biplot method.
+
+    o The new function lmorigin by Pierre Legendre performs multiple
+      regression through the origin with testing by permutation.
+
+    o The new functions rTraitCont and rTraitDisc simulate continuous and
+      discrete traits under a wide range of evolutionary models.
+
+    o The new function delta.plot does a delta plot following Holland et
+      al. (2002, Mol. Biol. Evol. 12:2051).
+
+    o The new function edges draws additional branches between any nodes
+      and/or tips on a plotted tree.
+
+    o The new function fancyarrows enhances arrows from graphics with
+      triangle and harpoon heads; it can be called from edges().
+
+    o add.scale.bar() has a new option 'ask' to draw interactively.
+
+    o The branch length score replaces the geodesic distance in dist.topo.
+
+
+BUG FIXES
+
+    o add.scale.bar() drew the bar outside the plotting region with the
+      default options with unrooted or radial trees.
+
+    o dist.topo() made R stuck when the trees had different sizes (thanks
+      to Otto Cordero for the fix).
+
+
+
 		CHANGES IN APE VERSION 2.4-1
 
 
@@ -1199,6 +1239,8 @@ BUG FIXES
 OTHER CHANGES
 
     o dist.taxo() has been renamed as weight.taxo().
+
+    o dist.phylo() has been replaced by the method cophenetic.phylo().
 
     o Various error and warning messages have been improved.
 

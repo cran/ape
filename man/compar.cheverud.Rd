@@ -52,11 +52,9 @@ compar.cheverud(y, W, tolerance = 1e-06, gold.tol = 1e-04)
 \seealso{\code{\link{compar.lynch}}}
 \examples{
 ### Example from Harvey and Pagel's book:
-\dontrun{
 y<-c(10,8,3,4)
 W <- matrix(c(1,1/6,1/6,1/6,1/6,1,1/2,1/2,1/6,1/2,1,1,1/6,1/2,1,1), 4)
 compar.cheverud(y,W)
-}
 ### Example from Rohlf's 2001 article:
 W<- matrix(c(
   0,1,1,2,0,0,0,0,

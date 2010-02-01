@@ -164,7 +164,7 @@
 \seealso{
   \code{\link{read.tree}}, \code{\link{add.scale.bar}},
   \code{\link{axisPhylo}}, \code{\link{nodelabels}},
-  \code{\link[graphics]{plot}} for the basic
+  \code{\link{edges}}, \code{\link[graphics]{plot}} for the basic
   plotting function in R
 }
 \examples{

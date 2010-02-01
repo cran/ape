@@ -83,7 +83,7 @@ edgelabels(text, edge, adj = c(0.5, 0.5), frame = "rect",
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}, Ben Bolker
   \email{bolker@zoo.ufl.edu}, and Jim Lemon}
 \seealso{
-  \code{\link{plot.phylo}}
+  \code{\link{plot.phylo}}, \code{\link{edges}}
 }
 \examples{
 tr <- read.tree(text = "((Homo,Pan),Gorilla);")

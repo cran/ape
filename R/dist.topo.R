@@ -1,24 +1,27 @@
-## dist.topo.R (2009-07-06)
+## dist.topo.R (2010-01-25)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
 
-## Copyright 2005-2009 Emmanuel Paradis
+## Copyright 2005-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 dist.topo <- function(x, y, method = "PH85")
 {
-    if (method == "BHV01" && (is.null(x$edge.length) || is.null(y$edge.length)))
+    if (method == "score" && (is.null(x$edge.length) || is.null(y$edge.length)))
         stop("trees must have branch lengths for Billera et al.'s distance.")
-    n <- length(x$tip.label)
-    bp1 <- .Call("bipartition", x$edge, n, x$Nnode, PACKAGE = "ape")
+    nx <- length(x$tip.label)
+    x <- unroot(x)
+    y <- unroot(y)
+    bp1 <- .Call("bipartition", x$edge, nx, x$Nnode, PACKAGE = "ape")
     bp1 <- lapply(bp1, function(xx) sort(x$tip.label[xx]))
+    ny <- length(y$tip.label) # fix by Otto Cordero
     ## fix by Tim Wallstrom:
-    bp2.tmp <- .Call("bipartition", y$edge, n, y$Nnode, PACKAGE = "ape")
+    bp2.tmp <- .Call("bipartition", y$edge, ny, y$Nnode, PACKAGE = "ape")
     bp2 <- lapply(bp2.tmp, function(xx) sort(y$tip.label[xx]))
-    bp2.comp <- lapply(bp2.tmp, function(xx) setdiff(1:n, xx))
+    bp2.comp <- lapply(bp2.tmp, function(xx) setdiff(1:ny, xx))
     bp2.comp <- lapply(bp2.comp, function(xx) sort(y$tip.label[xx]))
     ## End
     q1 <- length(bp1)
@@ -27,8 +30,7 @@ dist.topo <- function(x, y, method = "PH85")
         p <- 0
         for (i in 1:q1) {
             for (j in 1:q2) {
-                if (identical(bp1[[i]], bp2[[j]]) |
-                    identical(bp1[[i]], bp2.comp[[j]])) {
+                if (identical(bp1[[i]], bp2[[j]]) | identical(bp1[[i]], bp2.comp[[j]])) {
                     p <- p + 1
                     break
                 }
@@ -37,25 +39,27 @@ dist.topo <- function(x, y, method = "PH85")
         dT <- q1 + q2 - 2 * p # same than:
         ##dT <- if (q1 == q2) 2*(q1 - p) else 2*(min(q1, q2) - p) + abs(q1 - q2)
     }
-    if (method == "BHV01") {
+    if (method == "score") {
         dT <- 0
         found1 <- FALSE
         found2 <- logical(q2)
         found2[1] <- TRUE
         for (i in 2:q1) {
             for (j in 2:q2) {
-                if (identical(bp1[[i]], bp2[[j]])) {
-                    dT <- dT + abs(x$edge.length[which(x$edge[, 2] == n + i)] -
-                                   y$edge.length[which(y$edge[, 2] == n + j)])
+                if (identical(bp1[[i]], bp2[[j]]) | identical(bp1[[i]], bp2.comp[[j]])) {
+                    if (i == 19) browser()
+                    dT <- dT + (x$edge.length[which(x$edge[, 2] == nx + i)] -
+                                y$edge.length[which(y$edge[, 2] == ny + j)])^2
                     found1 <- found2[j] <- TRUE
                     break
                 }
             }
             if (found1) found1 <- FALSE
-            else dT <- dT + x$edge.length[which(x$edge[, 2] == n + i)]
+            else dT <- dT + (x$edge.length[which(x$edge[, 2] == nx + i)])^2
         }
         if (!all(found2))
-          dT <- dT + sum(y$edge.length[y$edge[, 2] %in% (n + which(!found2))])
+            dT <- dT + sum((y$edge.length[y$edge[, 2] %in% (ny + which(!found2))])^2)
+        dT <- sqrt(dT)
     }
     dT
 }

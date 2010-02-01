@@ -6,7 +6,7 @@ write.tree(phy, file = "", append = FALSE,
            digits = 10, tree.names = FALSE)
 }
 \arguments{
-  \item{phy}{an object of class \code{"phylo"}.}
+  \item{phy}{an object of class \code{"phylo"} or \code{"multiPhylo"}.}
   \item{file}{a file name specified by either a variable of mode character,
     or a double-quoted string; if \code{file = ""} (the default) then the
     tree is written on the standard output connection (i.e. the console).}

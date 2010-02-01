@@ -1,8 +1,8 @@
-## multi2di.R (2008-04-09)
+## multi2di.R (2010-01-23)
 
 ##   Collapse and Resolve Multichotomies
 
-## Copyright 2005-2008 Emmanuel Paradis
+## Copyright 2005-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -13,7 +13,8 @@ multi2di <- function(phy, random = TRUE)
     target <- which(degree > 2)
     if (!length(target)) return(phy)
     nb.edge <- dim(phy$edge)[1]
-    nextnode <- length(phy$tip.label) + phy$Nnode + 1
+    n <- length(phy$tip.label)
+    nextnode <- n + phy$Nnode + 1
     new.edge <- edge2delete <- NULL
     wbl <- FALSE
     if (!is.null(phy$edge.length)) {
@@ -61,13 +62,31 @@ multi2di <- function(phy, random = TRUE)
     }
     phy$edge <- rbind(phy$edge[-edge2delete, ], new.edge)
     if (wbl)
-      phy$edge.length <- c(phy$edge.length[-edge2delete], new.edge.length)
+        phy$edge.length <- c(phy$edge.length[-edge2delete], new.edge.length)
     if (!is.null(attr(phy, "order"))) attr(phy, "order") <- NULL
     if (!is.null(phy$node.label))
         phy$node.label <-
             c(phy$node.label, rep("", phy$Nnode - length(phy$node.label)))
-    reorder(phy)
-    ##read.tree(text = write.tree(phy))
+    phy <- reorder(phy)
+
+    ## the node numbers are not in increasing order in edge[, 2]: this
+    ## will confuse drop.tip and other functions (root), so renumber them
+    newNb <- integer(phy$Nnode)
+    newNb[1] <- n + 1L
+    sndcol <- phy$edge[, 2] > n
+
+    ## reorder node labels before changing edge:
+    if (!is.null(phy$node.label)) {
+        o <- 1 + rank(phy$edge[sndcol, 2])
+        ## the root's label is not changed:
+        phy$node.label <- phy$node.label[c(1, o)]
+    }
+
+    ## executed from right to left, so newNb is modified before phy$edge:
+    phy$edge[sndcol, 2] <- newNb[phy$edge[sndcol, 2] - n] <-
+        n + 2:phy$Nnode
+    phy$edge[, 1] <- newNb[phy$edge[, 1] - n]
+    phy
 }
 
 di2multi <- function(phy, tol = 1e-8)

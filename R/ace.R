@@ -131,9 +131,10 @@ did not match: the former were ignored in the analysis.')
             }
             if (model == "SYM") {
                 np <- nl * (nl - 1)/2
-                rate[col(rate) < row(rate)] <- 1:np
+                sel <- col(rate) < row(rate)
+                rate[sel] <- 1:np
                 rate <- t(rate)
-                rate[col(rate) < row(rate)] <- 1:np
+                rate[sel] <- 1:np
             }
         } else {
             if (ncol(model) != nrow(model))
@@ -145,9 +146,10 @@ as the number of categories in `x'")
             np <- max(rate)
         }
         index.matrix <- rate
-        index.matrix[cbind(1:nl, 1:nl)] <- NA
-        rate[cbind(1:nl, 1:nl)] <- 0
-        rate[rate == 0] <- np + 1 # to avoid 0's since we will use this an numeric indexing
+        tmp <- cbind(1:nl, 1:nl)
+        index.matrix[tmp] <- NA
+        rate[tmp] <- 0
+        rate[rate == 0] <- np + 1 # to avoid 0's since we will use this as numeric indexing
 
         liks <- matrix(0, nb.tip + nb.node, nl)
         TIPS <- 1:nb.tip

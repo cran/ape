@@ -59,8 +59,8 @@ makeLabel(x, ...)
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
-  \code{\link[base]{make.unique}}, \code{\link[base]{make.names}},
-  \code{\link[base]{abbreviate}}
+  \code{\link{makeNodeLabel}}, \code{\link[base]{make.unique}},
+  \code{\link[base]{make.names}}, code{\link[base]{abbreviate}}
 }
 \examples{
 x <- rep("a", 3)

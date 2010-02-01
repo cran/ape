@@ -1,4 +1,4 @@
-## scales.R (2009-10-02)
+## scales.R (2009-12-16)
 
 ##   Add a Scale Bar or Axis to a Phylogeny Plot
 
@@ -10,7 +10,7 @@
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-add.scale.bar <- function(x, y, length = NULL, ...)
+add.scale.bar <- function(x, y, length = NULL, ask = FALSE, ...)
 {
     lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
     direc <- lastPP$direction
@@ -22,24 +22,36 @@ add.scale.bar <- function(x, y, length = NULL, ...)
         length <- eval(parse(text = paste("1e", nb.digit, sep = "")))
     }
 
-    if (missing(x) || missing(y))
-        switch(direc,
-               "rightwards" = {
-                   x <- 0
-                   y <- 1
-               },
-               "leftwards" = {
-                   x <- max(lastPP$xx)
-                   y <- 1
-               },
-               "upwards" = {
-                   x <- max(lastPP$xx)
-                   y <- 0
-               },
-               "downwards" = {
-                   x <- 1
-                   y <- max(lastPP$yy)
-               })
+    if (ask) {
+        cat("\nClick where you want to draw the bar\n")
+        x <- unlist(locator(1))
+        y <- x[2]
+        x <- x[1]
+    } else if (missing(x) || missing(y)) {
+        if (lastPP$type %in% c("phylogram", "cladogram")) {
+            switch(direc,
+                   "rightwards" = {
+                       x <- 0
+                       y <- 1
+                   },
+                   "leftwards" = {
+                       x <- max(lastPP$xx)
+                       y <- 1
+                   },
+                   "upwards" = {
+                       x <- max(lastPP$xx)
+                       y <- 0
+                   },
+                   "downwards" = {
+                       x <- 1
+                       y <- max(lastPP$yy)
+                   })
+        } else {
+            direc <- "rightwards" # just to be sure for below
+            x <- lastPP$x.lim[1]
+            y <- lastPP$y.lim[1]
+        }
+    }
 
     switch(direc,
            "rightwards" = {

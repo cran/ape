@@ -1,8 +1,8 @@
-## plot.phylo.R (2009-11-10)
+## plot.phylo.R (2010-01-04)
 
 ##   Plot Phylogenies
 
-## Copyright 2002-2009 Emmanuel Paradis
+## Copyright 2002-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -62,12 +62,12 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
 
     phyloORclado <- type %in% c("phylogram", "cladogram")
     horizontal <- direction %in% c("rightwards", "leftwards")
+    xe <- x$edge # to save
     if (phyloORclado) {
         ## we first compute the y-coordinates of the tips.
         phyOrder <- attr(x, "order")
         ## make sure the tree is in cladewise order:
         if (is.null(phyOrder) || phyOrder != "cladewise") {
-            xe <- x$edge
             x <- reorder(x) # fix from Klaus Schliep (2007-06-16)
             if (!identical(x$edge, xe)) {
                 ## modified from Li-San Wang's fix (2007-01-23):
@@ -386,7 +386,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
               label.offset = label.offset, x.lim = x.lim, y.lim = y.lim,
               direction = direction, tip.color = tip.color,
               Ntip = Ntip, Nnode = Nnode)
-    assign("last_plot.phylo", c(L, list(edge = x$edge, xx = xx, yy = yy)),
+    assign("last_plot.phylo", c(L, list(edge = xe, xx = xx, yy = yy)),
            envir = .PlotPhyloEnv)
     invisible(L)
 }

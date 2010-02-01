@@ -29,7 +29,7 @@ Analyses of Phylogenetics and Evolution
 }
 \references{
   Paradis, E. (2006) \emph{Analyses of Phylogenetics and Evolution with
-    R}. Springer, New York.
+    R.} New York: Springer.
 
   Paradis, E., Claude, J. and Strimmer, K. (2004) APE: analyses of
   phylogenetics and evolution in R language. \emph{Bioinformatics},

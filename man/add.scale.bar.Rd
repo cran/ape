@@ -2,13 +2,15 @@
 \alias{add.scale.bar}
 \title{Add a Scale Bar to a Phylogeny Plot}
 \usage{
-add.scale.bar(x, y, length = NULL, ...)
+add.scale.bar(x, y, length = NULL, ask = FALSE, ...)
 }
 \arguments{
   \item{x}{x location of the bar (can be left missing).}
   \item{y}{y location of the bar (can be left missing).}
   \item{length}{a numeric value giving the length of the scale bar. If
     none is supplied, a value is calculated from the data.}
+  \item{ask}{a logical; if \code{TRUE} the user is asked to click where
+    to draw the bar. The default is \code{FALSE}.}
   \item{\dots}{further arguments to be passed to \code{text}.}
 }
 \description{

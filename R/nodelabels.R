@@ -1,8 +1,8 @@
-## nodelabels.R (2009-09-30)
+## nodelabels.R (2010-01-30)
 
 ##   Labelling Trees
 
-## Copyright 2004-2009 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
+## Copyright 2004-2010 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -167,4 +167,91 @@ edgelabels <- function(text, edge, adj = c(0.5, 0.5), frame = "rect",
     }
     BOTHlabels(text, sel, XX, YY, adj, frame, pch, thermo,
                pie, piecol, col, bg, ...)
+}
+
+edges <- function(nodes0, nodes1, arrows = 0, type = "classical", ...)
+{
+    type <- match.arg(type, c("classical", "triangle", "harpoon"))
+    lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
+    ## we do the recycling if necessary:
+    if (length(nodes0) != length(nodes1)) {
+        tmp <- cbind(nodes0, nodes1)
+        nodes0 <- tmp[, 1]
+        nodes1 <- tmp[, 2]
+    }
+    x0 <- lastPP$xx[nodes0]
+    y0 <- lastPP$yy[nodes0]
+    x1 <- lastPP$xx[nodes1]
+    y1 <- lastPP$yy[nodes1]
+    if (arrows)
+        if (type == "classical")
+            graphics::arrows(x0, y0, x1, y1, code = arrows, ...)
+        else
+            fancyarrows(x0, y0, x1, y1, code = arrows, type = type, ...)
+    else
+        graphics::segments(x0, y0, x1, y1, ...)
+}
+
+fancyarrows <-
+    function(x0, y0, x1, y1, length = 0.25, angle = 30, code = 2,
+             col = par("fg"), lty = par("lty"), lwd = par("lwd"),
+             type = "triangle", ...)
+{
+    foo <- function(x0, y0, x1, y1) {
+        ## important to correct with these parameters cause
+        ## the coordinate system will likely not be Cartesian
+        pin <- par("pin")
+        usr <- par("usr")
+        A1 <- pin[1]/diff(usr[1:2])
+        A2 <- pin[2]/diff(usr[3:4])
+        x0 <- x0 * A1
+        y0 <- y0 * A2
+        x1 <- x1 * A1
+        y1 <- y1 * A2
+        atan2(y1 - y0, x1 - x0)
+    }
+    arrow.triangle <- function(x, y) {
+        beta <- alpha - angle/2
+        xa <- xinch(length * cos(beta)) + x
+        ya <- yinch(length * sin(beta)) + y
+        beta <- beta + angle
+        xb <- xinch(length * cos(beta)) + x
+        yb <- yinch(length * sin(beta)) + y
+        n <- length(x)
+        col <- rep(col, length.out = n)
+        for (i in 1:n)
+            polygon(c(x[i], xa[i], xb[i]), c(y[i], ya[i], yb[i]),
+                    col = col[i], border = col[i])
+        list((xa + xb)/2, (ya + yb)/2)
+    }
+    arrow.harpoon <- function(x, y) {
+        beta <- alpha - angle/2
+        xa <- xinch(length * cos(beta)) + x
+        ya <- yinch(length * sin(beta)) + y
+        beta <- alpha + angle/2
+        xb <- xinch(length * cos(beta)) + x
+        yb <- yinch(length * sin(beta)) + y
+        xc <- x/2 + (xa + xb)/4
+        yc <- y/2 + (ya + yb)/4
+        n <- length(x)
+        col <- rep(col, length.out = n)
+        for (i in 1:n)
+            polygon(c(x[i], xa[i], xc[i], xb[i]),
+                    c(y[i], ya[i], yc[i], yb[i]),
+                    col = col[i], border = col[i])
+        list(xc, yc)
+    }
+
+    type <- match.arg(type, c("triangle", "harpoon"))
+    angle <- pi*angle/180 # degree -> radian
+    alpha <- foo(x0, y0, x1, y1) # angle of segment with x-axis
+    ## alpha is in [-pi, pi]
+
+    FUN <- if (type == "triangle") arrow.triangle else arrow.harpoon
+    XY0 <- if (code == 1 || code == 3) FUN(x0, y0) else list(x0, y0)
+    if (code >= 2) {
+        alpha <- (alpha + pi) %% (2 * pi)
+        XY1 <- FUN(x1, y1)
+    } else XY1 <- list(x1, y1)
+    segments(XY0[[1]], XY0[[2]], XY1[[1]], XY1[[2]], col = col, lty = lty, lwd = lwd, ...)
 }

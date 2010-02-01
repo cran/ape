@@ -45,7 +45,9 @@ makeNodeLabel(phy, method = "number", prefix = "Node", nodeList = list(), ...)
   specified node labels (so that if the other nodes have already labels
   they are not modified) while the two others change all labels.
 }
-
+\value{
+  an object of class \code{"phylo"}.
+}
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
   \code{\link{makeLabel}}, \code{\link[base]{grep}}

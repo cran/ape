@@ -50,7 +50,6 @@ tr <- rtree(5)
 vcv(tr)
 vcv(corBrownian(1, tr))
 vcv(corPagel(1, tr))
-vcv(corPagel(0, tr))
 }
 \keyword{manip}
 \keyword{multivariate}
