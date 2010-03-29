@@ -57,10 +57,10 @@ makeLabel(x, ...)
 \value{
   An object of the appropriate class.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{makeNodeLabel}}, \code{\link[base]{make.unique}},
-  \code{\link[base]{make.names}}, code{\link[base]{abbreviate}}
+  \code{\link[base]{make.names}}, \code{\link[base]{abbreviate}}
 }
 \examples{
 x <- rep("a", 3)

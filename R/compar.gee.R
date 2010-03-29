@@ -20,10 +20,9 @@ do not match: the former were ignored in the analysis.")
     effect.assign <- attr(model.matrix(formula, data = data), "assign")
     for (i in all.vars(formula)) {
         if (any(is.na(eval(parse(text = i), envir = data))))
-          stop("the present method cannot (yet) be used directly with missing data: you may consider removing the species with missing data from your tree with the function `drop.tip'.")
+          stop("the present method cannot (yet) be used directly with missing data: you may consider removing the species with missing data from your tree with the function 'drop.tip'.")
     }
-    if (is.null(phy$edge.length))
-      stop("the tree has no branch lengths.")
+    if (is.null(phy$edge.length)) stop("the tree has no branch lengths.")
     R <- vcv.phylo(phy, cor = TRUE)
     id <- rep(1, dim(R)[1])
     geemod <- do.call("gee", list(formula, id, data = data, family = family, R = R,
@@ -33,7 +32,7 @@ do not match: the former were ignored in the analysis.")
     fname <-
         if (is.function(family)) deparse(substitute(family)) else family
     if (fname == "binomial")
-      W <- summary(glm(formula, family = quasibinomial, data = data))$cov.scaled
+        W <- summary(glm(formula, family = quasibinomial, data = data))$cov.scaled
     N <- geemod$nobs
     dfP <- sum(phy$edge.length)*N / sum(diag(vcv.phylo(phy)))
     obj <- list(call = geemod$call,

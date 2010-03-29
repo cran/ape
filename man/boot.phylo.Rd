@@ -111,7 +111,7 @@ prop.clades(phy, ..., part = NULL)
   Felsenstein, J. (1985) Confidence limits on phylogenies: an approach
   using the bootstrap. \emph{Evolution}, \bold{39}, 783--791.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{dist.topo}}, \code{\link{consensus}}, \code{\link{nodelabels}}
 }

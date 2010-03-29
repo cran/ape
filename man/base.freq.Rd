@@ -24,7 +24,7 @@ base.freq(x, freq = FALSE)
   A numeric vector storing the relative frequencies with names
   \code{c("a", "c", "g", "t")}.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{GC.content}}, \code{\link{seg.sites}},
   \code{\link{nuc.div}}, \code{\link{DNAbin}}

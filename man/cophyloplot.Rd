@@ -5,25 +5,38 @@
   This function plots two trees face to face with the links if specified. It is possible to rotate the branches of each tree around the nodes by clicking.
 }
 \usage{
-cophyloplot(x, y, assoc=NULL, use.edge.length=FALSE,space=0,
-       length.line=1, gap=2, type="phylogram", rotate=FALSE,
-       col="red", show.tip.label=TRUE, font=3, \dots)
+cophyloplot(x, y, assoc = NULL, use.edge.length = FALSE, space = 0,
+       length.line = 1, gap = 2, type = "phylogram", rotate = FALSE,
+       col = par("fg"), lwd = par("lwd"), lty = par("lty"),
+       show.tip.label = TRUE, font = 3, \dots)
 }
 
 \arguments{
   \item{x, y}{two objects of class \code{"phylo"}.}
-  \item{assoc}{a matrix with 2 columns specifying the associations between the tips. If NULL, no links will be drawn.}
-  \item{use.edge.length}{a logical indicating whether the branch lengths should be used to plot the trees; default is FALSE.}
-  \item{space}{a positive value that specifies the distance between the two trees.}
-  \item{length.line}{a positive value that specifies the length of the horizontal line associated to each taxa. Default is 1.}
-  \item{gap}{a value specifying the distance between the tips of the phylogeny and the lines.}
-  \item{type}{a character string specifying the type of phylogeny to be drawn; it must be one of "phylogram" (the default) or "cladogram".}
-  \item{rotate}{a logical indicating whether the nodes of the phylogeny can be rotated by clicking. Default is FALSE.}
-  \item{col}{a character string indicating the color to be used for the links. Default is red.}
-  \item{show.tip.label}{a logical indicating whether to show the tip labels on the phylogeny (defaults to 'TRUE', i.e. the labels are shown).}
-  \item{font}{an integer specifying the type of font for the labels: 1
-    (plain text), 2 (bold), 3 (italic, the default), or 4 (bold
-    italic).}
+  \item{assoc}{a matrix with 2 columns specifying the associations
+    between the tips. If NULL, no links will be drawn.}
+  \item{use.edge.length}{a logical indicating whether the branch lengths
+    should be used to plot the trees; default is FALSE.}
+  \item{space}{a positive value that specifies the distance between the
+    two trees.}
+  \item{length.line}{a positive value that specifies the length of the
+    horizontal line associated to each taxa. Default is 1.}
+  \item{gap}{a value specifying the distance between the tips of the
+    phylogeny and the lines.}
+  \item{type}{a character string specifying the type of phylogeny to be
+    drawn; it must be one of "phylogram" (the default) or "cladogram".}
+  \item{rotate}{a logical indicating whether the nodes of the phylogeny
+    can be rotated by clicking. Default is FALSE.}
+  \item{col}{a character vector indicating the color to be used for the
+    links; recycled as necessary.}
+  \item{lwd}{id. for the width.}
+  \item{lty}{id. for the line type.}
+  \item{show.tip.label}{a logical indicating whether to show the tip
+    labels on the phylogeny (defaults to 'TRUE', i.e. the labels are
+    shown).}
+  \item{font}{an integer specifying the type of font for the
+    labels: 1 (plain text), 2 (bold), 3 (italic, the default), or 4
+    (bold italic).}
   \item{\dots}{(unused)}
 }
 \details{

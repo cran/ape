@@ -1,8 +1,10 @@
 \name{bind.tree}
 \alias{bind.tree}
+\alias{+.phylo}
 \title{Binds Trees}
 \usage{
-bind.tree(x, y, where = "root", position = 0)
+bind.tree(x, y, where = "root", position = 0, interactive = FALSE)
+\special{x + y}
 }
 \arguments{
   \item{x}{an object of class \code{"phylo"}.}
@@ -13,6 +15,8 @@ bind.tree(x, y, where = "root", position = 0)
   \item{position}{a numeric value giving the position from the tip or
     node given by \code{node} where the tree \code{y} is binded;
     negative values are ignored.}
+  \item{interactive}{if \code{TRUE} the user is asked to choose the tip
+    or node of \code{x} by clicking on the tree which must be plotted.}
 }
 \description{
   This function binds together two phylogenetic trees to give a single
@@ -20,21 +24,22 @@ bind.tree(x, y, where = "root", position = 0)
 }
 \details{
   The argument \code{x} can be seen as the receptor tree, whereas
-  \code{y} is the donor tree. The root of \code{y} is then sticked on a
+  \code{y} is the donor tree. The root of \code{y} is then grafted on a
   location of \code{x} specified by \code{where} and, possibly,
   \code{position}. If \code{y} has a root edge, this is added as in
   internal branch in the resulting tree.
+
+  \code{x + y} is a shortcut for:
+
+  \preformatted{
+    bind.tree(x, y, position = if (is.null(x$root.edge)) 0 else
+    x$root.edge)
+  }
 }
 \value{
   an object of class \code{"phylo"}.
 }
-\note{
-  For the moment, this function handles only trees with branch lengths,
-  and does not handle node labels.
-
-  Further testing/improvements may be needed.
-}
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{drop.tip}}, \code{\link{root}}
 }
@@ -55,13 +60,45 @@ cat("(Turniciformes:27.0,(Piciformes:26.3,((Galbuliformes:24.4,",
 tree.bird1 <- read.tree("ex1.tre")
 tree.bird2 <- read.tree("ex2.tre")
 unlink(c("ex1.tre", "ex2.tre")) # clean-up
-birds <- bind.tree(tree.bird1, tree.bird2, where = "root",
-                   position = tree.bird1$root.edge)
-birds
+(birds <- tree.bird1 + tree.bird2)
 layout(matrix(c(1, 2, 3, 3), 2, 2))
 plot(tree.bird1)
 plot(tree.bird2)
 plot(birds)
-layout(matrix(1))
+
+### examples with random trees
+x <- rtree(4, tip.label = LETTERS[1:4])
+y <- rtree(4, tip.label = LETTERS[5:8])
+x <- makeNodeLabel(x, prefix = "x_")
+y <- makeNodeLabel(y, prefix = "y_")
+x$root.edge <- y$root.edge <- .2
+
+z <- bind.tree(x, y, po=.2)
+plot(y, show.node.label = TRUE, font = 1, root.edge = TRUE)
+title("y")
+plot(x, show.node.label = TRUE, font = 1, root.edge = TRUE)
+title("x")
+plot(z, show.node.label = TRUE, font = 1, root.edge = TRUE)
+title("z <- bind.tree(x, y, po=.2)")
+
+z <- bind.tree(x, y, 2, .1)
+plot(y, show.node.label = TRUE, font = 1, root.edge = TRUE)
+title("y")
+plot(x, show.node.label = TRUE, font = 1, root.edge = TRUE)
+title("x")
+plot(z, show.node.label = TRUE, font = 1, root.edge = TRUE)
+title("z <- bind.tree(x, y, 2, .1)")
+
+x <- rtree(100)
+y <- rtree(100)
+x$root.edge <- y$root.edge <- .2
+z <- x + y
+plot(y, show.tip.label = FALSE, root.edge = TRUE); axisPhylo()
+title("y")
+plot(x, show.tip.label = FALSE, root.edge = TRUE); axisPhylo()
+title("x")
+plot(z, show.tip.label = FALSE, root.edge = TRUE); axisPhylo()
+title("z <- x + y")
+layout(1)
 }
 \keyword{manip}

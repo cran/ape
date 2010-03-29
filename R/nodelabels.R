@@ -1,4 +1,4 @@
-## nodelabels.R (2010-01-30)
+## nodelabels.R (2010-03-12)
 
 ##   Labelling Trees
 
@@ -98,6 +98,9 @@ BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
             rect(xl, yb + rowSums(thermo[, 1:(i - 1), drop = FALSE]),
                  xr, yb + rowSums(thermo[, 1:i]),
                  border = NA, col = piecol[i])
+        ## check for NA's before drawing the borders
+        s <- apply(thermo, 1, function(xx) any(is.na(xx)))
+        xl[s] <-  xr[s] <- NA
         rect(xl, yb, xr, yb + height, border = "black")
         segments(xl, YY, xl - width/5, YY)
         segments(xr, YY, xr + width/5, YY)
@@ -109,8 +112,10 @@ BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
         xrad <- rep(xrad, length(sel))
         XX <- XX + adj[1] - 0.5
         YY <- YY + adj[2] - 0.5
-        for (i in 1:length(sel))
+        for (i in 1:length(sel)) {
+            if (any(is.na(pie[i, ]))) next
             floating.pie.asp(XX[i], YY[i], pie[i, ], radius = xrad[i], col = piecol)
+        }
     }
     if (!is.null(text)) text(XX, YY, text, adj = adj, col = col, ...)
     if (!is.null(pch)) points(XX + adj[1] - 0.5, YY + adj[2] - 0.5,

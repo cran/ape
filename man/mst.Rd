@@ -54,7 +54,7 @@ mst(X)
 \author{
   Yvonnick Noel \email{noel@univ-lille3.fr},
   Julien Claude \email{claude@isem.univ-montp2.fr} and
-  Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}
+  Emmanuel Paradis
 }
 \seealso{
   \code{\link{dist.dna}}, \code{\link{dist.gene}},

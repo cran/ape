@@ -4,7 +4,7 @@
 \alias{is.rooted}
 \title{Roots Phylogenetic Trees}
 \usage{
-root(phy, outgroup, node = NULL, resolve.root = FALSE)
+root(phy, outgroup, node = NULL, resolve.root = FALSE, interactive = FALSE)
 unroot(phy)
 is.rooted(phy)
 }
@@ -15,6 +15,8 @@ is.rooted(phy)
   \item{node}{alternatively, a node number where to root the tree.}
   \item{resolve.root}{a logical specifying whether to resolve the new
     root as a bifurcating node.}
+  \item{interactive}{if \code{TRUE} the user is asked to select the node
+    by clicking on the tree which must be plotted.}
 }
 \description{
   \code{root} reroots a phylogenetic tree with respect to the specified
@@ -52,7 +54,7 @@ is.rooted(phy)
   an object of class \code{"phylo"} for \code{root} and \code{unroot}; a
   single logical value for \code{is.rooted}.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{bind.tree}}, \code{\link{drop.tip}},
   \code{\link{nodelabels}}, \code{\link{identify.phylo}}

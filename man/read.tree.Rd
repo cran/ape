@@ -84,8 +84,7 @@ read.tree(file = "", text = NULL, tree.names = NULL, skip = 0,
   in R. \url{http://ape.mpl.ird.fr/misc/FormatTreeR_28July2008.pdf}
 }
 
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr} and Daniel
-  Lawson \email{dan.lawson@bristol.ac.uk}}
+\author{Emmanuel Paradis and Daniel Lawson \email{dan.lawson@bristol.ac.uk}}
 \seealso{
   \code{\link{write.tree}}, \code{\link{read.nexus}},
   \code{\link{write.nexus}}, \code{\link[base]{scan}} for the basic R

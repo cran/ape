@@ -78,7 +78,7 @@ method. This can be done with the function \code{\link{ace}}.
   Paradis, E. (2005) Statistical analysis of diversification with
   species traits. \emph{Evolution}, \bold{59}, 1--12.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{branching.times}}, \code{\link{diversi.gof}},
   \code{\link{diversi.time}}, \code{\link{ltt.plot}},

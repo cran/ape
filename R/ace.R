@@ -1,8 +1,8 @@
-## ace.R (2009-11-12)
+## ace.R (2010-02-03)
 
 ##   Ancestral Character Estimation
 
-## Copyright 2005-2009 Emmanuel Paradis and Ben Bolker
+## Copyright 2005-2010 Emmanuel Paradis and Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -224,7 +224,7 @@ anova.ace <- function(object, ...)
     table <- data.frame(ll, df, ddf, dev,
                         pchisq(dev, ddf, lower.tail = FALSE))
     dimnames(table) <- list(1:length(X), c("Log lik.", "Df",
-                                           "Df change", "Deviance",
+                                           "Df change", "Resid. Dev",
                                            "Pr(>|Chi|)"))
     structure(table, heading = "Likelihood Ratio Test Table",
               class = c("anova", "data.frame"))

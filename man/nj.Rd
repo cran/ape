@@ -19,7 +19,7 @@ nj(X)
   method for reconstructing phylogenetic trees. \emph{Molecular Biology
     and Evolution}, \bold{4}, 406--425.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{write.tree}}, \code{\link{read.tree}},
   \code{\link{dist.dna}}, \code{\link{bionj}},

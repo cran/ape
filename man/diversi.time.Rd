@@ -49,7 +49,7 @@ diversi.time(x, census = NULL, censoring.codes = c(1, 0), Tc = NULL)
   testing. \emph{Proceedings of the Royal Society of London. Series
     B. Biological Sciences}, \bold{264}, 1141--1147.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{branching.times}}, \code{\link{diversi.gof}}
   \code{\link{ltt.plot}}, \code{\link{birthdeath}},

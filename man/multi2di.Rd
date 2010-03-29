@@ -28,7 +28,7 @@ di2multi(phy, tol = 1e-08)
 \seealso{
 \code{\link{is.binary.tree}}
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \value{
   Both functions return an object of class \code{"phylo"}.
 }

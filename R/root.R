@@ -1,8 +1,8 @@
-## root.R (2009-11-15)
+## root.R (2010-02-11)
 
 ##   Root of Phylogenetic Trees
 
-## Copyright 2004-2009 Emmanuel Paradis
+## Copyright 2004-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -10,19 +10,19 @@
 is.rooted <- function(phy)
 {
     if (!inherits(phy, "phylo"))
-      stop('object "phy" is not of class "phylo"')
+        stop('object "phy" is not of class "phylo"')
     if (!is.null(phy$root.edge)) TRUE
     else
-      if (tabulate(phy$edge[, 1])[length(phy$tip.label) + 1] > 2)
-        FALSE else TRUE
+        if (tabulate(phy$edge[, 1])[length(phy$tip.label) + 1] > 2)
+            FALSE else TRUE
 }
 
 unroot <- function(phy)
 {
     if (!inherits(phy, "phylo"))
-      stop('object "phy" is not of class "phylo"')
+        stop('object "phy" is not of class "phylo"')
     if (dim(phy$edge)[1] < 3)
-      stop("cannot unroot a tree with two edges.")
+        stop("cannot unroot a tree with less than three edges.")
     ## delete FIRST the root.edge (in case this is sufficient to
     ## unroot the tree, i.e. there is a multichotomy at the root)
     if (!is.null(phy$root.edge)) phy$root.edge <- NULL
@@ -61,13 +61,18 @@ unroot <- function(phy)
     phy
 }
 
-root <- function(phy, outgroup, node = NULL, resolve.root = FALSE)
+root <- function(phy, outgroup, node = NULL,
+                 resolve.root = FALSE, interactive = FALSE)
 {
     if (!inherits(phy, "phylo"))
-      stop('object "phy" is not of class "phylo"')
+        stop('object "phy" is not of class "phylo"')
     phy <- reorder(phy)
     n <- length(phy$tip.label)
-    ROOT <- n + 1
+    ROOT <- n + 1L
+    if (interactive) {
+        node <- identify(phy)$nodes
+        cat("You have set resolve.root =", resolve.root, "\n")
+    }
     if (!is.null(node)) {
         if (node <= n)
             stop("incorrect node#: should be greater than the number of taxa")

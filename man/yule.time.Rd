@@ -46,7 +46,7 @@ yule.time(phy, birth, BIRTH = NULL, root.time = 0, opti = "nlm", start = 0.01)
 \value{
   An object of class "yule" (see \code{\link{yule}}).
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{branching.times}}, \code{\link{ltt.plot}},
   \code{\link{birthdeath}}, \code{\link{yule}}, \code{\link{yule.cov}}

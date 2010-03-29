@@ -34,7 +34,7 @@ read.GenBank(access.nb, seq.names = access.nb,
   \code{\link{read.dna}}, \code{\link{write.dna}},
   \code{\link{dist.dna}}, \code{\link{DNAbin}}
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \examples{
 ### This won't work if your computer is not connected
 ### to the Internet!!!

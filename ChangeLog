@@ -1,4 +1,51 @@
-		CHANGES IN APE VERSION 2.5
+		CHANGES IN APE VERSION 2.5-1
+
+
+NEW FEATURES
+
+    o The new function stree generates trees with regular shapes.
+
+    o It is now possible to bind two trees with x + y (see ?bind.tree for
+      details).
+
+    o drop.tip(), extract.clade(), root(), and bind.tree() now have an
+      'interactive' option to make the operation on a plotted tree.
+
+    o cophyloplot() gains two new arguments 'lwd' and 'lty' for the
+      association links; they are recycled like 'col' (which wasn't before).
+
+
+BUG FIXES
+
+    o rTraitDisc() did not use its 'freq' argument correctly (it was
+      multiplied with the rate matrix column-wise instead of row-wise).
+
+    o [node|tip|edge]labels(thermo = ) used to draw empty thermometers
+      with NA values. Nothing is drawn now like with 'text' or 'pch'.
+      The same bug occurred with the 'pie' option.
+
+    o A bug was fixed in compar.ou() and the help page was clarified.
+
+    o bind.tree() has been rewritten fixing several bugs and making it
+      more efficient.
+
+    o plot.phylo(type = "p") sometimes failed to colour correctly the
+      vertical lines representing the nodes.
+
+    o plot.phylo(direction = "l", x.lim = 30) failed to plot the branches
+      in the correct direction though the tip labels were displayed
+      correctly.
+
+
+OTHER CHANGES
+
+    o The c, cbind, and rbind methods for "DNAbin" objetcs now check that
+      the sequences are correctly stored (in a list for c, in a matrix
+      for the two other functions).
+
+
+
+	CHANGES IN APE VERSION 2.5
 
 
 NEW FEATURES
@@ -27,6 +74,11 @@ NEW FEATURES
 
     o The branch length score replaces the geodesic distance in dist.topo.
 
+    o Three new data sets are included: the gopher-lice data (gopher.D),
+      SO2 air pollution in 41 US cities (lmorigin.ex1, from Sokal &
+      Rohlf 1995), and some host-parasite specificity data
+      (lmorigin.ex2, from Legendre & Desdevises 2009).
+
 
 BUG FIXES
 
@@ -35,6 +87,12 @@ BUG FIXES
 
     o dist.topo() made R stuck when the trees had different sizes (thanks
       to Otto Cordero for the fix).
+
+
+OTHER CHANGES
+
+    o The geodesic distance has been replaced by the branch length score
+      in dist.topo().
 
 
 

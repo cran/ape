@@ -49,7 +49,7 @@ as.matching(x, ...)
 \note{
   Branch lengths are not supported in the present version.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \references{
   Diaconis, P. W. and Holmes, S. P. (1998) Matchings and phylogenetic
   trees. \emph{Proceedings of the National Academy of Sciences USA},

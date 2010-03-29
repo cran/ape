@@ -160,7 +160,7 @@
   \item{Ntip}{}
   \item{Nnode}{}
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{read.tree}}, \code{\link{add.scale.bar}},
   \code{\link{axisPhylo}}, \code{\link{nodelabels}},

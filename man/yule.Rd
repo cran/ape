@@ -40,7 +40,7 @@ yule(phy, use.root.edge = FALSE)
   \item{se}{the standard-error of lambda.}
   \item{loglik}{the log-likelihood at its maximum.}
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{branching.times}}, \code{\link{diversi.gof}},
   \code{\link{diversi.time}}, \code{\link{ltt.plot}},

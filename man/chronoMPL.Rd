@@ -51,7 +51,7 @@ chronoMPL(phy, se = TRUE, test = TRUE)
   lengths. \emph{Molecular Phylogenetics and Evolution}, \bold{24},
   58--65.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{chronogram}}, \code{\link{ratogram}},
   \code{\link{NPRS.criterion}}, \code{\link{chronopl}}

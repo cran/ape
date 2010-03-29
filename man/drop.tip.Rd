@@ -2,10 +2,17 @@
 \alias{drop.tip}
 \alias{extract.clade}
 \title{Remove Tips in a Phylogenetic Tree}
+\description{
+  \code{drop.tip} removes the terminal branches of a phylogenetic tree,
+  possibly removing the corresponding internal branches.
+
+  \code{extract.clade} does the inverse operation: it keeps all the tips
+  from a given node, and deletes all the other tips.
+}
 \usage{
 drop.tip(phy, tip, trim.internal = TRUE, subtree = FALSE,
-         root.edge = 0, rooted = is.rooted(phy))
-extract.clade(phy, node, root.edge = 0)
+         root.edge = 0, rooted = is.rooted(phy), interactive = FALSE)
+extract.clade(phy, node, root.edge = 0, interactive = FALSE)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -18,17 +25,12 @@ extract.clade(phy, node, root.edge = 0)
   \item{root.edge}{an integer giving the number of internal branches to
     be used to build the new root edge. This has no effect if
     \code{trim.internal = FALSE}.}
-  \item{rooted}{a logical indicated whether the tree must be treated as
+  \item{rooted}{a logical indicating whether the tree must be treated as
     rooted or not. This allows to force the tree to be considered as
     unrooted (see examples).}
   \item{node}{a node number or label.}
-}
-\description{
-  \code{drop.tip} removes the terminal branches of a phylogenetic tree,
-  possibly removing the corresponding internal branches.
-
-  \code{extract.clade} does the inverse operation: it keeps all the tips
-  from a given node, and deletes all the other tips.
+  \item{interactive}{if \code{TRUE} the user is asked to select the tips
+    or the node by clicking on the tree which must be plotted.}
 }
 \details{
   The argument \code{tip} can be either character or numeric. In the
@@ -58,7 +60,7 @@ extract.clade(phy, node, root.edge = 0)
 \value{
   an object of class \code{"phylo"}.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{bind.tree}}, \code{\link{root}}
 }

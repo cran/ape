@@ -52,7 +52,7 @@ diversi.gof(x, null = "exponential", z = NULL)
   comparisons. \emph{Journal of the American Statistical Association},
   \bold{69}, 730--737.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{branching.times}}, \code{\link{diversi.time}}
   \code{\link{ltt.plot}}, \code{\link{birthdeath}}, \code{\link{yule}},

@@ -1,29 +1,31 @@
-## drop.tip.R (2009-09-09)
+## drop.tip.R (2010-02-11)
 
 ##   Remove Tips in a Phylogenetic Tree
 
-## Copyright 2003-2009 Emmanuel Paradis
+## Copyright 2003-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-extract.clade <- function(phy, node, root.edge = 0)
+extract.clade <- function(phy, node, root.edge = 0, interactive = FALSE)
 {
     Ntip <- length(phy$tip.label)
     ROOT <- Ntip + 1
     Nedge <- dim(phy$edge)[1]
     wbl <- !is.null(phy$edge.length)
-    if (length(node) > 1) {
-        node <- node[1]
-        warning("only the first value of 'node' has been considered")
+    if (interactive) node <- identify(phy)$nodes else {
+        if (length(node) > 1) {
+            node <- node[1]
+            warning("only the first value of 'node' has been considered")
+        }
+        if (is.character(node)) {
+            if (is.null(phy$node.label))
+                stop("the tree has no node labels")
+            node <- which(phy$node.label %in% node) + Ntip
+        }
+        if (node <= Ntip)
+            stop("node number must be greater than the number of tips")
     }
-    if (is.character(node)) {
-        if (is.null(phy$node.label))
-            stop("the tree has no node labels")
-        node <- which(phy$node.label %in% node) + Ntip
-    }
-    if (node <= Ntip)
-        stop("node number must be greater than the number of tips")
     if (node == ROOT) return(phy)
     phy <- reorder(phy) # insure it is in cladewise order
     root.node <- which(phy$edge[, 2] == node)
@@ -73,15 +75,27 @@ extract.clade <- function(phy, node, root.edge = 0)
 
 drop.tip <-
     function(phy, tip, trim.internal = TRUE, subtree = FALSE,
-             root.edge = 0, rooted = is.rooted(phy))
+             root.edge = 0, rooted = is.rooted(phy), interactive = FALSE)
 {
     if (!inherits(phy, "phylo"))
         stop('object "phy" is not of class "phylo"')
 
     Ntip <- length(phy$tip.label)
     ## find the tips to drop:
-    if (is.character(tip))
-        tip <- which(phy$tip.label %in% tip)
+    if (interactive) {
+        cat("Left-click close to the tips you want to drop; right-click when finished...\n")
+        xy <- locator()
+        nToDrop <- length(xy$x)
+        tip <- integer(nToDrop)
+        lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
+        for (i in 1:nToDrop) {
+            d <- sqrt((xy$x[i] - lastPP$xx)^2 + (xy$y[i] - lastPP$yy)^2)
+            tip[i] <- which.min(d)
+        }
+    } else {
+        if (is.character(tip))
+            tip <- which(phy$tip.label %in% tip)
+    }
 
     if (!rooted && subtree) {
         phy <- root(phy, (1:Ntip)[-tip][1])

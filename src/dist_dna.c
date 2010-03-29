@@ -1,6 +1,6 @@
-/* dist_dna.c       2009-09-16 */
+/* dist_dna.c       2010-03-29 */
 
-/* Copyright 2005-2008 Emmanuel Paradis
+/* Copyright 2005-2010 Emmanuel Paradis
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -350,14 +350,14 @@ void distDNA_K81_pairdel(unsigned char *x, int *n, int *s, double *d,
 #define COMPUTE_DIST_F84\
    P = ((double) Ns/L);\
    Q = ((double) (Nd - Ns)/L);\
-   d[target] = -2*A*log(1 - (P/(2*A) - (A - B)*Q/(2*A*C))) + 2*(A - B - C)*log(1 - Q/(2*C));\
+   d[target] = -2*A*log(1 - P/(2*A) - (A - B)*Q/(2*A*C)) + 2*(A - B - C)*log(1 - Q/(2*C));\
    if (*variance) {\
        t1 = A*C;\
        t2 = C*P/2;\
        t3 = (A - B)*Q/2;\
        a = t1/(t1 - t2 - t3);\
        b = A*(A - B)/(t1 - t2 - t3) - (A - B - C)/(C - Q/2);\
-       var[target] = (a*a*P + b*b*Q - pow(a*P + b*Q, 2))/2;\
+       var[target] = (a*a*P + b*b*Q - pow(a*P + b*Q, 2))/L;\
    }
 
 void distDNA_F84(unsigned char *x, int *n, int *s, double *d,

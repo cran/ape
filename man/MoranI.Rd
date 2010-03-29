@@ -59,7 +59,7 @@
   \bold{39}, 227--241.
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr} and
-  Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+  Emmanuel Paradis}
 \seealso{
   \code{\link{weight.taxo}}
 }

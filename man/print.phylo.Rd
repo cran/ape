@@ -26,18 +26,17 @@
   \item{\dots}{further arguments passed to or from other methods.}
 }
 \description{
-  These functions prints a compact summary of a phylogeny, or a list of,
-  on the console.
+  These functions prints a compact summary of a phylogeny, or a list of
+  phylogenies, on the console.
 
   The operators \code{[}, \code{[[}, and \code{$} propagate the class
   correctly.
 }
 \value{
   An object of class \code{"phylo"} (\code{[[}, \code{$}) or of class
-  \code{"multiPhylo"} (\code{[[}), or NULL.
+  \code{"multiPhylo"} (\code{[}), or NULL.
 }
-\author{Ben Bolker \email{bolker@zoo.ufl.edu} and Emmanuel Paradis
-  \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Ben Bolker \email{bolker@zoo.ufl.edu} and Emmanuel Paradis}
 \seealso{
   \code{\link{read.tree}}, \code{\link{summary.phylo}},
   \code{\link[base]{print}} for the generic R function

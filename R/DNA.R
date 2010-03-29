@@ -1,8 +1,8 @@
-## DNA.R (2009-10-02)
+## DNA.R (2010-03-16)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
-## Copyright 2002-2009 Emmanuel Paradis
+## Copyright 2002-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -90,6 +90,9 @@ rbind.DNAbin <- function(...)
     obj <- list(...)
     n <- length(obj)
     if (n == 1) return(obj[[1]])
+    for (i in 1:n)
+        if (!is.matrix(obj[[1]]))
+            stop("the 'rbind' method for \"DNAbin\" accepts only matrices")
     NC <- unlist(lapply(obj, ncol))
     if (length(unique(NC)) > 1)
         stop("matrices do not have the same number of columns.")
@@ -106,6 +109,9 @@ cbind.DNAbin <-
     obj <- list(...)
     n <- length(obj)
     if (n == 1) return(obj[[1]])
+    for (i in 1:n)
+        if (!is.matrix(obj[[1]]))
+            stop("the 'cbind' method for \"DNAbin\" accepts only matrices")
     NR <- unlist(lapply(obj, nrow))
     for (i in 1:n) class(obj[[i]]) <- NULL
     if (check.names) {
@@ -144,7 +150,11 @@ cbind.DNAbin <-
 }
 
 c.DNAbin <- function(..., recursive = FALSE)
+{
+    if (!all(unlist(lapply(list(...), is.list))))
+        stop("the 'c' method for \"DNAbin\" accepts only lists")
     structure(NextMethod("c"), class = "DNAbin")
+}
 
 print.DNAbin <- function(x, ...)
 {

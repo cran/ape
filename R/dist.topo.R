@@ -82,8 +82,9 @@ dist.topo <- function(x, y, method = "PH85")
             stop(paste("tree no.", i, "has different tip labels"))
         ie <- match(1:n, x[[i]]$edge[, 2])
         x[[i]]$edge[ie, 2] <- ilab
+        x[[i]]$tip.label <- NULL
     }
-    for (i in 1:length(x)) x[[i]]$tip.label <- NULL
+    x[[1]]$tip.label <- NULL
     attr(x, "TipLabel") <- ref
     x
 }

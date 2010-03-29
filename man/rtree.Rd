@@ -44,7 +44,10 @@ rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)
   An object of class \code{"phylo"} or of class \code{"multiPhylo"} in
   the case of \code{rmtree}.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
+\seealso{
+  \code{\link{stree}}
+}
 \examples{
 layout(matrix(1:9, 3, 3))
 ### Nine random trees:

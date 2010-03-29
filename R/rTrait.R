@@ -1,4 +1,4 @@
-## rTrait.R (2010-01-11)
+## rTrait.R (2010-02-03)
 
 ##   Trait Evolution
 
@@ -59,6 +59,7 @@ rTraitDisc <-
         for (i in N:1) x[des[i]] <- model(x[anc[i]], el[i])
     } else {
         diag(Q) <- -rowSums(Q)
+        freq <- rep(freq, each = k)
         for (i in N:1) {
             p <- matexpo(Q * freq * el[i])[x[anc[i]], ]
             x[des[i]] <- .Internal(sample(k, size = 1, FALSE, prob = p))

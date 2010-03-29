@@ -22,7 +22,7 @@ dist.nodes(x)
   \code{phy}), or, in the case of \code{dist.nodes}, the numbers of the
   tips and the nodes (as given by the element \code{edge}).
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{read.tree}} to read tree files in Newick format,
   \code{\link[stats]{cophenetic}} for the generic function

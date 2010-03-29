@@ -9,8 +9,9 @@ compar.ou(x, phy, node = NULL, alpha = NULL)
     character.}
   \item{phy}{an object of class \code{"phylo"}.}
   \item{node}{a vector giving the number(s) of the node(s) where the
-    parameter `theta' (the character optimum) is assumed to change. By
-    default there is no change (same optimum thoughout lineages).}
+    parameter `theta' (the trait optimum) is assumed to change. The
+    node(s) can be specified with their labels if \code{phy} has node
+    labels. By default there is no change (same optimum thoughout lineages).}
   \item{alpha}{the value of \eqn{\alpha}{alpha} to be used when fitting
     the model. By default, this parameter is estimated (see details).}
 }
@@ -76,13 +77,12 @@ compar.ou(x, phy, node = NULL, alpha = NULL)
   Hansen, T. F. (1997) Stabilizing selection and the comparative
   analysis of adaptation. \emph{Evolution}, \bold{51}, 1341--1351.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{ace}}, \code{\link{compar.lynch}},
   \code{\link{corBrownian}}, \code{\link{corMartins}}, \code{\link{pic}}
 }
 \examples{
-\dontrun{
 data(bird.orders)
 ### This is likely to give you estimates close to 0, 1, and 0
 ### for alpha, sigma^2, and theta, respectively:
@@ -93,11 +93,10 @@ compar.ou(rnorm(23), bird.orders, alpha = 0.1)
 ### for the two clades of birds...
 x <- c(rnorm(5, 0), rnorm(18, 5))
 ### ... the model with two optima:
-compar.ou(x, bird.orders, node = -2, alpha = .1)
+compar.ou(x, bird.orders, node = 25, alpha = .1)
 ### ... and the model with a single optimum:
 compar.ou(x, bird.orders, node = NULL, alpha = .1)
 ### => Compare both models with the difference in deviances
-##     with follows a chi^2 with df = 1.
-}
+##     wicth follows a chi^2 with df = 1.
 }
 \keyword{models}

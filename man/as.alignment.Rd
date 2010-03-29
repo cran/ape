@@ -48,7 +48,7 @@ as.DNAbin(x, ...)
   of \code{"as.DNAbin"}; a matrix of mode character or a list containing
   vectors of mode character in the case of \code{"as.character"}.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{DNAbin}}, \code{\link{read.dna}},
   \code{\link{read.GenBank}}, \code{\link{write.dna}}

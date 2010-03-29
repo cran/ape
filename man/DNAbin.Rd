@@ -78,7 +78,7 @@
   Paradis, E. (2007) A Bit-Level Coding Scheme for Nucleotides.
   \url{http://ape.mpl.ird.fr/misc/BitLevelCodingScheme_20April2007.pdf}
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{as.DNAbin}}, \code{\link{read.dna}},
   \code{\link{read.GenBank}}, \code{\link{write.dna}}

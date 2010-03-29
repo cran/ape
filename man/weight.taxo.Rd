@@ -27,7 +27,7 @@
 \value{
   a square numeric matrix.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{Moran.I}}, \code{\link{correlogram.formula}}
 }

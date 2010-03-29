@@ -38,7 +38,7 @@
   response in \code{formula}.
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr} and
-  Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+  Emmanuel Paradis}
 \seealso{
   \code{\link{plot.correlogram}, \link{Moran.I}}
 }

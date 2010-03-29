@@ -26,7 +26,7 @@ delta.plot(X, k = 20, plot = TRUE, which = 1:2)
   may be very long with only a slight increase in sample size.
 }
 \value{
-  This function returns invisibly a named list with two componente:
+  This function returns invisibly a named list with two components:
 
   \itemize{
     \item{counts}{the counts for the histogram of
@@ -48,6 +48,7 @@ delta.plot(X, k = 20, plot = TRUE, which = 1:2)
 data(woodmouse)
 d <- dist.dna(woodmouse)
 delta.plot(d)
+layout(1)
 delta.plot(d, 40, which = 1)
 }
 \keyword{hplot}

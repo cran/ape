@@ -37,7 +37,7 @@ pic(x, phy, scaled = TRUE, var.contrasts = FALSE)
   Felsenstein, J. (1985) Phylogenies and the comparative method.
   \emph{American Naturalist}, \bold{125}, 1--15.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{read.tree}}, \code{\link{compar.gee}}, \code{\link{compar.lynch}}
 }

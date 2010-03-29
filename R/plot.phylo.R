@@ -1,4 +1,4 @@
-## plot.phylo.R (2010-01-04)
+## plot.phylo.R (2010-03-19)
 
 ##   Plot Phylogenies
 
@@ -198,8 +198,6 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                     tmp <- if (show.tip.label) max(xx.tips + strWi/alp) else max(xx.tips)
                 }
                 x.lim[2] <- tmp
-                if (direction == "leftwards") xx <- x.lim[2] - xx #max(xx[ROOT] + tmp)
-#                  else max(xx[1:Ntip] + tmp)
             } else x.lim <- c(1, Ntip)
         } else switch(type, "fan" = {
             if (show.tip.label) {
@@ -227,6 +225,8 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
             if (show.tip.label) -1 - max(nchar(x$tip.label) * 0.03 * cex)
             else -1
     }
+    ## mirror the xx:
+    if (phyloORclado && direction == "leftwards") xx <- x.lim[2] - xx
     if (is.null(y.lim)) {
         if (phyloORclado) {
             if (horizontal) y.lim <- c(1, Ntip) else {
@@ -245,7 +245,6 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                     tmp <- if (show.tip.label) max(yy.tips + strWi/alp) else max(yy.tips)
                 }
                 y.lim[2] <- tmp
-                if (direction == "downwards") yy <- y.lim[2] - yy
             }
         } else switch(type, "fan" = {
             if (show.tip.label) {
@@ -271,6 +270,8 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
         if (type == "radial")
           y.lim[1] <- if (show.tip.label) -1 - max(nchar(x$tip.label) * 0.018 * max(yy) * cex) else -1
     }
+    ## mirror the yy:
+    if (phyloORclado && direction == "downwards") yy <- y.lim[2] - yy
     if (phyloORclado && root.edge) {
         if (direction == "leftwards") x.lim[2] <- x.lim[2] + x$root.edge
         if (direction == "downwards") y.lim[2] <- y.lim[2] + x$root.edge
@@ -332,6 +333,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
              "upwards" = segments(xx[ROOT], 0, xx[ROOT], x$root.edge),
              "downwards" = segments(xx[ROOT], yy[ROOT], xx[ROOT], yy[ROOT] + x$root.edge))
     if (show.tip.label) {
+        if (is.expression(x$tip.label)) underscore <- TRUE
         if (!underscore) x$tip.label <- gsub("_", " ", x$tip.label)
 
         if (phyloORclado)
@@ -431,7 +433,7 @@ phylogram.plot <- function(edge, Ntip, Nnode, xx, yy, horizontal,
         edge.color <- rep(edge.color, length.out = Nedge)
         edge.width <- rep(edge.width, length.out = Nedge)
         edge.lty <- rep(edge.lty, length.out = Nedge)
-        DF <- data.frame(edge.color, edge.width, edge.lty)
+        DF <- data.frame(edge.color, edge.width, edge.lty, stringsAsFactors = FALSE)
         color.v <- rep("black", Nnode)
         width.v <- rep(1, Nnode)
         lty.v <- rep(1, Nnode)

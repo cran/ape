@@ -19,7 +19,7 @@ node.depth(phy)
   A numeric vector indexed with the node numbers of the matrix `edge' of
   \code{phy}.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{plot.phylo}}
 }

@@ -98,7 +98,7 @@ chronopl(phy, lambda, age.min = 1, age.max = NULL,
   approach. \emph{Molecular Biology and Evolution}, \bold{19},
   101--109.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{chronogram}}, \code{\link{ratogram}},
   \code{\link{NPRS.criterion}}, \code{\link{chronoMPL}}

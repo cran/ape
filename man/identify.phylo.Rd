@@ -40,7 +40,7 @@
   \code{"nodes"} with the identification of the tips and/or of the
   nodes.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{plot.phylo}}, \code{\link{nodelabels}},
   \code{\link[graphics]{identify}} for the generic function

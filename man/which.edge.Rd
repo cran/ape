@@ -24,7 +24,7 @@ which.edge(phy, group)
 \value{
   a numeric vector.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{bind.tree}}, \code{\link{drop.tip}}, \code{\link{root}}
 }

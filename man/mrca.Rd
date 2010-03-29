@@ -24,5 +24,5 @@ mrca(phy, full = FALSE)
 \value{
   a matrix of mode numeric.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \keyword{manip}

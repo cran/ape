@@ -1,8 +1,8 @@
-## rtree.R (2009-11-03)
+## rtree.R (2010-03-09)
 
-##   Generates Random Trees
+##   Generates Trees
 
-## Copyright 2004-2009 Emmanuel Paradis
+## Copyright 2004-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -152,4 +152,61 @@ rmtree <- function(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)
                             br = br, ...), simplify = FALSE)
     class(a) <- "multiPhylo"
     a
+}
+
+stree <- function(n, type = "star", tip.label = NULL)
+{
+    type <- match.arg(type, c("star", "balanced", "left", "right"))
+    n <- as.integer(n)
+    if (type == "star") {
+        N <- n
+        m <- 1L
+    } else {
+        m <- n - 1L
+        N <- n + m - 1L
+    }
+    edge <- matrix(0L, N, 2)
+
+    switch(type, "star" = {
+        edge[, 1] <- n + 1L
+        edge[, 2] <- 1:n
+    }, "balanced" = {
+        if (log2(n) %% 1)
+            stop("'n' is not a power of 2: cannot make a balanced tree")
+        foo <- function(node, size) {
+            if (size == 2) {
+                edge[c(i, i + 1L), 1L] <<- node
+                edge[c(i, i + 1L), 2L] <<- c(nexttip, nexttip + 1L)
+                nexttip <<- nexttip + 2L
+                i <<- i + 2L
+            } else {
+                for (k in 1:2) { # do the 2 subclades
+                    edge[i, ] <<- c(node, nextnode)
+                    nextnode <<- nextnode + 1L
+                    i <<- i + 1L
+                    foo(nextnode - 1L, size/2)
+                }
+            }
+        }
+        i <- 1L
+        nexttip <- 1L
+        nextnode <- n + 2L
+        foo(n + 1L, n)
+    }, "left" = {
+        edge[c(seq.int(from = 1, to = N - 1, by = 2), N), 2L] <- 1:n
+        nodes <- (n + 1L):(n + m)
+        edge[seq.int(from = 2, to = N - 1, by = 2), 2L] <- nodes[-1]
+        edge[, 1L] <- rep(nodes, each = 2)
+    }, "right" = {
+        nodes <- (n + 1L):(n + m)
+        edge[, 1L] <- c(nodes, rev(nodes))
+        edge[, 2L] <- c(nodes[-1], 1:n)
+    })
+
+    if (is.null(tip.label))
+        tip.label <- paste("t", 1:n, sep = "")
+    phy <- list(edge = edge, tip.label = tip.label, Nnode = m)
+    class(phy) <- "phylo"
+    attr(phy, "order" <- "cladewise")
+    phy
 }

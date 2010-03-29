@@ -18,7 +18,7 @@ axisPhylo(side = 1, ...)
   the help pages on \code{\link[graphics]{axis}} and
   \code{\link[graphics]{par}}).
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{plot.phylo}}, \code{\link{add.scale.bar}},
   \code{\link[graphics]{axis}}, \code{\link[graphics]{par}}

@@ -38,7 +38,7 @@ Nedge(phy)
   A NULL value in the case of \code{summary}, a single numeric value for
   the three other functions.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{read.tree}}, \code{\link[base]{summary}} for the generic R
   function

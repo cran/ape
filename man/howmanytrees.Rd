@@ -54,7 +54,7 @@ howmanytrees(n, rooted = TRUE, binary = TRUE,
   Felsenstein, J. (2004) \emph{Inferring phylogenies}. Sunderland:
   Sinauer Associates.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \examples{
 ### Table 3.1 in Felsenstein 2004:
 for (i in c(1:20, 30, 40, 50))

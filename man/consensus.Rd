@@ -31,7 +31,7 @@ consensus(..., p = 1, check.labels = TRUE)
 \value{
   an object of class \code{"phylo"}.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{prop.part}}, \code{\link{dist.topo}}
 }

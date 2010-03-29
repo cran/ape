@@ -43,7 +43,7 @@ dist.gene(x, method = "pairwise", pairwise.deletion = FALSE,
   an object of class \code{dist}. If \code{variance = TRUE} an
   attribute called \code{"variance"} is given to the returned object.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{dist.dna}}, \code{\link{cophenetic.phylo}},
   \code{\link[stats]{dist}}

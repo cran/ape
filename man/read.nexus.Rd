@@ -72,7 +72,7 @@ read.nexus(file, tree.names = NULL)
   extensible file format for systematic information. \emph{Systematic
     Biology}, \bold{46}, 590--621.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{read.tree}}, \code{\link{write.nexus}},
   \code{\link{write.tree}}, \code{\link{read.nexus.data}},

@@ -14,7 +14,7 @@ matexpo(x)
 \value{
   a numeric matrix of the same dimensions than `x'.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \examples{
 ### a simple rate matrix:
 m <- matrix(0.1, 4, 4)

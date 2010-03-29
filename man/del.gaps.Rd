@@ -23,7 +23,7 @@ del.gaps(x)
   A vector (if there is only one input sequence) or a list of class
   \code{"DNAbin"}.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{base.freq}}, \code{\link{GC.content}},
   \code{\link{theta.s}}, \code{\link{nuc.div}}, \code{\link{seg.sites}}

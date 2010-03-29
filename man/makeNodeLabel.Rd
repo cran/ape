@@ -54,7 +54,7 @@ makeNodeLabel(phy, method = "number", prefix = "Node", nodeList = list(), ...)
 }
 \examples{
 tr <-
-"((Pan_paniscus,Pan_troglodytes),((Homo_sapiens,Hom_erectus),Homo_abilis));"
+"((Pan_paniscus,Pan_troglodytes),((Homo_sapiens,Homo_erectus),Homo_abilis));"
 tr <- read.tree(text = tr)
 tr <- makeNodeLabel(tr, "u", nodeList = list(Pan = "Pan", Homo = "Homo"))
 plot(tr, show.node.label = TRUE)

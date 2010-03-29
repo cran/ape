@@ -48,7 +48,7 @@
   the points. To keep black lines, it is better to leave \code{pch}
   between 21 and 25.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{correlogram.formula}}, \code{\link{Moran.I}}
 }

@@ -36,7 +36,7 @@ compute.brlen(phy, method = "Grafen", power = 1, ...)
   An object of class \code{phylo} with branch lengths.
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr} and
-  Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+  Emmanuel Paradis}
 \references{
   Grafen, A. (1989) The phylogenetic regression. \emph{Philosophical
     Transactions of the Royal society of London. Series B. Biological

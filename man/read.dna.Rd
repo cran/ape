@@ -46,7 +46,7 @@ read.dna(file, format = "interleaved", skip = 0,
   sequential formats, see below). The names of the sequences are read in
   the file unless the `seq.names' option is used. Particularities for
   each format are detailed below.
-  
+
 \itemize{
   \item{Interleaved:}{the function starts to read the sequences when it
     finds 10 contiguous characters belonging to the ambiguity code of
@@ -95,7 +95,7 @@ read.dna(file, format = "interleaved", skip = 0,
   \code{\link{read.GenBank}}, \code{\link{write.dna}},
   \code{\link{DNAbin}}, \code{\link{dist.dna}}, \code{\link{woodmouse}}
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \examples{
 ### a small extract from `data(woddmouse)'
 cat("3 40",

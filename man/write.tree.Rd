@@ -44,8 +44,7 @@ write.tree(phy, file = "", append = FALSE,
   \url{http://evolution.genetics.washington.edu/phylip/newick_doc.html}
 }
 
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr} and Daniel
-  Lawson \email{dan.lawson@bristol.ac.uk}}
+\author{Emmanuel Paradis and Daniel Lawson \email{dan.lawson@bristol.ac.uk}}
 \seealso{
   \code{\link{read.tree}}, \code{\link{read.nexus}},
   \code{\link{write.nexus}}
