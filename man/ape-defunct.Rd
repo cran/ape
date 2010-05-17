@@ -1,4 +1,5 @@
 \name{ape-defunct}
+\alias{ape-defunct}
 \alias{klastorin}
 \alias{mlphylo}
 \alias{DNAmodel}
@@ -9,6 +10,11 @@
 \alias{theta.h}
 \alias{theta.k}
 \alias{theta.s}
+\alias{evolve.phylo}
+\alias{plot.ancestral}
+\alias{chronogram}
+\alias{ratogram}
+\alias{NPRS.criterion}
 \title{Defunct Ape Functions}
 \description{
   These functions have been removed from \pkg{ape} or moved to another
@@ -16,18 +22,20 @@
 }
 \usage{
 klastorin(phy)
-mlphylo(x, phy, model = DNAmodel(), search.tree = FALSE,
-        quiet = FALSE, value = NULL, fixed = FALSE)
-DNAmodel(model = "K80", partition = 1,
-         ncat.isv = 1, invar = FALSE,
-         equal.isv = TRUE, equal.invar = 1)
-sh.test(..., x, model = DNAmodel(), B = 100)
+mlphylo(...)
+DNAmodel(...)
+sh.test(...)
 heterozygosity(x, variance = FALSE)
 H(x, variance = FALSE)
 nuc.div(x, variance = FALSE, pairwise.deletion = FALSE)
 theta.h(x, standard.error = FALSE)
 theta.k(x, n = NULL, k = NULL)
 theta.s(s, n, variance = FALSE)
+evolve.phylo(phy, value, var)
+plot.ancestral(...)
+chronogram(...)
+ratogram(...)
+NPRS.criterion(...)
 }
 \details{
   \code{klastorin} has been removed because it does not seem to be used
@@ -40,5 +48,11 @@ theta.s(s, n, variance = FALSE)
 
   \code{heterozygosity}, \code{nuc.div}, \code{theta.h}, \code{theta.k}
   and \code{theta.s} have been moved to \pkg{pegas}.
+
+  \code{evolve.phylo} and \code{plot.ancestral} have been deprecated by
+  the new function \code{\link{rTraitCont}}.
+
+  \code{chronogram}, \code{ratogram}, and \code{NPRS.criterion} have
+  ceased to be maintained: consider using \code{\link{chronopl}}.
 }
 \keyword{internal}

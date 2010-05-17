@@ -17,9 +17,6 @@ data(landplants.newick)
   data example in the software package r8s
   (\url{http://ginger.ucdavis.edu/r8s/}).
 }
-\seealso{
-\code{\link{chronogram}}, \code{\link{ratogram}}, \code{\link{NPRS.criterion}}.
-}
 \references{
   Sanderson, M. J. (1997) A nonparametric approach to estimating
     divergence times in the absence of rate constancy. \emph{Molecular

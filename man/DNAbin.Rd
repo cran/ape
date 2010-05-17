@@ -1,33 +1,33 @@
 \name{DNAbin}
 \alias{DNAbin}
 \alias{print.DNAbin}
-\alias{summary.DNAbin}
 \alias{[.DNAbin}
 \alias{rbind.DNAbin}
 \alias{cbind.DNAbin}
 \alias{as.matrix.DNAbin}
 \alias{c.DNAbin}
+\alias{labels.DNAbin}
 \title{Manipulate DNA Sequences in Bit-Level Format}
 \description{
   These functions help to manipulate DNA sequences coded in the
   bit-level coding scheme.
 }
 \usage{
-\method{print}{DNAbin}(x, \dots)
-\method{summary}{DNAbin}(object, printlen = 6, digits = 3, \dots)
+\method{print}{DNAbin}(x, printlen = 6, digits = 3, \dots)
 \method{rbind}{DNAbin}(\dots)
 \method{cbind}{DNAbin}(\dots, check.names = TRUE, fill.with.gaps = FALSE,
              quiet = FALSE)
-\method{[}{DNAbin}(x, i, j, drop = TRUE)
+\method{[}{DNAbin}(x, i, j, drop = FALSE)
 \method{as.matrix}{DNAbin}(x, \dots)
 \method{c}{DNAbin}(\dots, recursive = FALSE)
+\method{labels}{DNAbin}(object, \dots)
 }
 \arguments{
   \item{x, object}{an object of class \code{"DNAbin"}.}
   \item{\dots}{either further arguments to be passed to or from other
-    methods in the case of \code{print}, \code{summary}, and
-    \code{as.matrix}, or a series of objects of class \code{"DNAbin"} in
-    the case of \code{rbind}, \code{cbind}, and \code{c}.}
+    methods in the case of \code{print}, \code{as.matrix}, and
+    \code{labels}, or a series of objects of class \code{"DNAbin"} in the
+    case of \code{rbind}, \code{cbind}, and \code{c}.}
   \item{printlen}{the number of labels to print (6 by default).}
   \item{digits}{the number of digits to print (3 by default).}
   \item{check.names}{a logical specifying whether to check the rownames
@@ -41,8 +41,8 @@
   \item{i, j}{indices of the rows and/or columns to select or to drop.
     They may be numeric, logical, or character (in the same way than for
     standard R objects).}
-  \item{drop}{logical; if \code{TRUE} (the default), the returned object
-    is of the lowest possible dimension.}
+  \item{drop}{logical; if \code{TRUE}, the returned object is of the
+    lowest possible dimension.}
   \item{recursive}{for compatibility with the generic (unused).}
 }
 \details{
@@ -50,7 +50,9 @@
   DNA sequences stored as objects of class \code{"DNAbin"}. They are
   used in the same way than the standard R functions to manipulate
   vectors, matrices, and lists. Additionally, the operators \code{[[}
-  and \code{$} may be used to extract a vector from a list.
+  and \code{$} may be used to extract a vector from a list. Note that
+  the default of \code{drop} is not the same than the generic operator:
+  this is to avoid dropping rownames when selecting a single sequence.
 
   These functions are provided to manipulate easily DNA sequences coded
   with the bit-level coding scheme. The latter allows much faster

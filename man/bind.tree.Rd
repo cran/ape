@@ -89,8 +89,8 @@ title("x")
 plot(z, show.node.label = TRUE, font = 1, root.edge = TRUE)
 title("z <- bind.tree(x, y, 2, .1)")
 
-x <- rtree(100)
-y <- rtree(100)
+x <- rtree(50)
+y <- rtree(50)
 x$root.edge <- y$root.edge <- .2
 z <- x + y
 plot(y, show.tip.label = FALSE, root.edge = TRUE); axisPhylo()

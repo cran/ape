@@ -2,18 +2,34 @@ klastorin <- function(phy)
     .Defunct(msg = '\'klastorin\' has been removed from ape,
     see help("ape-defunct") for details.')
 
-mlphylo <-
-    function(x, phy, model = DNAmodel(), search.tree = FALSE,
-             quiet = FALSE, value = NULL, fixed = FALSE)
+mlphylo <- function(...)
     .Defunct(msg = '\'mlphylo\' has been removed from ape,
     see help("ape-defunct") for details.')
 
-DNAmodel <- function(model = "K80", partition = 1,
-         ncat.isv = 1, invar = FALSE,
-         equal.isv = TRUE, equal.invar = 1)
+DNAmodel <- function(...)
     .Defunct(msg = '\'DNAmodel\' has been removed from ape,
     see help("ape-defunct") for details.')
 
-sh.test <- function(..., x, model = DNAmodel(), B = 100)
+sh.test <- function(...)
     .Defunct(msg = '\'sh.test\' has been removed from ape,
+    see help("ape-defunct") for details.')
+
+evolve.phylo <- function(phy, value, var)
+    .Defunct(msg = '\'evolve.phylo\' has been removed from ape,
+    see help("ape-defunct") for details.')
+
+plot.ancestral <- function(...)
+    .Defunct(msg = '\'plot.ancestral\' has been removed from ape,
+    see help("ape-defunct") for details.')
+
+chronogram <- function(...)
+    .Defunct(msg = '\'chronogram\' has been removed from ape,
+    see help("ape-defunct") for details.')
+
+ratogram <- function(...)
+    .Defunct(msg = '\'ratogram\' has been removed from ape,
+    see help("ape-defunct") for details.')
+
+NPRS.criterion <- function(...)
+    .Defunct(msg = '\'NPRS.criterion\' has been removed from ape,
     see help("ape-defunct") for details.')

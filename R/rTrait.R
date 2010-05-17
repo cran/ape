@@ -1,4 +1,4 @@
-## rTrait.R (2010-02-03)
+## rTrait.R (2010-05-06)
 
 ##   Trait Evolution
 
@@ -58,10 +58,12 @@ rTraitDisc <-
         environment(model) <- environment() # to find 'k'
         for (i in N:1) x[des[i]] <- model(x[anc[i]], el[i])
     } else {
-        diag(Q) <- -rowSums(Q)
         freq <- rep(freq, each = k)
+        Q <- Q * freq
+        diag(Q) <- 0
+        diag(Q) <- -rowSums(Q)
         for (i in N:1) {
-            p <- matexpo(Q * freq * el[i])[x[anc[i]], ]
+            p <- matexpo(Q * el[i])[x[anc[i]], ]
             x[des[i]] <- .Internal(sample(k, size = 1, FALSE, prob = p))
         }
     }

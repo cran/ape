@@ -1,4 +1,4 @@
-## ace.R (2010-02-03)
+## ace.R (2010-05-12)
 
 ##   Ancestral Character Estimation
 
@@ -157,9 +157,10 @@ as the number of categories in `x'")
         phy <- reorder(phy, "pruningwise")
 
         Q <- matrix(0, nl, nl)
-        ## from Rich FitzJohn:
-        comp <- numeric(nb.tip + nb.node) # Storage...
         dev <- function(p, output.liks = FALSE) {
+            if (any(is.nan(p)) || any(is.infinite(p))) return(1e50)
+            ## from Rich FitzJohn:
+            comp <- numeric(nb.tip + nb.node) # Storage...
             Q[] <- c(p, 0)[rate]
             diag(Q) <- -rowSums(Q)
             for (i  in seq(from = 1, by = 2, length.out = nb.node)) {
@@ -177,7 +178,7 @@ as the number of categories in `x'")
             -2 * sum(log(comp[-TIPS]))
         }
         out <- nlminb(rep(ip, length.out = np), function(p) dev(p),
-                      lower = rep(0, np), upper = rep(Inf, np))
+                      lower = rep(0, np), upper = rep(1e50, np))
         obj$loglik <- -out$objective/2
         obj$rates <- out$par
         oldwarn <- options("warn")
@@ -228,4 +229,31 @@ anova.ace <- function(object, ...)
                                            "Pr(>|Chi|)"))
     structure(table, heading = "Likelihood Ratio Test Table",
               class = c("anova", "data.frame"))
+}
+
+print.ace <- function(x, digits = 4, ...)
+{
+    cat("\n    Ancestral Character Reconstruction\n\n")
+    cat("Call: ")
+    print(x$call)
+    cat("\n")
+    cat("    Log-likelihood:", x$loglik, "\n\n")
+    ratemat <- x$index.matrix
+    if (is.null(ratemat)) { # to be improved
+        class(x) <- NULL
+        x$loglik <- x$call <- NULL
+        print(x)
+    } else {
+        dimnames(ratemat)[1:2] <- dimnames(x$lik.anc)[2]
+        cat("Rate index matrix:\n")
+        print(ratemat, na.print = ".")
+        cat("\n")
+        npar <- length(x$rates)
+        estim <- data.frame(1:npar, round(x$rates, digits), round(x$se, digits))
+        cat("Parameter estimates:\n")
+        names(estim) <- c("rate index", "estimate", "std-err")
+        print(estim, row.names = FALSE)
+        cat("\nScaled likelihoods at the root (type 'x$lik.anc' to get them for all nodes):\n")
+        print(x$lik.anc[1, ])
+    }
 }

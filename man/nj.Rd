@@ -18,6 +18,10 @@ nj(X)
   Saitou, N. and Nei, M. (1987) The neighbor-joining method: a new
   method for reconstructing phylogenetic trees. \emph{Molecular Biology
     and Evolution}, \bold{4}, 406--425.
+
+  Studier, J. A. and Keppler, K. J. (1988) A note on the
+  neighbor-joining algorithm of Saitou and Nei. \emph{Molecular Biology
+    and Evolution}, \bold{5}, 729--731.
 }
 \author{Emmanuel Paradis}
 \seealso{

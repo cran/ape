@@ -1,4 +1,4 @@
-## dist.topo.R (2010-01-25)
+## dist.topo.R (2010-05-06)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -47,7 +47,6 @@ dist.topo <- function(x, y, method = "PH85")
         for (i in 2:q1) {
             for (j in 2:q2) {
                 if (identical(bp1[[i]], bp2[[j]]) | identical(bp1[[i]], bp2.comp[[j]])) {
-                    if (i == 19) browser()
                     dT <- dT + (x$edge.length[which(x$edge[, 2] == nx + i)] -
                                 y$edge.length[which(y$edge[, 2] == ny + j)])^2
                     found1 <- found2[j] <- TRUE

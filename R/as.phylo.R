@@ -1,8 +1,8 @@
-## as.phylo.R (2007-03-05)
+## as.phylo.R (2010-04-06)
 
 ##     Conversion Among Tree Objects
 
-## Copyright 2005-2007 Emmanuel Paradis
+## Copyright 2005-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -47,20 +47,21 @@ as.phylo.hclust <- function(x, ...)
         edge[j:(j + 1), 1] <- node[i]
         for (l in 1:2) {
             k <- j + l - 1L
-            if (x$merge[i, l] > 0) {
-                edge[k, 2] <- node[x$merge[i, l]] <- cur.nod
+            y <- x$merge[i, l]
+            if (y > 0) {
+                edge[k, 2] <- node[y] <- cur.nod
                 cur.nod <- cur.nod + 1L
-                edge.length[k] <- x$height[i] - x$height[x$merge[i, l]]
+                edge.length[k] <- x$height[i] - x$height[y]
             } else {
-                edge[k, 2] <- -x$merge[i, l]
+                edge[k, 2] <- -y
                 edge.length[k] <- x$height[i]
             }
         }
         j <- j + 2L
     }
     if (is.null(x$labels))
-      x$labels <- as.character(1:(N + 1))
-    obj <- list(edge = edge, edge.length = edge.length,
+        x$labels <- as.character(1:(N + 1))
+    obj <- list(edge = edge, edge.length = edge.length / 2,
                 tip.label = x$labels, Nnode = N)
     class(obj) <- "phylo"
     reorder(obj)

@@ -1,4 +1,46 @@
-		CHANGES IN APE VERSION 2.5-1
+		CHANGES IN APE VERSION 2.5-2
+
+
+NEW FEATURES
+
+    o There is now a print method for results from ace().
+
+    o There is a labels() method for objects of class "DNAbin".
+
+    o read.dna() has a new option 'as.matrix' to possibly force sequences
+      in a FASTA file to be stored in a matrix (see ?read.dna for details).
+
+
+BUG FIXES
+
+    o as.phylo.hclust() used to multiply edge lengths by 2.
+
+    o A minor bug was fixed in rTraitDisc().
+
+    o ace() sometimes failed (parameter value was NaN and the optimisation
+      failed).
+
+
+DEPRECATED & DEFUNCT
+
+    o evolve.phylo() and plot.ancestral() have been removed.
+
+    o chronogram(), ratogram(), and NPRS.criterion() have been removed.
+
+
+OTHER CHANGES
+
+    o nj() has been improved and is now about 30% faster.
+
+    o The default option 'drop' of [.DNAbin has been changed to FALSE to
+      avoid dropping rownames when selecting a single sequence.
+
+    o print.DNAbin() has been changed to summary.DNAbin() which has been
+      removed.
+
+
+
+ 		CHANGES IN APE VERSION 2.5-1
 
 
 NEW FEATURES

@@ -1,6 +1,6 @@
-/* nj.c       2009-07-17 */
+/* nj.c       2010-04-21 */
 
-/* Copyright 2006-2009 Emmanuel Paradis
+/* Copyright 2006-2010 Emmanuel Paradis
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -8,6 +8,8 @@
 #include <R.h>
 
 #define DINDEX(i, j) n*(i - 1) - i*(i - 1)/2 + j - i - 1
+/* works if i < j strictly, and i = 1, ...;
+   see give_index() below */
 
 int give_index(int i, int j, int n)
 {
@@ -32,8 +34,8 @@ j 4  2  6  9
   5  3  7 10 12
   6  4  8 11 13 14
 
-  so that we sum the values of the ith column-1st loop-and those of
-  (i - 1)th row (labelled 'i')-2nd loop */
+  so that we sum the values of the ith column--1st loop--and those of
+  (i - 1)th row (labelled 'i')--2nd loop */
 
 	double sum = 0;
 	int j, start, end;
@@ -60,39 +62,38 @@ j 4  2  6  9
 
 void nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
 {
-	double *S, Sdist, Ndist, *new_dist, A, B, smallest_S, *DI, d_i, x, y;
+	double *S, Sdist, Ndist, *new_dist, A, B, smallest_S, x, y;
 	int n, i, j, k, ij, smallest, OTU1, OTU2, cur_nod, o_l, *otu_label;
 
 	S = &Sdist;
 	new_dist = &Ndist;
 	otu_label = &o_l;
-	DI = &d_i;
 
 	n = *N;
 	cur_nod = 2*n - 2;
 
-	S = (double*)R_alloc(n, sizeof(double));
+	S = (double*)R_alloc(n + 1, sizeof(double));
 	new_dist = (double*)R_alloc(n*(n - 1)/2, sizeof(double));
-	otu_label = (int*)R_alloc(n, sizeof(int));
-	DI = (double*)R_alloc(n - 2, sizeof(double));
+	otu_label = (int*)R_alloc(n + 1, sizeof(int));
 
-	for (i = 0; i < n; i++) otu_label[i] = i + 1;
+	for (i = 1; i <= n; i++) otu_label[i] = i; /* otu_label[0] is not used */
+
 	k = 0;
 
 	while (n > 3) {
 
-		for (i = 0; i < n; i++)
-			S[i] = sum_dist_to_i(n, D, i + 1);
+		for (i = 1; i <= n; i++)
+			S[i] = sum_dist_to_i(n, D, i); /* S[0] is not used */
 
 		ij = 0;
 		smallest_S = 1e50;
 		B = n - 2;
-		for (i = 0; i < n - 1; i++) {
-			for (j = i + 1; j < n; j++) {
-				A = D[ij] - (S[i] + S[j])/B;
+		for (i = 1; i < n; i++) {
+			for (j = i + 1; j <= n; j++) {
+				A = B*D[ij] - S[i] - S[j];
 				if (A < smallest_S) {
-					OTU1 = i + 1;
-					OTU2 = j + 1;
+					OTU1 = i;
+					OTU2 = j;
 					smallest_S = A;
 					smallest = ij;
 				}
@@ -100,44 +101,38 @@ void nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
 			}
 		}
 
-		edge2[k] = otu_label[OTU1 - 1];
-		edge2[k + 1] = otu_label[OTU2 - 1];
+		edge2[k] = otu_label[OTU1];
+		edge2[k + 1] = otu_label[OTU2];
 		edge1[k] = edge1[k + 1] = cur_nod;
 
 		/* get the distances between all OTUs but the 2 selected ones
 		   and the latter:
 		   a) get the sum for both
 		   b) compute the distances for the new OTU */
-		A = B = ij = 0;
+
+		A = D[smallest];
+		ij = 0;
 		for (i = 1; i <= n; i++) {
 			if (i == OTU1 || i == OTU2) continue;
 			x = D[give_index(i, OTU1, n)]; /* dist between OTU1 and i */
  			y = D[give_index(i, OTU2, n)]; /* dist between OTU2 and i */
-			new_dist[ij] = (x + y)/2;
-			A += x;
-			B += y;
+			new_dist[ij] = (x + y - A)/2;
 			ij++;
 		}
 		/* compute the branch lengths */
-		A /= n - 2;
-		B /= n - 2;
-		edge_length[k] = (D[smallest] + A - B)/2;
-		edge_length[k + 1] = (D[smallest] + B - A)/2;
-		DI[cur_nod - *N - 1] = D[smallest];
+		B = (S[OTU1] - S[OTU2])/B; /* don't need B anymore */
+		edge_length[k] = (A + B)/2;
+		edge_length[k + 1] = (A - B)/2;
 
-		/* update before the next loop */
-		if (OTU1 > OTU2) { /* make sure that OTU1 < OTU2 */
-			i = OTU1;
-			OTU1 = OTU2;
-			OTU2 = i;
-		}
+		/* update before the next loop
+		   (we are sure that OTU1 < OTU2) */
 		if (OTU1 != 1)
-			for (i = OTU1 - 1; i > 0; i--)
+			for (i = OTU1; i > 1; i--)
 				otu_label[i] = otu_label[i - 1];
 		if (OTU2 != n)
 			for (i = OTU2; i < n; i++)
-				otu_label[i - 1] = otu_label[i];
-		otu_label[0] = cur_nod;
+				otu_label[i] = otu_label[i + 1];
+		otu_label[1] = cur_nod;
 
 		for (i = 1; i < n; i++) {
 			if (i == OTU1 || i == OTU2) continue;
@@ -157,17 +152,10 @@ void nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
 
 	for (i = 0; i < 3; i++) {
 		edge1[*N*2 - 4 - i] = cur_nod;
-		edge2[*N*2 - 4 - i] = otu_label[i];
+		edge2[*N*2 - 4 - i] = otu_label[i + 1];
 	}
 
 	edge_length[*N*2 - 4] = (D[0] + D[1] - D[2])/2;
 	edge_length[*N*2 - 5] = (D[0] + D[2] - D[1])/2;
 	edge_length[*N*2 - 6] = (D[2] + D[1] - D[0])/2;
-
-	for (i = 0; i < *N*2 - 3; i++) {
-		if (edge2[i] <= *N) continue;
-		/* In case there are zero branch lengths: */
-		if (DI[edge2[i] - *N - 1] == 0) continue;
-		edge_length[i] -= DI[edge2[i] - *N - 1]/2;
-	}
 }

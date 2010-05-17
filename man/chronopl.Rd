@@ -100,7 +100,6 @@ chronopl(phy, lambda, age.min = 1, age.max = NULL,
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{chronogram}}, \code{\link{ratogram}},
-  \code{\link{NPRS.criterion}}, \code{\link{chronoMPL}}
+  \code{\link{chronoMPL}}
 }
 \keyword{models}

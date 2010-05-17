@@ -1,5 +1,6 @@
 \name{ace}
 \alias{ace}
+\alias{print.ace}
 \alias{logLik.ace}
 \alias{deviance.ace}
 \alias{AIC.ace}
@@ -9,13 +10,15 @@
 ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
     model = if (type == "continuous") "BM" else "ER",
     scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1)
+\method{print}{ace}(x, digits = 4, ...)
 \method{logLik}{ace}(object, ...)
 \method{deviance}{ace}(object, ...)
 \method{AIC}{ace}(object, ..., k = 2)
 \method{anova}{ace}(object, ...)
 }
 \arguments{
-  \item{x}{a vector or a factor.}
+  \item{x}{a vector or a factor; an object of class \code{"ace"} in the
+    case of \code{print}.}
   \item{phy}{an object of class \code{"phylo"}.}
   \item{type}{the variable type; either \code{"continuous"} or
     \code{"discrete"} (or an abbreviation of these).}
@@ -37,6 +40,7 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
     structure to be used (this also gives the assumed model).}
   \item{ip}{the initial value(s) used for the ML estimation procedure
     when \code{type == "discrete"} (possibly recycled).}
+  \item{digits}{the number of digits to be printed.}
   \item{object}{an object of class \code{"ace"}.}
   \item{k}{a numeric value giving the penalty per estimated parameter;
     the default is \code{k = 2} which is the classical Akaike

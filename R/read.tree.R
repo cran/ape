@@ -38,7 +38,7 @@ tree.build <- function(tp)
         obj$edge.length <- as.numeric(tp[3])
         obj$Nnode <- 1L
         obj$tip.label <- tp[2]
-        if (length(tp) == 4) obj$node.label <- tp[4]
+        if (tp[4] != "") obj$node.label <- tp[4]
         class(obj) <- "phylo"
         return(obj)
     }

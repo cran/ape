@@ -1,4 +1,4 @@
-## DNA.R (2010-03-16)
+## DNA.R (2010-05-17)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -6,6 +6,13 @@
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
+
+labels.DNAbin <- function(object, ...)
+{
+    if (is.list(object)) return(names(object))
+    if (is.matrix(object)) return(rownames(object))
+    NULL
+}
 
 del.gaps <- function(x)
 {
@@ -49,7 +56,7 @@ as.alignment <- function(x)
     obj
 }
 
-"[.DNAbin" <- function(x, i, j, drop = TRUE)
+"[.DNAbin" <- function(x, i, j, drop = FALSE)
 {
     oc <- oldClass(x)
     class(x) <- NULL
@@ -156,27 +163,18 @@ c.DNAbin <- function(..., recursive = FALSE)
     structure(NextMethod("c"), class = "DNAbin")
 }
 
-print.DNAbin <- function(x, ...)
+print.DNAbin <- function(x, printlen = 6, digits = 3, ...)
 {
-    n <- 1 # <- if is.vector(x)
-    if (is.list(x)) n <- length(x)
-    else if (is.matrix(x)) n <- dim(x)[1]
-    if (n > 1) cat(n, "DNA sequences in binary format.\n")
-    else cat("1 DNA sequence in binary format.\n")
-}
-
-summary.DNAbin <- function(object, printlen = 6, digits = 3, ...)
-{
-    if (is.list(object)) {
-        n <- length(object)
-        nms <- names(object)
+    if (is.list(x)) {
+        n <- length(x)
+        nms <- names(x)
         if (n == 1) {
             cat("1 DNA sequence in binary format stored in a list.\n\n")
-            cat("Sequence length:", length(object[[1]]), "\n\n")
+            cat("Sequence length:", length(x[[1]]), "\n\n")
             cat("Label:", nms, "\n\n")
         } else {
             cat(n, "DNA sequences in binary format stored in a list.\n\n")
-            tmp <- unlist(lapply(object, length))
+            tmp <- unlist(lapply(x, length))
             mini <- min(tmp)
             maxi <- max(tmp)
             if (mini == maxi)
@@ -193,9 +191,9 @@ summary.DNAbin <- function(object, printlen = 6, digits = 3, ...)
             }
             cat("\nLabels:", paste(nms, collapse = " "), TAIL)
         }
-    } else if (is.matrix(object)) {
-        nd <- dim(object)
-        nms <- rownames(object)
+    } else if (is.matrix(x)) {
+        nd <- dim(x)
+        nms <- rownames(x)
         cat(nd[1], "DNA sequences in binary format stored in a matrix.\n\n")
         cat("All sequences of same length:", nd[2], "\n")
         TAIL <- "\n\n"
@@ -206,10 +204,10 @@ summary.DNAbin <- function(object, printlen = 6, digits = 3, ...)
         cat("\nLabels:", paste(nms, collapse = " "), TAIL)
     } else {
         cat("1 DNA sequence in binary format stored in a vector.\n\n")
-        cat("Sequence length:", length(object), "\n\n")
+        cat("Sequence length:", length(x), "\n\n")
     }
     cat("Base composition:\n")
-    print(round(base.freq(object), digits))
+    print(round(base.freq(x), digits))
 }
 
 as.DNAbin <- function(x, ...) UseMethod("as.DNAbin")

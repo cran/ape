@@ -4,7 +4,7 @@
 \usage{
 read.dna(file, format = "interleaved", skip = 0,
          nlines = 0, comment.char = "#", seq.names = NULL,
-         as.character = FALSE)
+         as.character = FALSE, as.matrix = NULL)
 }
 \arguments{
   \item{file}{a file name specified by either a variable of mode character,
@@ -23,6 +23,12 @@ read.dna(file, format = "interleaved", skip = 0,
     names read in the file are used.}
   \item{as.character}{a logical controlling whether to return the
     sequences as an object of class \code{"DNAbin"} (the default).}
+  \item{as.matrix}{(used if \code{format = "fasta"}) one of the three
+    followings: (i) \code{NULL}: returns the sequences in a matrix if
+    they are of the same length, otherwise in a list; (ii) \code{TRUE}:
+    returns the sequences in a matrix, or stops with an error if they
+    are of different lengths; (iii) \code{FALSE}: always returns the
+    sequences in a list.}
 }
 \description{
   This function reads DNA sequences in a file, and returns a matrix or a

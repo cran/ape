@@ -53,8 +53,7 @@ chronoMPL(phy, se = TRUE, test = TRUE)
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{chronogram}}, \code{\link{ratogram}},
-  \code{\link{NPRS.criterion}}, \code{\link{chronopl}}
+  \code{\link{chronopl}}
 }
 \examples{
 tr <- rtree(10)

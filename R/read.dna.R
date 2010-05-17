@@ -1,15 +1,15 @@
-## read.dna.R (2008-07-03)
+## read.dna.R (2010-05-17)
 
 ##   Read DNA Sequences in a File
 
-## Copyright 2003-2008 Emmanuel Paradis
+## Copyright 2003-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 read.dna <- function(file, format = "interleaved", skip = 0,
                      nlines = 0, comment.char = "#", seq.names = NULL,
-                     as.character = FALSE)
+                     as.character = FALSE, as.matrix = NULL)
 {
     getTaxaNames <- function(x) {
         x <- sub("^['\" ]+", "", x) # remove the leading quotes and spaces
@@ -105,6 +105,16 @@ read.dna <- function(file, format = "interleaved", skip = 0,
     } else {
         names(obj) <- seq.names
         obj <- lapply(obj, tolower)
+        LENGTHS <- unique(unlist(lapply(obj, length)))
+        allSameLength <- length(LENGTHS) == 1
+        if (is.logical(as.matrix) && as.matrix && !allSameLength)
+            stop("sequences in FASTA file not of the same length")
+        if (is.null(as.matrix) && allSameLength)
+            as.matrix <- TRUE
+        if (as.matrix) {
+            obj <- matrix(unlist(obj), ncol = LENGTHS, byrow = TRUE)
+            rownames(obj) <- seq.names
+        }
     }
     if (!as.character) obj <- as.DNAbin(obj)
     obj

@@ -53,7 +53,7 @@ clado.build <- function(tp)
         obj <- list(edge = matrix(c(2, 1), 1, 2), Nnode = 1)
         tp <- unlist(strsplit(tp, "[\\(\\);]"))
         obj$tip.label <- tp[2]
-        if (length(tp) == 3) obj$node.label <- tp[3]
+        if (tp[3] != "") obj$node.label <- tp[3]
         class(obj) <- "phylo"
         return(obj)
     }
