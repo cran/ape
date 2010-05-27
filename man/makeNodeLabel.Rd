@@ -50,7 +50,8 @@ makeNodeLabel(phy, method = "number", prefix = "Node", nodeList = list(), ...)
 }
 \author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
 \seealso{
-  \code{\link{makeLabel}}, \code{\link[base]{grep}}
+  \code{\link{makeLabel}}, \code{\link[base]{grep}},
+  \code{\link{mixedFontLabel}}
 }
 \examples{
 tr <-

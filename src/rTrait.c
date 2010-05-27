@@ -1,4 +1,4 @@
-/* rTrait.c       2010-01-11 */
+/* rTrait.c       2010-05-26 */
 
 /* Copyright 2010 Emmanuel Paradis */
 
@@ -16,13 +16,13 @@ void rTraitCont(int *model, int *Nedge, int *edge1, int *edge2, double *el,
 	switch(*model) {
 	case 1 : for (i = *Nedge - 1; i >= 0; i--) {
 			GetRNGstate();
-			x[edge2[i]] = x[edge1[i]] + el[i] * sigma[i] * norm_rand();
+			x[edge2[i]] = x[edge1[i]] + sqrt(el[i]) * sigma[i] * norm_rand();
 			PutRNGstate();
 		}
 		break;
 	case 2 : for (i = *Nedge - 1; i >= 0; i--) {
 			GetRNGstate();
-			x[edge2[i]] = x[edge1[i]] + (sigma[i]*norm_rand() - alpha[i]*(x[edge1[i]] - theta[i])) * el[i];
+			x[edge2[i]] = x[edge1[i]] + (sigma[i]*norm_rand() - alpha[i]*(x[edge1[i]] - theta[i])) * el[i]; /* need sqrt(el[i]) ? */
 			PutRNGstate();
 		}
 		break;

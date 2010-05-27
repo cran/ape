@@ -1,4 +1,4 @@
-## dist.topo.R (2010-05-06)
+## dist.topo.R (2010-05-25)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -72,15 +72,21 @@ dist.topo <- function(x, y, method = "PH85")
         stop("some tip labels are duplicated in tree no. 1")
     n <- length(ref)
     for (i in 2:length(x)) {
-        if (identical(x[[i]]$tip.label, ref)) next
-        ilab <- match(x[[i]]$tip.label, ref)
-        ## can use tabulate here because 'ilab' contains integers
-        if (any(tabulate(ilab) > 1))
-            stop(paste("some tip labels are duplicated in tree no.", i))
-        if (any(is.na(ilab)))
-            stop(paste("tree no.", i, "has different tip labels"))
-        ie <- match(1:n, x[[i]]$edge[, 2])
-        x[[i]]$edge[ie, 2] <- ilab
+        label <- x[[i]]$tip.label
+        if (!identical(label, ref)) {
+            if (length(label) != length(ref))
+                stop(paste("tree no.", i, "has a different number of tips"))
+            ilab <- match(label, ref)
+            ## can use tabulate here because 'ilab' contains integers
+            if (any(is.na(ilab)))
+                stop(paste("tree no.", i, "has different tip labels"))
+### <FIXME> the test below does not seem useful anymore
+###            if (any(tabulate(ilab) > 1))
+###                stop(paste("some tip labels are duplicated in tree no.", i))
+### </FIXME>
+            ie <- match(1:n, x[[i]]$edge[, 2])
+            x[[i]]$edge[ie, 2] <- ilab
+        }
         x[[i]]$tip.label <- NULL
     }
     x[[1]]$tip.label <- NULL

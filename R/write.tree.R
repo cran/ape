@@ -61,19 +61,15 @@ write.tree <-
         br <- which(phy$edge[, 1] == i)
         for (j in br) {
             desc <- phy$edge[j, 2]
-            if (desc > n)
-                add.internal(desc)
+            if (desc > n) add.internal(desc)
             else add.terminal(j)
-            if (j != br[length(br)])
-                cp(",")
+            if (j != br[length(br)])  cp(",")
         }
         cp(")")
-        if (nodelab)
-            cp(phy$node.label[i - n])
+        if (nodelab) cp(phy$node.label[i - n])
         if (brl) {
             cp(":")
-            cp(sprintf(f.d, phy$edge.length[which(phy$edge[,
-                2] == i)]))
+            cp(sprintf(f.d, phy$edge.length[which(phy$edge[, 2] == i)]))
         }
     }
     add.terminal <- function(i) {
@@ -89,28 +85,23 @@ write.tree <-
     br <- which(phy$edge[, 1] == n + 1)
     for (j in br) {
         desc <- phy$edge[j, 2]
-        if (desc > n)
-            add.internal(desc)
+        if (desc > n) add.internal(desc)
         else add.terminal(j)
-        if (j != br[length(br)])
-            cp(",")
+        if (j != br[length(br)]) cp(",")
     }
     if (is.null(phy$root.edge)) {
         cp(")")
-        if (nodelab)
-            cp(phy$node.label[1])
+        if (nodelab) cp(phy$node.label[1])
         cp(";")
     }
     else {
         cp(")")
-        if (nodelab)
-            cp(phy$node.label[1])
+        if (nodelab) cp(phy$node.label[1])
         cp(":")
         cp(sprintf(f.d, phy$root.edge))
         cp(";")
     }
-    if (file == "")
-        return(STRING)
-    else cat(STRING, file = file, append = append, sep = "\n")
+    if (file == "") return(STRING)
+    cat(STRING, file = file, append = append, sep = "\n")
 }
 

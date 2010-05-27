@@ -5,6 +5,12 @@
 \alias{makeLabel.multiPhylo}
 \alias{makeLabel.DNAbin}
 \title{Label Management}
+\description{
+  This is a generic function with methods for character vectors, trees
+  of class \code{"phylo"}, lists of trees of class \code{"multiPhylo"},
+  and DNA sequences of class \code{"DNAbin"}. All options for the class
+  character may be used in the other methods.
+}
 \usage{
 makeLabel(x, ...)
 \method{makeLabel}{character}(x, len = 99, space = "_", make.unique = TRUE,
@@ -32,12 +38,6 @@ makeLabel(x, ...)
     modified; \code{TRUE} by default.}
   \item{\dots}{further arguments to be passed to or from other methods.}
 }
-\description{
-  This is a generic function with methods for character vectors, trees
-  of class \code{"phylo"}, lists of trees of class \code{"multiPhylo"},
-  and DNA sequences of class \code{"DNAbin"}. All options for the class
-  character may be used in the other methods.
-}
 \details{
   The option \code{make.unique} does not work exactly in the same way
   then the function of the same name: numbers are suffixed to all labels
@@ -48,7 +48,7 @@ makeLabel(x, ...)
   on. The number of digits added preserves the option `len'.
 
   The default for `len' makes labels short enough to be read by
-  PHYML. Clustal accepts labels up to 30 character long.
+  PhyML. Clustal accepts labels up to 30 character long.
 }
 \note{
   The current version does not perform well when trying to make very
@@ -60,7 +60,8 @@ makeLabel(x, ...)
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{makeNodeLabel}}, \code{\link[base]{make.unique}},
-  \code{\link[base]{make.names}}, \code{\link[base]{abbreviate}}
+  \code{\link[base]{make.names}}, \code{\link[base]{abbreviate}},
+  \code{\link{mixedFontLabel}}
 }
 \examples{
 x <- rep("a", 3)

@@ -83,7 +83,8 @@ edgelabels(text, edge, adj = c(0.5, 0.5), frame = "rect",
 \author{Emmanuel Paradis, Ben Bolker \email{bolker@zoo.ufl.edu}, and Jim
   Lemon}
 \seealso{
-  \code{\link{plot.phylo}}, \code{\link{edges}}
+  \code{\link{plot.phylo}}, \code{\link{edges}},
+  \code{\link{mixedFontLabel}}
 }
 \examples{
 tr <- read.tree(text = "((Homo,Pan),Gorilla);")

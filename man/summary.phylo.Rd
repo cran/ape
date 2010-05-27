@@ -41,7 +41,7 @@ Nedge(phy)
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{read.tree}}, \code{\link[base]{summary}} for the generic R
-  function
+  function, \code{\link{multiphylo}}, \code{\link{c.phylo}}
 }
 \examples{
 data(bird.families)

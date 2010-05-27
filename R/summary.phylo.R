@@ -1,8 +1,8 @@
-## summary.phylo.R (2009-05-10)
+## summary.phylo.R (2010-05-25)
 
-##   Print Summary of a Phylogeny
+##   Print Summary of a Phylogeny and "multiPhylo" operators
 
-## Copyright 2003-2009 Emmanuel Paradis, and 2006 Ben Bolker
+## Copyright 2003-2010 Emmanuel Paradis, and 2006 Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -145,4 +145,100 @@ str.multiPhylo <- function(object, ...)
     class(object) <- NULL
     cat('Class "multiPhylo"\n')
     str(object, ...)
+}
+
+c.phylo <- function(..., recursive = FALSE)
+    structure(list(...), class = "multiPhylo")
+## only the first object in '...' is checked for its class,
+## but that should be OK for the moment
+
+c.multiPhylo <- function(..., recursive = FALSE)
+{
+    obj <- list(...)
+    n <- length(obj)
+    x <- obj[[1L]]
+    N <- length(x)
+    i <- 1L
+    while (i < n) {
+        a <- N + 1L
+        N <- N + length(obj[[i]])
+        ## x is of class "multiPhylo", so this uses the operator below:
+        x[a:N] <- obj[[i]]
+        i <- i + 1L
+    }
+    x
+}
+
+.uncompressTipLabel <- function(x)
+{
+    Lab <- attr(x, "TipLabel")
+    if (is.null(Lab)) return(x)
+    class(x) <- NULL
+    for (i in 1:length(x)) x[[i]]$tip.label <- Lab
+    class(x) <- "multiPhylo"
+    attr(x, "TipLabel") <- NULL
+    x
+}
+
+`[<-.multiPhylo` <- function(x, ..., value)
+{
+    ## recycling is allowed so no need to check: length(value) != length(..1)
+
+    ## check that all elements in 'value' inherit class "phylo"
+    test <- unlist(lapply(value, function(xx) !inherits(xx, "phylo")))
+    if (any(test))
+        stop("at least one element in 'value' is not of class \"phylo\".")
+
+    oc <- oldClass(x)
+    class(x) <- NULL
+
+    if (is.null(attr(x, "TipLabel"))) {
+        x[..1] <- value
+        class(x) <- oc
+        return(x)
+    }
+
+    x[..1] <- 0L # in case x needs to be elongated
+    class(x) <- oc
+    j <- 1L
+    for (i in ..1) {
+        ## x is of class "multiPhylo", so this uses the operator below:
+        x[[i]] <- value[[j]]
+        j <- j + 1L
+    }
+    x
+}
+
+`[[<-.multiPhylo` <- function(x, ..., value)
+{
+    if (!inherits(value, "phylo"))
+        stop('trying to assign an object not of class "phylo" into an object of class "multiPhylo".')
+
+    oc <- oldClass(x)
+    class(x) <- NULL
+
+    Lab <- attr(x, "TipLabel")
+
+    if (!is.null(Lab)) {
+        n <- length(Lab)
+        if (n != length(value$tip.label))
+            stop("tree with different number of tips than those in the list (which all have the same labels; maybe you want to uncompress them)")
+
+        o <- match(value$tip.label, Lab)
+        if (any(is.na(o)))
+            stop("tree tip labels do not match with those in the list; maybe you want to uncompress them.")
+        value$tip.label <- NULL
+        ie <- match(o, value$edge[, 2])
+        value$edge[ie, 2] <- 1:n
+    }
+
+    x[[..1]] <- value
+    class(x) <- oc
+    x
+}
+
+`$<-.multiPhylo` <- function(x, ..., value)
+{
+    x[[..1]] <- value
+    x
 }

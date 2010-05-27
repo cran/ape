@@ -1,4 +1,4 @@
-## bind.tree.R (2010-03-15)
+## bind.tree.R (2010-05-25)
 
 ##    Bind Trees
 
@@ -46,7 +46,7 @@ bind.tree <- function(x, y, where = "root", position = 0, interactive = FALSE)
            wbl <- TRUE, {
                x$edge.length <- y$edge.length <- NULL
                wbl <- FALSE
-               warning("one tree has no branch lengths, they will be ignored")
+               warning("one tree has no branch lengths, they have been ignored")
            },
            wbl <- FALSE)
 
@@ -75,6 +75,14 @@ bind.tree <- function(x, y, where = "root", position = 0, interactive = FALSE)
             if (x$edge.length[i] < position)
                 stop("'position' is larger than the branch length")
         }
+    }
+
+    ## the special of substituting two tips:
+    if (case == 2 && ny == 1 && !position) {
+        x$tip.label[x$edge[i, 2]] <- y$tip.label
+        if (wbl)
+            x$edge.length[i] <- x$edge.length[i] + y$edge.length
+        return(x)
     }
 
     x <- reorder(x)

@@ -9,7 +9,8 @@
 
 corBrownian <- function(value = 1, phy, form=~1)
 {
-  if (!("phylo" %in% class(phy))) stop("ERROR!!! Object \"phy\" is not of class \"phylo\"")
+  if (!("phylo" %in% class(phy)))
+      stop("object \"phy\" is not of class \"phylo\"")
   attr(value, "formula") <- form
   attr(value, "fixed")   <- TRUE
   attr(value, "tree")    <- phy
@@ -19,9 +20,11 @@ corBrownian <- function(value = 1, phy, form=~1)
 
 corMartins <- function(value, phy, form=~1, fixed=FALSE)
 {
-  if(length(value) > 1) stop("ERROR!!! Only one parameter is allowed in corPGLS structure.")
-  if(value < 0) stop("ERROR!!! Parameter alpha must be positive.")
-  if (!("phylo" %in% class(phy))) stop("ERROR!!! Object \"phy\" is not of class \"phylo\"")
+  if(length(value) > 1)
+      stop("only one parameter is allowed in corPGLS structure.")
+  if(value < 0) stop("parameter alpha must be positive.")
+  if (!("phylo" %in% class(phy)))
+      stop("object \"phy\" is not of class \"phylo\"")
   attr(value, "formula") <- form
   attr(value, "fixed")   <- fixed
   attr(value, "tree")    <- phy
@@ -31,10 +34,12 @@ corMartins <- function(value, phy, form=~1, fixed=FALSE)
 
 corGrafen <- function(value, phy, form=~1, fixed=FALSE)
 {
-  if(length(value) > 1) stop("ERROR!!! Only one parameter is allowed in corGrafen structure.")
-  if(value < 0) stop("ERROR!!! Parameter rho must be positive.")
+  if(length(value) > 1)
+      stop("only one parameter is allowed in corGrafen structure.")
+  if(value < 0) stop("parameter rho must be positive.")
   value <- log(value) # Optimization under constraint, use exponential transform.
-  if (!("phylo" %in% class(phy))) stop("ERROR!!! Object \"phy\" is not of class \"phylo\"")
+  if (!("phylo" %in% class(phy)))
+      stop("object \"phy\" is not of class \"phylo\"")
   attr(value, "formula") <- form
   attr(value, "fixed")   <- fixed
   attr(value, "tree")    <- phy
@@ -81,8 +86,10 @@ Initialize.corPhyl <- function(object, data, ...)
 
 corMatrix.corBrownian <- function(object, covariate = getCovariate(object), corr = TRUE, ...)
 {
-  if (!("corBrownian" %in% class(object))) stop("ERROR!!! Object is not of class \"corBrownian\".")
-  if(!any(attr(object, "index"))) stop("ERROR!!! object have not been initialized.")
+  if (!("corBrownian" %in% class(object)))
+      stop("object is not of class \"corBrownian\".")
+  if(!any(attr(object, "index")))
+      stop("object have not been initialized.")
   tree <- attr(object, "tree")
   mat <- vcv.phylo(tree, cor = corr)
   n <- dim(mat)[1]
@@ -95,49 +102,57 @@ corMatrix.corBrownian <- function(object, covariate = getCovariate(object), corr
   return(matr)
 }
 
-corMatrix.corMartins <- function(object, covariate = getCovariate(object), corr = TRUE, ...)
+corMatrix.corMartins <-
+    function(object, covariate = getCovariate(object), corr = TRUE, ...)
 {
-  if (!("corMartins" %in% class(object))) stop("ERROR!!! Object is not of class \"corMartins\".")
-  if(!any(attr(object, "index"))) stop("ERROR!!! object have not been initialized.")
-  tree <- attr(object, "tree")
-  dist <- cophenetic.phylo(tree)
-  mat <- exp(-object[1] * dist)
-  if(corr) mat <- cov2cor(mat)
-  n <- dim(mat)[1]
-  # reorder matrix:
-  matr <- matrix(nrow=n, ncol=n)
-  index <- attr(object, "index")
-  for(i in 1:n)
-    for(j in i:n)
-      matr[i,j] <- matr[j,i] <- mat[index[i], index[j]]
-  return(matr)
+    if (!("corMartins" %in% class(object)))
+        stop("object is not of class \"corMartins\".")
+    if(!any(attr(object, "index")))
+        stop("object have not been initialized.")
+    tree <- attr(object, "tree")
+    dist <- cophenetic.phylo(tree)
+    mat <- exp(-object[1] * dist)
+    if (corr) mat <- cov2cor(mat)
+    n <- dim(mat)[1]
+    ## reorder matrix:
+    matr <- matrix(nrow=n, ncol=n)
+    index <- attr(object, "index")
+    for(i in 1:n)
+        for(j in i:n)
+            matr[i,j] <- matr[j,i] <- mat[index[i], index[j]]
+    matr
 }
 
 corMatrix.corGrafen <- function(object, covariate = getCovariate(object), corr = TRUE, ...)
 {
-  if (!("corGrafen" %in% class(object))) stop("ERROR!!! Object is not of class \"corGrafen\".")
-  if(!any(attr(object, "index"))) stop("ERROR!!! object have not been initialized.")
-  tree <- compute.brlen(attr(object, "tree"), method = "Grafen", power = exp(object[1]))
+  if (!("corGrafen" %in% class(object)))
+      stop("object is not of class \"corGrafen\".")
+  if (!any(attr(object, "index")))
+      stop("object have not been initialized.")
+  tree <- compute.brlen(attr(object, "tree"),
+                        method = "Grafen", power = exp(object[1]))
   mat <- vcv.phylo(tree, cor = corr)
   n <- dim(mat)[1]
   # reorder matrix:
   matr <- matrix(nrow=n, ncol=n)
   index <- attr(object, "index")
   for(i in 1:n)
-    for(j in i:n)
-      matr[i,j] <- matr[j,i] <- mat[index[i], index[j]]
+      for(j in i:n)
+          matr[i,j] <- matr[j,i] <- mat[index[i], index[j]]
   return(matr)
 }
 
 coef.corBrownian <- function(object, unconstrained = TRUE, ...)
 {
-  if (!("corBrownian" %in% class(object))) stop("ERROR!!! Object is not of class \"corBrownian\".")
+  if (!("corBrownian" %in% class(object)))
+      stop("object is not of class \"corBrownian\".")
   return(numeric(0))
 }
 
 coef.corMartins <- function(object, unconstrained = TRUE, ...)
 {
-  if (!("corMartins" %in% class(object))) stop("ERROR!!! Object is not of class \"corMartins\".")
+  if (!("corMartins" %in% class(object)))
+      stop("object is not of class \"corMartins\".")
   if(unconstrained) {
     if(attr(object, "fixed")) {
       return(numeric(0))
@@ -152,7 +167,8 @@ coef.corMartins <- function(object, unconstrained = TRUE, ...)
 
 coef.corGrafen <- function(object, unconstrained = TRUE, ...)
 {
-  if (!("corGrafen" %in% class(object))) stop("ERROR!!! Object is not of class \"corGrafen\".")
+  if (!("corGrafen" %in% class(object)))
+      stop("object is not of class \"corGrafen\".")
   if(unconstrained) {
     if(attr(object, "fixed")) {
       return(numeric(0))

@@ -1,8 +1,8 @@
-## makeLabel.R (2008-07-03)
+## makeLabel.R (2010-05-27)
 
 ##   Label Management
 
-## Copyright 2008 Emmanuel Paradis
+## Copyright 2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -68,4 +68,42 @@ makeLabel.DNAbin <- function(x, ...)
         names(x) <- makeLabel.character(names(x), ...)
     else rownames(x) <- makeLabel.character(rownames(x), ...)
     x
+}
+
+mixedFontLabel <-
+    function(..., sep = " ", italic = NULL, bold = NULL, parenthesis = NULL,
+             always.upright = c("sp.", "spp.", "ssp."))
+{
+    x <- list(...)
+    n <- length(x)
+    sep <- rep(sep, length.out = n - 1L)
+
+    if (!is.null(italic)) {
+        for (i in italic) {
+            y <- x[[i]]
+            s <- ! y %in% always.upright
+            y[s] <- paste("italic('", y[s], "')", sep = "")
+            x[[i]] <- y
+        }
+    }
+
+    if (!is.null(bold)) {
+        for (i in bold) {
+            y <- x[[i]]
+            s <- logical(length(y))
+            s[grep("^italic", y)] <- TRUE
+            y[s] <- sub("^italic", "bolditalic", y[s])
+            y[!s] <- paste("bold('", y[!s], "')", sep = "")
+            x[[i]] <- y
+        }
+    }
+
+    if (!is.null(parenthesis))
+        for (i in parenthesis)
+            x[[i]] <- paste("(", x[[i]], ")", sep = "")
+
+    res <- x[[1L]]
+    for (i in 2:n)
+        res <- paste(res, "*'", sep[i - 1L], "'*", x[[i]], sep = "")
+    parse(text = res)
 }
