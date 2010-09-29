@@ -109,7 +109,11 @@ dist.dna(x, model = "K80", variance = FALSE,
     transitons and transversions.}
 
   \item{``logdet''}{The Log-Det distance, developed by Lockhart et
-    al. (1994), is related to BH87. However, this distance is symmetric.}
+    al. (1994), is related to BH87. However, this distance is
+    symmetric. Formulae from Gu and Li (1996) are used.
+    \code{dist.logdet} in \pkg{phangorn} uses a different
+    implementation that gives substantially different distances for
+    low-diverging sequences.}
 
   \item{``paralin''}{Lake (1994) developed the paralinear distance which
     can be viewed as another variant of the Barry--Hartigan distance.}
@@ -138,6 +142,11 @@ dist.dna(x, model = "K80", variance = FALSE,
   Galtier, N. and Gouy, M. (1995) Inferring phylogenies from DNA
   sequences of unequal base compositions. \emph{Proceedings of the
     National Academy of Sciences USA}, \bold{92}, 11317--11321.
+
+  Gu, X. and Li, W.-H. (1996) Bias-corrected paralinear and LogDet
+  distances and tests of molecular clocks and phylogenies under
+  nonstationary nucleotide frequencies. \emph{Molecular Biology and
+    Evolution}, \bold{13}, 1375--1383.
 
   Jukes, T. H. and Cantor, C. R. (1969) Evolution of protein
   molecules. in \emph{Mammalian Protein Metabolism}, ed. Munro, H. N.,

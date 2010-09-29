@@ -1,4 +1,4 @@
-## rTrait.R (2010-05-06)
+## rTrait.R (2010-07-26)
 
 ##   Trait Evolution
 
@@ -18,7 +18,7 @@ rTraitDisc <-
         stop("at least one branch length negative")
 
     if (is.character(model)) {
-        switch(model, "ER" = {
+        switch(toupper(model), "ER" = {
                    if (length(rate) != 1)
                        stop("`rate' must have one element")
                    Q <- matrix(rate, k, k)
@@ -81,8 +81,8 @@ rTraitDisc <-
 }
 
 rTraitCont <-
-    function(phy, model = "BM", sigma = 0.1, alpha = 1,
-             theta = 0, ancestor = FALSE, root.value = 0)
+    function(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
+             ancestor = FALSE, root.value = 0, linear = TRUE)
 {
     if (is.null(phy$edge.length))
         stop("tree has no branch length")
@@ -104,7 +104,7 @@ rTraitCont <-
         environment(model) <- environment()
         for (i in N:1) x[des[i]] <- model(x[anc[i]], el[i])
     } else {
-        model <- pmatch(model, c("BM", "OU"))
+        model <- pmatch(toupper(model), c("BM", "OU"))
         if (length(sigma) == 1) sigma <- rep(sigma, N)
         else if (length(sigma) != N)
             stop("'sigma' must have one or Nedge(phy) elements")
@@ -115,6 +115,7 @@ rTraitCont <-
             if (length(theta) == 1) theta <- rep(theta, N)
             else if (length(theta) != N)
                 stop("'theta' must have one or Nedge(phy) elements")
+            if (!linear) model <- model + 1L
         }
         .C("rTraitCont", as.integer(model), as.integer(N), as.integer(anc - 1L), as.integer(des - 1L), el, sigma, alpha, theta, x, DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
     }

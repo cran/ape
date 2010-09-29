@@ -34,7 +34,8 @@ dist.topo(x, y, method = "PH85")
   similar bipartitions (or splits) in both trees.
 }
 \note{
-  The geodesic distance of Billera et al. (2001) has been disabled.
+  The geodesic distance of Billera et al. (2001) has been disabled: see
+  the package \pkg{distory} on CRAN.
 }
 \references{
   Billera, L. J., Holmes, S. P. and Vogtmann, K. (2001) Geometry of the

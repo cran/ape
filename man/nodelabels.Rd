@@ -11,13 +11,16 @@
 \usage{
 nodelabels(text, node, adj = c(0.5, 0.5), frame = "rect",
            pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
-           col = "black", bg = "lightblue", ...)
+           col = "black", bg = "lightblue", horiz = FALSE,
+           width = NULL, height = NULL, ...)
 tiplabels(text, tip, adj = c(0.5, 0.5), frame = "rect",
           pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
-          col = "black", bg = "yellow", ...)
+          col = "black", bg = "yellow", horiz = FALSE,
+          width = NULL, height = NULL, ...)
 edgelabels(text, edge, adj = c(0.5, 0.5), frame = "rect",
            pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
-           col = "black", bg = "lightgreen", ...)
+           col = "black", bg = "lightgreen", horiz = FALSE,
+           width = NULL, height = NULL, ...)
 
 }
 \arguments{
@@ -57,6 +60,9 @@ edgelabels(text, edge, adj = c(0.5, 0.5), frame = "rect",
     \code{points} functions (e.g. \code{cex} to alter the size of the
     text or the symbols, or \code{font} for the text; see the examples
     below).}
+  \item{horiz, width, height}{parameters controlling the aspect of
+    thermometers; by default, their width and height are determined
+    automatically.}
 }
 \details{
   These three functions have the same optional arguments and the same
@@ -141,6 +147,10 @@ text(4.5, 15, "Are you \"pie\"...", font = 4, cex = 1.5)
 plot(tr, "c", FALSE, no.margin = TRUE)
 nodelabels(thermo = x, col = rainbow(4), cex = 1.3)
 text(4.5, 15, "... or \"thermo\"?", font = 4, cex = 1.5)
+plot(tr, "c", FALSE, no.margin = TRUE)
+nodelabels(thermo = x, col = rainbow(4), cex = 1.3)
+plot(tr, "c", FALSE, no.margin = TRUE)
+nodelabels(thermo = x, col = rainbow(4), width = 3, horiz = TRUE)
 layout(matrix(1))
 plot(tr, main = "Showing Edge Lengths")
 edgelabels(round(tr$edge.length, 3), srt = 90)

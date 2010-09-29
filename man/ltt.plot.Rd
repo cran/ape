@@ -72,7 +72,8 @@ mltt.plot(phy, ..., dcol = TRUE, dlty = FALSE, legend = TRUE,
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{skyline}}, \code{\link{branching.times}},
-  \code{\link{birthdeath}}, \code{\link{bd.ext}}, \code{\link{yule.cov}}
+  \code{\link{birthdeath}}, \code{\link{bd.ext}},
+  \code{\link{yule.cov}}, \code{\link{bd.time}}
   \code{\link[graphics]{plot}} for the basic plotting function in R
 }
 \examples{

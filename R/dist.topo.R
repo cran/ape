@@ -11,7 +11,7 @@
 dist.topo <- function(x, y, method = "PH85")
 {
     if (method == "score" && (is.null(x$edge.length) || is.null(y$edge.length)))
-        stop("trees must have branch lengths for Billera et al.'s distance.")
+        stop("trees must have branch lengths for branch score distance.")
     nx <- length(x$tip.label)
     x <- unroot(x)
     y <- unroot(y)
@@ -211,7 +211,10 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1, trees = FALSE)
     storage.mode(phy$Nnode) <- "integer"
     ans <- attr(.Call("prop_part", c(list(phy), boot.tree),
                       B + 1, FALSE, PACKAGE = "ape"), "number") - 1
-    if (trees) ans <- list(BP = ans, trees = boot.tree)
+    if (trees) {
+        class(boot.tree) <- "multiPhylo"
+        ans <- list(BP = ans, trees = boot.tree)
+    }
     ans
 }
 

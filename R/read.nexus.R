@@ -1,8 +1,8 @@
-## read.nexus.R (2009-11-21)
+## read.nexus.R (2010-09-27)
 
 ##   Read Tree File in Nexus Format
 
-## Copyright 2003-2009 Emmanuel Paradis
+## Copyright 2003-2009 Emmanuel Paradis and 2010 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -33,18 +33,20 @@ clado.build <- function(tp)
         edge[j, 1] <<- current.node
         node <<- node + 1
         edge[j, 2] <<- current.node <<- node
+        index[node] <<- j # set index
         j <<- j + 1
     }
     add.terminal <- function() {
         edge[j, 1] <<- current.node
         edge[j, 2] <<- tip
+        index[tip] <<- j # set index
         tip.label[tip] <<- tpc[k]
         k <<- k + 1
         tip <<- tip + 1
         j <<- j + 1
     }
     go.down <- function() {
-        l <- which(edge[, 2] == current.node)
+        l <- index[current.node]
         node.label[current.node - nb.tip] <<- tpc[k]
         k <<- k + 1
         current.node <<- edge[l, 1]
@@ -77,11 +79,12 @@ clado.build <- function(tp)
     edge[nb.edge, 1] <- 0    # see comment above
     edge[nb.edge, 2] <- node #
 
+    index <- numeric(nb.edge + 1)
+    index[node] <- nb.edge
     ## j: index of the line number of edge
     ## k: index of the line number of tpc
     ## tip: tip number
     j <- k <- tip <- 1
-
     for (i in 2:nsk) {
         if (skeleton[i] == "(") add.internal()      # add an internal branch (on top)
         if (skeleton[i] == ",") {
@@ -95,7 +98,6 @@ clado.build <- function(tp)
             if (skeleton[i - 1] == ")") go.down()   # go down one level
         }
     }
-#    if(node.label[1] == "NA") node.label[1] <- ""
     edge <- edge[-nb.edge, ]
     obj <- list(edge = edge, tip.label = tip.label,
                 Nnode = nb.node, node.label = node.label)

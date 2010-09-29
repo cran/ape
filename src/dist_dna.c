@@ -1,4 +1,4 @@
-/* dist_dna.c       2010-03-29 */
+/* dist_dna.c       2010-09-16 */
 
 /* Copyright 2005-2010 Emmanuel Paradis
 
@@ -64,21 +64,49 @@ double detFourByFour(double *x)
     if (KnownBase(x[s1]) && KnownBase(x[s2])) L++;\
     else continue;
 
+#define COUNT_TS_TV\
+    if (SameBase(x[s1], x[s2])) continue;\
+    Nd++;\
+    if (IsPurine(x[s1]) && IsPurine(x[s2])) {\
+        Ns++;\
+        continue;\
+    }\
+    if (IsPyrimidine(x[s1]) && IsPyrimidine(x[s2])) Ns++;
+
+void distDNA_TsTv(unsigned char *x, int *n, int *s, double *d, int Ts, int pairdel)
+{
+	int i1, i2, s1, s2, target, Nd, Ns;
+
+	target = 0;
+	for (i1 = 1; i1 < *n; i1++) {
+		for (i2 = i1 + 1; i2 <= *n; i2++) {
+			Nd = Ns = 0;
+			for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+				if (pairdel && !(KnownBase(x[s1]) && KnownBase(x[s2]))) continue;
+				COUNT_TS_TV
+			}
+			if (Ts) d[target] = ((double) Ns); /* output number of transitions */
+			else d[target] = ((double) Nd - Ns); /* output number of transversions */
+			target++;
+		}
+	}
+}
+
 void distDNA_raw(unsigned char *x, int *n, int *s, double *d, int scaled)
 {
-    int i1, i2, s1, s2, target, Nd;
+	int i1, i2, s1, s2, target, Nd;
 
-    target = 0;
-    for (i1 = 1; i1 < *n; i1++) {
-        for (i2 = i1 + 1; i2 <= *n; i2++) {
-	    Nd = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n)
-	      if (DifferentBase(x[s1], x[s2])) Nd++;
-	    if (scaled) d[target] = ((double) Nd / *s);
-	    else d[target] = ((double) Nd);
-	    target++;
+	target = 0;
+	for (i1 = 1; i1 < *n; i1++) {
+		for (i2 = i1 + 1; i2 <= *n; i2++) {
+			Nd = 0;
+			for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n)
+				if (DifferentBase(x[s1], x[s2])) Nd++;
+			if (scaled) d[target] = ((double) Nd / *s);
+			else d[target] = ((double) Nd);
+			target++;
+		}
 	}
-    }
 }
 
 void distDNA_raw_pairdel(unsigned char *x, int *n, int *s, double *d, int scaled)
@@ -149,15 +177,6 @@ void distDNA_JC69_pairdel(unsigned char *x, int *n, int *s, double *d,
 	}
     }
 }
-
-#define COUNT_TS_TV\
-    if (SameBase(x[s1], x[s2])) continue;\
-    Nd++;\
-    if (IsPurine(x[s1]) && IsPurine(x[s2])) {\
-        Ns++;\
-        continue;\
-    }\
-    if (IsPyrimidine(x[s1]) && IsPyrimidine(x[s2])) Ns++;
 
 #define COMPUTE_DIST_K80\
     P = ((double) Ns/L);\
@@ -723,7 +742,7 @@ void distDNA_GG95_pairdel(unsigned char *x, int *n, int *s, double *d,
 
 #define COMPUTE_DIST_LogDet\
     for (k = 0; k < 16; k++) Ftab[k] = ((double) Ntab[k]/L);\
-    d[target] = (-log(detFourByFour(Ftab))/4 - LN4)/4;\
+    d[target] = -log(detFourByFour(Ftab))/4 - LN4;\
     if (*variance) {\
         /* For the inversion, we first make U an identity matrix */\
         for (k = 1; k < 15; k++) U[k] = 0;\
@@ -1013,39 +1032,33 @@ void dist_dna(unsigned char *x, int *n, int *s, int *model, double *d,
     switch (*model) {
     case 1 : if (pairdel) distDNA_raw_pairdel(x, n, s, d, 1);
              else distDNA_raw(x, n, s, d, 1); break;
-
     case 2 : if (pairdel) distDNA_JC69_pairdel(x, n, s, d, variance, var, gamma, alpha);
              else distDNA_JC69(x, n, s, d, variance, var, gamma, alpha); break;
-
     case 3 : if (pairdel) distDNA_K80_pairdel(x, n, s, d, variance, var, gamma, alpha);
              else distDNA_K80(x, n, s, d, variance, var, gamma, alpha); break;
-
     case 4 : if (pairdel) distDNA_F81_pairdel(x, n, s, d, BF, variance, var, gamma, alpha);
              else distDNA_F81(x, n, s, d, BF, variance, var, gamma, alpha); break;
-
     case 5 : if (pairdel) distDNA_K81_pairdel(x, n, s, d, variance, var);
              else distDNA_K81(x, n, s, d, variance, var); break;
-
     case 6 : if (pairdel) distDNA_F84_pairdel(x, n, s, d, BF, variance, var);
              else distDNA_F84(x, n, s, d, BF, variance, var); break;
-
     case 7 : if (pairdel) distDNA_T92_pairdel(x, n, s, d, BF, variance, var);
              else distDNA_T92(x, n, s, d, BF, variance, var); break;
-
     case 8 : if (pairdel) distDNA_TN93_pairdel(x, n, s, d, BF, variance, var, gamma, alpha);
              else distDNA_TN93(x, n, s, d, BF, variance, var, gamma, alpha); break;
-
     case 9 : if (pairdel) distDNA_GG95_pairdel(x, n, s, d, variance, var);
              else distDNA_GG95(x, n, s, d, variance, var); break;
-
     case 10 : if (pairdel) distDNA_LogDet_pairdel(x, n, s, d, variance, var);
               else distDNA_LogDet(x, n, s, d, variance, var); break;
-
     case 11 : distDNA_BH87(x, n, s, d, variance, var); break;
-
     case 12 : if (pairdel) distDNA_ParaLin_pairdel(x, n, s, d, variance, var);
               else distDNA_ParaLin(x, n, s, d, variance, var); break;
     case 13 : if (pairdel) distDNA_raw_pairdel(x, n, s, d, 0);
              else distDNA_raw(x, n, s, d, 0); break;
+    case 14 : if (pairdel) distDNA_TsTv(x, n, s, d, 1, 1);
+	    else distDNA_TsTv(x, n, s, d, 1, 0); break;
+    case 15 : if (pairdel) distDNA_TsTv(x, n, s, d, 0, 1);
+	    else distDNA_TsTv(x, n, s, d, 0, 0); break;
+
     }
 }

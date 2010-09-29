@@ -1,4 +1,4 @@
-## plot.phylo.R (2010-03-19)
+## plot.phylo.R (2010-08-12)
 
 ##   Plot Phylogenies
 
@@ -276,7 +276,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
         if (direction == "leftwards") x.lim[2] <- x.lim[2] + x$root.edge
         if (direction == "downwards") y.lim[2] <- y.lim[2] + x$root.edge
     }
-    asp <- if (type %in% c("fan", "radial")) 1 else NA # fix by Klaus Schliep (2008-03-28)
+    asp <- if (type %in% c("fan", "radial", "unrooted")) 1 else NA # fixes by Klaus Schliep (2008-03-28 and 2010-08-12)
     plot(0, type = "n", xlim = x.lim, ylim = y.lim, ann = FALSE, axes = FALSE, asp = asp, ...)
     if (is.null(adj))
         adj <- if (phyloORclado && direction == "leftwards") 1 else 0

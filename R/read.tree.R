@@ -1,8 +1,8 @@
-## read.tree.R (2009-04-27)
+## read.tree.R (2010-09-27)
 
 ##   Read Tree Files in Parenthetic Format
 
-## Copyright 2002-2009 Emmanuel Paradis and Daniel Lawson
+## Copyright 2002-2010 Emmanuel Paradis, Daniel Lawson and Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -12,11 +12,13 @@ tree.build <- function(tp)
     add.internal <- function() {
         edge[j, 1] <<- current.node
         edge[j, 2] <<- current.node <<- node <<- node + 1L
+        index[node] <<- j # set index
         j <<- j + 1L
     }
     add.terminal <- function() {
         edge[j, 1] <<- current.node
         edge[j, 2] <<- tip
+        index[tip] <<- j # set index
         X <- unlist(strsplit(tpc[k], ":"))
         tip.label[tip] <<- X[1]
         edge.length[j] <<- as.numeric(X[2])
@@ -25,7 +27,7 @@ tree.build <- function(tp)
         j <<- j + 1L
     }
     go.down <- function() {
-        l <- which(edge[, 2] == current.node)
+        l <- index[current.node]
         X <- unlist(strsplit(tpc[k], ":"))
         node.label[current.node - nb.tip] <<- X[1]
         edge.length[l] <<- as.numeric(X[2])
@@ -60,7 +62,9 @@ tree.build <- function(tp)
     edge.length <- numeric(nb.edge)
     edge <- matrix(0L, nb.edge, 2)
     current.node <- node <- as.integer(nb.tip + 1) # node number
-    edge[nb.edge, 2] <- node #
+    edge[nb.edge, 2] <- node
+    index <- numeric(nb.edge + 1) # hash index to avoid which
+    index[node] <- nb.edge
 
     ## j: index of the line number of edge
     ## k: index of the line number of tpc

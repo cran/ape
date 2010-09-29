@@ -1,3 +1,67 @@
+		CHANGES IN APE VERSION 2.6
+
+
+NEW FEATURES
+
+    o The new functions rlineage and rbdtree simulate phylogenies under
+      any user-defined time-dependent speciation-extinction model. They
+      use continuous time algorithms.
+
+    o The new function drop.fossil removes the extinct species from a
+      phylogeny.
+
+    o The new function bd.time fits a user-defined time-dependent
+      birth-death model. It is a generalization of yule.time() taking
+      extinction into account.
+
+    o The new function MPR does most parsimonious reconstruction of
+      discrete characters.
+
+    o The new function Ftab computes the contingency table of base
+      frequencies from a pair of sequences.
+
+    o There is now an 'as.list' method for the class "DNAbin".
+
+    o dist.dna() can compute the number of transitions or transversions
+      with the option model = "Ts" or model = "Tv", respectively.
+
+    o [node|tip|edge]labels() gain three options with default values to
+      control the aspect of thermometers: horiz = TRUE, width = NULL,
+      and height = NULL.
+
+    o compar.gee() has been improved with the new option 'corStruct' as an
+      alternative to 'phy' to specify the correlation structure, and
+      calculation of the QIC (Pan 2001, Biometrics). The display of the
+      results has also been improved.
+
+    o read.GenBank() has a new option 'gene.names' to return the name of
+      the gene (FALSE by default).
+
+
+BUG FIXES
+
+    o extract.clade() sometimes shuffled the tip labels.
+
+    o plot.phylo(type = "unrooted") did not force asp = 1 (thanks to Klaus
+      Schliep for the fix)
+
+    o dist.dna(model = "logdet") used to divide distances by 4. The
+      documentation has been clarified on the formulae used.
+
+
+OTHER CHANGES
+
+    o rTraitCont(model = "OU") has an option 'linear = TRUE' to possibly
+      change the parameterisation (see ?rTraitCont for details).
+
+    o pic() now returns a vector with the node labels of the tree (if
+      available) as names.
+
+    o write.tree() and read.tree() have been substantially thanks to
+      contributions by Klaus Schliep.
+
+
+
 		CHANGES IN APE VERSION 2.5-3
 
 

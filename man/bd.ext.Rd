@@ -43,7 +43,8 @@ bd.ext(phy, S)
 \seealso{
   \code{\link{birthdeath}}, \code{\link{branching.times}},
   \code{\link{diversi.gof}}, \code{\link{diversi.time}},
-  \code{\link{ltt.plot}}, \code{\link{yule}}, \code{\link{yule.cov}}
+  \code{\link{ltt.plot}}, \code{\link{yule}}, \code{\link{yule.cov}},
+  \code{\link{bd.time}}
 }
 \examples{
 ### An example from Paradis (2003) using the avian orders:

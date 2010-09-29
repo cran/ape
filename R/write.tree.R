@@ -1,8 +1,8 @@
-## write.tree.R (2009-06-16)
+## write.tree.R (2010-09-27)
 
 ##   Write Tree File in Parenthetic Format
 
-## Copyright 2002-2009 Emmanuel Paradis and Daniel Lawson
+## Copyright 2002-2010 Emmanuel Paradis, Daniel Lawson, and Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -55,21 +55,23 @@ write.tree <-
     phy$tip.label <- checkLabel(phy$tip.label)
     if (nodelab) phy$node.label <- checkLabel(phy$node.label)
     f.d <- paste("%.", digits, "g", sep = "")
-    cp <- function(s) STRING <<- paste(STRING, s, sep = "")
+    cp <- function(x){
+        STRING[k] <<- x
+        k <<- k + 1
+    }
     add.internal <- function(i) {
         cp("(")
-        br <- which(phy$edge[, 1] == i)
-        for (j in br) {
-            desc <- phy$edge[j, 2]
-            if (desc > n) add.internal(desc)
-            else add.terminal(j)
-            if (j != br[length(br)])  cp(",")
+        desc <- kids[[i]]
+        for (j in desc) {
+            if (j > n) add.internal(j)
+            else add.terminal(ind[j])
+            if (j != desc[length(desc)]) cp(",")
         }
         cp(")")
-        if (nodelab) cp(phy$node.label[i - n])
+        if (nodelab) cp(phy$node.label[ind[i] - n])
         if (brl) {
             cp(":")
-            cp(sprintf(f.d, phy$edge.length[which(phy$edge[, 2] == i)]))
+            cp(sprintf(f.d, phy$edge.length[ind[i]]))
         }
     }
     add.terminal <- function(i) {
@@ -79,16 +81,36 @@ write.tree <-
             cp(sprintf(f.d, phy$edge.length[i]))
         }
     }
+
     n <- length(phy$tip.label)
-    STRING <-
-        if (output.tree.names) paste(tree.names, "(", sep = "") else "("
-    br <- which(phy$edge[, 1] == n + 1)
-    for (j in br) {
-        desc <- phy$edge[j, 2]
-        if (desc > n) add.internal(desc)
-        else add.terminal(j)
-        if (j != br[length(br)]) cp(",")
+
+    ## borrowed from phangorn:
+    parent <- phy$edge[, 1]
+    children <- phy$edge[, 2]
+    kids <- vector("list", n + phy$Nnode)
+    for (i in 1:length(parent))
+        kids[[parent[i]]] <- c(kids[[parent[i]]], children[i])
+
+    ind <- match(1:max(phy$edge), phy$edge[, 2])
+
+    LS <- 4*n + 5
+    if (brl) LS <- LS + 4*n
+    if (nodelab)  LS <- LS + n
+    STRING <- character(LS)
+    k <- 1
+    if (output.tree.names) cp(tree.names)
+    cp("(")
+    k <- 2
+    getRoot <- function(phy)
+        phy$edge[, 1][!match(phy$edge[, 1], phy$edge[, 2], 0)][1]
+    root <- getRoot(phy) # replaced n+1 with root - root has not be n+1
+    desc <- kids[[root]]
+    for (j in desc) {
+        if (j > n) add.internal(j)
+        else add.terminal(ind[j])
+        if (j != desc[length(desc)]) cp(",")
     }
+
     if (is.null(phy$root.edge)) {
         cp(")")
         if (nodelab) cp(phy$node.label[1])
@@ -101,7 +123,8 @@ write.tree <-
         cp(sprintf(f.d, phy$root.edge))
         cp(";")
     }
-    if (file == "") return(STRING)
-    cat(STRING, file = file, append = append, sep = "\n")
+    STRING <- paste(STRING, collapse = "")
+    if (file == "")
+        return(STRING)
+    else cat(STRING, file = file, append = append, sep = "\n")
 }
-

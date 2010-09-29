@@ -81,7 +81,7 @@ calculate the weights $w$:
 
 \begin{itemize}
 \item With phylogenetic distances among species, e.g., $w_{ij} =
-  1/d_{ij}$, where $1/d_{ij}$ are distances measured on a tree.
+  1/d_{ij}$, where $d_{ij}$ are distances measured on a tree.
 \item With taxonomic levels where $w_{ij} = 1$ if species $i$ and $j$
   belong to the same group, 0 otherwise.
 \end{itemize}

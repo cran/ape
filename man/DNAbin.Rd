@@ -6,6 +6,7 @@
 \alias{cbind.DNAbin}
 \alias{as.matrix.DNAbin}
 \alias{c.DNAbin}
+\alias{as.list.DNAbin}
 \alias{labels.DNAbin}
 \title{Manipulate DNA Sequences in Bit-Level Format}
 \description{
@@ -20,6 +21,7 @@
 \method{[}{DNAbin}(x, i, j, drop = FALSE)
 \method{as.matrix}{DNAbin}(x, \dots)
 \method{c}{DNAbin}(\dots, recursive = FALSE)
+\method{as.list}{DNAbin}(x, \dots)
 \method{labels}{DNAbin}(object, \dots)
 }
 \arguments{
@@ -70,7 +72,7 @@
 
   \code{as.matrix} may be used to convert DNA sequences (of the same
   length) stored in a list into a matrix while keeping the names and the
-  class.
+  class. \code{as.list} does the reverse operation.
 }
 \value{
   an object of class \code{"DNAbin"} in the case of \code{rbind},
@@ -91,9 +93,8 @@
 \examples{
 data(woodmouse)
 woodmouse
-summary(woodmouse)
-summary(woodmouse, 15, 6)
-summary(woodmouse[1:5, 1:300], 15, 6)
+print(woodmouse, 15, 6)
+print(woodmouse[1:5, 1:300], 15, 6)
 ### Just to show how distances could be influenced by sampling:
 dist.dna(woodmouse[1:2, ])
 dist.dna(woodmouse[1:3, ])

@@ -1,14 +1,15 @@
-## read.GenBank.R (2007-06-27)
+## read.GenBank.R (2010-07-22)
 
 ##   Read DNA Sequences from GenBank via Internet
 
-## Copyright 2002-2007 Emmanuel Paradis
+## Copyright 2002-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-read.GenBank <- function(access.nb, seq.names = access.nb,
-                         species.names = TRUE, as.character = FALSE)
+read.GenBank <-
+    function(access.nb, seq.names = access.nb, species.names = TRUE,
+             gene.names = FALSE, as.character = FALSE)
 {
     N <- length(access.nb)
     ## If there are more than 400 sequences, we need to break down the
@@ -26,8 +27,7 @@ read.GenBank <- function(access.nb, seq.names = access.nb,
     }
     FI <- grep("^ {0,}ORIGIN", X) + 1
     LA <- which(X == "//") - 1
-    obj <- list()
-    length(obj) <- N
+    obj <- vector("list", N)
     for (i in 1:N) {
         ## remove all spaces and digits
         tmp <- gsub("[[:digit:] ]", "", X[FI[i]:LA[i]])
@@ -39,8 +39,15 @@ read.GenBank <- function(access.nb, seq.names = access.nb,
         tmp <- character(N)
         sp <- grep("ORGANISM", X)
         for (i in 1:N)
-          tmp[i] <- unlist(strsplit(X[sp[i]], " +ORGANISM +"))[2]
+            tmp[i] <- unlist(strsplit(X[sp[i]], " +ORGANISM +"))[2]
         attr(obj, "species") <- gsub(" ", "_", tmp)
+    }
+    if (gene.names) {
+        tmp <- character(N)
+        sp <- grep(" +gene +<", X)
+        for (i in 1:N)
+            tmp[i] <- unlist(strsplit(X[sp[i + 1L]], " +/gene=\""))[2]
+        attr(obj, "gene") <- gsub("\"$", "", tmp)
     }
     obj
 }

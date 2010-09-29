@@ -44,12 +44,13 @@ yule.time(phy, birth, BIRTH = NULL, root.time = 0, opti = "nlm", start = 0.01)
   the log-likelihood function.
 }
 \value{
-  An object of class "yule" (see \code{\link{yule}}).
+  An object of class \code{"yule"} (see \code{\link{yule}}).
 }
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{branching.times}}, \code{\link{ltt.plot}},
-  \code{\link{birthdeath}}, \code{\link{yule}}, \code{\link{yule.cov}}
+  \code{\link{birthdeath}}, \code{\link{yule}}, \code{\link{yule.cov}},
+  \code{\link{bd.time}}
 }
 \examples{
 ### define two models...

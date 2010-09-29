@@ -27,6 +27,8 @@
 \alias{getMRCA}
 \alias{plotCophylo2}
 \alias{plotPhyloCoor}
+\alias{integrateTrapeze}
+\alias{CDF.birth.death}
 \title{Internal Ape Functions}
 \description{
   Internal \pkg{ape} functions.

@@ -3,8 +3,15 @@
 \alias{print.compar.gee}
 \alias{drop1.compar.gee}
 \title{Comparative Analysis with GEEs}
+\description{
+  \code{compar.gee} performs the comparative analysis using generalized
+  estimating equations as described by Paradis and Claude (2002).
+
+  \code{drop1} tests single effects of a fitted model output from
+  \code{compar.gee}.
+}
 \usage{
-compar.gee(formula, data = NULL, family = "gaussian", phy,
+compar.gee(formula, data = NULL, family = "gaussian", phy, corStruct,
           scale.fix = FALSE, scale.value = 1)
 \method{drop1}{compar.gee}(object, scope, quiet = FALSE, ...)
 }
@@ -13,11 +20,13 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
   \item{data}{the name of the data frame where the variables in
     \code{formula} are to be found; by default, the variables are looked
     for in the global environment.}
-  \item{family}{a character string specifying the distribution assumed
-    for the response; by default a Gaussian distribution (with link
-    identity) is assumed (see \code{?family} for details on specifying
-    the distribution, and on changing the link function).}
-  \item{phy}{an object of class \code{"phylo"}.}
+  \item{family}{a function specifying the distribution assumed for the
+    response; by default a Gaussian distribution (with link identity) is
+    assumed (see \code{?family} for details on specifying the
+    distribution, and on changing the link function).}
+  \item{phy}{an object of class \code{"phylo"} (ignored if
+    \code{corStruct} is used).}
+  \item{corStruct}{a (phylogenetic) correlation structure.}
   \item{scale.fix}{logical, indicates whether the scale parameter should
     be fixed (TRUE) or estimated (FALSE, the default).}
   \item{scale.value}{if \code{scale.fix = TRUE}, gives the value for the
@@ -28,13 +37,6 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
   \item{quiet}{a logical specifying whether to display a warning message
     about eventual ``marginality principle violation''.}
   \item{\dots}{further arguments to be passed to \code{drop1}.}
-}
-\description{
-  \code{compar.gee} performs the comparative analysis using generalized
-  estimating equations as described by Paradis and Claude (2002).
-
-  \code{drop1} tests single effects of a fitted model output from
-  \code{compar.gee}.
 }
 \details{
   If a data frame is specified for the argument \code{data}, then its
@@ -48,6 +50,14 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
   If \code{data = NULL}, then it is assumed that the variables are in
   the same order than the tip labels of \code{phy}.
 }
+\note{
+  The calculation of the phylogenetic degrees of freedom is likely to be
+  approximative for non-Brownian correlation structures (this will be
+  refined soon).
+
+  The calculation of the quasilikelihood information criterion (QIC)
+  needs to be tested.
+}
 \value{
   \code{compar.gee} returns an object of class \code{"compar.gee"} with
   the following components:
@@ -55,6 +65,8 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
   \item{effect.assign}{a vector of integers assigning the coefficients
     to the effects (used by \code{drop1}).}
   \item{nobs}{the number of observations.}
+  \item{QIC}{the quasilikelihood information criterion as defined by Pan
+    (2001).}
   \item{coefficients}{the estimated coefficients (or regression parameters).}
   \item{residuals}{the regression residuals.}
   \item{family}{a character string, the distribution assumed for the response.}
@@ -67,6 +79,9 @@ compar.gee(formula, data = NULL, family = "gaussian", phy,
   \code{drop1} returns an object of class \code{"\link[stats]{anova}"}.
 }
 \references{
+  Pan, W. (2001) Akaike's information criterion in generalized
+  estimating equations. \emph{Biometrics}, \bold{57}, 120--125.
+
   Paradis, E. and Claude J. (2002) Analysis of comparative data using
   generalized estimating equations. \emph{Journal of theoretical
     Biology}, \bold{218}, 175--185.

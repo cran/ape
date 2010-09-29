@@ -1,8 +1,8 @@
-## as.matching.R (2007-12-23)
+## as.matching.R (2010-09-29)
 
 ##    Conversion Between Phylo and Matching Objects
 
-## Copyright 2005-2007 Emmanuel Paradis
+## Copyright 2005-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -60,6 +60,7 @@ as.phylo.matching <- function(x, ...)
     obj <- list(edge = edge)
     if (!is.null(x$tip.label)) obj$tip.label <- x$tip.label
     else obj$tip.label <- as.character(1:nb.tip)
+    obj$Nnode <- nb.node
     class(obj) <- "phylo"
     read.tree(text = write.tree(obj))
 }

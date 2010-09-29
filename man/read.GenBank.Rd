@@ -2,8 +2,8 @@
 \alias{read.GenBank}
 \title{Read DNA Sequences from GenBank via Internet}
 \usage{
-read.GenBank(access.nb, seq.names = access.nb,
-             species.names = TRUE, as.character = FALSE)
+read.GenBank(access.nb, seq.names = access.nb, species.names = TRUE,
+             gene.names = FALSE, as.character = FALSE)
 }
 \arguments{
   \item{access.nb}{a vector of mode character giving the accession numbers.}
@@ -11,6 +11,10 @@ read.GenBank(access.nb, seq.names = access.nb,
     accession numbers are used.}
   \item{species.names}{a logical indicating whether to attribute the
     species names to the returned object.}
+  \item{gene.names}{a logical indicating whether to attribute the
+    gene names to the returned object. It is \code{FALSE} by default
+    because this will work correctly only when reading sequences with a
+    single gene.}
   \item{as.character}{a logical controlling whether to return the
     sequences as an object of class \code{"DNAbin"} (the default).}
 }
@@ -29,6 +33,11 @@ read.GenBank(access.nb, seq.names = access.nb,
   If \code{species.names = TRUE}, the returned list has an attribute
   \code{"species"} containing the names of the species taken from the
   field ``ORGANISM'' in GenBank.
+
+  If \code{gene.names = TRUE}, the returned list has an attribute
+  \code{"gene"} containing the names of the gene. This will not work
+  correctly if reading a sequence with multiple genes (e.g., a
+  mitochondrial genome).
 }
 \seealso{
   \code{\link{read.dna}}, \code{\link{write.dna}},

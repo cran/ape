@@ -1,4 +1,4 @@
-## nodelabels.R (2010-03-12)
+## nodelabels.R (2010-07-17)
 
 ##   Labelling Trees
 
@@ -46,7 +46,7 @@ floating.pie.asp <- function(xpos, ypos, x, edges = 200, radius = 1,
 }
 
 BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
-                       pie, piecol, col, bg, ...)
+                       pie, piecol, col, bg, horiz, width, height, ...)
 {
     if (missing(text)) text <- NULL
     if (length(adj) == 1) adj <- c(adj, 0.5)
@@ -84,26 +84,50 @@ BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
     }
     if (!is.null(thermo)) {
         parusr <- par("usr")
-        width <- CEX * (parusr[2] - parusr[1]) / 40
-        height <- CEX * (parusr[4] - parusr[3]) / 15
+
+        if (is.null(width)) {
+            width <- CEX * (parusr[2] - parusr[1])
+            width <- if (horiz) width/15 else width/40
+        }
+
+        if (is.null(height)) {
+            height <- CEX * (parusr[4] - parusr[3])
+            height <- if (horiz) height/40 else height/15
+        }
+
         if (is.vector(thermo)) thermo <- cbind(thermo, 1 - thermo)
-        thermo <- height * thermo
+        thermo <- if (horiz) width * thermo else height * thermo
+        if (is.null(piecol)) piecol <- rainbow(ncol(thermo))
+
         xl <- XX - width/2 + adj[1] - 0.5 # added 'adj' from Janet Young (2009-09-30)
         xr <- xl + width
         yb <- YY - height/2 + adj[2] - 0.5
-        if (is.null(piecol)) piecol <- rainbow(ncol(thermo))
-        ## draw the first rectangle:
-        rect(xl, yb, xr, yb + thermo[, 1], border = NA, col = piecol[1])
-        for (i in 2:ncol(thermo))
-            rect(xl, yb + rowSums(thermo[, 1:(i - 1), drop = FALSE]),
-                 xr, yb + rowSums(thermo[, 1:i]),
-                 border = NA, col = piecol[i])
+        yt <- yb + height
+
+        if (horiz) {
+            ## draw the first rectangle:
+            rect(xl, yb, xl + thermo[, 1], yt, border = NA, col = piecol[1])
+            for (i in 2:ncol(thermo))
+                rect(xl + rowSums(thermo[, 1:(i - 1), drop = FALSE]), yb,
+                     xl + rowSums(thermo[, 1:i]), yt, border = NA, col = piecol[i])
+        } else {
+            ## draw the first rectangle:
+            rect(xl, yb, xr, yb + thermo[, 1], border = NA, col = piecol[1])
+            for (i in 2:ncol(thermo))
+                rect(xl, yb + rowSums(thermo[, 1:(i - 1), drop = FALSE]),
+                     xr, yb + rowSums(thermo[, 1:i]),
+                     border = NA, col = piecol[i])
+        }
+
         ## check for NA's before drawing the borders
         s <- apply(thermo, 1, function(xx) any(is.na(xx)))
         xl[s] <-  xr[s] <- NA
-        rect(xl, yb, xr, yb + height, border = "black")
-        segments(xl, YY, xl - width/5, YY)
-        segments(xr, YY, xr + width/5, YY)
+        rect(xl, yb, xr, yt, border = "black")
+
+        if (!horiz) {
+            segments(xl, YY, xl - width/5, YY)
+            segments(xr, YY, xr + width/5, YY)
+        }
     }
     ## from BB:
     if (!is.null(pie)) {
@@ -122,33 +146,39 @@ BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
                               pch = pch, col = col, bg = bg, ...)
 }
 
-nodelabels <- function(text, node, adj = c(0.5, 0.5), frame = "rect",
-                       pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
-                       col = "black", bg = "lightblue", ...)
+nodelabels <-
+    function(text, node, adj = c(0.5, 0.5), frame = "rect",
+             pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
+             col = "black", bg = "lightblue", horiz = FALSE,
+             width = NULL, height = NULL, ...)
 {
     lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
     if (missing(node)) node <- (lastPP$Ntip + 1):length(lastPP$xx)
     XX <- lastPP$xx[node]
     YY <- lastPP$yy[node]
     BOTHlabels(text, node, XX, YY, adj, frame, pch, thermo,
-               pie, piecol, col, bg, ...)
+               pie, piecol, col, bg, horiz, width, height, ...)
 }
 
-tiplabels <- function(text, tip, adj = c(0.5, 0.5), frame = "rect",
-                      pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
-                      col = "black", bg = "yellow", ...)
+tiplabels <-
+    function(text, tip, adj = c(0.5, 0.5), frame = "rect",
+             pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
+             col = "black", bg = "yellow", horiz = FALSE,
+             width = NULL, height = NULL, ...)
 {
     lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
     if (missing(tip)) tip <- 1:lastPP$Ntip
     XX <- lastPP$xx[tip]
     YY <- lastPP$yy[tip]
     BOTHlabels(text, tip, XX, YY, adj, frame, pch, thermo,
-               pie, piecol, col, bg, ...)
+               pie, piecol, col, bg, horiz, width, height, ...)
 }
 
-edgelabels <- function(text, edge, adj = c(0.5, 0.5), frame = "rect",
-                      pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
-                      col = "black", bg = "lightgreen", ...)
+edgelabels <-
+    function(text, edge, adj = c(0.5, 0.5), frame = "rect",
+             pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
+             col = "black", bg = "lightgreen", horiz = FALSE,
+             width = NULL, height = NULL, ...)
 {
     lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
     if (missing(edge)) {
@@ -171,7 +201,7 @@ edgelabels <- function(text, edge, adj = c(0.5, 0.5), frame = "rect",
         YY <- (lastPP$yy[subedge[, 1]] + lastPP$yy[subedge[, 2]]) / 2
     }
     BOTHlabels(text, sel, XX, YY, adj, frame, pch, thermo,
-               pie, piecol, col, bg, ...)
+               pie, piecol, col, bg, horiz, width, height, ...)
 }
 
 edges <- function(nodes0, nodes1, arrows = 0, type = "classical", ...)

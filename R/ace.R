@@ -12,7 +12,7 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
                 scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1)
 {
     if (!inherits(phy, "phylo"))
-      stop('object "phy" is not of class "phylo".')
+        stop('object "phy" is not of class "phylo".')
     if (is.null(phy$edge.length))
         stop("tree has no branch lengths")
     type <- match.arg(type, c("continuous", "discrete"))
@@ -25,8 +25,7 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
     if (!is.null(names(x))) {
         if(all(names(x) %in% phy$tip.label))
           x <- x[phy$tip.label]
-        else warning('the names of argument "x" and the tip labels of the tree
-did not match: the former were ignored in the analysis.')
+        else warning("the names of 'x' and the tip labels of the tree do not match: the former were ignored in the analysis.")
     }
     obj <- list()
     if (kappa != 1) phy$edge.length <- phy$edge.length^kappa
@@ -164,7 +163,7 @@ as the number of categories in `x'")
             Q[] <- c(p, 0)[rate]
             diag(Q) <- -rowSums(Q)
             for (i  in seq(from = 1, by = 2, length.out = nb.node)) {
-                j <- i + 1
+                j <- i + 1L
                 anc <- phy$edge[i, 1]
                 des1 <- phy$edge[i, 2]
                 des2 <- phy$edge[j, 2]
@@ -233,11 +232,12 @@ anova.ace <- function(object, ...)
 
 print.ace <- function(x, digits = 4, ...)
 {
-    cat("\n    Ancestral Character Reconstruction\n\n")
+    cat("\n    Ancestral Character Estimation\n\n")
     cat("Call: ")
     print(x$call)
     cat("\n")
-    cat("    Log-likelihood:", x$loglik, "\n\n")
+    if (!is.null(x$loglik))
+        cat("    Log-likelihood:", x$loglik, "\n\n")
     ratemat <- x$index.matrix
     if (is.null(ratemat)) { # to be improved
         class(x) <- NULL

@@ -1,4 +1,4 @@
-## DNA.R (2010-05-17)
+## DNA.R (2010-09-01)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -89,6 +89,20 @@ as.matrix.DNAbin <- function(x, ...)
         class(x) <- "DNAbin"
     }
     x
+}
+
+as.list.DNAbin <- function(x, ...)
+{
+    if (is.list(x)) return(x)
+    if (is.vector(x)) obj <- list(x)
+    else { # matrix
+        n <- nrow(x)
+        obj <- vector("list", n)
+        for (i in 1:n) obj[[i]] <- x[i, ]
+        names(obj) <- rownames(x)
+    }
+    class(obj) <- "DNAbin"
+    obj
 }
 
 rbind.DNAbin <- function(...)
@@ -277,6 +291,37 @@ base.freq <- function(x, freq = FALSE)
     BF
 }
 
+Ftab <- function(x, y = NULL)
+{
+    if (is.null(y)) {
+        if (is.list(x)) {
+            y <- x[[2]]
+            x <- x[[1]]
+            if (length(x) != length(y))
+                stop("'x' and 'y' not of same lenght")
+        } else { # 'x' is a matrix
+            y <- x[2, , drop = TRUE]
+            x <- x[1, , drop = TRUE]
+        }
+    } else {
+        x <- as.vector(x)
+        y <- as.vector(y)
+        if (length(x) != length(y))
+            stop("'x' and 'y' not of same lenght")
+    }
+    out <- matrix(0, 4, 4)
+    k <- c(136, 40, 72, 24)
+    for (i in 1:4) {
+        a <- x == k[i]
+        for (j in 1:4) {
+            b <- y == k[j]
+            out[i, j] <- sum(a & b)
+        }
+    }
+    dimnames(out)[1:2] <- list(c("a", "c", "g", "t"))
+    out
+}
+
 GC.content <- function(x) sum(base.freq(x)[2:3])
 
 seg.sites <- function(x)
@@ -299,7 +344,7 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
                      as.matrix = FALSE)
 {
     MODELS <- c("RAW", "JC69", "K80", "F81", "K81", "F84", "T92", "TN93",
-                "GG95", "LOGDET", "BH87", "PARALIN", "N")
+                "GG95", "LOGDET", "BH87", "PARALIN", "N", "TS", "TV")
     imod <- pmatch(toupper(model), MODELS)
     if (is.na(imod))
         stop(paste("'model' must be one of:",
@@ -308,7 +353,7 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
         warning("computing variance temporarily not available for model BH87.")
         variance <- FALSE
     }
-    if (gamma && imod %in% c(1, 5:7, 9:12)) {
+    if (gamma && imod %in% c(1, 5:7, 9:15)) {
         warning(paste("gamma-correction not available for model", model))
         gamma <- FALSE
     }
@@ -317,7 +362,9 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     n <- dim(x)
     s <- n[2]
     n <- n[1]
-    BF <- if (is.null(base.freq)) base.freq(x) else base.freq
+    if (imod %in% c(4, 6:8)) {
+        BF <- if (is.null(base.freq)) base.freq(x) else base.freq
+    } else BF <- 0
     if (!pairwise.deletion) {
         keep <- .C("GlobalDeletionDNA", x, n, s,
                    rep(1L, s), PACKAGE = "ape")[[4]]

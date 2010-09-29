@@ -1,8 +1,8 @@
-## pic.R (2009-05-10)
+## pic.R (2010-08-18)
 
 ##   Phylogenetically Independent Contrasts
 
-## Copyright 2002-2009 Emmanuel Paradis
+## Copyright 2002-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -64,9 +64,12 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
     ##
     ##}
     contr <- ans[[7]]
+    lbls <-
+        if (is.null(phy$node.label)) as.character(1:nb.node + nb.tip)
+        else phy$node.label
     if (var.contrasts) {
         contr <- cbind(contr, ans[[8]])
-        dimnames(contr) <- list(1:nb.node + nb.tip, c("contrasts", "variance"))
-    } else names(contr) <- 1:nb.node + nb.tip
+        dimnames(contr) <- list(lbls, c("contrasts", "variance"))
+    } else names(contr) <- lbls
     contr
 }

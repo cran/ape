@@ -4,41 +4,44 @@
 \alias{corMatrix.corBrownian}
 \title{Brownian Correlation Structure}
 \usage{
-	corBrownian(value=1, phy, form=~1)
-	\method{coef}{corBrownian}(object, unconstrained = TRUE, ...)
-	\method{corMatrix}{corBrownian}(object,
-			covariate = getCovariate(object), corr = TRUE, ...)
+corBrownian(value=1, phy, form=~1)
+\method{coef}{corBrownian}(object, unconstrained = TRUE, ...)
+\method{corMatrix}{corBrownian}(object, covariate = getCovariate(object), corr = TRUE, ...)
 }
 \arguments{
-	\item{value}{The \eqn{\gamma}{gamma} parameter (default to 1)}
-	\item{phy}{An object of class \code{phylo} representing the phylogeny
-		(with branch lengths) to consider}
-	\item{object}{An (initialized) object of class \code{corBrownian}}
-	\item{corr}{a logical value. If 'TRUE' the function returns the correlation matrix, otherwise it returns
-		the variance/covariance matrix.}
-	\item{form}{ignored for now.}
-	\item{covariate}{ignored for now.}
-	\item{unconstrained}{a logical value. If 'TRUE' the coefficients are returned
+  \item{value}{The \eqn{\gamma}{gamma} parameter (default to 1)}
+  \item{phy}{An object of class \code{phylo} representing the phylogeny
+    (with branch lengths) to consider}
+  \item{object}{An (initialized) object of class \code{corBrownian}}
+  \item{corr}{a logical value. If 'TRUE' the function returns the
+    correlation matrix, otherwise it returns the variance/covariance matrix.}
+  \item{form}{ignored for now.}
+  \item{covariate}{ignored for now.}
+  \item{unconstrained}{a logical value. If 'TRUE' the coefficients are returned
     in unconstrained form (the same used in the optimization
     algorithm). If 'FALSE' the coefficients are returned in
     "natural", possibly constrained, form. Defaults to 'TRUE'}
-	\item{\dots}{some methods for these generics require additional arguments.
-		None are used in these methods.}
+  \item{\dots}{some methods for these generics require additional arguments.
+    None are used in these methods.}
 }
 \description{
-	Expected covariance under a Brownian model (Felsenstein 1985, Martins and Hansen 1997): 
-		\deqn{V_{ij} = \gamma \times t_a}{%
-					Vij = gamma . ta}
-	where \eqn{t_a}{ta} is the distance on the phylogeny between the root and the most recent common ancestor
-	of taxa \eqn{i}{i} and \eqn{j}{j} and \eqn{\gamma}{gamma} is a constant.
+  Expected covariance under a Brownian model (Felsenstein 1985,	Martins
+  and Hansen 1997)
+
+  \deqn{V_{ij} = \gamma \times t_a}{Vij = gamma . ta}
+
+  where \eqn{t_a}{ta} is the distance on the phylogeny between the root
+  and the most recent common ancestor of taxa \eqn{i}{i} and \eqn{j}{j}
+  and \eqn{\gamma}{gamma} is a constant.
 }
 \value{
-	An object of class \code{corBrownian} or coefficient from an object of this class (actually sends \code{numeric(0)}!)
-	or the correlation matrix of an initialized object of this class.
+  An object of class \code{corBrownian}, or the coefficient from an
+  object of this class (actually sends \code{numeric(0)}), or the
+  correlation matrix of an initialized object of this class.
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
 \seealso{
-  \code{\link{corClasses}}.
+  \code{\link{corClasses}}
 }
 \references{
   Felsenstein, J. (1985) Phylogenies and the comparative method.

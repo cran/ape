@@ -1,31 +1,51 @@
-## compar.gee.R (2008-02-21)
+## compar.gee.R (2010-07-20)
 
 ##   Comparative Analysis with GEEs
 
-## Copyright 2002-2008 Emmanuel Paradis
+## Copyright 2002-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-compar.gee <- function(formula, data = NULL, family = "gaussian", phy,
-                       scale.fix = FALSE, scale.value = 1)
+compar.gee <-
+    function(formula, data = NULL, family = gaussian, phy,
+             corStruct, scale.fix = FALSE, scale.value = 1)
 {
     require(gee, quietly = TRUE)
-    if (is.null(data)) data <- parent.frame() else {
-        if(!any(is.na(match(rownames(data), phy$tip.label))))
-          data <- data[phy$tip.label, ]
-        else warning("the rownames of the data.frame and the tip labels of the tree
-do not match: the former were ignored in the analysis.")
+
+    if (!missing(corStruct)) {
+        if (!missing(phy))
+            warning("the phylogeny was ignored because you gave a 'corStruct' object")
+        R <- vcv(corStruct, corr = TRUE)
+    } else {
+        R <- vcv(phy, corr = TRUE)
     }
+
+    if (is.null(data)) data <- parent.frame()
+    else {
+        nmsR <- rownames(R)
+        if (!identical(rownames(data), nmsR)) {
+            if (!any(is.na(match(rownames(data), nmsR))))
+                data <- data[nmsR, ]
+            else {
+                msg <- if (missing(corStruct))
+                    "the tip labels of the tree" else "those of the correlation structure"
+                msg <- paste("the rownames of the data.frame and", msg,
+                             "do not match: the former were ignored in the analysis")
+                warning(msg)
+            }
+        }
+    }
+
     effect.assign <- attr(model.matrix(formula, data = data), "assign")
+
     for (i in all.vars(formula)) {
         if (any(is.na(eval(parse(text = i), envir = data))))
-          stop("the present method cannot (yet) be used directly with missing data: you may consider removing the species with missing data from your tree with the function 'drop.tip'.")
+          stop("the present method cannot be used with missing data: you may consider removing the species with missing data from your tree with the function 'drop.tip'.")
     }
-    if (is.null(phy$edge.length)) stop("the tree has no branch lengths.")
-    R <- vcv.phylo(phy, cor = TRUE)
+
     id <- rep(1, dim(R)[1])
-    geemod <- do.call("gee", list(formula, id, data = data, family = family, R = R,
+    geemod <<- geemod <- do.call("gee", list(formula, id, data = data, family = family, R = R,
                                   corstr = "fixed", scale.fix = scale.fix,
                                   scale.value = scale.value))
     W <- geemod$naive.variance
@@ -34,10 +54,30 @@ do not match: the former were ignored in the analysis.")
     if (fname == "binomial")
         W <- summary(glm(formula, family = quasibinomial, data = data))$cov.scaled
     N <- geemod$nobs
-    dfP <- sum(phy$edge.length)*N / sum(diag(vcv.phylo(phy)))
-    obj <- list(call = geemod$call,
+    ## <FIXME>
+    ## maybe need to refine below in case of non-Brownian corStruct
+    if (!missing(corStruct)) phy <- attr(corStruct, "tree")
+    dfP <- sum(phy$edge.length)*N / sum(diag(vcv(phy))) # need the variances
+    ## </FIXME>
+
+    ## compute QIC:
+    Y <- geemod$y
+    MU <- geemod$fitted.values
+    Qlik <- switch(fname,
+                   "gaussian" = -sum((Y - MU)^2)/2,
+                   "binomial" = sum(Y*log(MU/(1 - MU)) + log(1 - MU)),
+                   "poisson" = sum(Y*log(MU) - MU),
+                   "Gamma" = sum(Y/MU + log(MU)),
+                   "inverse.gaussian" = sum(-Y/(2*MU^2) + 1/MU))
+    Ai <- do.call("gee", list(formula, id, data = data, family = family,
+                              corstr = "independence", scale.fix = scale.fix,
+                              scale.value = scale.value))$naive.variance
+    QIC <- -2*Qlik + 2*sum(diag(solve(Ai) %*% W))
+
+    obj <- list(call = match.call(),
                 effect.assign = effect.assign,
                 nobs = N,
+                QIC = QIC,
                 coefficients = geemod$coefficients,
                 residuals = geemod$residuals,
                 family = geemod$family$family,
@@ -66,13 +106,13 @@ print.compar.gee <- function(x, ...)
     } else coef[, 4] <- 2 * (1 -  pt(abs(coef[, 3]), df))
     residu <- quantile(as.vector(x$residuals))
     names(residu) <- c("Min", "1Q", "Median", "3Q", "Max")
-    cat("\nCall:\n")
-    cat("  formula: ")
-    print(x$call$formula)
-    cat("\nNumber of observations: ", x$nobs, "\n")
-    cat("\nModel:\n")
-    cat(" Link:                     ", x$link, "\n")
+    cat("Call: ")
+    print(x$call)
+    cat("Number of observations: ", x$nobs, "\n")
+    cat("Model:\n")
+    cat("                      Link:", x$link, "\n")
     cat(" Variance to Mean Relation:", x$family, "\n")
+    cat("\nQIC:", x$QIC, "\n")
     cat("\nSummary of Residuals:\n")
     print(residu)
     if (any(nas))
@@ -107,7 +147,7 @@ drop1.compar.gee <- function(object, scope, quiet = FALSE, ...)
       warning("there is at least one interaction term in your model:
 you should be careful when interpreting the significance of the main effects.")
     class(ans) <- "anova"
-    attr(ans, "heading") <- c("Single term deletions\n\nModel:\n",
-                              as.character(as.expression(fm)))
+    attr(ans, "heading") <- paste("Single term deletions\n\n  Model:",
+                                  as.character(as.expression(fm)), "\n")
     ans
 }

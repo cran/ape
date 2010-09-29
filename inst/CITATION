@@ -1,7 +1,7 @@
 citHeader("To cite ape in a publication use:")
 
 citEntry(entry="Article",
-	title = "APE: analyses of phylogenetics and evolution in {R} language",
+	title = "A{PE}: analyses of phylogenetics and evolution in {R} language",
         author = personList(as.person("E. Paradis"),as.person("J. Claude"), as.person("K. Strimmer")),
 	journal = "Bioinformatics",
   	year = "2004",

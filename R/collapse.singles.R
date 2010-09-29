@@ -1,4 +1,4 @@
-## collapse.singles.R (2008-06-19)
+## collapse.singles.R (2010-07-23)
 
 ##    Collapse "Single" Nodes
 
@@ -32,7 +32,7 @@ collapse.singles <- function(tree)
             xmat <- xmat[xmat[, 1] != i, ] # drop
             ## changed by EP for the new coding of "phylo" (2006-10-05):
             ## xmat[xmat < i] <- xmat[xmat < i] + 1 ## adjust indices
-            xmat[xmat > i] <- xmat[xmat > i] - 1 ## adjust indices
+            xmat[xmat > i] <- xmat[xmat > i] - 1L ## adjust indices # changed '1' by '1L' (2010-07-23)
             ## END
             elen[prev.node] <- elen[prev.node] + elen[next.node]
             ## added by Elizabeth Purdom (2008-06-19):

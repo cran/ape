@@ -55,7 +55,7 @@ tr$tip.label <- mixedFontLabel(genus, species, geo, italic = 1:2,
   parenthesis = 3)
 layout(matrix(c(1, 2), 2))
 plot(tr)
-tr$tip.label <- mixedFontLabel(genus, species, geo, sep = c(" ", " - "),
+tr$tip.label <- mixedFontLabel(genus, species, geo, sep = c(" ", " | "),
   italic = 1:2, bold = 3)
 plot(tr)
 layout(1)
