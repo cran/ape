@@ -60,7 +60,7 @@ names(x) <- letters[6:12]
 (o <- MPR(x, tr, "f"))
 plot(tr)
 nodelabels(paste("[", o[, 1], ",", o[, 2], "]", sep = ""))
-tiplabels(rev(x), adj = -2)
+tiplabels(x[tr$tip.label], adj = -2)
 ## some random data:
 x <- rpois(30, 1)
 tr <- rtree(30, rooted = FALSE)

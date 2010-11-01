@@ -468,7 +468,7 @@ bd.time <- function(phy, birth, death, BIRTH = NULL, DEATH = NULL,
         PAR <- matrix(NA, boot, np)
         i <- 1L
         while (i <= boot) {
-            cat("i =", i, "\n")
+            cat("\rDoing bootstrap no.", i, "\n")
             x <- sort(sample(x, replace = TRUE))
             o <- try(nlminb(ip, foo, control = list(trace = 0, eval.max = 500),
                             upper = upper, lower = lower))

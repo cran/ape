@@ -68,7 +68,7 @@ write.tree <-
             if (j != desc[length(desc)]) cp(",")
         }
         cp(")")
-        if (nodelab) cp(phy$node.label[ind[i] - n])
+        if (nodelab && ind[i] > n) cp(phy$node.label[ind[i] - n])
         if (brl) {
             cp(":")
             cp(sprintf(f.d, phy$edge.length[ind[i]]))

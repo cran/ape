@@ -1,3 +1,24 @@
+		CHANGES IN APE VERSION 2.6-1
+
+
+NEW FEATURES
+
+    o The new speciesTree calculates the species tree from a set of gene
+      trees. Several methods are available including maximum tree and
+      shallowest divergence tree.
+
+
+BUG FIXES
+
+    o A bug introduced in write.tree() with ape 2.6 has been fixed.
+
+    o as.list.DNAbin() did not work correctly with vectors.
+
+    o as.hclust.phylo() failed with trees with node labels (thanks to
+      Filipe Vieira for the fix).
+
+
+
 		CHANGES IN APE VERSION 2.6
 
 
@@ -57,8 +78,8 @@ OTHER CHANGES
     o pic() now returns a vector with the node labels of the tree (if
       available) as names.
 
-    o write.tree() and read.tree() have been substantially thanks to
-      contributions by Klaus Schliep.
+    o write.tree() and read.tree() have been substantially improved thanks
+      to contributions by Klaus Schliep.
 
 
 

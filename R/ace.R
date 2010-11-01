@@ -253,7 +253,7 @@ print.ace <- function(x, digits = 4, ...)
         cat("Parameter estimates:\n")
         names(estim) <- c("rate index", "estimate", "std-err")
         print(estim, row.names = FALSE)
-        cat("\nScaled likelihoods at the root (type 'x$lik.anc' to get them for all nodes):\n")
+        cat("\nScaled likelihoods at the root (type '...$lik.anc' to get them for all nodes):\n")
         print(x$lik.anc[1, ])
     }
 }

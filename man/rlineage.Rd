@@ -49,8 +49,8 @@ drop.fossil(phy, tol = 0)
   process. \emph{Annals of Mathematical Statistics}, \bold{19}, 1--15.
 
   Paradis, E. (2010) Time-dependent speciation and extinction from
-  phylogenies: a least squares approach. (under revision)
-  %\emph{Evolution}, \bold{59}, 1--12.
+  phylogenies: a least squares approach. \emph{Evolution} (in press)
+  %, \bold{59}, 1--12.
 }
 \author{Emmanuel Paradis}
 \seealso{

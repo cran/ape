@@ -11,10 +11,11 @@ dist.dna(x, model = "K80", variance = FALSE,
     of class \code{"DNAbin"} (use \code{\link{as.DNAbin}} is they are
     stored as character).}
   \item{model}{a character string specifying the evlutionary model to be
-    used; must be one of \code{"raw"}, \code{"N"}, \code{"JC69"},
-    \code{"K80"} (the default), \code{"F81"}, \code{"K81"},
-    \code{"F84"}, \code{"BH87"}, \code{"T92"}, \code{"TN93"},
-    \code{"GG95"}, \code{"logdet"}, or \code{"paralin"}.}
+    used; must be one of \code{"raw"}, \code{"N"}, \code{"TS"},
+    \code{"TV"}, \code{"JC69"}, \code{"K80"} (the default),
+    \code{"F81"}, \code{"K81"}, \code{"F84"}, \code{"BH87"},
+    \code{"T92"}, \code{"TN93"}, \code{"GG95"}, \code{"logdet"}, or
+    \code{"paralin"}.}
   \item{variance}{a logical indicating whether to compute the variances
     of the distances; defaults to \code{FALSE} so the variances are not
     computed.}
@@ -43,12 +44,15 @@ dist.dna(x, model = "K80", variance = FALSE,
   References.
 
 \itemize{
-  \item{``raw'', ``N''}{This is simply the proportion or the number of
+  \item{\code{raw}, \code{N}: }{This is simply the proportion or the number of
     sites that differ between each pair of sequences. This may be useful
     to draw ``saturation plots''. The options \code{variance} and
     \code{gamma} have no effect, but \code{pairwise.deletion} can.}
 
-  \item{``JC69''}{This model was developed by Jukes and Cantor (1969). It
+  \item{\code{TS}, \code{TV}: }{These are the numbers of transitions and
+    transversions, respectively.}
+
+  \item{\code{JC69}: }{This model was developed by Jukes and Cantor (1969). It
     assumes that all substitutions (i.e. a change of a base by another
     one) have the same probability. This probability is the same for all
     sites along the DNA sequence. This last assumption can be relaxed by
@@ -57,7 +61,7 @@ dist.dna(x, model = "K80", variance = FALSE,
     default, no gamma correction is applied. Another assumption is that
     the base frequencies are balanced and thus equal to 0.25.}
 
-  \item{``K80''}{The distance derived by Kimura (1980), sometimes referred
+  \item{\code{K80}: }{The distance derived by Kimura (1980), sometimes referred
     to as ``Kimura's 2-parameters distance'', has the same underlying
     assumptions than the Jukes--Cantor distance except that two kinds of
     substitutions are considered: transitions (A <-> G, C <-> T), and
@@ -72,50 +76,50 @@ dist.dna(x, model = "K80", variance = FALSE,
     Jukes--Cantor model, the gamma parameter must be given by the
     user. By default, no gamma correction is applied.}
 
-  \item{``F81''}{Felsenstein (1981) generalized the Jukes--Cantor model
+  \item{\code{F81}: }{Felsenstein (1981) generalized the Jukes--Cantor model
     by relaxing the assumption of equal base frequencies. The formulae
     used in this function were taken from McGuire et al. (1999)}.
 
-  \item{``K81''}{Kimura (1981) generalized his model (Kimura 1980) by
+  \item{\code{K81}: }{Kimura (1981) generalized his model (Kimura 1980) by
     assuming different rates for two kinds of transversions: A <-> C and
     G <-> T on one side, and A <-> T and C <-> G on the other. This is
     what Kimura called his ``three substitution types model'' (3ST), and
     is sometimes referred to as ``Kimura's 3-parameters distance''}.
 
-  \item{``F84''}{This model generalizes K80 by relaxing the assumption
+  \item{\code{F84}: }{This model generalizes K80 by relaxing the assumption
     of equal base frequencies. It was first introduced by Felsenstein in
     1984 in Phylip, and is fully described by Felsenstein and Churchill
     (1996). The formulae used in this function were taken from McGuire
     et al. (1999)}.
 
-  \item{``BH87''}{Barry and Hartigan (1987) developed a distance based
+  \item{\code{BH87}: }{Barry and Hartigan (1987) developed a distance based
     on the observed proportions of changes among the four bases. This
     distance is not symmetric.}
 
-  \item{``T92''}{Tamura (1992) generalized the Kimura model by relaxing
+  \item{\code{T92}: }{Tamura (1992) generalized the Kimura model by relaxing
     the assumption of equal base frequencies. This is done by taking
     into account the bias in G+C content in the sequences. The
     substitution rates are assumed to be the same for all sites along
     the DNA sequence.}
 
-  \item{``TN93''}{Tamura and Nei (1993) developed a model which assumes
+  \item{\code{TN93}: }{Tamura and Nei (1993) developed a model which assumes
     distinct rates for both kinds of transition (A <-> G versus C <->
     T), and transversions. The base frequencies are not assumed to be
     equal and are estimated from the data. A gamma correction of the
     inter-site variation in substitution rates is possible.}
 
-  \item{``GG95''}{Galtier and Gouy (1995) introduced a model where the
+  \item{\code{GG95}: }{Galtier and Gouy (1995) introduced a model where the
     G+C content may change through time. Different rates are assumed for
     transitons and transversions.}
 
-  \item{``logdet''}{The Log-Det distance, developed by Lockhart et
+  \item{\code{logdet}: }{The Log-Det distance, developed by Lockhart et
     al. (1994), is related to BH87. However, this distance is
     symmetric. Formulae from Gu and Li (1996) are used.
     \code{dist.logdet} in \pkg{phangorn} uses a different
     implementation that gives substantially different distances for
     low-diverging sequences.}
 
-  \item{``paralin''}{Lake (1994) developed the paralinear distance which
+  \item{\code{paralin}: }{Lake (1994) developed the paralinear distance which
     can be viewed as another variant of the Barry--Hartigan distance.}
 }}
 \value{

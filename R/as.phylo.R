@@ -1,4 +1,4 @@
-## as.phylo.R (2010-04-06)
+## as.phylo.R (2010-09-30)
 
 ##     Conversion Among Tree Objects
 
@@ -91,7 +91,7 @@ as.hclust.phylo <- function(x, ...)
     n <- length(x$tip.label)
     bt <- rev(branching.times(x))
     N <- length(bt)
-    nm <- as.numeric(names(bt))
+    nm <- x$Nnode:1 + n # fix by Filipe G. Vieira (2010-09-30)
     merge <- matrix(NA, N, 2)
     for (i in 1:N) {
         ind <- which(x$edge[, 1] == nm[i])

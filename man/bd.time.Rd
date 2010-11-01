@@ -58,8 +58,8 @@ bd.time(phy, birth, death, BIRTH = NULL, DEATH = NULL,
 }}
 \references{
   Paradis, E. (2010) Time-dependent speciation and extinction from
-  phylogenies: a least squares approach. (under revision)
-  %\emph{Evolution}, \bold{59}, 1--12.
+  phylogenies: a least squares approach. \emph{Evolution} (in press)
+  %, \bold{59}, 1--12.
 }
 \author{Emmanuel Paradis}
 \seealso{

@@ -1,4 +1,4 @@
-## DNA.R (2010-09-01)
+## DNA.R (2010-10-19)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -94,7 +94,7 @@ as.matrix.DNAbin <- function(x, ...)
 as.list.DNAbin <- function(x, ...)
 {
     if (is.list(x)) return(x)
-    if (is.vector(x)) obj <- list(x)
+    if (is.null(dim(x))) obj <- list(x) # cause is.vector() doesn't work
     else { # matrix
         n <- nrow(x)
         obj <- vector("list", n)

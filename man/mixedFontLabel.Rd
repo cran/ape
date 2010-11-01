@@ -44,7 +44,8 @@ mixedFontLabel(..., sep = " ", italic = NULL, bold = NULL,
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{makeLabel}},  \code{\link{makeNodeLabel}}
+  \code{\link{makeLabel}}, \code{\link{makeNodeLabel}},
+  \code{taxo.fonts} in package \pkg{phyloch} for fancy alignments
 }
 \examples{
 tr <- read.tree(text = "((a,(b,c)),d);")
