@@ -1,4 +1,4 @@
-/* newick.c    2008-01-14 */
+/* newick.c    2010-11-23 */
 
 /* Copyright 2007-2008 Vincent Lefort */
 
@@ -230,7 +230,7 @@ tree *readNewickString (char *str, int numLeaves)
 	}
     }
   centerNode = decodeNewickSubtree (str, T, &uCount);
-  snprintf (centerNode->label, MAX_LABEL_LENGTH, rootLabel);
+  snprintf (centerNode->label, MAX_LABEL_LENGTH, "%s", rootLabel); /* added "%s" following Jos Kafer's suggestion (2010-11-23) */
   T->root = centerNode;
   return(T);
 }

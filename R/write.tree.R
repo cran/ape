@@ -1,4 +1,4 @@
-## write.tree.R (2010-09-27)
+## write.tree.R (2010-12-07)
 
 ##   Write Tree File in Parenthetic Format
 
@@ -28,28 +28,33 @@ checkLabel <- function(x, ...)
 }
 
 write.tree <-
-    function (phy, file = "", append = FALSE, digits = 10, tree.names = FALSE)
+    function(phy, file = "", append = FALSE, digits = 10, tree.names = FALSE)
 {
-    output.tree.names <- FALSE
+    if (!(inherits(phy, c("phylo", "multiPhylo"))))
+        stop("object \"phy\" has no trees")
+
+    if (inherits(phy, "phylo")) phy <- c(phy)
+    N <- length(phy)
+    res <- character(N)
+
     if (is.logical(tree.names)) {
-        output.tree.names <- tree.names
-        tree.names <- NULL
-    } else if (is.character(tree.names)) {
-        output.tree.names <- TRUE
-        names(phy) <- tree.names
+        if (tree.names) {
+            tree.names <-
+                if (is.null(names(phy))) character(N)
+                else names(phy)
+        } else tree.names <- character(N)
     }
-    if (output.tree.names)
-        names(phy) <- checkLabel(names(phy))
-    if (inherits(phy, "multiPhylo")) {
-        write.tree(phy[[1]], file = file, append = append,
-                   digits = digits, tree.names = names(phy)[1])
-        if (length(phy) > 1)
-            for (i in 2:length(phy)) write.tree(phy[[i]], file = file,
-                append = TRUE, digits = digits, tree.names = names(phy)[i])
-        return(invisible(NULL))
-    }
-    if (!inherits(phy, "phylo"))
-        stop("object \"phy\" is not of class \"phylo\"")
+
+    for (i in 1:N)
+        res[i] <- .write.tree2(phy[[i]], digits = digits,
+                               tree.prefix = tree.names[i])
+
+    if (file == "") return(res)
+    else cat(res, file = file, append = append, sep = "\n")
+}
+
+.write.tree2 <- function(phy, digits = 10, tree.prefix = "")
+{
     brl <- !is.null(phy$edge.length)
     nodelab <- !is.null(phy$node.label)
     phy$tip.label <- checkLabel(phy$tip.label)
@@ -68,7 +73,7 @@ write.tree <-
             if (j != desc[length(desc)]) cp(",")
         }
         cp(")")
-        if (nodelab && ind[i] > n) cp(phy$node.label[ind[i] - n])
+        if (nodelab && i > n) cp(phy$node.label[i - n]) # fixed by Naim Matasci (2010-12-07)
         if (brl) {
             cp(":")
             cp(sprintf(f.d, phy$edge.length[ind[i]]))
@@ -98,9 +103,8 @@ write.tree <-
     if (nodelab)  LS <- LS + n
     STRING <- character(LS)
     k <- 1
-    if (output.tree.names) cp(tree.names)
+    cp(tree.prefix)
     cp("(")
-    k <- 2
     getRoot <- function(phy)
         phy$edge[, 1][!match(phy$edge[, 1], phy$edge[, 2], 0)][1]
     root <- getRoot(phy) # replaced n+1 with root - root has not be n+1
@@ -123,8 +127,5 @@ write.tree <-
         cp(sprintf(f.d, phy$root.edge))
         cp(";")
     }
-    STRING <- paste(STRING, collapse = "")
-    if (file == "")
-        return(STRING)
-    else cat(STRING, file = file, append = append, sep = "\n")
+    paste(STRING, collapse = "")
 }

@@ -1,4 +1,4 @@
-## summary.phylo.R (2010-05-25)
+## summary.phylo.R (2010-11-03)
 
 ##   Print Summary of a Phylogeny and "multiPhylo" operators
 
@@ -118,7 +118,6 @@ print.multiPhylo <- function(x, details = FALSE, ...)
     if (details)
       for (i in 1:N)
         cat("tree", i, ":", length(x[[i]]$tip.label), "tips\n")
-    cat("\n")
 }
 
 "[[.multiPhylo" <- function(x, i)

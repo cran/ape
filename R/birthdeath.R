@@ -1,4 +1,4 @@
-## birthdeath.R (2010-10-17)
+## birthdeath.R (2010-11-04)
 
 ##   Estimation of Speciation and Extinction Rates
 ##             with Birth-Death Models
@@ -79,39 +79,47 @@ print.birthdeath <- function(x, ...)
     cat("      b - d: [", x$CI[2, 1], ", ", x$CI[2, 2], "]", "\n\n", sep = "")
 }
 
-bd.ext <- function(phy, S)
+bd.ext <- function(phy, S, conditional = TRUE)
 {
-    if (!inherits(phy, "phylo")) stop('object "phy" is not of class "phylo"')
+    if (!inherits(phy, "phylo"))
+        stop('object "phy" is not of class "phylo"')
     if (!is.null(names(S))) {
         if (all(names(S) %in% phy$tip.label)) S <- S[phy$tip.label]
-        else warning('the names of argument "S" and the names of the tip labels
-did not match: the former were ignored in the analysis.')
+        else warning('the names of argument "S" and the tip labels
+did not match: the former were ignored.')
     }
     N <- length(S)
     x <- branching.times(phy)
     x <- c(x[1], x)
     trm.br <- phy$edge.length[phy$edge[, 2] <= N]
-    dev <- function(a, r)
-    {
-        -2 * (lfactorial(N - 1)
-              + (N - 2) * log(r)
-              + (3 * N) * log(1 - a)
-              + 2 * r * sum(x[2:N])
-              - 2 * sum(log(exp(r * x[2:N]) - a))
-              + r * sum(trm.br)
-              + sum((S - 1) * log(exp(r * trm.br) - 1))
-              - sum((S + 1) * log(exp(r * trm.br) - a)))
+    if (conditional) {
+        dev <- function(a, r) {
+            if (a >= 1 || a < 0 || r <= 0) return(1e50)
+            ert <- exp(r * trm.br)
+            zeta <- (ert - 1)/(ert - a)
+            -2 * (lfactorial(N - 1)
+                  + (N - 2) * log(r)
+                  + N * log(1 - a)
+                  + 2 * r * sum(x[2:N])
+                  - 2 * sum(log(exp(r * x[2:N]) - a))
+                  + sum(log(1 - zeta) + (S - 1)*log(zeta)))
+        }
+    } else {
+        dev <- function(a, r) {
+            if (a >= 1 || a < 0 || r <= 0) return(1e50)
+            -2 * (lfactorial(N - 1)
+                  + (N - 2) * log(r)
+                  + (3 * N) * log(1 - a)
+                  + 2 * r * sum(x[2:N])
+                  - 2 * sum(log(exp(r * x[2:N]) - a))
+                  + r * sum(trm.br)
+                  + sum((S - 1) * log(exp(r * trm.br) - 1))
+                  - sum((S + 1) * log(exp(r * trm.br) - a)))
+        }
     }
-    out <- nlm(function(p) dev(p[1], p[2]), c(0, 0.2), hessian = TRUE)
-    if (out$estimate[1] < 0) {
-        out <- nlm(function(p) dev(0, p), 0.2, hessian = TRUE)
-        para <- c(0, out$estimate)
-        se <- c(0, sqrt(diag(solve(out$hessian))))
-    }
-    else {
-        para <- out$estimate
-        se <- sqrt(diag(solve(out$hessian)))
-    }
+    out <- nlm(function(p) dev(p[1], p[2]), c(0.1, 0.2), hessian = TRUE)
+    para <- out$estimate
+    se <- sqrt(diag(solve(out$hessian)))
     Dev <- out$minimum
     cat("\nExtended Version of the Birth-Death Models to\n")
     cat("    Estimate Speciation and Extinction Rates\n\n")

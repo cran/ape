@@ -1,4 +1,4 @@
-## as.phylo.R (2010-09-30)
+## as.phylo.R (2010-11-30)
 
 ##     Conversion Among Tree Objects
 
@@ -89,20 +89,22 @@ as.hclust.phylo <- function(x, ...)
     if (!is.ultrametric(x)) stop("the tree is not ultrametric")
     if (!is.binary.tree(x)) stop("the tree is not binary")
     n <- length(x$tip.label)
-    bt <- rev(branching.times(x))
-    N <- length(bt)
-    nm <- x$Nnode:1 + n # fix by Filipe G. Vieira (2010-09-30)
+    bt <- sort(branching.times(x))
+    inode <- as.numeric(names(bt))
+    N <- n - 1L
+    nm <- numeric(N + n) # hash table
+    nm[inode] <- 1:N
     merge <- matrix(NA, N, 2)
     for (i in 1:N) {
-        ind <- which(x$edge[, 1] == nm[i])
-        for (k in 1:2)
-          merge[i, k] <- if (x$edge[ind[k], 2] <= n) -x$edge[ind[k], 2]
-          else which(nm == x$edge[ind[k], 2])
+        ind <- which(x$edge[, 1] == inode[i])
+        for (k in 1:2) {
+            tmp <- x$edge[ind[k], 2]
+            merge[i, k] <- if (tmp <= n) -tmp else nm[tmp]
+        }
     }
     names(bt) <- NULL
-    obj <- list(merge = merge, height = bt, order = 1:(N + 1),
-                labels = x$tip.label, call = match.call(),
-                method = "unknown")
+    obj <- list(merge = merge, height = bt, order = 1:n, labels = x$tip.label,
+                call = match.call(), method = "unknown")
     class(obj) <- "hclust"
     obj
 }

@@ -46,7 +46,7 @@ rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{stree}}
+  \code{\link{stree}}, \code{\link{rlineage}}
 }
 \examples{
 layout(matrix(1:9, 3, 3))

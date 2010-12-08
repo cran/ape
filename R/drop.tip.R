@@ -1,4 +1,4 @@
-## drop.tip.R (2010-07-21)
+## drop.tip.R (2010-11-24)
 
 ##   Remove Tips in a Phylogenetic Tree
 
@@ -96,6 +96,8 @@ drop.tip <-
         if (is.character(tip))
             tip <- which(phy$tip.label %in% tip)
     }
+    if (any(tip > Ntip))
+        warning("some tip numbers were higher than the number of tips")
 
     if (!rooted && subtree) {
         phy <- root(phy, (1:Ntip)[-tip][1])
@@ -118,15 +120,6 @@ drop.tip <-
     edge1 <- phy$edge[, 1] # local copies
     edge2 <- phy$edge[, 2] #
     keep <- !logical(Nedge)
-
-    ## find the tips to drop:
-    if (is.character(tip))
-        tip <- which(phy$tip.label %in% tip)
-
-    if (!rooted && subtree) {
-        phy <- root(phy, (1:Ntip)[-tip][1])
-        root.edge <- 0
-    }
 
     ## delete the terminal edges given by `tip':
     keep[match(tip, edge2)] <- FALSE
@@ -179,21 +172,27 @@ drop.tip <-
     ## get the old No. of the nodes and tips that become tips:
     oldNo.ofNewTips <- phy$edge[TERMS, 2]
 
+    ## in case some tips are dropped but kept because of 'subtree = TRUE':
+    if (subtree) {
+        i <- which(tip %in% oldNo.ofNewTips)
+        if (length(i)) {
+            phy$tip.label[tip[i]] <- "[1_tip]"
+            tip <- tip[-i]
+        }
+    }
+
     n <- length(oldNo.ofNewTips) # the new number of tips in the tree
 
-    ## the tips may not be sorted in increasing order of their
-    ## in the 2nd col of edge, so no need to reorder $tip.label
+    ## the tips may not be sorted in increasing order in the
+    ## 2nd col of edge, so no need to reorder $tip.label
     phy$edge[TERMS, 2] <- rank(phy$edge[TERMS, 2])
+    phy$tip.label <- phy$tip.label[-tip]
 
     ## make new tip labels if necessary:
     if (subtree || !trim.internal) {
-        ## get the logical indices of the tips that are kept within 'oldNo.ofNewTips':
-        tips.kept <- oldNo.ofNewTips <= Ntip & !(oldNo.ofNewTips %in% tip)
-        new.tip.label <- character(n)
-        new.tip.label[tips.kept] <- phy$tip.label[-tip]
         ## get the numbers of the nodes that become tips:
-        node2tip <- oldNo.ofNewTips[!tips.kept]
-        new.tip.label[!tips.kept] <- if (subtree) {
+        node2tip <- oldNo.ofNewTips[oldNo.ofNewTips > Ntip]
+        new.tip.label <- if (subtree) {
             paste("[", N[node2tip], "_tips]", sep = "")
         } else {
             if (is.null(phy$node.label)) rep("NA", length(node2tip))
@@ -201,8 +200,8 @@ drop.tip <-
         }
         if (!is.null(phy$node.label))
             phy$node.label <- phy$node.label[-(node2tip - Ntip)]
-        phy$tip.label <- new.tip.label
-    } else phy$tip.label <- phy$tip.label[-tip]
+        phy$tip.label <- c(phy$tip.label, new.tip.label)
+    }
 
     ## update node.label if needed:
     if (!is.null(phy$node.label))
@@ -222,3 +221,4 @@ drop.tip <-
     storage.mode(phy$edge) <- "integer"
     collapse.singles(phy)
 }
+

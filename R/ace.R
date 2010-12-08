@@ -1,4 +1,4 @@
-## ace.R (2010-05-12)
+## ace.R (2010-12-08)
 
 ##   Ancestral Character Estimation
 
@@ -174,7 +174,8 @@ as the number of categories in `x'")
                 liks[anc, ] <- v/comp[anc]
             }
             if (output.liks) return(liks[-TIPS, ])
-            -2 * sum(log(comp[-TIPS]))
+            dev <- -2 * sum(log(comp[-TIPS]))
+            if (is.na(dev)) Inf else dev
         }
         out <- nlminb(rep(ip, length.out = np), function(p) dev(p),
                       lower = rep(0, np), upper = rep(1e50, np))

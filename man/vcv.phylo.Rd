@@ -1,4 +1,4 @@
-\name{vcv.phylo}
+\name{vcv}
 \alias{vcv}
 \alias{vcv.phylo}
 \alias{vcv.corPhyl}

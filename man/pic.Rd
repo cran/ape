@@ -8,9 +8,9 @@ pic(x, phy, scaled = TRUE, var.contrasts = FALSE)
   \item{x}{a numeric vector.}
   \item{phy}{an object of class \code{"phylo"}.}
   \item{scaled}{logical, indicates whether the contrasts should be
-    scaled with their expected variance (default to \code{TRUE}).}
+    scaled with their expected variances (default to \code{TRUE}).}
   \item{var.contrasts}{logical, indicates whether the expected
-    variance of the contrasts should be returned (default to \code{FALSE}).}
+    variances of the contrasts should be returned (default to \code{FALSE}).}
 }
 \description{
   Compute the phylogenetically independent contrasts using the method
@@ -31,7 +31,9 @@ pic(x, phy, scaled = TRUE, var.contrasts = FALSE)
   either a vector of phylogenetically independent contrasts (if
   \code{var.contrasts = FALSE}), or a two-column matrix with the
   phylogenetically independent contrasts in the first column and their
-  expected variance in the second column (if \code{var.contrasts = TRUE}).
+  expected variance in the second column (if \code{var.contrasts =
+  TRUE}). If the tree has node labels, these are used as labels of the
+  returned object.
 }
 \references{
   Felsenstein, J. (1985) Phylogenies and the comparative method.
@@ -39,7 +41,9 @@ pic(x, phy, scaled = TRUE, var.contrasts = FALSE)
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{read.tree}}, \code{\link{compar.gee}}, \code{\link{compar.lynch}}
+  \code{\link{read.tree}}, \code{\link{compar.gee}},
+  \code{\link{compar.lynch}}, \code{\link{pic.ortho}},
+  \code{\link{varCompPhylip}}
 }
 \examples{
 ### The example in Phylip 3.5c (originally from Lynch 1991)

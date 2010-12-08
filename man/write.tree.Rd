@@ -26,7 +26,7 @@ write.tree(phy, file = "", append = FALSE,
 }
 \value{
   a vector of mode character if \code{file = ""}, none (invisible
-  `NULL') otherwise.
+  \code{NULL}) otherwise.
 }
 \details{
   The node labels and the root edge length, if available, are written in
@@ -34,7 +34,9 @@ write.tree(phy, file = "", append = FALSE,
 
   If \code{tree.names == TRUE} then a variant of the Newick format is
   written for which the name of a tree precedes the Newick format tree
-  (parentheses are eventually deleted beforehand).
+  (parentheses are eventually deleted beforehand). The tree names are
+  taken from the \code{names} attribute if present (they are ignored if
+  \code{tree.names} is a character vector).
 }
 \references{
   Felsenstein, J. The Newick tree format.
@@ -44,7 +46,9 @@ write.tree(phy, file = "", append = FALSE,
   \url{http://evolution.genetics.washington.edu/phylip/newick_doc.html}
 }
 
-\author{Emmanuel Paradis and Daniel Lawson \email{dan.lawson@bristol.ac.uk}}
+\author{Emmanuel Paradis, Daniel Lawson
+  \email{dan.lawson@bristol.ac.uk}, and Klaus Schliep
+  \email{kschliep@snv.jussieu.fr}}
 \seealso{
   \code{\link{read.tree}}, \code{\link{read.nexus}},
   \code{\link{write.nexus}}

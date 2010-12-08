@@ -1,11 +1,11 @@
-## mcmc.popsize.R (2004-12-02)
+## mcmc.popsize.R (2010-11-16)
 
 ##   Run reversible jump MCMC to sample demographic histories
 
-## Copyright 2004 Rainer Opgen-Rhein and Korbinian Strimmer
+## Copyright 2004-2010 Rainer Opgen-Rhein and Korbinian Strimmer
 
 ## Portions of this function are adapted from rjMCMC code by
-## Karl Broman (see http://www.biostat.jhsph.edu/~kbroman/)
+## Karl W Broman (see http://www.biostat.wisc.edu/~kbroman/)
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -160,14 +160,17 @@ mcmc.popsize <-
 
  #BEGIN CALCULATION
 
-  for(i in (1:nstep + 1)) {
-
-  #progress bar
-  if(i %% 100 == 0){
-   z<-i/nstep
-   zt<-(i-100)/(nstep)
-   polygon(c(zt,zt,z,z), c(1,0,0,1), col="black")
-
+  for(i in (1:nstep + 1)) 
+  {
+    #progress bar
+    if(progress.bar==TRUE)
+    {
+      if(i %% 100 == 0)
+      {
+        z<-i/nstep
+        zt<-(i-100)/(nstep)
+        polygon(c(zt,zt,z,z), c(1,0,0,1), col="black")
+      }
     }
 
   # calculate jump probabilities without given lamda
@@ -245,7 +248,8 @@ mcmc.popsize <-
     }
     if (i %% thinning == 0& i>burn.in) {count.i<-count.i+1}
   }
-  dev.off()
+ 
+  if(progress.bar==TRUE) dev.off()
 
   list(pos=save.pos,h=save.h,loglik=save.loglik,
        steptype=save.steptype,accept=save.accept)

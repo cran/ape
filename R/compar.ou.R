@@ -1,4 +1,4 @@
-## compar.ou.R (2010-03-15)
+## compar.ou.R (2010-11-04)
 
 ##   Ornstein--Uhlenbeck Model for Continuous Characters
 
@@ -53,8 +53,9 @@ compar.ou <- function(x, phy, node = NULL, alpha = NULL)
         ## fixed a bug below: must be '%*% theta' instead of '* theta' (2010-03-15)
         M <- rowSums((exp(-alpha * Wend) - exp(-alpha * Wstart)) %*% theta)
         V <- exp(-alpha * W) * (1 - exp(-2 * alpha * (Tmax - W/2)))
-        n * log(2 * pi * sigma2) + log(det(V)) +
-            (t(x - M) %*% chol2inv(V) %*% (x - M)) / sigma2
+        R <- chol(V) # correction by Cecile Ane (2010-11-04)
+        n * log(2 * pi * sigma2) + 2 * sum(log(diag(R))) +
+            (t(x - M) %*% chol2inv(R) %*% (x - M)) / sigma2
     }
 
     out <- if (is.null(alpha))

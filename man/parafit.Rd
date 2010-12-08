@@ -11,8 +11,8 @@ Function \code{\link{parafit}} tests the hypothesis of coevolution between a cla
 The method, which is described in detail in Legendre et al. (2002), requires some estimates of the phylogenetic trees or phylogenetic distances, and also a description of the host-parasite associations (H-P links) observed in nature.
 }
 \usage{
-parafit(host.D, para.D ,HP ,nperm=999, test.links=FALSE, seed=NULL,
-correction="none", silent=FALSE)
+parafit(host.D, para.D, HP, nperm = 999, test.links = FALSE,
+        seed = NULL, correction = "none", silent = FALSE)
 }
 
 \arguments{

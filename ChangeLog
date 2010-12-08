@@ -1,11 +1,51 @@
+		CHANGES IN APE VERSION 2.6-2
+
+
+NEW FEATURES
+
+    o Two new functions, pic.ortho and varCompPhylip, implements the
+      orthonormal contrasts of Felsenstein (2008, Am Nat, 171:713). The
+      second function requires Phylip to be installed on the computer.
+
+    o bd.ext() has a new option conditional = TRUE to use probabilities
+      conditioned on no extinction for the taxonomic data.
+
+
+BUG FIXES
+
+    o write.tree() failed to output correctly tree names.
+
+    o dist.nodes() returned duplicated column(s) with unrooted and/or
+      multichotomous trees.
+
+    o mcmc.popsize() terminated unexpectedly if the progress bar was
+      turned off.
+
+    o prop.part(x) made R frozen if 'x' is of class "multiPhylo".
+
+    o Compilation under Mandriva failed (thanks to Jos Käfer for the fix).
+
+    o drop.tip() shuffled tip labels with subtree = TRUE or trim.internal
+      = FALSE.
+
+    o Objects returned by as.hclust.phylo() failed when analysed with
+      cutree() or rect.hclust().
+
+    o write.tree() did not output correctly node labels (thanks to Naim
+      Matasci for the fix).
+
+    o ace(type = "discrete") has been improved thanks to Naim Marasci.
+
+
+
 		CHANGES IN APE VERSION 2.6-1
 
 
 NEW FEATURES
 
-    o The new speciesTree calculates the species tree from a set of gene
-      trees. Several methods are available including maximum tree and
-      shallowest divergence tree.
+    o The new function speciesTree calculates the species tree from a set
+      of gene trees. Several methods are available including maximum tree
+      and shallowest divergence tree.
 
 
 BUG FIXES

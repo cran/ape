@@ -1,8 +1,8 @@
-## cophenetic.phylo.R (2007-01-23)
+## cophenetic.phylo.R (2010-11-15)
 
 ##   Pairwise Distances from a Phylogenetic Tree
 
-## Copyright 2006-2007 Emmanuel Paradis
+## Copyright 2006-2010 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -10,10 +10,15 @@
 dist.nodes <- function(x)
 {
     if (is.null(x$edge.length))
-      stop("your tree has no branch lengths")
+        stop("your tree has no branch lengths")
 
-    if (!is.binary.tree(x) || !is.rooted(x))
-      x <- multi2di(x, random = FALSE)
+    trim <- FALSE
+    if (!is.binary.tree(x) || !is.rooted(x)) {
+        trim <- TRUE
+        x <- makeNodeLabel(x)
+        x <- multi2di(x, random = FALSE)
+    }
+
     n <- length(x$tip.label)
     n.node <- x$Nnode
     N <- n + n.node
@@ -56,6 +61,11 @@ dist.nodes <- function(x)
             res[des2, nod] <- res[nod, des2] <- res[anc, des2] + l
             res[des1, nod] <- res[nod, des1] <- res[anc, des1] + l
         }
+    }
+    if (trim) {
+        i <- which(x$node.label == "") + n
+        res <- res[-i, -i]
+        N <- dim(res)[1]
     }
     dimnames(res)[1:2] <- list(1:N)
     res

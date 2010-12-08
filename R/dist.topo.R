@@ -1,4 +1,4 @@
-## dist.topo.R (2010-05-25)
+## dist.topo.R (2010-11-18)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -100,17 +100,16 @@ prop.part <- function(..., check.labels = TRUE)
     if (length(obj) == 1 && class(obj[[1]]) != "phylo")
         obj <- obj[[1]]
     ## <FIXME>
-    ## class(obj) <- NULL # needed?
+    ## class(obj) <- NULL # needed? apparently not, see below (2010-11-18)
     ## </FIXME>
     ntree <- length(obj)
     if (ntree == 1) check.labels <- FALSE
-    if (check.labels) obj <- .compressTipLabel(obj)
+    if (check.labels) .compressTipLabel(obj) # no need to store cause uncompress later
     for (i in 1:ntree) storage.mode(obj[[i]]$Nnode) <- "integer"
     ## <FIXME>
     ## The 1st must have tip labels
     ## Maybe simply pass the number of tips to the C code??
-    if (!is.null(attr(obj, "TipLabel")))
-        for (i in 1:ntree) obj[[i]]$tip.label <- attr(obj, "TipLabel")
+    obj <- .uncompressTipLabel(obj) # fix a bug (2010-11-18)
     ## </FIXME>
     clades <- .Call("prop_part", obj, ntree, TRUE, PACKAGE = "ape")
     attr(clades, "number") <- attr(clades, "number")[1:length(clades)]
