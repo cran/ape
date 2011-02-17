@@ -1,8 +1,8 @@
-## plot.phylo.R (2010-08-12)
+## plot.phylo.R (2011-02-17)
 
 ##   Plot Phylogenies
 
-## Copyright 2002-2010 Emmanuel Paradis
+## Copyright 2002-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -351,36 +351,58 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
                 y.adj[sel] <- strheight(x$tip.label)[sel] / 2
                 sel <- XY$axe < -pi / 4 & XY$axe > -0.75 * pi
                 y.adj[sel] <- -strheight(x$tip.label)[sel] * 0.75
-                text(xx[1:Ntip] + x.adj*cex, yy[1:Ntip] + y.adj*cex,
+                text(xx[1:Ntip] + x.adj * cex, yy[1:Ntip] + y.adj * cex,
                      x$tip.label, adj = c(adj, 0), font = font,
                      srt = srt, cex = cex, col = tip.color)
             } else { # if lab4ut == "axial"
-                adj <- as.numeric(abs(XY$axe) > pi/2)
-                srt <- 180*XY$axe/pi
-                srt[as.logical(adj)] <- srt[as.logical(adj)] - 180
+                adj <- abs(XY$axe) > pi/2
+                srt <- 180 * XY$axe / pi
+                srt[adj] <- srt[adj] - 180
+                adj <- as.numeric(adj)
+                xx.tips <- xx[1:Ntip]
+                yy.tips <- yy[1:Ntip]
+                if (label.offset) {
+                    xx.tips <- xx.tips + label.offset * cos(XY$axe)
+                    yy.tips <- yy.tips + label.offset * sin(XY$axe)
+                }
                 ## `srt' takes only a single value, so can't vectorize this:
+                ## (and need to 'elongate' these vectors:)
+                font <- rep(font, length.out = Ntip)
+                tip.color <- rep(tip.color, length.out = Ntip)
+                cex <- rep(cex, length.out = Ntip)
                 for (i in 1:Ntip)
-                  text(xx[i], yy[i], cex = cex, x$tip.label[i], adj = adj[i],
-                       font = font, srt = srt[i], col = tip.color[i])
+                    text(xx.tips[i], yy.tips[i], cex = cex[i],
+                         x$tip.label[i], adj = adj[i], font = font[i],
+                         srt = srt[i], col = tip.color[i])
             }
         }
         if (type %in% c("fan", "radial")) {
             xx.tips <- xx[1:Ntip]
+            yy.tips <- yy[1:Ntip]
             ## using atan2 considerably facilitates things compared to acos...
-            angle <- atan2(yy[1:Ntip], xx.tips)*180/pi
+            angle <- atan2(yy.tips, xx.tips) # in radians
+            if (label.offset) {
+                xx.tips <- xx.tips + label.offset * cos(angle)
+                yy.tips <- yy.tips + label.offset * sin(angle)
+            }
             s <- xx.tips < 0
+            angle <- angle * 180/pi # switch to degrees
             angle[s] <- angle[s] + 180
-            adj <- numeric(Ntip)
-            adj[xx.tips < 0] <- 1
+            adj <- as.numeric(s)
             ## `srt' takes only a single value, so can't vectorize this:
+            ## (and need to 'elongate' these vectors:)
+            font <- rep(font, length.out = Ntip)
+            tip.color <- rep(tip.color, length.out = Ntip)
+            cex <- rep(cex, length.out = Ntip)
             for (i in 1:Ntip)
-                text(xx[i], yy[i], x$tip.label[i], font = font, cex = cex,
-                     srt = angle[i], adj = adj[i], col = tip.color[i])
+                text(xx.tips[i], yy.tips[i], x$tip.label[i], font = font[i],
+                     cex = cex[i], srt = angle[i], adj = adj[i],
+                     col = tip.color[i])
         }
     }
     if (show.node.label)
-      text(xx[ROOT:length(xx)] + label.offset, yy[ROOT:length(yy)],
-           x$node.label, adj = adj, font = font, srt = srt, cex = cex)
+        text(xx[ROOT:length(xx)] + label.offset, yy[ROOT:length(yy)],
+             x$node.label, adj = adj, font = font, srt = srt, cex = cex)
     L <- list(type = type, use.edge.length = use.edge.length,
               node.pos = node.pos, show.tip.label = show.tip.label,
               show.node.label = show.node.label, font = font,

@@ -1,5 +1,6 @@
 \name{read.tree}
 \alias{read.tree}
+\alias{phylo}
 \title{Read Tree File in Parenthetic Format}
 \usage{
 read.tree(file = "", text = NULL, tree.names = NULL, skip = 0,

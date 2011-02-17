@@ -287,7 +287,7 @@ rlineage <-
     .makePhylo(edge[1:j, ], edge.length[1:j], i)
 }
 
-drop.fossil <- function(phy, tol = 0)
+drop.fossil <- function(phy, tol = 1e-8)
 {
     n <- Ntip(phy)
     x <- dist.nodes(phy)[n + 1, ][1:n]

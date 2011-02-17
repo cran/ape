@@ -11,7 +11,8 @@ vcv(phy, ...)
 \arguments{
   \item{phy}{an object of the correct class (see above).}
   \item{model}{a character giving the model used to compute the
-    variances and covariances; only \code{"Brownian"} is available.}
+    variances and covariances; only \code{"Brownian"} is available (for
+    other models, a correlation structure may be used).}
   \item{corr}{a logical indicating whether the correlation matrix should
     be returned (\code{TRUE}); by default the variance-covariance matrix
     is returned (\code{FALSE}).}

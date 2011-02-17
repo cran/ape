@@ -15,7 +15,7 @@ rlineage(birth, death, Tmax = 50, BIRTH = NULL,
          DEATH = NULL, eps = 1e-6)
 rbdtree(birth, death, Tmax = 50, BIRTH = NULL,
         DEATH = NULL, eps = 1e-6)
-drop.fossil(phy, tol = 0)
+drop.fossil(phy, tol = 1e-8)
 }
 \arguments{
   \item{birth, death}{a numeric value or a (vectorized) function

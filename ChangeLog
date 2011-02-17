@@ -1,3 +1,40 @@
+		CHANGES IN APE VERSION 2.6-3
+
+
+NEW FEATURES
+
+    o rTraitCont() and rTraitDisc() gains a '...' argument used with
+      user-defined models (suggestion by Gene Hunt).
+
+
+BUG FIXES
+
+    o as.hclust.phylo() now returns an error with unrooted trees.
+
+    o as.hclust.phylo() failed with trees with node labels (thanks to
+      Jinlong Zhang for pointing this bug out).
+
+    o read.dna(, "fasta") failed if sequences were not all of the same
+      length.
+
+    o plot.phylo() did not recycle values of 'font', 'cex' and
+      'tip.color' correctly when type = "fan" or "radial".
+
+    o plot.phylo() ignored 'label.offset' when type = "radial", "fan", or
+      "unrooted" with lab4ut = "axial" (the placement of tip labels still
+      needs to be improved with lab4ut = "horizontal").
+
+
+OTHER CHANGES
+
+    o In drop.fossil() the default tol = 0 has been raised to 1e-8.
+
+    o The help command ?phylo now points to the man page of read.tree()
+      where this class is described. Similarly, ?matching points to the
+      man page of as.matching().
+
+
+
 		CHANGES IN APE VERSION 2.6-2
 
 
@@ -32,9 +69,10 @@ BUG FIXES
       cutree() or rect.hclust().
 
     o write.tree() did not output correctly node labels (thanks to Naim
-      Matasci for the fix).
+      Matasci and Jeremy Beaulieu for the fix).
 
-    o ace(type = "discrete") has been improved thanks to Naim Marasci.
+    o ace(type = "discrete") has been improved thanks to Naim Marasci and
+      Jeremy Beaulieu.
 
 
 

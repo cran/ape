@@ -3,7 +3,7 @@
 \title{Continuous Character Simulation}
 \usage{
 rTraitCont(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
-           ancestor = FALSE, root.value = 0, linear = TRUE)
+           ancestor = FALSE, root.value = 0, linear = TRUE, ...)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -22,6 +22,8 @@ rTraitCont(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
   \item{root.value}{a numeric giving the value at the root.}
   \item{linear}{a logical indicating which parameterisation of the OU
     model to use (see details).}
+  \item{\dots}{further arguments passed to \code{model} if it is a
+    function.}
 }
 \description{
   This function simulates the evolution of a continuous character along a

@@ -1,5 +1,6 @@
 \name{as.matching}
 \alias{as.matching}
+\alias{matching}
 \alias{as.matching.phylo}
 \alias{as.phylo.matching}
 \title{Conversion Between Phylo and Matching Objects}

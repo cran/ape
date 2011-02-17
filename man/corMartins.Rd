@@ -4,7 +4,7 @@
 \alias{corMatrix.corMartins}
 \title{Martins's (1997) Correlation Structure}
 \usage{
-corMartins(value, phy, form=~1, fixed = FALSE)
+corMartins(value, phy, form = ~1, fixed = FALSE)
 \method{coef}{corMartins}(object, unconstrained = TRUE, ...)
 \method{corMatrix}{corMartins}(object,
 		covariate = getCovariate(object), corr = TRUE, ...)

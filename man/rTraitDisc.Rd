@@ -4,7 +4,7 @@
 \usage{
 rTraitDisc(phy, model = "ER", k = if (is.matrix(model)) ncol(model) else 2,
            rate = 0.1, states = LETTERS[1:k], freq = rep(1/k, k),
-           ancestor = FALSE, root.value = 1)
+           ancestor = FALSE, root.value = 1, ...)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -24,6 +24,8 @@ rTraitDisc(phy, model = "ER", k = if (is.matrix(model)) ncol(model) else 2,
   \item{root.value}{an integer giving the value at the root (by default,
     it's the first state). To have a random value, use \code{root.value
       = sample(k)}.}
+  \item{\dots}{further arguments passed to \code{model} if it is a
+    function.}
 }
 \description{
   This function simulates the evolution of a discrete character along a

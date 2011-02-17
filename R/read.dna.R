@@ -1,8 +1,8 @@
-## read.dna.R (2010-05-17)
+## read.dna.R (2011-02-01)
 
 ##   Read DNA Sequences in a File
 
-## Copyright 2003-2010 Emmanuel Paradis
+## Copyright 2003-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -107,10 +107,12 @@ read.dna <- function(file, format = "interleaved", skip = 0,
         obj <- lapply(obj, tolower)
         LENGTHS <- unique(unlist(lapply(obj, length)))
         allSameLength <- length(LENGTHS) == 1
-        if (is.logical(as.matrix) && as.matrix && !allSameLength)
-            stop("sequences in FASTA file not of the same length")
-        if (is.null(as.matrix) && allSameLength)
-            as.matrix <- TRUE
+        if (is.logical(as.matrix)) {
+            if (as.matrix && !allSameLength)
+                stop("sequences in FASTA file not of the same length")
+        } else {
+            as.matrix <- allSameLength
+        }
         if (as.matrix) {
             obj <- matrix(unlist(obj), ncol = LENGTHS, byrow = TRUE)
             rownames(obj) <- seq.names

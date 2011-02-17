@@ -45,7 +45,7 @@ compar.gee <-
     }
 
     id <- rep(1, dim(R)[1])
-    geemod <<- geemod <- do.call("gee", list(formula, id, data = data, family = family, R = R,
+    geemod <- do.call("gee", list(formula, id, data = data, family = family, R = R,
                                   corstr = "fixed", scale.fix = scale.fix,
                                   scale.value = scale.value))
     W <- geemod$naive.variance

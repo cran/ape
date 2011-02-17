@@ -1,4 +1,4 @@
-## as.phylo.R (2010-11-30)
+## as.phylo.R (2010-12-15)
 
 ##     Conversion Among Tree Objects
 
@@ -88,7 +88,9 @@ as.hclust.phylo <- function(x, ...)
 {
     if (!is.ultrametric(x)) stop("the tree is not ultrametric")
     if (!is.binary.tree(x)) stop("the tree is not binary")
+    if (!is.rooted(x)) stop("the tree is not rooted")
     n <- length(x$tip.label)
+    x$node.label <- NULL # by Jinlong Zhang (2010-12-15)
     bt <- sort(branching.times(x))
     inode <- as.numeric(names(bt))
     N <- n - 1L

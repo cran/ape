@@ -1,4 +1,4 @@
-## rTrait.R (2010-07-26)
+## rTrait.R (2010-12-24)
 
 ##   Trait Evolution
 
@@ -10,7 +10,7 @@
 rTraitDisc <-
     function(phy, model = "ER", k = if (is.matrix(model)) ncol(model) else 2,
              rate = 0.1, states = LETTERS[1:k], freq = rep(1/k, k),
-             ancestor = FALSE, root.value = 1)
+             ancestor = FALSE, root.value = 1, ...)
 {
     if (is.null(phy$edge.length))
         stop("tree has no branch length")
@@ -56,7 +56,7 @@ rTraitDisc <-
 
     if (is.function(model)) {
         environment(model) <- environment() # to find 'k'
-        for (i in N:1) x[des[i]] <- model(x[anc[i]], el[i])
+        for (i in N:1) x[des[i]] <- model(x[anc[i]], el[i], ...)
     } else {
         freq <- rep(freq, each = k)
         Q <- Q * freq
@@ -82,7 +82,7 @@ rTraitDisc <-
 
 rTraitCont <-
     function(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
-             ancestor = FALSE, root.value = 0, linear = TRUE)
+             ancestor = FALSE, root.value = 0, linear = TRUE, ...)
 {
     if (is.null(phy$edge.length))
         stop("tree has no branch length")
@@ -102,7 +102,7 @@ rTraitCont <-
 
     if (is.function(model)) {
         environment(model) <- environment()
-        for (i in N:1) x[des[i]] <- model(x[anc[i]], el[i])
+        for (i in N:1) x[des[i]] <- model(x[anc[i]], el[i], ...)
     } else {
         model <- pmatch(toupper(model), c("BM", "OU"))
         if (length(sigma) == 1) sigma <- rep(sigma, N)
