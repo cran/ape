@@ -1,8 +1,8 @@
-## as.phylo.R (2010-12-15)
+## as.phylo.R (2011-03-16)
 
 ##     Conversion Among Tree Objects
 
-## Copyright 2005-2010 Emmanuel Paradis
+## Copyright 2005-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -109,4 +109,25 @@ as.hclust.phylo <- function(x, ...)
                 call = match.call(), method = "unknown")
     class(obj) <- "hclust"
     obj
+}
+
+as.network.phylo <- function(x, directed = is.rooted(x), ...)
+{
+    if (is.null(x$node.label)) x <- makeNodeLabel(x)
+    res <- network(x$edge, directed = directed, ...)
+    network.vertex.names(res) <- c(x$tip.label, x$node.label)
+    res
+}
+
+as.igraph <- function(x, ...) UseMethod("as.igraph")
+
+as.igraph.phylo <- function(x, directed = is.rooted(x), use.labels = TRUE, ...)
+{
+    ## local copy because x will be changed before evaluating is.rooted(x):
+    directed <- directed
+    if (use.labels) {
+        if (is.null(x$node.label)) x <- makeNodeLabel(x)
+        x$edge <- matrix(c(x$tip.label, x$node.label)[x$edge], ncol = 2)
+    } else x$edge <- x$edge - 1L
+    graph.edgelist(x$edge, directed = directed, ...)
 }

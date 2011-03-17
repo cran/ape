@@ -85,7 +85,8 @@
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{as.DNAbin}}, \code{\link{read.dna}},
-  \code{\link{read.GenBank}}, \code{\link{write.dna}}
+  \code{\link{read.GenBank}}, \code{\link{write.dna}}, ,
+  \code{\link{image.DNAbin}}
 
   The corresponding generic functions are documented in the package
   \pkg{base}.

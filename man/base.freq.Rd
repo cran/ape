@@ -11,7 +11,7 @@
   frequencies of the DNA bases from a pair of sequences.
 }
 \usage{
-base.freq(x, freq = FALSE)
+base.freq(x, freq = FALSE, all = FALSE)
 Ftab(x, y = NULL)
 }
 \arguments{
@@ -20,6 +20,9 @@ Ftab(x, y = NULL)
   \item{y}{a vector with a single DNA sequence.}
   \item{freq}{a logical specifying whether to return the proportions
     (the default) or the absolute frequencies (counts).}
+  \item{all}{a logical; by default only the counts of A, C, G, and T are
+    returned. If \code{all = TRUE}, all counts of bases, ambiguous codes,
+    missing data, and alignment gaps are returned.}
 }
 \details{
   The base frequencies are computed over all sequences in the

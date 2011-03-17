@@ -1,8 +1,8 @@
-## DNA.R (2010-10-19)
+## DNA.R (2011-03-16)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
-## Copyright 2002-2010 Emmanuel Paradis
+## Copyright 2002-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -226,9 +226,11 @@ print.DNAbin <- function(x, printlen = 6, digits = 3, ...)
 
 as.DNAbin <- function(x, ...) UseMethod("as.DNAbin")
 
-._cs_<- letters[c(1, 7, 3, 20, 18, 13, 23, 19, 11, 25, 22, 8, 4, 2, 14)]
+._cs_ <- c("a", "g", "c", "t", "r", "m", "w", "s", "k",
+           "y", "v", "h",  "d", "b", "n", "-", "?")
 
-._bs_<- c(136, 72, 40, 24, 192, 160, 144, 96, 80, 48, 224, 176, 208, 112, 240)
+._bs_ <- c(136, 72, 40, 24, 192, 160, 144, 96, 80,
+           48, 224, 176, 208, 112, 240, 4, 2)
 
 as.DNAbin.character <- function(x, ...)
 {
@@ -281,13 +283,20 @@ as.character.DNAbin <- function(x, ...)
     if (is.list(x)) lapply(x, f) else f(x)
 }
 
-base.freq <- function(x, freq = FALSE)
+base.freq <- function(x, freq = FALSE, all = FALSE)
 {
     if (is.list(x)) x <- unlist(x)
     n <- length(x)
-    BF <- .C("BaseProportion", x, n, double(4), freq,
-             DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")[[3]]
-    names(BF) <- letters[c(1, 3, 7, 20)]
+    BF <-.C("BaseProportion", x, n, double(17),
+            DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")[[3]]
+    names(BF) <- c("a", "c", "g", "t", "r", "m", "w", "s",
+                   "k", "y", "v", "h", "d", "b", "n", "-", "?")
+    if (all) {
+        if (!freq) BF <- BF / n
+    } else {
+        BF <- BF[1:4]
+        if (!freq) BF <- BF / sum(BF)
+    }
     BF
 }
 
@@ -395,4 +404,54 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     }
     if (variance) attr(d, "variance") <- var
     d
+}
+
+image.DNAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
+                         show.labels = TRUE, cex.lab = 1, legend = TRUE, ...)
+{
+    what <-
+        if (missing(what)) c("a", "g", "c", "t", "n", "-") else tolower(what)
+    if (missing(col))
+        col <- c("red", "yellow", "green", "blue", "grey", "black")
+    n <- (dx <- dim(x))[1] # number of sequences
+    s <- dx[2] # number of sites
+    y <- integer(N <- length(x))
+    ncl <- length(what)
+    col <- rep(col, length.out = ncl)
+    sm <- 0L
+    for (i in ncl:1) {
+        k <- ._bs_[._cs_ == what[i]]
+        sel <- which(x == k)
+        if (ll <- length(sel)) {
+            y[sel] <- i
+            sm <- sm + ll
+        } else {
+            what <- what[-i]
+            col <- col[-i]
+        }
+    }
+    dim(y) <- dx
+    ## if there's no 0 in y, must drop 'bg' from the cols passed to image:
+    if (sm == N) {
+        leg.co <- co <- col
+        leg.txt <- toupper(what)
+    } else {
+        co <- c(bg, col)
+        leg.txt <- c(toupper(what), "others")
+        leg.co <- c(col, bg)
+    }
+    yaxt <- if (show.labels) "n" else "s"
+    image(1:s, 1:n, t(y), col = co, xlab = xlab,
+          ylab = ylab, yaxt = yaxt, ...)
+    if (show.labels)
+        mtext(rownames(x), side = 2, line = 0.1, at = 1:n,
+              cex = cex.lab, adj = 1, las = 1)
+    if (legend) {
+        psr <- par("usr")
+        xx <- psr[2]/2
+        yy <- psr[4] * (0.5 + 0.5/par("plt")[4])
+        legend(xx, yy, legend = leg.txt, pch = 22, pt.bg = leg.co,
+               pt.cex = 2, bty = "n", xjust = 0.5, yjust = 0.5,
+               horiz = TRUE, xpd = TRUE)
+    }
 }

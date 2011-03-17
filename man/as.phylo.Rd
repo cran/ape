@@ -5,7 +5,31 @@
 \alias{as.hclust.phylo}
 \alias{old2new.phylo}
 \alias{new2old.phylo}
-\title{Conversion Among Tree Objects}
+\alias{as.network.phylo}
+\alias{as.igraph}
+\alias{as.igraph.phylo}
+\title{Conversion Among Tree and Network Objects}
+\description{
+  \code{as.phylo} is a generic function which converts an object into a
+  tree of class \code{"phylo"}. There are currently two methods for
+  objects of class \code{"hclust"} and of class \code{"phylog"}
+  (implemented in the package ade4).
+
+  \code{as.hclust.phylo} is a method of the generic
+  \code{\link[stats]{as.hclust}} which converts an object of class
+  \code{"phylo"} into one of class \code{"hclust"}. This can used to
+  convert an object of class \code{"phylo"} into one of class
+  \code{"dendrogram"} (see examples).
+
+  \code{as.network} and \code{as.igraph} convert trees of class
+  \code{"phylo"} into these respective classes defined in the packages
+  of the same names. Note that the generic of the former is defined in
+  \pkg{network}.
+
+  \code{old2new.phylo} and \code{new2old.phylo} are utility functions
+  for converting between the old and new coding of the class
+  \code{"phylo"}.
+}
 \usage{
 as.phylo(x, ...)
 \method{as.phylo}{hclust}(x, ...)
@@ -13,29 +37,24 @@ as.phylo(x, ...)
 \method{as.hclust}{phylo}(x, ...)
 old2new.phylo(phy)
 new2old.phylo(phy)
+\method{as.network}{phylo}(x, directed = is.rooted(x), ...)
+as.igraph(x, ...)
+\method{as.igraph}{phylo}(x, directed = is.rooted(x), use.labels = TRUE, ...)
 }
 \arguments{
   \item{x}{an object to be converted into another class.}
+  \item{directed}{a logical value: should the network be directed? By
+    default, this depends on whether the tree is rooted or not.}
+  \item{use.labels}{a logical specifying whether to use labels to build
+    the network of class \code{"igraph"}. If \code{TRUE} and the tree
+    has no node labels, then some default labels are created first. If
+    \code{FALSE}, the network is built with integers.}
   \item{\dots}{further arguments to be passed to or from other methods.}
   \item{phy}{an object of class \code{"phylo"}.}
 }
-\description{
-  \code{as.phylo} is a generic function which converts an object into a
-  tree of class \code{"phylo"}. There are currently two methods for this
-  generic for objects of class \code{"hclust"} and of class
-  \code{"phylog"} (implemented in the package ade4).
-  \code{as.hclust.phylo} is a method of the generic
-  \code{\link[stats]{as.hclust}} which converts an object of class
-  \code{"phylo"} into one of class \code{"hclust"}. This can used to
-  convert an object of class \code{"phylo"} into one of class
-  \code{"dendrogram"} (see examples).
-
-  \code{old2new.phylo} and \code{new2old.phylo} are utility functions
-  for converting between the old and new coding of the class
-  \code{"phylo"}.
-}
 \value{
-  An object of class \code{"hclust"} or \code{"phylo"}.
+  An object of class \code{"hclust"}, \code{"phylo"}, \code{"network"},
+  or \code{"igraph"}.
 }
 \author{Emmanuel Paradis}
 \seealso{
@@ -63,7 +82,24 @@ plot(dend)
 layout(matrix(1:2, 2, 1))
 plot(bird.orders, font = 1, no.margin = TRUE)
 par(mar = c(0, 0, 0, 8))
-plot((dend), horiz = TRUE)
-layout(matrix(1, 1, 1))
+plot(dend, horiz = TRUE)
+layout(matrix(1))
+
+\dontrun{
+### convert into networks:
+if (require(network)) {
+    x <- as.network(rtree(10))
+    print(x)
+    plot(x, vertex.cex = 1:4)
+    plot(x, displaylabels = TRUE)
+}
+tr <- rtree(5)
+if (require(igraph)) {
+    print((x <- as.igraph(tr)))
+    plot(x)
+    print(as.igraph(tr, TRUE, FALSE))
+    print(as.igraph(tr, FALSE, FALSE))
+}
+}
 }
 \keyword{manip}

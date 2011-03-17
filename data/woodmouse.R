@@ -1,2 +1,2 @@
-require(ape, quietly = TRUE, save = FALSE)
+require(ape, quietly = TRUE)
 woodmouse <- read.dna("woodmouse.txt", format = "sequential")

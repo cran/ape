@@ -1,9 +1,9 @@
-## dist.topo.R (2010-11-18)
+## dist.topo.R (2011-02-21)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
 
-## Copyright 2005-2010 Emmanuel Paradis
+## Copyright 2005-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -104,7 +104,7 @@ prop.part <- function(..., check.labels = TRUE)
     ## </FIXME>
     ntree <- length(obj)
     if (ntree == 1) check.labels <- FALSE
-    if (check.labels) .compressTipLabel(obj) # no need to store cause uncompress later
+    if (check.labels) obj <- .compressTipLabel(obj) # fix by Klaus Schliep (2011-02-21)
     for (i in 1:ntree) storage.mode(obj[[i]]$Nnode) <- "integer"
     ## <FIXME>
     ## The 1st must have tip labels

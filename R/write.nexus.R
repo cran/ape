@@ -1,8 +1,8 @@
-## write.nexus.R (2009-10-27)
+## write.nexus.R (2011-02-26)
 
 ##   Write Tree File in Nexus Format
 
-## Copyright 2003-2009 Emmanuel Paradis
+## Copyright 2003-2011x Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -76,13 +76,21 @@ the original data won't be written with the tree."))
         }
     } else {
         for (i in 1:ntree)
-          obj[[i]]$tip.label <- checkLabel(obj[[i]]$tip.label)
+            obj[[i]]$tip.label <- checkLabel(obj[[i]]$tip.label)
     }
+
+    title <- names(obj)
+    if (is.null(title))
+        title <- rep("UNTITLED", ntree)
+    else {
+        if (any(s <- title == "")) title[s] <- "UNTITLED"
+    }
+
     for (i in 1:ntree) {
         if (class(obj[[i]]) != "phylo") next
         if (is.rooted(obj[[i]]))
-          cat("\tTREE * UNTITLED = [&R] ", file = file, append = TRUE)
-        else cat("\tTREE * UNTITLED = [&U] ", file = file, append = TRUE)
+          cat("\tTREE *,", title[i], "= [&R] ", file = file, append = TRUE)
+        else cat("\tTREE *", title[i], "= [&U] ", file = file, append = TRUE)
         cat(write.tree(obj[[i]], file = ""),
             "\n", sep = "", file = file, append = TRUE)
     }

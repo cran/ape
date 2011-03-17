@@ -44,7 +44,9 @@ prop.clades(phy, ..., part = NULL)
   These functions analyse bipartitions found in a series of trees.
 
   \code{prop.part} counts the number of bipartitions found in a series
-  of trees given as \code{\dots}.
+  of trees given as \code{\dots}. If a single tree is passed, the
+  returned object is a list of vectors with the tips descending from
+  each node (i.e., clade compositions indexed by node number).
 
   \code{prop.clades} counts the number of times the bipartitions present
   in \code{phy} are present in a series of trees given as \code{\dots} or

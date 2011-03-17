@@ -1,8 +1,8 @@
-## bind.tree.R (2010-05-25)
+## bind.tree.R (2011-03-02)
 
 ##    Bind Trees
 
-## Copyright 2003-2010 Emmanuel Paradis
+## Copyright 2003-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -77,7 +77,7 @@ bind.tree <- function(x, y, where = "root", position = 0, interactive = FALSE)
         }
     }
 
-    ## the special of substituting two tips:
+    ## the special case of substituting two tips:
     if (case == 2 && ny == 1 && !position) {
         x$tip.label[x$edge[i, 2]] <- y$tip.label
         if (wbl)
@@ -88,14 +88,14 @@ bind.tree <- function(x, y, where = "root", position = 0, interactive = FALSE)
     x <- reorder(x)
     y <- reorder(y)
 
-### because in all situations internal nodes need to be renumbered,
-### they are changed to negatives first, and nodes that eventually
-### will be added will be numbered sequentially
+### because in all situations internal nodes need to be
+### renumbered, they are changed to negatives first, and
+### nodes eventually added will be numbered sequentially
 
     nodes <- x$edge > nx
     x$edge[nodes] <- -(x$edge[nodes] - nx) # -1, ..., -mx
     nodes <- y$edge > ny
-    y$edge[nodes] <- -(y$edge[nodes] - ny + mx) #  -(mx+1), ..., -(mx+my)
+    y$edge[nodes] <- -(y$edge[nodes] - ny + mx) # -(mx+1), ..., -(mx+my)
     ROOT <- -1L # may change later
     next.node <- -(mx + my) - 1L
 
@@ -198,19 +198,18 @@ bind.tree <- function(x, y, where = "root", position = 0, interactive = FALSE)
     ## update the node labels before renumbering (this adds NA for
     ## the added nodes, and drops the label for those deleted)
     if (!is.null(x$node.label))
-        x$node.label <- x$node.label[-unique(x$edge[, 1])]
+        x$node.label <- x$node.label[sort(-unique(x$edge[, 1]))]
 
     ## renumber nodes:
     newNb <- integer(x$Nnode)
     newNb[-ROOT] <- n + 1L
     sndcol <- x$edge[, 2] < 0
     ## executed from right to left, so newNb is modified before x$edge:
-    x$edge[sndcol, 2] <- newNb[-x$edge[sndcol, 2]] <-
-        (n + 2):(n + x$Nnode)
+    x$edge[sndcol, 2] <- newNb[-x$edge[sndcol, 2]] <- n + 2:x$Nnode
     x$edge[, 1] <- newNb[-x$edge[, 1]]
 
     if (!is.null(x$node.label))
-        x$node.label <- x$node.label[newNb[newNb == 0] - n]
+        x$node.label <- x$node.label[order(newNb[newNb > 0])]
 
     x
 }

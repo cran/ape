@@ -1,3 +1,54 @@
+		CHANGES IN APE VERSION 2.7
+
+
+NEW FEATURES
+
+    o There is a new image() method for "DNAbin" objects: it plots DNA
+      alignments in a flexible and efficient way.
+
+    o Two new functions as.network.phylo and as.igraph.phylo convert
+      trees of class "phylo" into these respective network classes
+      defined in the packages of the same names.
+
+    o The three new functions clustal, muscle, and tcoffee perform
+      nucleotide sequence alignment by calling the external programs
+      of the same names.
+
+    o Four new functions, diversity.contrast.test, mcconwaysims.test,
+      richness.yule.test, and slowinskiguyer.test, implement various
+      tests of diversification shifts using sister-clade comparisons.
+
+    o base.freq() gains an option 'all' to count all the possible bases
+      including the ambiguous ones (defaults to FALSE).
+
+    o read.nexus() now writes tree names in the NEXUS file if given a
+      list of trees with names.
+
+
+BUG FIXES
+
+    o prop.part() failed in some situations with unrooted trees.
+
+    o read.nexus() shuffled node labels when a TRANSLATE block was
+      present.
+
+    o varCompPhylip() did not work if 'exec' was specified.
+
+    o bind.tree() shuffled node labels when position > 0 and 'where'
+      was not the root.
+
+
+OTHER CHANGES
+
+    o BaseProportion in src/dist_dna.c has been modified.
+
+    o A number of functions in src/tree_build.c have been modified.
+
+    o The matching representation has now only two columns as the third
+      column was redundant.
+
+
+
 		CHANGES IN APE VERSION 2.6-3
 
 

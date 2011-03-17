@@ -56,7 +56,7 @@ bd.ext(phy, S, conditional = TRUE)
   I. J. (2007) Exceptional among-lineage variation in diversification
   rates during the radiation of Australia's most diverse vertebrate
   clade. \emph{Proceedings of the Royal Society of London. Series
-  B. Biological Sciences}, \bold{274}, 2915-2923.
+  B. Biological Sciences}, \bold{274}, 2915--2923.
 }
 \author{Emmanuel Paradis}
 \seealso{

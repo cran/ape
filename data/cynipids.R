@@ -1,3 +1,3 @@
-require(ape, quietly = TRUE, save = FALSE)
+require(ape, quietly = TRUE)
 cynipids <- read.nexus.data("cynipids.txt")
 

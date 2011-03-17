@@ -1,28 +1,20 @@
-## read.nexus.R (2010-09-27)
+## read.nexus.R (2011-02-28)
 
 ##   Read Tree File in Nexus Format
 
-## Copyright 2003-2009 Emmanuel Paradis and 2010 Klaus Schliep
+## Copyright 2003-2011 Emmanuel Paradis and 2010 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 .treeBuildWithTokens <- function(x)
 {
-    ## remove potential node labels; see ?read.nexus for justification
-    node.label <- gsub("[:;].*$", "", strsplit(x, ")")[[1]][-1])
-    has.node.labels <- FALSE
-    if (any(node.label != "")) {
-        x <- gsub(")[^:]*:", "):", x)
-        x <- gsub(")[^:]*;", ");", x) # if there's no root edge
-        has.node.labels <- TRUE
-    }
-    phy <- .Call("treeBuildWithTokens", x, PACKAGE = "ape")
+    phy <- .Call("treeBuildWithTokens", x, PACKAGE = "apex")
     dim(phy[[1]]) <- c(length(phy[[1]])/2, 2)
-    nms <- c("edge", "edge.length", "Nnode", "root.edge")
-    if (length(phy) == 3) nms <- nms[-4]
+    nms <- c("edge", "edge.length", "Nnode", "node.label", "root.edge")
+    if (length(phy) == 4) nms <- nms[-5]
     names(phy) <- nms
-    if (has.node.labels) phy$node.label <- node.label
+    if (all(phy$node.label == "")) phy$node.label <- NULL
     class(phy) <- "phylo"
     phy
 }

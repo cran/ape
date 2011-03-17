@@ -1,2 +1,2 @@
-require(ape, quietly = TRUE, save = FALSE)
+require(ape, quietly = TRUE)
 bird.orders <- read.tree("bird.orders.tre")

@@ -1,8 +1,8 @@
-## pic.R (2010-11-15)
+## pic.R (2011-03-01)
 
 ##   Phylogenetically Independent Contrasts
 
-## Copyright 2002-2010 Emmanuel Paradis
+## Copyright 2002-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -174,7 +174,7 @@ varCompPhylip <- function(x, phy, exec = NULL)
     odir <- setwd(pfx)
     on.exit(setwd(odir))
     if (file.exists("outfile")) unlink("outfile")
-    system("phylip contrast", intern = TRUE, input = c("W", "A", "Y"))
+    system(exec, intern = TRUE, input = c("W", "A", "Y"))
     varA <- scan("outfile", skip = 7, nlines = p, quiet = TRUE)
     varE <- scan("outfile", skip = 11 + p, nlines = p, quiet = TRUE)
     if (p > 1) {

@@ -34,9 +34,8 @@ as.matching(x, ...)
   \code{as.matching} returns an object of class \code{"matching"} with
   the following component:
 
-  \item{matching}{a three-column numeric matrix where the first two
-    columns represent the sibling pairs, and the third one the
-    corresponding ancestor.}
+  \item{matching}{a two-column numeric matrix where the columns
+    represent the sibling pairs.}
   \item{tip.label}{(optional) a character vector giving the tip labels
     where the ith element is the label of the tip numbered i in
     \code{matching}.}

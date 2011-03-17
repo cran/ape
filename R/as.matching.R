@@ -1,8 +1,8 @@
-## as.matching.R (2010-09-29)
+## as.matching.R (2011-02-26)
 
 ##    Conversion Between Phylo and Matching Objects
 
-## Copyright 2005-2010 Emmanuel Paradis
+## Copyright 2005-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -14,7 +14,7 @@ as.matching.phylo <- function(x, labels = TRUE, ...)
     nb.tip <- length(x$tip.label)
     nb.node <- x$Nnode
     if (nb.tip != nb.node + 1)
-      stop("the tree must be dichotomous AND rooted.")
+        stop("the tree must be dichotomous AND rooted.")
     x <- reorder(x, "pruningwise")
     mat <- matrix(x$edge[, 2], ncol = 2, byrow = TRUE)
     nodes <- x$edge[seq(by = 2, length.out = nb.node), 1]
@@ -23,7 +23,7 @@ as.matching.phylo <- function(x, labels = TRUE, ...)
     new.nodes <- 1:nb.node + nb.tip
     sel <- !is.na(O)
     mat[sel] <- new.nodes[O[sel]]
-    mat <- cbind(t(apply(mat, 1, sort)), new.nodes, deparse.level = 0)
+    mat <- t(apply(mat, 1, sort))
 
     obj <- list(matching = mat)
     if (!is.null(x$edge.length))
@@ -31,7 +31,7 @@ as.matching.phylo <- function(x, labels = TRUE, ...)
     if (labels) {
         obj$tip.label <- x$tip.label
         if (!is.null(x$node.label))
-          obj$node.label <- x$node.label[match(new.nodes, nodes)]
+            obj$node.label <- x$node.label[match(new.nodes, nodes)]
     }
     class(obj) <- "matching"
     obj
@@ -39,16 +39,16 @@ as.matching.phylo <- function(x, labels = TRUE, ...)
 
 as.phylo.matching <- function(x, ...)
 {
-    N <- 2*dim(x$matching)[1]
+    nb.node <- dim(x$matching)[1]
+    nb.tip <- nb.node + 1
+    N <- 2 * nb.node
     edge <- matrix(NA, N, 2)
-    nb.tip <- (N + 2)/2
-    nb.node <- nb.tip - 1
     new.nodes <- numeric(N + 1)
     new.nodes[N + 1] <- nb.tip + 1
     nextnode <- nb.tip + 2
     j <- 1
     for (i in nb.node:1) {
-        edge[j:(j + 1), 1] <- new.nodes[x$matching[i, 3]]
+        edge[j:(j + 1), 1] <- new.nodes[i + nb.tip]
         for (k in 1:2) {
             if (x$matching[i, k] > nb.tip) {
                 edge[j + k - 1, 2] <- new.nodes[x$matching[i, k]] <- nextnode
