@@ -26,7 +26,7 @@
 \author{Ben Bolker \email{bolker@zoo.ufl.edu} and Emmanuel Paradis}
 \seealso{
   \code{\link{read.tree}}, \code{\link{summary.phylo}},
-  \code{\link[base]{print}} for the generic R function
+  \code{\link[base]{print}} for the generic \R function
 }
 \examples{
 x <- rtree(10)

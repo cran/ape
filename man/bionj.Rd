@@ -22,7 +22,7 @@ bionj(X)
 }
 \author{
   original C code by Hoa Sien Cuong and Olivier Gascuel; adapted and
-  ported to R by Vincent Lefort \email{vincent.lefort@lirmm.fr}
+  ported to \R by Vincent Lefort \email{vincent.lefort@lirmm.fr}
 }
 \seealso{
   \code{\link{nj}}, \code{\link{fastme}},

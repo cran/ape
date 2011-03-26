@@ -1,4 +1,4 @@
-## plot.phylo.R (2011-02-17)
+## plot.phylo.R (2011-03-23)
 
 ##   Plot Phylogenies
 
@@ -608,4 +608,79 @@ plot.multiPhylo <- function(x, layout = 1, ...)
         on.exit(par(ask = FALSE))
     }
     for (i in 1:length(x)) plot(x[[i]], ...)
+}
+
+trex <- function(phy, title = TRUE, subbg = "lightyellow3",
+                 return.tree = FALSE, ...)
+{
+    lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
+    devmain <- dev.cur() # where the main tree is plotted
+
+    restore <- function() {
+        dev.set(devmain)
+        assign("last_plot.phylo", lastPP, envir = .PlotPhyloEnv)
+    }
+
+    on.exit(restore())
+    NEW <- TRUE
+    cat("Click close to a node. Right-click to exit.\n")
+    repeat {
+        x <- identify.phylo(phy, quiet = TRUE)
+        if (is.null(x)) return(invisible(NULL)) else {
+            x <- x$nodes
+            if (is.null(x)) cat("Try again!\n") else {
+                if (NEW) {
+                    dev.new()
+                    par(bg = subbg)
+                    devsub <- dev.cur()
+                    NEW <- FALSE
+                } else dev.set(devsub)
+
+                tr <- extract.clade(phy, x)
+                plot(tr, ...)
+                if (is.character(title)) title(title)
+                else if (title) {
+                     tl <-
+                         if (is.null(phy$node.label))
+                         paste("From node #", x, sep = "")
+                         else paste("From", phy$node.label[x - Ntip(phy)])
+                     title(tl)
+                }
+                if (return.tree) return(tr)
+                restore()
+            }
+        }
+    }
+}
+
+kronoviz <- function(x, layout = length(x), horiz = TRUE, ...)
+{
+    par(mar = rep(0.5, 4), oma = rep(2, 4))
+    rts <- sapply(x, function(x) branching.times(x)[1])
+    maxrts <- max(rts)
+    lim <- cbind(rts - maxrts, rts)
+    Ntree <- length(x)
+    Ntips <- sapply(x, Ntip)
+    if (horiz) {
+        nrow <- layout
+        w <- 1
+        h <- Ntips
+    } else {
+        nrow <- 1
+        w <- Ntips
+        h <- 1
+    }
+    layout(matrix(1:layout, nrow), widths = w, heights = h)
+    if (layout > Ntree && !par("ask")) {
+        par(ask = TRUE)
+        on.exit(par(ask = FALSE))
+    }
+    if (horiz) {
+        for (i in 1:Ntree)
+            plot(x[[i]], x.lim = lim[i, ], ...)
+    } else {
+        for (i in 1:Ntree)
+            plot(x[[i]], y.lim = lim[i, ], direction = "u", ...)
+    }
+    axisPhylo(if (horiz) 1 else 4) # better if the deepest tree is last ;)
 }

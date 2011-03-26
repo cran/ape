@@ -43,7 +43,7 @@
 }
 \author{\enc{Benoît}{Benoit} \email{b.durand@alfort.AFSSA.FR}}
 \seealso{
-  \code{\link[base]{all.equal}} for the generic R function
+  \code{\link[base]{all.equal}} for the generic \R function
 }
 \examples{
 ### maybe the simplest example of two representations

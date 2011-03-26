@@ -31,7 +31,7 @@
     \code{\link[graphics]{image.default}} (e.g., \code{cex.axis}).}
 }
 \details{
-  The idea of this function is to allow fleixble plotting and colouring
+  The idea of this function is to allow flexible plotting and colouring
   of a nucleotide alignment. By default, the most common bases (a, g, c,
   t, and n) and alignment gap are plotted using a standard colour
   scheme.

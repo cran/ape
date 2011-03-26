@@ -1,3 +1,42 @@
+		CHANGES IN APE VERSION 2.7-1
+
+
+NEW FEATURES
+
+    o The new function trex does tree exploration with multiple
+      graphical devices.
+
+    o The new function kronoviz plots several rooted (dated) trees on
+      the scale scale.
+
+    o identify.phylo() has a new option 'quiet' (FALSE by default).
+
+
+BUG FIXES
+
+    o A bug was introduced in read.nexus() in ape 2.7.
+
+    o image.DNAbin() did not colour correctly the bases if there were
+      some '-' and no 'N'.
+
+    o .compressTipLabel() failed with a list with a single tree.
+
+    o identify.phylo() returned a wrong answer when the x- and y-scales
+      are very different.
+
+    o write.nexus() failed with lists of trees with compressed labels.
+
+
+OTHER CHANGES
+
+    o identify.phylo() now returns NULL if the user right-(instead of
+      left-)clicks (an error was returned previously).
+
+    o read.nexus() should be robust to commands inserted in the TREES
+      block.
+
+
+
 		CHANGES IN APE VERSION 2.7
 
 

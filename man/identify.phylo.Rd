@@ -3,7 +3,7 @@
 \title{Graphical Identification of Nodes and Tips}
 \usage{
 \method{identify}{phylo}(x, nodes = TRUE, tips = FALSE,
-                  labels = FALSE, ...)
+                  labels = FALSE, quiet = FALSE, ...)
 }
 \arguments{
   \item{x}{an object of class \code{"phylo"}.}
@@ -12,6 +12,8 @@
     information.}
   \item{labels}{a logical specifying whether to return the labels; by
     default only the numbers are returned.}
+  \item{quiet}{a logical controlling whether to print a message inviting
+    the user to click on the tree.}
   \item{\dots}{further arguments to be passed to or from other methods.}
 }
 \description{

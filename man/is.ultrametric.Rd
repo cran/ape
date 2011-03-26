@@ -20,7 +20,7 @@ is.ultrametric(phy, tol = .Machine$double.eps^0.5)
 }
 \details{
   The default value for \code{tol} is based on the numerical
-  characteristics of the machine R is running on.
+  characteristics of the machine \R is running on.
 }
 \author{Emmanuel Paradis}
 \seealso{

@@ -48,19 +48,16 @@ tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE)
   Higgins, D. G. and Thompson, J. D. (2003) Multiple sequence alignment
   with the Clustal series of programs. \emph{Nucleic Acids Research}
   \bold{31}, 3497--3500.
-
   \url{http://www.clustal.org/}
 
   Edgar, R. C. (2004) MUSCLE: Multiple sequence alignment with high
   accuracy and high throughput. \emph{Nucleic Acids Research},
   \bold{32}, 1792--1797.
-
   \url{http://www.drive5.com/muscle/muscle_userguide3.8.html}
 
   Notredame, C., Higgins, D. and Heringa, J. (2000) T-Coffee: A novel
   method for multiple sequence alignments. \emph{Journal of Molecular
   Biology}, \bold{302}, 205--217.
-
   \url{http://www.tcoffee.org/Documentation/t_coffee/t_coffee_technical.htm}
 }
 \author{Emmanuel Paradis}

@@ -1,4 +1,4 @@
-## read.nexus.R (2011-02-28)
+## read.nexus.R (2011-03-26)
 
 ##   Read Tree File in Nexus Format
 
@@ -9,7 +9,7 @@
 
 .treeBuildWithTokens <- function(x)
 {
-    phy <- .Call("treeBuildWithTokens", x, PACKAGE = "apex")
+    phy <- .Call("treeBuildWithTokens", x, PACKAGE = "ape")
     dim(phy[[1]]) <- c(length(phy[[1]])/2, 2)
     nms <- c("edge", "edge.length", "Nnode", "node.label", "root.edge")
     if (length(phy) == 4) nms <- nms[-5]
@@ -154,12 +154,13 @@ read.nexus <- function(file, tree.names = NULL)
     end <- endblock[endblock > i1][1] - 1
     tree <- X[start:end]
     rm(X)
-    tree <- gsub("^.*= *", "", tree)
+###    tree <- gsub("^.*= *", "", tree)
     ## check whether there are empty lines from the above manips:
     tree <- tree[tree != ""]
     semico <- grep(";", tree)
-    Ntree <- length(semico)
+    Ntree <- length(semico) # provisional -- some ";" may actually mark end of commands
     ## are some trees on several lines?
+    ## -- this actually 'packs' all characters ending with a ";" in a single string --
     if (Ntree == 1 && length(tree) > 1) STRING <- paste(tree, collapse = "") else {
         if (any(diff(semico) != 1)) {
             STRING <- character(Ntree)
@@ -175,7 +176,14 @@ read.nexus <- function(file, tree.names = NULL)
         } else STRING <- tree
     }
     rm(tree)
-    STRING <- gsub(" ", "", STRING)
+    ## exclude the possible command lines ending with ";":
+    STRING <- STRING[grep("^[[:blank:]]*tree.*= *", STRING, ignore.case = TRUE)]
+    Ntree <- length(STRING) # update Ntree
+    ## get the tree names:
+    nms.trees <- sub(" *= *.*", "", STRING) # only the first occurence of "="
+    nms.trees <- sub("^ *tree *", "", nms.trees, ignore.case = TRUE)
+    STRING <- sub("^.*= *", "", STRING) # delete title and 'TREE' command with 'sub'
+    STRING <- gsub(" ", "", STRING) # delete all white spaces
     colon <- grep(":", STRING)
     if (!length(colon)) {
         trees <- lapply(STRING, clado.build)
@@ -237,6 +245,7 @@ read.nexus <- function(file, tree.names = NULL)
             }
         }
         class(trees) <- "multiPhylo"
+        if (!all(nms.trees == "")) names(trees) <- nms.trees
     }
     if (length(grep("[\\/]", file)) == 1)
         if (!file.exists(file)) # suggestion by Francois Michonneau

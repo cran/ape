@@ -1,4 +1,4 @@
-## as.phylo.R (2011-03-16)
+## as.phylo.R (2011-03-25)
 
 ##     Conversion Among Tree Objects
 
@@ -29,7 +29,8 @@ new2old.phylo <- function(phy)
 
 as.phylo <- function (x, ...)
 {
-    if (class(x) == "phylo") return(x)
+    if (length(class(x)) == 1 && class(x) == "phylo")
+        return(x)
     UseMethod("as.phylo")
 }
 

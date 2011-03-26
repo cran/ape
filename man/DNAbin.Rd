@@ -42,7 +42,7 @@
     are dropped.}
   \item{i, j}{indices of the rows and/or columns to select or to drop.
     They may be numeric, logical, or character (in the same way than for
-    standard R objects).}
+    standard \R objects).}
   \item{drop}{logical; if \code{TRUE}, the returned object is of the
     lowest possible dimension.}
   \item{recursive}{for compatibility with the generic (unused).}
@@ -50,7 +50,7 @@
 \details{
   These are all `methods' of generic functions which are here applied to
   DNA sequences stored as objects of class \code{"DNAbin"}. They are
-  used in the same way than the standard R functions to manipulate
+  used in the same way than the standard \R functions to manipulate
   vectors, matrices, and lists. Additionally, the operators \code{[[}
   and \code{$} may be used to extract a vector from a list. Note that
   the default of \code{drop} is not the same than the generic operator:

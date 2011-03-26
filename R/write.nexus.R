@@ -1,8 +1,8 @@
-## write.nexus.R (2011-02-26)
+## write.nexus.R (2011-03-26)
 
 ##   Write Tree File in Nexus Format
 
-## Copyright 2003-2011x Emmanuel Paradis
+## Copyright 2003-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -57,26 +57,24 @@ the original data won't be written with the tree."))
     }
     cat("BEGIN TREES;\n", file = file, append = TRUE)
     if (translate) {
-        ## We take arbitrarily the labels of the first tree, and
-        ## translate them as "1", "2", "3", ...
         cat("\tTRANSLATE\n", file = file, append = TRUE)
-        tmp <- checkLabel(obj[[1]]$tip.label)
-        X <- paste("\t\t", 1:N, "\t", tmp, ",", sep = "")
+        obj <- .compressTipLabel(obj)
+        X <- paste("\t\t", 1:N, "\t", attr(obj, "TipLabel"), ",", sep = "")
         ## We remove the last comma:
         X[length(X)] <- gsub(",", "", X[length(X)])
         cat(X, file = file, append = TRUE, sep = "\n")
         cat("\t;\n", file = file, append = TRUE)
-        token <- as.character(1:N)
-        names(token) <- obj[[1]]$tip.label
-        obj[[1]]$tip.label <- token
-        if (ntree > 1) {
-            for (i in 2:ntree)
-                obj[[i]]$tip.label <- token[obj[[i]]$tip.label]
-            class(obj) <- NULL
-        }
-    } else {
+        class(obj) <- NULL
         for (i in 1:ntree)
-            obj[[i]]$tip.label <- checkLabel(obj[[i]]$tip.label)
+            obj[[i]]$tip.label <- as.character(1:N)
+    } else {
+        if (is.null(attr(obj, "TipLabel"))) {
+            for (i in 1:ntree)
+                obj[[i]]$tip.label <- checkLabel(obj[[i]]$tip.label)
+        } else {
+            attr(obj, "TipLabel") <- checkLabel(attr(obj, "TipLabel"))
+            obj <- .uncompressTipLabel(obj)
+        }
     }
 
     title <- names(obj)

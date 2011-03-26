@@ -71,7 +71,17 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   generalized least squares (\code{method = "GLS"}, Martins and Hansen
   1997, Cunningham et al. 1998). In the latter case, the specification
   of \code{phy} and \code{model} are actually ignored: it is instead
-  given through a correlation structure with the option \code{corStruct}.
+  given through a correlation structure with the option
+  \code{corStruct}.
+
+  In the default setting (i.e., \code{method = "ML"} and \code{model =
+  "BM"}) the maximum likelihood estimation is done simultaneously on
+  the ancestral values and the variance of the Brownian motion process;
+  these estimates are then used to compute the confidence intervals in
+  the standard way (see the package \pkg{geiger} for a different
+  implementation). If \code{method = "pic"} or \code{"GLS"}, the
+  confidence intervals are computed using the expected variances under
+  the model, so they depend only on the tree.
 
   For discrete characters (\code{type = "discrete"}), only maximum
   likelihood estimation is available (Pagel 1994). The model is

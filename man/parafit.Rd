@@ -24,7 +24,7 @@ parafit(host.D, para.D, HP, nperm = 999, test.links = FALSE,
   \item{test.links }{ \code{test.links = TRUE} will test the significance of individual host-parasite links. Default: \code{test.links = FALSE}. }
   \item{seed }{ \code{seed = NULL} (default): a seed is chosen at random by the function. That seed is used as the starting point for all tests of significance, i.e. the global H-P test and the tests of individual H-P links if they are requested. Users can select a seed of their choice by giving any integer value to \code{seed}, for example \code{seed = -123456}. Running the function again with the same seed value will produce the exact same test results. }
   \item{correction}{ Correction methods for negative eigenvalues (details below): \code{correction="lingoes"} and \code{correction="cailliez"}. Default value: \code{"none"}.  }
-  \item{silent}{ Informative messages and the time to compute the tests will not be written to the R console if silent=TRUE. Useful when the function is called by a numerical simulation function. }
+  \item{silent}{ Informative messages and the time to compute the tests will not be written to the \R console if silent=TRUE. Useful when the function is called by a numerical simulation function. }
 }
 
 \details{

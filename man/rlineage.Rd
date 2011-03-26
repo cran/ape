@@ -35,7 +35,7 @@ drop.fossil(phy, tol = 1e-8)
   Both functions use continuous-time algorithms described in the
   references. The models are time-dependent birth--death models as
   described in Kendall (1948). Speciation (birth) and extinction (death)
-  rates may be constant or vary through time according to an R function
+  rates may be constant or vary through time according to an \R function
   specified by the user. In the latter case, \code{BIRTH} and/or
   \code{DEATH} may be used of the primitives of \code{birth} and
   \code{death} are known. In these functions time is the formal argument
@@ -48,9 +48,9 @@ drop.fossil(phy, tol = 1e-8)
   Kendall, D. G. (1948) On the generalized ``birth-and-death''
   process. \emph{Annals of Mathematical Statistics}, \bold{19}, 1--15.
 
-  Paradis, E. (2010) Time-dependent speciation and extinction from
-  phylogenies: a least squares approach. \emph{Evolution} (in press)
-  %, \bold{59}, 1--12.
+  Paradis, E. (2011) Time-dependent speciation and extinction from
+  phylogenies: a least squares approach. \emph{Evolution}, \bold{65},
+  661--672.
 }
 \author{Emmanuel Paradis}
 \seealso{

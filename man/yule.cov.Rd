@@ -43,7 +43,7 @@ yule.cov(phy, formula, data = NULL)
   \item a phylogenetic tree which may contain multichotomies;
 
   \item a formula which specifies the predictors of the model described
-  above: this is given as a standard R formula and has no response (no
+  above: this is given as a standard \R formula and has no response (no
   left-hand side term), for instance: \code{~ x + y}, it can include
   interactions (\code{~ x + a * b}) (see \code{\link[stats]{formula}}
   for details);

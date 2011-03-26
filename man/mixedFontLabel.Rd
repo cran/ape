@@ -27,7 +27,7 @@ mixedFontLabel(..., sep = " ", italic = NULL, bold = NULL,
 }
 \details{
   The idea is to have different bits of text in different vectors that
-  are put together to make a vector of R expressions. This vector is
+  are put together to make a vector of \R expressions. This vector is
   interpreted by graphical functions to format the text. A simple use
   may be \code{mixedFontLabel(genus, species), italic = 1:2}, but it is
   more interesting when mixing fonts (see examples).

@@ -42,7 +42,7 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
 \description{
   This function calls PhyML and fits successively 28 models of DNA
   evolution. The results are saved on disk, as PhyML usually does, and
-  returned in R as a vector with the log-likelihood value of each model.
+  returned in \R as a vector with the log-likelihood value of each model.
 }
 \details{
   The present function requires version 3.0.1 of PhyML; it won't work with

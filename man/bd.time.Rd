@@ -57,9 +57,9 @@ bd.time(phy, birth, death, BIRTH = NULL, DEATH = NULL,
   \item{evaluations}{id.}
 }}
 \references{
-  Paradis, E. (2010) Time-dependent speciation and extinction from
-  phylogenies: a least squares approach. \emph{Evolution} (in press)
-  %, \bold{59}, 1--12.
+  Paradis, E. (2011) Time-dependent speciation and extinction from
+  phylogenies: a least squares approach. \emph{Evolution}, \bold{65},
+  661--672.
 }
 \author{Emmanuel Paradis}
 \seealso{

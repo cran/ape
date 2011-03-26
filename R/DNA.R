@@ -1,4 +1,4 @@
-## DNA.R (2011-03-16)
+## DNA.R (2011-03-21)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -418,16 +418,18 @@ image.DNAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
     y <- integer(N <- length(x))
     ncl <- length(what)
     col <- rep(col, length.out = ncl)
+    brks <- 0.5:(ncl + 0.5)
     sm <- 0L
     for (i in ncl:1) {
         k <- ._bs_[._cs_ == what[i]]
         sel <- which(x == k)
-        if (ll <- length(sel)) {
+        if (L <- length(sel)) {
             y[sel] <- i
-            sm <- sm + ll
+            sm <- sm + L
         } else {
             what <- what[-i]
             col <- col[-i]
+            brks <- brks[-i]
         }
     }
     dim(y) <- dx
@@ -439,10 +441,11 @@ image.DNAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
         co <- c(bg, col)
         leg.txt <- c(toupper(what), "others")
         leg.co <- c(col, bg)
+        brks <- c(-0.5, brks)
     }
     yaxt <- if (show.labels) "n" else "s"
-    image(1:s, 1:n, t(y), col = co, xlab = xlab,
-          ylab = ylab, yaxt = yaxt, ...)
+    graphics::image.default(1:s, 1:n, t(y), col = co, xlab = xlab,
+                            ylab = ylab, yaxt = yaxt, breaks = brks, ...)
     if (show.labels)
         mtext(rownames(x), side = 2, line = 0.1, at = 1:n,
               cex = cex.lab, adj = 1, las = 1)

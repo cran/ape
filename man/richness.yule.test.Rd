@@ -17,8 +17,6 @@ richness.yule.test(x, t)
   \item{t}{a numeric vector giving the divergence times of each pair of
     clades in \code{x}.}
 }
-\details{
-}
 \value{
   a data frame with the \eqn{\chi^2}{chi2}, the number of degrees of
   freedom (= 1), and the \emph{P}-value.

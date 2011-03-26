@@ -21,7 +21,7 @@ lmorigin(formula, data, origin=TRUE, nperm=999, method=NULL, silent=FALSE)
   \item{nperm}{ Number of permutations for the tests. If \code{nperm =
    0}, permutation tests will not be computed. The default value is \code{nperm = 999}. For large data files, the permutation test is rather slow since the permutation procedure is not compiled. }
   \item{method}{ \code{method = "raw"} computes t-tests of the regression coefficients by permutation of the raw data. \code{method = "residuals"} computes t-tests of the regression coefficients by permutation of the residuals of the full model. If \code{method = NULL}, permutation of the raw data is used to test the regression coefficients in regression through the origin; permutation of the residuals of the full model is used to test the regression coefficients in ordinary multiple regression. }
-  \item{silent}{ Informative messages and the time to compute the tests will not be written to the R console if silent=TRUE. Useful when the function is called by a numerical simulation function. }
+  \item{silent}{ Informative messages and the time to compute the tests will not be written to the \R console if silent=TRUE. Useful when the function is called by a numerical simulation function. }
 }
 
 \details{
