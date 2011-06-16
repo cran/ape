@@ -7,7 +7,8 @@
 \alias{plot.prop.part}
 \title{Tree Bipartition and Bootstrapping Phylogenies}
 \usage{
-boot.phylo(phy, x, FUN, B = 100, block = 1, trees = FALSE)
+boot.phylo(phy, x, FUN, B = 100, block = 1,
+           trees = FALSE, quiet = FALSE)
 prop.part(..., check.labels = TRUE)
 prop.clades(phy, ..., part = NULL)
 \method{print}{prop.part}(x, ...)
@@ -25,6 +26,7 @@ prop.clades(phy, ..., part = NULL)
     together (see details).}
   \item{trees}{a logical specifying whether to return the bootstraped
     trees (\code{FALSE} by default).}
+  \item{quiet}{a logical: a progress bar is displayed by default.}
   \item{\dots}{either (i) a single object of class \code{"phylo"}, (ii) a
     series of such objects separated by commas, or (iii) a list
     containing such objects. In the case of \code{plot} further
@@ -119,10 +121,11 @@ prop.clades(phy, ..., part = NULL)
 }
 \examples{
 data(woodmouse)
-tr <- nj(dist.dna(woodmouse))
+f <- function(x) nj(dist.dna(x))
+tr <- f(woodmouse)
 ### Are bootstrap values stable?
 for (i in 1:5)
-  print(boot.phylo(tr, woodmouse, function(xx) nj(dist.dna(xx))))
+  print(boot.phylo(tr, woodmouse, f, quiet = TRUE))
 ### How many partitions in 100 random trees of 10 labels?...
 TR <- replicate(100, rtree(10), FALSE)
 pp10 <- prop.part(TR)

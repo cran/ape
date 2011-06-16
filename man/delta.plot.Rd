@@ -7,7 +7,7 @@ delta.plot(X, k = 20, plot = TRUE, which = 1:2)
 \arguments{
   \item{X}{a distance matrix, may be an object of class ``dist''.}
   \item{k}{an integer giving the number of intervals in the plot.}
-  \item{plot}{a logival specifying whether to draw the
+  \item{plot}{a logical specifying whether to draw the
     \eqn{\delta}{delta} plot (the default).}
   \item{which}{a numeric vector indicating which plots are done; 1: the
     histogram of the \eqn{\delta_q}{delta_q} values, 2: the plot of the

@@ -1,4 +1,4 @@
-## dist.topo.R (2011-03-26)
+## dist.topo.R (2011-06-14)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -184,7 +184,8 @@ prop.clades <- function(phy, ..., part = NULL)
     n
 }
 
-boot.phylo <- function(phy, x, FUN, B = 100, block = 1, trees = FALSE)
+boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
+                       trees = FALSE, quiet = FALSE)
 {
     if (is.list(x) && !is.data.frame(x)) {
         if (inherits(x, "DNAbin")) x <- as.matrix(x)
@@ -198,6 +199,7 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1, trees = FALSE)
         }
     }
     boot.tree <- vector("list", B)
+    if (!quiet) progbar <- utils::txtProgressBar(style = 3) # suggestion by Alastair Potts
     for (i in 1:B) {
         if (block > 1) {
             y <- seq(block, ncol(x), block)
@@ -208,11 +210,14 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1, trees = FALSE)
               boot.samp[y - j] <- boot.i - j
         } else boot.samp <- sample(ncol(x), replace = TRUE)
         boot.tree[[i]] <- FUN(x[, boot.samp])
+        if (!quiet) utils::setTxtProgressBar(progbar, i/B)
     }
+    if (!quiet) close(progbar)
     for (i in 1:B) storage.mode(boot.tree[[i]]$Nnode) <- "integer"
     storage.mode(phy$Nnode) <- "integer"
-    ans <- attr(.Call("prop_part", c(list(phy), boot.tree),
-                      B + 1, FALSE, PACKAGE = "ape"), "number") - 1
+    ans <- prop.clades(phy, boot.tree)
+    ##ans <- attr(.Call("prop_part", c(list(phy), boot.tree),
+    ##                  B + 1, FALSE, PACKAGE = "ape"), "number") - 1
     if (trees) {
         class(boot.tree) <- "multiPhylo"
         ans <- list(BP = ans, trees = boot.tree)

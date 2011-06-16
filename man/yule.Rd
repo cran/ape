@@ -1,6 +1,6 @@
 \name{yule}
 \alias{yule}
-\title{Fits Yule Model to a Phylogenetic Tree}
+\title{Fits the Yule Model to a Phylogenetic Tree}
 \usage{
 yule(phy, use.root.edge = FALSE)
 }

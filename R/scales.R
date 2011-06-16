@@ -1,16 +1,17 @@
-## scales.R (2009-12-16)
+## scales.R (2011-05-31)
 
 ##   Add a Scale Bar or Axis to a Phylogeny Plot
 
 ## add.scale.bar: add a scale bar to a phylogeny plot
 ## axisPhylo: add a scale axis on the side of a phylogeny plot
 
-## Copyright 2002-2009 Emmanuel Paradis
+## Copyright 2002-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-add.scale.bar <- function(x, y, length = NULL, ask = FALSE, ...)
+add.scale.bar <- function(x, y, length = NULL, ask = FALSE,
+                          lwd = 1, lcol = "black", ...)
 {
     lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
     direc <- lastPP$direction
@@ -55,19 +56,19 @@ add.scale.bar <- function(x, y, length = NULL, ask = FALSE, ...)
 
     switch(direc,
            "rightwards" = {
-               segments(x, y, x + length, y)
+               segments(x, y, x + length, y, col = lcol, lwd = lwd)
                text(x + length * 1.1, y, as.character(length), adj = c(0, 0.5), ...)
            },
            "leftwards" = {
-               segments(x - length, y, x, y)
+               segments(x - length, y, x, y, col = lcol, lwd = lwd)
                text(x - length * 1.1, y, as.character(length), adj = c(1, 0.5), ...)
            },
            "upwards" = {
-               segments(x, y, x, y + length)
+               segments(x, y, x, y + length, col = lcol, lwd = lwd)
                text(x, y + length * 1.1, as.character(length), adj = c(0, 0.5), srt = 90, ...)
            },
            "downwards" = {
-               segments(x, y - length, x, y)
+               segments(x, y - length, x, y, col = lcol, lwd = lwd)
                text(x, y - length * 1.1, as.character(length), adj = c(0, 0.5), srt = 270, ...)
            })
 }

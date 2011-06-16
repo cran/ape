@@ -12,26 +12,29 @@ diversity.contrast.test(x, method = "ratiolog",
 \arguments{
   \item{x}{a matrix or a data frame with at least two columns: the first
     one gives the number of species in clades with a trait supposed to
-    increase or decrease diversification rate, and the second one the number of
-    species in the sister-clades without the trait. Each
-    row represents a pair of sister-clades.}
-  \item{method}{a character string specifying the kind of test: \code{"ratiolog"} (default),
-    \code{"proportion"}, \code{"difference"}, or any unambiguous
+    increase or decrease diversification rate, and the second one the
+    number of species in the sister-clades without the trait. Each row
+    represents a pair of sister-clades.}
+  \item{method}{a character string specifying the kind of test:
+    \code{"ratiolog"} (default), \code{"proportion"},
+    \code{"difference"}, \code{"logratio"}, or any unambiguous
     abbreviation of these.}
   \item{alternative}{a character string defining the alternative
     hypothesis:  \code{"two.sided"} (default),  \code{"less"},
     \code{"greater"}, or any unambiguous abbreviation of these.}
   \item{nrep}{the number of replications of the randomization test; by
     default, a Wilcoxon test is done.}
-  \item{\dots}{arguments passed to the function \code{\link[stats]{wilcox.test}}.}
+  \item{\dots}{arguments passed to the function
+    \code{\link[stats]{wilcox.test}}.}
 }
 \details{
   If \code{method = "ratiolog"}, the test described in Barraclough et
   al. (1996) is performed. If \code{method = "proportion"}, the version
   in Barraclough et al. (1995) is used. If \code{method = "difference"},
-  then this is Wiegmann et al.'s (1993) version. Vamosi and Vamosi (2005)
-  gave a detailed account of these three tests which are essentially
-  different versions of the same test.
+  the signed difference is used (Sargent 2004). If \code{method =
+    "logratio"}, then this is Wiegmann et al.'s (1993) version. These
+  four tests are essentially different versions of the same test (Vamosi
+  and Vamosi 2005, Vamosi 2007).
 
   If \code{nrep = 0}, a Wilcoxon test is done on the species diversity
   contrasts with the null hypothesis is that they are distributed around
@@ -52,7 +55,15 @@ diversity.contrast.test(x, method = "ratiolog",
   Barraclough, T. G., Harvey, P. H., and Nee,  S. (1996) Rate of
   \emph{rbc}L gene sequence evolution and species diversification in
   flowering plants (angiosperms). \emph{Proceedings of the Royal Society
-  of London. Series B. Biological Sciences}, \bold{263}, 589--591.
+    of London. Series B. Biological Sciences}, \bold{263}, 589--591.
+
+  Sargent, R. D. (2004) Floral symmetry affects speciation rates in
+  angiosperms. \emph{Proceedings of the Royal Society of London. Series
+  B. Biological Sciences}, \bold{271}, 603--608.
+
+  Vamosi, S. M. (2007) Endless tests: guidelines for analysing non-nested
+  sister-group comparisons. An addendum. \emph{Evolutionary Ecology
+  Research}, \bold{9}, 717.
 
   Vamosi, S. M. and Vamosi, J. C. (2005) Endless tests: guidelines for
   analysing non-nested sister-group comparisons. \emph{Evolutionary

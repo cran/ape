@@ -1,8 +1,8 @@
-## rTrait.R (2010-12-24)
+## rTrait.R (2011-06-16)
 
 ##   Trait Evolution
 
-## Copyright 2010 Emmanuel Paradis
+## Copyright 2010-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -117,7 +117,10 @@ rTraitCont <-
                 stop("'theta' must have one or Nedge(phy) elements")
             if (!linear) model <- model + 1L
         }
-        .C("rTraitCont", as.integer(model), as.integer(N), as.integer(anc - 1L), as.integer(des - 1L), el, sigma, alpha, theta, x, DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+        .C("rTraitCont", as.integer(model), as.integer(N),
+           as.integer(anc - 1L), as.integer(des - 1L), el,
+           as.double(sigma), as.double(alpha), as.double(theta), x,
+           DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
     }
 
     if (ancestor) {
@@ -126,6 +129,47 @@ rTraitCont <-
     } else {
         x <- x[1:n]
         names(x) <- phy$tip.label
+    }
+    x
+}
+
+rTraitMult <-
+    function(phy, model, p = 1, root.value = rep(0, p), ancestor = FALSE,
+             asFactor = NULL, trait.labels = paste("x", 1:p, sep = ""), ...)
+{
+    phy <- reorder(phy, "pruningwise")
+    n <- length(phy$tip.label)
+    m <- phy$Nnode
+    N <- dim(phy$edge)[1]
+    ROOT <- n + 1L
+
+    x <- matrix(0, n + m, p)
+    x[ROOT, ] <- root.value
+
+    anc <- phy$edge[, 1]
+    des <- phy$edge[, 2]
+
+    el <- phy$edge.length
+    if (is.null(el)) el <- numeric(N)
+
+    environment(model) <- environment() # to find 'p'
+
+    for (i in N:1) x[des[i], ] <- model(x[anc[i], ], el[i], ...)
+
+    if (ancestor) {
+        if (is.null(phy$node.label)) phy <- makeNodeLabel(phy)
+        rownames(x) <- c(phy$tip.label, phy$node.label)
+    } else {
+        x <- x[1:n, , drop = FALSE]
+        rownames(x) <- phy$tip.label
+    }
+    x <- as.data.frame(x)
+    names(x) <- trait.labels
+    if (!is.null(asFactor)) {
+        for (i in asFactor) {
+            y <- x[, i]
+            x[, i] <- factor(y, labels = LETTERS[1:length(unique(y))])
+        }
     }
     x
 }

@@ -1,4 +1,4 @@
-## SlowinskiGuyer.R (2011-03-10)
+## SlowinskiGuyer.R (2011-05-05)
 
 ##   Tests of Diversification Shifts with Sister-Clades
 
@@ -65,7 +65,8 @@ richness.yule.test <- function(x, t)
 diversity.contrast.test <-
     function(x, method = "ratiolog", alternative = "two.sided", nrep = 0, ...)
 {
-    method <- match.arg(method, c("ratiolog", "proportion", "difference"))
+    method <- match.arg(method, c("ratiolog", "proportion",
+                                  "difference", "logratio"))
     alternative <- match.arg(alternative, c("two.sided", "less", "greater"))
 
     minmax <- t(apply(x, 1, sort)) # sort all rows
@@ -81,7 +82,8 @@ diversity.contrast.test <-
                            log(minmax[, 2]) / log(minmax[, 1])
                        },
                        "proportion" = minmax[, 2] / (minmax[, 2] + minmax[, 1]),
-                       "difference" = abs(DIFF))
+                       "difference" = abs(DIFF),
+                       "logratio" = log(minmax[, 1] / minmax[, 2]))
 
     y <- SIGN * CONTRAST # the signed contrasts
 

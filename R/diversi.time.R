@@ -64,7 +64,7 @@ diversi.time <- function(x, census = NULL, censoring.codes = c(1, 0),
     cat("    log-likelihood =", round(loglik.B, 3),
         "   AIC =", round(-2 * loglik.B + 4, 3), "\n")
     cat("    alpha =", round(alpha, 6), "   StdErr =", round(sqrt(var.alpha), 6), "\n")
-    cat("    beta =", round(beta, 6), "   StdErr =", round(sqrt(var.beta), 6), "\n\n")
+    cat("     beta =", round(beta, 6), "   StdErr =", round(sqrt(var.beta), 6), "\n\n")
     cat("Model C: diversification changes with a breakpoint at time =", Tc, "\n")
     cat("    log-likelihood =", round(loglik.C, 3),
         "   AIC =", round(-2 * loglik.C + 4, 3), "\n")

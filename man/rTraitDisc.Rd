@@ -65,7 +65,7 @@ rTraitDisc(phy, model = "ER", k = if (is.matrix(model)) ncol(model) else 2,
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{rTraitCont}}, \code{\link{ace}}
+  \code{\link{rTraitCont}}, \code{\link{rTraitMult}}, \code{\link{ace}}
 }
 \examples{
 data(bird.orders)

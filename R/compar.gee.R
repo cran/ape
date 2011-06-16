@@ -1,4 +1,4 @@
-## compar.gee.R (2010-07-20)
+## compar.gee.R (2011-06-14)
 
 ##   Comparative Analysis with GEEs
 
@@ -80,6 +80,7 @@ compar.gee <-
                 QIC = QIC,
                 coefficients = geemod$coefficients,
                 residuals = geemod$residuals,
+                fitted.values = MU,
                 family = geemod$family$family,
                 link = geemod$family$link,
                 scale = geemod$scale,
@@ -150,4 +151,14 @@ you should be careful when interpreting the significance of the main effects.")
     attr(ans, "heading") <- paste("Single term deletions\n\n  Model:",
                                   as.character(as.expression(fm)), "\n")
     ans
+}
+
+predict.compar.gee <-
+    function(object, type = c("link", "response"), ...)
+{
+    type <- match.arg(type)
+    pred <- object$fitted.values
+    if (type == "link") return(pred)
+    f <- match.fun(object$family)
+    f(link = object$link)$linkinv(pred)
 }

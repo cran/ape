@@ -1,8 +1,8 @@
-## drop.tip.R (2010-11-24)
+## drop.tip.R (2011-05-19)
 
 ##   Remove Tips in a Phylogenetic Tree
 
-## Copyright 2003-2010 Emmanuel Paradis
+## Copyright 2003-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -79,6 +79,7 @@ drop.tip <-
 {
     if (!inherits(phy, "phylo"))
         stop('object "phy" is not of class "phylo"')
+    if (!length(tip)) return(phy)
 
     Ntip <- length(phy$tip.label)
     ## find the tips to drop:

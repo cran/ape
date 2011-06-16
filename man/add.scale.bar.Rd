@@ -2,7 +2,8 @@
 \alias{add.scale.bar}
 \title{Add a Scale Bar to a Phylogeny Plot}
 \usage{
-add.scale.bar(x, y, length = NULL, ask = FALSE, ...)
+add.scale.bar(x, y, length = NULL, ask = FALSE,
+              lwd = 1, lcol = "black", ...)
 }
 \arguments{
   \item{x}{x location of the bar (can be left missing).}
@@ -11,6 +12,9 @@ add.scale.bar(x, y, length = NULL, ask = FALSE, ...)
     none is supplied, a value is calculated from the data.}
   \item{ask}{a logical; if \code{TRUE} the user is asked to click where
     to draw the bar. The default is \code{FALSE}.}
+  \item{lwd}{the width of the bar.}
+  \item{lcol}{the colour of the bar (use \code{col} for the colour of
+    the text).}
   \item{\dots}{further arguments to be passed to \code{text}.}
 }
 \description{

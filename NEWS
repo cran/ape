@@ -1,3 +1,52 @@
+		CHANGES IN APE VERSION 2.7-2
+
+
+NEW FEATURES
+
+    o There is a new class "evonet" to code evolutionary networks, with
+      a constructor function evonet(), a print() and a plot() methods,
+      and four conversion methods to the classes "phylo", "networx",
+      "network", and "igraph".
+
+    o The new function rTraitMult does multivariate traits simulation
+      with user-defined models.
+
+    o plot.phylo() has a new option 'plot = TRUE'. If FALSE, the tree
+      is not plotted but the graphical device is set and the
+      coordinates are saved as usual.
+
+    o diversity.contrast.test() gains a fourth version of the test with
+      method = "logratio"; the literature citations have been clarified.
+
+    o add.scale.bar() has two new options, 'lwd' and 'lcol', to modify
+      the aspect of the bar.
+
+    o boot.phylo() now displays a progress bar by default (can be off
+      if 'quiet = TRUE').
+
+    o There is a new predict() method for compar.gee().
+
+
+BUG FIXES
+
+    o bionj() made R crash if distances were too large. It now returns
+      an error if at least one distance is greater than 100.
+
+    o drop.tip() returned a wrong tree if 'tip' was of zero length.
+
+    o read.nexus.data() failed with URLs.
+
+    o boot.phylo() returned overestimated support values in the
+      presence of identical or nearly identical sequences.
+
+
+OTHER CHANGES
+
+    o The data bird.families, bird.orders, cynipids, and woodmouse are
+      now provided as .rda files.
+
+
+
 		CHANGES IN APE VERSION 2.7-1
 
 

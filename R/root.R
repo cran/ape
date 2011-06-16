@@ -1,8 +1,8 @@
-## root.R (2010-02-11)
+## root.R (2011-04-29)
 
 ##   Root of Phylogenetic Trees
 
-## Copyright 2004-2010 Emmanuel Paradis
+## Copyright 2004-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -252,7 +252,7 @@ root <- function(phy, outgroup, node = NULL,
     o[NEXT:(NEXT + ne - 1L)] <- s
 
     if (fuseRoot) {
-        phy$Nnode <- oldNnode - 1
+        phy$Nnode <- oldNnode - 1L
         N <- N - 1L
     }
     phy$edge[INV, ] <- phy$edge[INV, 2:1]
@@ -288,7 +288,7 @@ root <- function(phy, outgroup, node = NULL,
             }
         }
         ## N <- N + 1L ... not needed
-        phy$Nnode <- phy$Nnode + 1
+        phy$Nnode <- phy$Nnode + 1L
     }
 
     ## The block below renumbers the nodes so that they conform

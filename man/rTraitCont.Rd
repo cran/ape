@@ -78,7 +78,7 @@ rTraitCont(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{rTraitDisc}}, \code{\link{ace}}
+  \code{\link{rTraitDisc}}, \code{\link{rTraitMult}}, \code{\link{ace}}
 }
 \examples{
 data(bird.orders)

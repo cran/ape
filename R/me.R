@@ -1,9 +1,9 @@
-## me.R (2009-01-07)
+## me.R (2011-05-12)
 
 ##   Tree Estimation Based on Minimum Evolution Algorithm
 
 ## Copyright 2007 Vincent Lefort with modifications by
-##                 Emmanuel Paradis (2008-2009)
+##                 Emmanuel Paradis (2008-2011)
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -49,6 +49,8 @@ fastme.ols <- function(X, nni = TRUE)
 bionj <- function(X)
 {
     if (is.matrix(X)) X <- as.dist(X)
+    if (any(X > 100))
+        stop("at least one distance was greater than 100")
     N <- as.integer(attr(X, "Size"))
     labels <- sprintf("%6s", 1:N)
     edge1 <- edge2 <- integer(2*N - 3)

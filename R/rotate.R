@@ -1,5 +1,5 @@
 ### ROTATE
-### Last update CH on 09.08.2007
+### Last update CH on 09.08.2007 (updated by EP 2011-06-14)
 
 # Contents:
 # 1. rotate
@@ -119,7 +119,8 @@ else {
 			phy$edge.length <- c(phy$edge.length[c3:c4], phy$edge.length[(c2+1):(c3-1)], phy$edge.length[c1:c2])
 		}
 	}
-	S <- write.tree(phy)
-    phy <- if (!with.br.length) clado.build(S) else tree.build(S)
+        ## deleted by EP (2011-06-14):
+	## S <- write.tree(phy)
+        ## phy <- if (!with.br.length) clado.build(S) else tree.build(S)
 	phy
 	}

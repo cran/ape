@@ -9,7 +9,7 @@
     cex = par("cex"), adj = NULL, srt = 0, no.margin = FALSE,
     root.edge = FALSE, label.offset = 0, underscore = FALSE,
     x.lim = NULL, y.lim = NULL, direction = "rightwards",
-    lab4ut = "horizontal", tip.color = "black", ...)
+    lab4ut = "horizontal", tip.color = "black", plot = TRUE, ...)
 \method{plot}{multiPhylo}(x, layout = 1, ...)
 }
 \arguments{
@@ -90,6 +90,9 @@
     \code{type = "unrooted"}.}
   \item{tip.color}{the colours used for the tip labels, eventually
     recycled (see examples).}
+  \item{plot}{a logical controlling whether to draw the tree. If
+    \code{FALSE}, the graphical device is set as if the tree was
+    plotted, and the coordinates are saved as well.}
   \item{layout}{the number of trees to be plotted simultaneously.}
   \item{\dots}{further arguments to be passed to \code{plot} or to
     \code{plot.phylo}.}

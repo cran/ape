@@ -1,4 +1,4 @@
-## plot.phylo.R (2011-03-23)
+## plot.phylo.R (2011-06-14)
 
 ##   Plot Phylogenies
 
@@ -7,14 +7,15 @@
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
-                       node.pos = NULL, show.tip.label = TRUE,
-                       show.node.label = FALSE, edge.color = "black",
-                       edge.width = 1, edge.lty = 1, font = 3, cex = par("cex"),
-                       adj = NULL, srt = 0, no.margin = FALSE,
-                       root.edge = FALSE, label.offset = 0, underscore = FALSE,
-                       x.lim = NULL, y.lim = NULL, direction = "rightwards",
-                       lab4ut = "horizontal", tip.color = "black", ...)
+plot.phylo <-
+    function(x, type = "phylogram", use.edge.length = TRUE,
+             node.pos = NULL, show.tip.label = TRUE,
+             show.node.label = FALSE, edge.color = "black",
+             edge.width = 1, edge.lty = 1, font = 3, cex = par("cex"),
+             adj = NULL, srt = 0, no.margin = FALSE, root.edge = FALSE,
+             label.offset = 0, underscore = FALSE, x.lim = NULL,
+             y.lim = NULL, direction = "rightwards", lab4ut = "horizontal",
+             tip.color = "black", plot = TRUE, ...)
 {
     Ntip <- length(x$tip.label)
     if (Ntip == 1) {
@@ -278,6 +279,8 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     }
     asp <- if (type %in% c("fan", "radial", "unrooted")) 1 else NA # fixes by Klaus Schliep (2008-03-28 and 2010-08-12)
     plot(0, type = "n", xlim = x.lim, ylim = y.lim, ann = FALSE, axes = FALSE, asp = asp, ...)
+
+if (plot) {
     if (is.null(adj))
         adj <- if (phyloORclado && direction == "leftwards") 1 else 0
     if (phyloORclado && show.tip.label) {
@@ -288,7 +291,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
         }
         if (direction == "leftwards") {
             lox <- -label.offset - MAXSTRING * 1.05 * (1 - adj)
-            #xx <- xx + MAXSTRING
+            ##xx <- xx + MAXSTRING
         }
         if (!horizontal) {
             psr <- par("usr")
@@ -403,6 +406,7 @@ plot.phylo <- function(x, type = "phylogram", use.edge.length = TRUE,
     if (show.node.label)
         text(xx[ROOT:length(xx)] + label.offset, yy[ROOT:length(yy)],
              x$node.label, adj = adj, font = font, srt = srt, cex = cex)
+}
     L <- list(type = type, use.edge.length = use.edge.length,
               node.pos = node.pos, show.tip.label = show.tip.label,
               show.node.label = show.node.label, font = font,

@@ -2,7 +2,8 @@
 {
     # Simplified NEXUS data parser.
     #
-    # Version: 09/13/2006 01:01:59 PM CEST 
+    # Version: 09/13/2006 01:01:59 PM CEST
+    #          (modified by EP 2011-06-01)
     #
     # By:      Johan Nylander, nylander @ scs.fsu.edu
     #
@@ -53,17 +54,13 @@
     }
 
     "trim.whitespace" <- function (x)
-    { 
+    {
         gsub("\\s+", "", x)
     }
 
     "trim.semicolon" <- function (x)
     {
         gsub(";", "", x)
-    }
-
-    if(file.access(file, mode = 4)) {
-        stop("file could not be found")
     }
 
     X <- scan(file = file, what = character(), sep = "\n",
@@ -117,7 +114,7 @@
         tot.ntax <- tot.ntax + 1
         if (tot.ntax == ntax) {
             i <- 1
-            tot.ntax <- 0 
+            tot.ntax <- 0
             tot.nchar <- tot.nchar + chars.done
             if (tot.nchar == nchar*ntax) {
                 print("ntot was more than nchar*ntax")

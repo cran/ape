@@ -39,7 +39,7 @@ nodelabels()
 tre.new <- rotate(tre, 30)
 
 # compare the results:
-par(mfrow=c(1,2)) # devide graphical device
+par(mfrow=c(1,2)) # split graphical device
 plot(tre) # plot old tre
 plot(tre.new) # plot new tree
 
@@ -51,7 +51,7 @@ tiplabels()
 tre.new <- rotate(tre, c(12, 21))
 
 # compare the results:
-par(mfrow=c(1,2)) # devide graphical device
+par(mfrow=c(1,2)) # split graphical device
 plot(tre) # plot old tre
 plot(tre.new) # plot new tree
 

@@ -2,6 +2,7 @@
 \alias{compar.gee}
 \alias{print.compar.gee}
 \alias{drop1.compar.gee}
+\alias{predict.compar.gee}
 \title{Comparative Analysis with GEEs}
 \description{
   \code{compar.gee} performs the comparative analysis using generalized
@@ -9,11 +10,14 @@
 
   \code{drop1} tests single effects of a fitted model output from
   \code{compar.gee}.
+
+  \code{predict} returns the predicted (fitted) values of the model.
 }
 \usage{
 compar.gee(formula, data = NULL, family = "gaussian", phy, corStruct,
           scale.fix = FALSE, scale.value = 1)
 \method{drop1}{compar.gee}(object, scope, quiet = FALSE, ...)
+\method{predict}{compar.gee}(object, type = c("link", "response"), ...)
 }
 \arguments{
   \item{formula}{a formula giving the model to be fitted.}
@@ -36,6 +40,8 @@ compar.gee(formula, data = NULL, family = "gaussian", phy, corStruct,
   \item{scope}{<unused>.}
   \item{quiet}{a logical specifying whether to display a warning message
     about eventual ``marginality principle violation''.}
+  \item{type}{a character string specifying the type of predicted
+    values. By default, the linear (link) prediction is returned.}
   \item{\dots}{further arguments to be passed to \code{drop1}.}
 }
 \details{
