@@ -1,6 +1,6 @@
-/* matexpo.c       2007-10-08 */
+/* matexpo.c       2011-06-23 */
 
-/* Copyright 2007 Emmanuel Paradis
+/* Copyright 2007-2011 Emmanuel Paradis
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -12,7 +12,7 @@ void mat_expo(double *P, int *nr)
 /* This function computes the exponential of a nr x nr matrix */
 {
 	double *U, *vl, *WR, *Uinv, *WI, *work;
-	int i, j, k, l, info, *ipiv, n = *nr, nc = n*n, lw = nc << 1, *ord;
+	int i, j, k, l, info, *ipiv, n = *nr, nc = n*n, lw = nc << 1;
 	char yes = 'V', no = 'N';
 
 	U = (double *)R_alloc(nc, sizeof(double));
@@ -23,7 +23,6 @@ void mat_expo(double *P, int *nr)
 	work = (double *)R_alloc(lw, sizeof(double));
 
 	ipiv = (int *)R_alloc(nc, sizeof(int));
-	ord = (int *)R_alloc(n, sizeof(int));
 
 /* The matrix is not symmetric, so we use 'dgeev'.
    We take the real part of the eigenvalues -> WR

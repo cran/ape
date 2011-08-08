@@ -1,6 +1,6 @@
-/* bipartition.c    2007-06-29 */
+/* bipartition.c    2011-06-23 */
 
-/* Copyright 2005-2007 Emmanuel Paradis, and 2007 R Development Core Team */
+/* Copyright 2005-2011 Emmanuel Paradis, and 2007 R Development Core Team */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -143,7 +143,7 @@ int SameClade(SEXP clade1, SEXP clade2)
 
 SEXP prop_part(SEXP TREES, SEXP nbtree, SEXP keep_partitions)
 {
-    int i, j, k, l, KeepPartition, Ntree, Ntip, Nnode, Npart, NpartCurrent, *no;
+    int i, j, k, KeepPartition, Ntree, Ntip, Nnode, Npart, NpartCurrent, *no;
     SEXP bp, ans, nbtip, nbnode, number;
 
     PROTECT(nbtree = coerceVector(nbtree, INTSXP));

@@ -23,8 +23,8 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   \item{type}{the variable type; either \code{"continuous"} or
     \code{"discrete"} (or an abbreviation of these).}
   \item{method}{a character specifying the method used for
-    estimation. Three choices are possible: \code{"ML"}, \code{"pic"},
-    or \code{"GLS"}.}
+    estimation. Four choices are possible: \code{"ML"}, \code{"REML"},
+    \code{"pic"}, or \code{"GLS"}.}
   \item{CI}{a logical specifying whether to return the 95\% confidence
     intervals of the ancestral state estimates (for continuous
     characters) or the likelihood of the different states (for discrete
@@ -75,13 +75,22 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   \code{corStruct}.
 
   In the default setting (i.e., \code{method = "ML"} and \code{model =
-  "BM"}) the maximum likelihood estimation is done simultaneously on
-  the ancestral values and the variance of the Brownian motion process;
+  "BM"}) the maximum likelihood estimation is done simultaneously on the
+  ancestral values and the variance of the Brownian motion process;
   these estimates are then used to compute the confidence intervals in
-  the standard way (see the package \pkg{geiger} for a different
-  implementation). If \code{method = "pic"} or \code{"GLS"}, the
-  confidence intervals are computed using the expected variances under
-  the model, so they depend only on the tree.
+  the standard way. The REML method first estimates the ancestral value
+  at the root (aka, the phylogenetic mean), then the variance of the
+  Brownian motion process is estimated by optimizing the residual
+  log-likelihood. The ancestral values are finally inferred from the
+  likelihood function giving these two parameters. If \code{method =
+  "pic"} or \code{"GLS"}, the confidence intervals are computed using
+  the expected variances under the model, so they depend only on the
+  tree.
+
+  It could be shown that, with a continous character, REML results in
+  unbiased estimates of the variance of the Brownian motion process
+  while ML gives a downward bias. Therefore, the former is recommanded
+  over the latter, even though it is not the default.
 
   For discrete characters (\code{type = "discrete"}), only maximum
   likelihood estimation is available (Pagel 1994). The model is

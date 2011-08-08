@@ -56,7 +56,7 @@ The Bonferonni correction is:
 \code{CADM.post} produces a table stored in element \code{A_posteriori_tests}, containing Mantel.mean, Prob, and Corrected.prob statistics in rows; the columns correspond to the k distance matrices under study, labeled Dmat.1 to Dmat.k.
 If parameter \code{mantel} is TRUE, tables of Mantel statistics and P-values are computed among the matrices.
 
-  \item{W }{Kendall's coefficient of concordance, W (Kendall and Babington Smith 1939). }
+  \item{W }{Kendall's coefficient of concordance, W (Kendall and Babington Smith 1939; see also Legendre 2010). }
   \item{Chi2 }{Friedman's chi-square statistic (Friedman 1937) used in the permutation test of W. }
   \item{Prob.perm }{Permutational probability. }
 
@@ -69,9 +69,9 @@ If parameter \code{mantel} is TRUE, tables of Mantel statistics and P-values are
 }
 
 \references{ 
-Campbell, V., P. Legendre and F.-J. Lapointe. 2009. Assessing congruence among ultrametric distance matrices. Journal of Classification (In press).
+Campbell, V., P. Legendre and F.-J. Lapointe. 2009. Assessing congruence among ultrametric distance matrices. Journal of Classification 26: 103-117.
 
-Campbell, V., P. Legendre and F.-J. Lapointe. Performance of the congruence test among distance matrices in phylogenetic analysis. (Submitted MS).
+Campbell, V., P. Legendre and F.-J. Lapointe. 2011. The performance of the Congruence Among Distance Matrices (CADM) test in phylogenetic analysis. BMC Evolutionary Biology 11: 64. http://www.biomedcentral.com/1471-2148/11/64.
 
 Friedman, M. 1937. The use of ranks to avoid the assumption of normality implicit in the analysis of variance. Journal of the American Statistical Association 32: 675-701.
 
@@ -79,7 +79,7 @@ Kendall, M. G. and B. Babington Smith. 1939. The problem of m rankings. Annals o
 
 Lapointe, F.-J., J. A. W. Kirsch and J. M. Hutcheon. 1999. Total evidence, consensus, and bat phylogeny: a distance-based approach. Molecular Phylogenetics and Evolution 11: 55-66.
 
-Legendre, P. 2008. Coefficient of concordance. In: Encyclopedia of Research Design. SAGE Publications (in press).
+Legendre, P. 2010. Coefficient of concordance. Pp. 164-169 in: Encyclopedia of Research Design, Vol. 1. N. J. Salkind, ed. SAGE Publications, Inc., Los Angeles. 
 
 Legendre, P. and F.-J. Lapointe. 2004. Assessing congruence among distance matrices: single malt Scotch whiskies revisited. Australian and New Zealand Journal of Statistics 46: 615-629. 
 
@@ -97,27 +97,39 @@ Siegel, S. and N. J. Castellan, Jr. 1988. Nonparametric statistics for the behav
 # identical evolutionary parameters (GTR+ Gamma + I). Distance matrices were 
 # computed from the DNA sequence matrices using a p distance corrected with the 
 # same parameters as those used to simulate the DNA sequences. See Campbell et 
-# al. (submitted) for details. 
+# al. (2009) for details.
 
-# First example: five independent additive trees. Data provided by V. Campbell.
+# Example 1: five independent additive trees. Data provided by V. Campbell.
 
 data(mat5Mrand)
 res.global <- CADM.global(mat5Mrand, 5, 50)
 
-# Second example: three partly similar trees, two independent trees. 
+# Example 2: three partly similar trees, two independent trees. 
 # Data provided by V. Campbell.
 
 data(mat5M3ID)
 res.global <- CADM.global(mat5M3ID, 5, 50)
 res.post   <- CADM.post(mat5M3ID, 5, 50, mantel=TRUE)
 
-# Third example: three matrices respectively representing Serological 
+# Example 3: three matrices respectively representing Serological 
 # (asymmetric), DNA hybridization (asymmetric) and Anatomical (symmetric) 
 # distances among 9 families. Data from Lapointe et al. (1999).
 
 data(mat3)
 res.global <- CADM.global(mat3, 3, 9, nperm=999)
 res.post   <- CADM.post(mat3, 3, 9, nperm=999, mantel=TRUE)
+
+# Example 4, showing how to bind two D matrices (cophenetic matrices
+# in this example) into a file using rbind(), then run the global test.
+
+a <- rtree(5)
+b <- rtree(5)
+A <- cophenetic(a)
+B <- cophenetic(b)
+x <- rownames(A)
+B <- B[x, x]
+M <- rbind(A, B)
+CADM.global(M, 2, 5)
 }
 
 \keyword{ multivariate }

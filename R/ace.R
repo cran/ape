@@ -1,8 +1,8 @@
-## ace.R (2010-12-08)
+## ace.R (2011-07-18)
 
 ##   Ancestral Character Estimation
 
-## Copyright 2005-2010 Emmanuel Paradis and Ben Bolker
+## Copyright 2005-2011 Emmanuel Paradis and Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -19,9 +19,9 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
     nb.tip <- length(phy$tip.label)
     nb.node <- phy$Nnode
     if (nb.node != nb.tip - 1)
-      stop('"phy" is not rooted AND fully dichotomous.')
+        stop('"phy" is not rooted AND fully dichotomous.')
     if (length(x) != nb.tip)
-      stop("length of phenotypic and of phylogenetic data do not match.")
+        stop("length of phenotypic and of phylogenetic data do not match.")
     if (!is.null(names(x))) {
         if(all(names(x) %in% phy$tip.label))
           x <- x[phy$tip.label]
@@ -30,9 +30,42 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
     obj <- list()
     if (kappa != 1) phy$edge.length <- phy$edge.length^kappa
     if (type == "continuous") {
-        if (method == "pic") {
+        switch(method, "REML" = {
+            minusLogLik <- function(sig2) {
+                if (sig2 < 0) return(1e100)
+                V <- sig2 * vcv(phy)
+                ## next three lines borrowed from dmvnorm() in 'mvtnorm'
+                distval <- mahalanobis(x, center = mu, cov = V)
+                logdet <- sum(log(eigen(V, symmetric = TRUE, only.values = TRUE)$values))
+                (nb.tip * log(2 * pi) + logdet + distval)/2
+            }
+            mu <- rep(ace(x, phy, method="pic")$ace[1], nb.tip)
+            out <- nlm(minusLogLik, 1, hessian = TRUE)
+            sigma2 <- out$estimate
+            se_sgi2 <- sqrt(1/out$hessian)
+            tip <- phy$edge[, 2] <= nb.tip
+            minus.REML.BM <- function(p) {
+                x1 <- p[phy$edge[, 1] - nb.tip]
+                x2 <- numeric(length(x1))
+                x2[tip] <- x[phy$edge[tip, 2]]
+                x2[!tip] <- p[phy$edge[!tip, 2] - nb.tip]
+                -(-sum((x1 - x2)^2/phy$edge.length)/(2 * sigma2) -
+                  nb.node * log(sigma2))
+            }
+            out <- nlm(function(p) minus.REML.BM(p),
+                       p = rep(mu[1], nb.node), hessian = TRUE)
+            obj$resloglik <- -out$minimum
+            obj$ace <- out$estimate
+            names(obj$ace) <- (nb.tip + 1):(nb.tip + nb.node)
+            obj$sigma2 <- c(sigma2, se_sgi2)
+            if (CI) {
+                se <- sqrt(diag(solve(out$hessian)))
+                tmp <- se * qt(0.025, nb.node)
+                obj$CI95 <- cbind(obj$ace + tmp, obj$ace - tmp)
+            }
+        }, "pic" = {
             if (model != "BM")
-              stop('the "pic" method can be used only with model = "BM".')
+                stop('the "pic" method can be used only with model = "BM".')
             ## See pic.R for some annotations.
             phy <- reorder(phy, "pruningwise")
             phenotype <- numeric(nb.tip + nb.node)
@@ -48,13 +81,10 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
             names(obj$ace) <- (nb.tip + 1):(nb.tip + nb.node)
             if (CI) {
                 se <- sqrt(ans[[8]])
-                CI95 <- matrix(NA, nb.node, 2)
-                CI95[, 1] <- obj$ace + se * qnorm(0.025)
-                CI95[, 2] <- obj$ace - se * qnorm(0.025)
-                obj$CI95 <- CI95
+                tmp <- se * qnorm(0.025)
+                obj$CI95 <- cbind(obj$ace + tmp, obj$ace - tmp)
             }
-        }
-        if (method == "ML") {
+        }, "ML" = {
             if (model == "BM") {
                 tip <- phy$edge[, 2] <= nb.tip
                 dev.BM <- function(p) {
@@ -73,24 +103,20 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
                 names(obj$ace) <- (nb.tip + 1):(nb.tip + nb.node)
                 se <- sqrt(diag(solve(out$hessian)))
                 obj$sigma2 <- c(out$estimate[1], se[1])
-                se <- se[-1]
                 if (CI) {
-                    CI95 <- matrix(NA, nb.node, 2)
-                    CI95[, 1] <- obj$ace + se * qt(0.025, nb.node)
-                    CI95[, 2] <- obj$ace - se * qt(0.025, nb.node)
-                    obj$CI95 <- CI95
+                    tmp <- se[-1] * qt(0.025, nb.node)
+                    obj$CI95 <- cbind(obj$ace + tmp, obj$ace - tmp)
                 }
             }
-        }
-        if (method == "GLS") {
+        }, "GLS" = {
             if (is.null(corStruct))
-              stop('you must give a correlation structure if method = "GLS".')
+                stop('you must give a correlation structure if method = "GLS".')
             if (class(corStruct)[1] == "corMartins")
-              M <- corStruct[1] * dist.nodes(phy)
+                M <- corStruct[1] * dist.nodes(phy)
             if (class(corStruct)[1] == "corGrafen")
-              phy <- compute.brlen(attr(corStruct, "tree"),
-                                   method = "Grafen",
-                                   power = exp(corStruct[1]))
+                phy <- compute.brlen(attr(corStruct, "tree"),
+                                     method = "Grafen",
+                                     power = exp(corStruct[1]))
             if (class(corStruct)[1] %in% c("corBrownian", "corGrafen")) {
                 dis <- dist.nodes(attr(corStruct, "tree"))
                 MRCA <- mrca(attr(corStruct, "tree"), full = TRUE)
@@ -107,16 +133,14 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
             obj$ace <- drop(varAY %*% invV %*% (x - GM) + GM)
             names(obj$ace) <- (nb.tip + 1):(nb.tip + nb.node)
             if (CI) {
-                CI95 <- matrix(NA, nb.node, 2)
                 se <- sqrt((varA - varAY %*% invV %*% t(varAY))[cbind(1:nb.node, 1:nb.node)])
-                CI95[, 1] <- obj$ace + se * qnorm(0.025)
-                CI95[, 2] <- obj$ace - se * qnorm(0.025)
-                obj$CI95 <- CI95
+                tmp <- se * qnorm(0.025)
+                obj$CI95 <- cbind(obj$ace + tmp, obj$ace - tmp)
             }
-        }
+        })
     } else { # type == "discrete"
         if (method != "ML")
-          stop("only ML estimation is possible for discrete characters.")
+            stop("only ML estimation is possible for discrete characters.")
         if (!is.factor(x)) x <- factor(x)
         nl <- nlevels(x)
         lvls <- levels(x)
@@ -137,10 +161,9 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
             }
         } else {
             if (ncol(model) != nrow(model))
-              stop("the matrix given as `model' is not square")
+              stop("the matrix given as 'model' is not square")
             if (ncol(model) != nl)
-              stop("the matrix `model' must have as many rows
-as the number of categories in `x'")
+              stop("the matrix 'model' must have as many rows as the number of categories in 'x'")
             rate <- model
             np <- max(rate)
         }
@@ -239,10 +262,12 @@ print.ace <- function(x, digits = 4, ...)
     cat("\n")
     if (!is.null(x$loglik))
         cat("    Log-likelihood:", x$loglik, "\n\n")
+    if (!is.null(x$resloglik))
+        cat("    Residual log-likelihood:", x$resloglik, "\n\n")
     ratemat <- x$index.matrix
     if (is.null(ratemat)) { # to be improved
         class(x) <- NULL
-        x$loglik <- x$call <- NULL
+        x$resloglik <- x$loglik <- x$call <- NULL
         print(x)
     } else {
         dimnames(ratemat)[1:2] <- dimnames(x$lik.anc)[2]

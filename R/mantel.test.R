@@ -1,4 +1,4 @@
-## mantel.test.R (2006-07-28)
+## mantel.test.R (2011-06-22)
 
 ##   Mantel Test for Similarity of Two Matrices
 
@@ -23,15 +23,21 @@ lower.triang <- function(m)
     m[col(m) <= row(m)]
 }
 
-mantel.test <- function (m1, m2, nperm = 1000, graph = FALSE, ...)
+mantel.test <- function (m1, m2, nperm = 1000, graph = FALSE,
+                         alternative = "two.sided", ...)
 {
+    alternative <- match.arg(alternative, c("two.sided", "less", "greater"))
     n <- nrow(m1)
     realz <- mant.zstat(m1, m2)
     nullstats <- replicate(nperm, mant.zstat(m1, perm.rowscols(m2, n)))
-    pval <- sum(nullstats > realz)/nperm
+    pval <- switch(alternative,
+                   "two.sided" = 2 * sum(abs(nullstats) > abs(realz)),
+                   "less" = sum(nullstats < realz),
+                   "greater" = sum(nullstats > realz))
+    pval <- pval / nperm
     if (graph) {
         plot(density(nullstats), type = "l", ...)
         abline(v = realz)
     }
-    list(z.stat = realz, p = pval)
+    list(z.stat = realz, p = pval, alternative = alternative)
 }

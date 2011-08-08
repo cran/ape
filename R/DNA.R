@@ -359,7 +359,7 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
         stop(paste("'model' must be one of:",
                    paste("\"", MODELS, "\"", sep = "", collapse = " ")))
     if (imod == 11 && variance) {
-        warning("computing variance temporarily not available for model BH87.")
+        warning("computing variance not available for model BH87.")
         variance <- FALSE
     }
     if (gamma && imod %in% c(1, 5:7, 9:15)) {

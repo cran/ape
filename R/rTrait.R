@@ -1,4 +1,4 @@
-## rTrait.R (2011-06-16)
+## rTrait.R (2011-06-15)
 
 ##   Trait Evolution
 
@@ -82,7 +82,7 @@ rTraitDisc <-
 
 rTraitCont <-
     function(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
-             ancestor = FALSE, root.value = 0, linear = TRUE, ...)
+             ancestor = FALSE, root.value = 0, ...)
 {
     if (is.null(phy$edge.length))
         stop("tree has no branch length")
@@ -115,7 +115,6 @@ rTraitCont <-
             if (length(theta) == 1) theta <- rep(theta, N)
             else if (length(theta) != N)
                 stop("'theta' must have one or Nedge(phy) elements")
-            if (!linear) model <- model + 1L
         }
         .C("rTraitCont", as.integer(model), as.integer(N),
            as.integer(anc - 1L), as.integer(des - 1L), el,

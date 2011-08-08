@@ -1,3 +1,44 @@
+		CHANGES IN APE VERSION 2.7-3
+
+
+NEW FEATURES
+
+    o The new function compute.brtime computes and sets branching times.
+
+    o mantel.test() has a new argument 'alternative' which is
+      "two-sided" by default. Previously, this test was one-tailed
+      with no possibility to change.
+
+    o ace() can now do REML estimation with continuous characters,
+      giving better estimates of the variance of the Brownian motion
+      process.
+
+
+BUG FIXES
+
+    o Branch lengths were wrongly updated with bind.tree(, where = <tip>,
+      position = 0). (Thanks to Liam Revell for digging this bug out.)
+
+    o Simulation of OU process with rTraitCont() did not work correctly.
+      This now uses formula from Gillespie (1996) reduced to a BM
+      process when alpha = 0 to avoid division by zero. The option
+      'linear' has been removed.
+
+    o Cross-validation in chronopl() did not work when 'age.max' was
+      used.
+
+    o consensus(, p = 0.5) could return an incorrect tree if some
+      incompatible splits occur in 50% of the trees (especially with
+      small number of trees).
+
+    o c() with "multiPhylo" did not work correctly (thanks to Klaus
+      Schliep for the fix).
+
+    o root() failed in some cases with an outgroup made of several tips.
+      The help page has been clarified a bit.
+
+
+
 		CHANGES IN APE VERSION 2.7-2
 
 

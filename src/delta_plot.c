@@ -1,6 +1,6 @@
-/* delta_plot.c       2010-01-12 */
+/* delta_plot.c       2011-06-23 */
 
-/* Copyright 2010 Emmanuel Paradis
+/* Copyright 2010-2011 Emmanuel Paradis
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -12,7 +12,7 @@ void delta_plot(double *D, int *size, int *nbins, int *counts, double *deltabar)
 	int x, y, u, v; /* same notation than in Holland et al. 2002 */
 	int n = *size, nb = *nbins;
 	double dxy, dxu, dxv, dyu, dyv, duv, A, B, C, delta;
-	int xy, xu, xv, yu, yv, uv, i, k;
+	int xy, xu, xv, yu, yv, uv, i;
 
 	for (x = 0; x < n - 3; x++) {
 		xy = x*n - x*(x + 1)/2; /* do NOT factorize */

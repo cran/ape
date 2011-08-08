@@ -1,8 +1,8 @@
-## chronopl.R (2009-07-06)
+## chronopl.R (2011-07-04)
 
 ##   Molecular Dating With Penalized Likelihood
 
-## Copyright 2005-2009 Emmanuel Paradis
+## Copyright 2005-2011 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -80,6 +80,9 @@ chronopl <-
     ratio <- age.min[1]/ini.time[node[1]]
     ini.time <- ini.time*ratio
 
+    ## because if (!is.null(age.max)), 'node' is modified, so we copy it in case CV = TRUE:
+    node.bak <- node
+
     if (length(node) > 1) {
         ini.time[node] <- age.min
         real.edge.length <- ini.time[e[, 1]] - ini.time[e[, 2]]
@@ -94,12 +97,12 @@ chronopl <-
                     ini.time[e[i, 1]] <- ini.time[e[1, 1]] + 2 * real.edge.length[i]
                     next
                 }
-                browser()
+                ##browser()
                 ini.time[e[i, 2]] <- ini.time[e[1, 2]] - real.edge.length[i]
                 ini.time[e[i, 1]] <- ini.time[e[1, 1]] + real.edge.length[i]
             }
             real.edge.length <- ini.time[e[, 1]] - ini.time[e[, 2]]
-            print(min(real.edge.length))
+            ##print(min(real.edge.length))
         }
     }
     ## `unknown.ages' will contain the index of the nodes of unknown age:
@@ -198,7 +201,7 @@ chronopl <-
     if (CV) ophy <- phy
     phy$edge.length <- age[e[, 1]] - age[e[, 2]]
     if (CV) attr(phy, "D2") <-
-        chronopl.cv(ophy, lambda, age.min, age.max, node,
+        chronopl.cv(ophy, lambda, age.min, age.max, node.bak,
                     n, S, tol, eval.max, iter.max, ...)
     phy
 }
@@ -214,9 +217,8 @@ chronopl.cv <- function(ophy, lambda, age.min, age.max, nodes,
     BT <- branching.times(ophy)
     D2 <- numeric(n)
 
-    cat("  dropping tip")
     for (i in 1:n) {
-        cat(" ", i, sep = "")
+        cat("\r  dropping tip ", i, " / ", n, sep = "")
         tr <- drop.tip(ophy, i)
         j <- which(ophy$edge[, 2] == i)
         if (ophy$edge[j, 1] %in% nodes) {

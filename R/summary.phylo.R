@@ -1,8 +1,8 @@
-## summary.phylo.R (2010-11-03)
+## summary.phylo.R (2011-08-04)
 
 ##   Print Summary of a Phylogeny and "multiPhylo" operators
 
-## Copyright 2003-2010 Emmanuel Paradis, and 2006 Ben Bolker
+## Copyright 2003-2011 Emmanuel Paradis, and 2006 Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -70,18 +70,6 @@ summary.phylo <- function(object, ...)
 
         }
     }
-    if (!is.null(attr(object, "loglik"))) {
-        cat("Phylogeny estimated by maximum likelihood.\n")
-        cat("  log-likelihood:", attr(object, "loglik"), "\n\n")
-        npart <- length(attr(object, "para"))
-        for (i in 1:npart) {
-            cat("partition ", i, ":\n", sep = "")
-            print(attr(object, "para")[[i]])
-            if (i == 1) next
-            else cat("  contrast parameter (xi):",
-                     attr(object, "xi")[i - 1], "\n")
-        }
-    }
 }
 
 ### by BB:
@@ -100,7 +88,7 @@ print.phylo <- function(x, printlen = 6,...)
         cat("\tNode labels:\n")
         if (nb.node > printlen) {
             cat(paste("\t", paste(x$node.label[1:printlen],
-                                 collapse=", "), ",...\n", sep = ""))
+                                 collapse=", "), ", ...\n", sep = ""))
         } else print(x$node.label)
     }
     rlab <- if (is.rooted(x)) "Rooted" else "Unrooted"
@@ -157,8 +145,8 @@ c.multiPhylo <- function(..., recursive = FALSE)
     n <- length(obj)
     x <- obj[[1L]]
     N <- length(x)
-    i <- 1L
-    while (i < n) {
+    i <- 2L
+    while (i <= n) {
         a <- N + 1L
         N <- N + length(obj[[i]])
         ## x is of class "multiPhylo", so this uses the operator below:

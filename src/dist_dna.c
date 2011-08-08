@@ -1,4 +1,4 @@
-/* dist_dna.c       2011-02-18 */
+/* dist_dna.c       2011-06-23 */
 
 /* Copyright 2005-2011 Emmanuel Paradis
 
@@ -535,8 +535,8 @@ void distDNA_TN93(unsigned char *x, int *n, int *s, double *d,
 		  double *BF, int *variance, double *var,
 		  int *gamma, double *alpha)
 {
-    int i1, i2, k, Nd, Ns1, Ns2, L, target, s1, s2;
-    double P1, P2, Q, A, B, C, gR, gY, k1, k2, k3, k4, w1, w2, w3, c1, c2, c3, c4, b;
+    int i1, i2, Nd, Ns1, Ns2, L, target, s1, s2;
+    double P1, P2, Q, gR, gY, k1, k2, k3, k4, w1, w2, w3, c1, c2, c3, c4, b;
 
     L = *s;
 
@@ -559,8 +559,8 @@ void distDNA_TN93_pairdel(unsigned char *x, int *n, int *s, double *d,
 			  double *BF, int *variance, double *var,
 			  int *gamma, double *alpha)
 {
-    int i1, i2, k, Nd, Ns1, Ns2, L, target, s1, s2;
-    double P1, P2, Q, A, B, C, gR, gY, k1, k2, k3, k4, w1, w2, w3, c1, c2, c3, c4, b;
+    int i1, i2, Nd, Ns1, Ns2, L, target, s1, s2;
+    double P1, P2, Q, gR, gY, k1, k2, k3, k4, w1, w2, w3, c1, c2, c3, c4, b;
 
     PREPARE_BF_TN93
 
@@ -812,8 +812,8 @@ void distDNA_BH87(unsigned char *x, int *n, int *s, double *d,
    currently not available.
    </FIXME> */
 {
-    int i1, i2, k, kb, s1, s2, m, Ntab[16], ROWsums[4], ndim = 4, info, ipiv[16];
-    double P12[16], P21[16], U[16];
+    int i1, i2, k, kb, s1, s2, m, Ntab[16], ROWsums[4];
+    double P12[16], P21[16];
 
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {

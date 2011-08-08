@@ -34,9 +34,13 @@
   format and in the \code{"phylo"} class of objects used in `ape'. One
   aim of the present function is to be able to identify whether two
   objects of class \code{"phylo"} represent the same phylogeny.
+}
+\note{
+  The algorithm used here does not work correctly for the comparison of
+  topologies (i.e., ignoring tip labels) of unrooted trees. This also
+  affects \code{\link{unique.multiPhylo}} which calls the present function. See:
 
-  Only the labelled topologies are compared (i.e. branch lengths are not
-  considered.
+  \url{https://stat.ethz.ch/pipermail/r-sig-phylo/2011-August/001562.html}
 }
 \value{
   A logical value, or a two-column matrix.

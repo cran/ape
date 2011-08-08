@@ -1,4 +1,4 @@
-## bind.tree.R (2011-03-02)
+## bind.tree.R (2011-06-21)
 
 ##    Bind Trees
 
@@ -146,8 +146,8 @@ bind.tree <- function(x, y, where = "root", position = 0, interactive = FALSE)
                 y$edge[1] <- x$edge[i, 1]
                 ## delete i-th edge in x:
                 x$edge <- x$edge[-i, ]
-                i <- i - 1L
                 if (wbl) x$edge.length <- x$edge.length[-i]
+                i <- i - 1L
             }
             x$tip.label <- x$tip.label[-where]
             ## renumber the tips that need to:

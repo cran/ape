@@ -1,4 +1,4 @@
-/* tree_build.c    2011-02-28 */
+/* tree_build.c    2011-06-23 */
 
 /* Copyright 2008-2011 Emmanuel Paradis */
 
@@ -42,7 +42,7 @@ void decode_terminal_edge_token(const char *x, int a, int b, int *node, double *
 
 void decode_internal_edge(const char *x, int a, int b, char *lab, double *w)
 {
-	int i, k, co = a;
+	int co = a;
 	char *endstr, str[100];
 
 	while (x[co] != ':') co++;

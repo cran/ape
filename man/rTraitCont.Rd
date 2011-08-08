@@ -3,7 +3,7 @@
 \title{Continuous Character Simulation}
 \usage{
 rTraitCont(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
-           ancestor = FALSE, root.value = 0, linear = TRUE, ...)
+           ancestor = FALSE, root.value = 0, ...)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -20,8 +20,6 @@ rTraitCont(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
     values at the nodes as well (by default, only the values at the tips
     are returned).}
   \item{root.value}{a numeric giving the value at the root.}
-  \item{linear}{a logical indicating which parameterisation of the OU
-    model to use (see details).}
   \item{\dots}{further arguments passed to \code{model} if it is a
     function.}
 }
@@ -44,23 +42,10 @@ rTraitCont(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
 
   \item{\code{"OU"}:}{an Ornstein-Uhlenbeck model is used. The above
   indexing rule is used for the three parameters \code{sigma},
-  \code{alpha}, and \code{theta}. This may be more interesting for the
-  last one to model varying phenotypic optima.
-
-  By default the following formula is used:
-
-  \deqn{x_{t''} = x_{t'} - \alpha l (x_{t'} - \theta) + \sigma
-    l \epsilon}{x(t'') = x(t') - alpha l (x(t') - theta) + sigma
-    l epsilon}
-
-  where \eqn{l (= t'' - t')} is the branch length, and \eqn{\epsilon
-  \sim N(0, 1)}{\epsilon ~ N(0, 1)}. If \eqn{\alpha > 1}{alpha > 1},
-  this may lead to chaotic oscillations. Thus an alternative
-  parameterisation is used if \code{linear = FALSE}:
-
-  \deqn{x_{t''} = x_{t'} - (1 - exp(-\alpha l)) * (x_{t'} - \theta) +
-    \sigma l \epsilon}{x(t'') = x(t') - (1 - exp(-alpha l)) * (x(t') -
-    theta) + sigma l epsilon}}
+  \code{alpha}, and \code{theta}. This may be interesting for the last
+  one to model varying phenotypic optima. The exact updating formula
+  from Gillespie (1996) are used which are reduced to BM formula if
+  \code{alpha = 0}.}
 
   \item{A function:}{it must be of the form \code{foo(x, l)} where
   \code{x} is the trait of the ancestor and \code{l} is the branch
@@ -73,6 +58,10 @@ rTraitCont(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
   present, otherwise, ``Node1'', ``Node2'', etc.
 }
 \references{
+  Gillespie, D. T. (1996) Exact numerical simulation of the
+  Ornstein-Uhlenbeck process and its integral. \emph{Physical Review E},
+  \bold{54}, 2084--2091.
+
   Paradis, E. (2006) \emph{Analyses of Phylogenetics and Evolution with
     R.} New York: Springer.
 }

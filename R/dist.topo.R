@@ -1,4 +1,4 @@
-## dist.topo.R (2011-06-14)
+## dist.topo.R (2011-07-13)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -268,6 +268,7 @@ consensus <- function(..., p = 1, check.labels = TRUE)
     ## Get all observed partitions and their frequencies:
     pp <- prop.part(obj, check.labels = FALSE)
     ## Drop the partitions whose frequency is less than 'p':
+    if (p == 0.5) p <- 0.5000001 # avoid incompatible splits
     pp <- pp[attr(pp, "number") >= p * ntree]
     ## Get the order of the remaining partitions by decreasing size:
     ind <- sort(unlist(lapply(pp, length)), decreasing = TRUE,

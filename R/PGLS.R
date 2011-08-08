@@ -187,8 +187,8 @@ coef.corGrafen <- function(object, unconstrained = TRUE, ...)
 
 compute.brlen <- function(phy, method = "Grafen", power = 1, ...)
 {
-    if (!"phylo" %in% class(phy))
-      stop('object "phy" is not of class "phylo"')
+    if (!inherits(phy, "phylo"))
+        stop('object "phy" is not of class "phylo"')
     Ntip <- length(phy$tip.label)
     Nnode <- phy$Nnode
     Nedge <- dim(phy$edge)[1]

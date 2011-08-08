@@ -1,4 +1,4 @@
-## root.R (2011-04-29)
+## root.R (2011-08-05)
 
 ##   Root of Phylogenetic Trees
 
@@ -91,34 +91,21 @@ root <- function(phy, outgroup, node = NULL,
         ## First check that the outgroup is monophyletic--
         ## unless there's only one tip specified of course
         if (length(outgroup) > 1) {
-            seq.nod <- .Call("seq_root2tip", phy$edge, n,
-                             phy$Nnode, PACKAGE = "ape")
-            sn <- seq.nod[outgroup]
-            ## We go from the root to the tips: the sequence of nodes
-            ## is identical until the MRCA:
-            newroot <- ROOT
-            i <- 2 # we start at the 2nd position since the root
-                   # of the tree is a common ancestor to all tips
-            repeat {
-                x <- unique(unlist(lapply(sn, "[", i)))
-                if (length(x) != 1) break
-                newroot <- x
-                i <- i + 1
-            }
-            ## Check that all descendants of this node
-            ## are included in the outgroup.
-            ## (below is slightly faster than calling "bipartition")
-            desc <- which(unlist(lapply(seq.nod,
-                                        function(x) any(x %in% newroot))))
-            msg <- "the specified outgroup is not monophyletic"
+            pp <- prop.part(phy)
             ingroup <- (1:n)[-outgroup]
-            ## 'outgroup' and 'desc' are already sorted:
-            if (newroot != ROOT) {
-                if (!identical(outgroup, desc) && !identical(ingroup, desc))
-                    stop(msg)
-            } else { # otherwise check monophyly of the ingroup
-                if (!is.monophyletic(phy, ingroup)) stop(msg)
+            newroot <- 0L
+            for (i in 2:phy$Nnode) {
+                if (identical(pp[[i]], ingroup)) {
+                    newroot <- i + n
+                    break
+                }
+                if (identical(pp[[i]], outgroup)) {
+                    newroot <- phy$edge[which(phy$edge[, 2] == i + n), 1]
+                    break
+                }
             }
+            if (!newroot)
+                stop("the specified outgroup is not monophyletic")
         } else newroot <- phy$edge[which(phy$edge[, 2] == outgroup), 1]
     }
     N <- Nedge(phy)
