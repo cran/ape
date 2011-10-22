@@ -1,13 +1,13 @@
 Package: ape
-Version: 2.7-3
-Date: 2011-08-08
+Version: 2.8
+Date: 2011-10-22
 Title: Analyses of Phylogenetics and Evolution
 Author: Emmanuel Paradis, Ben Bolker, Julien Claude, Hoa Sien Cuong,
         Richard Desper, Benoit Durand, Julien Dutheil, Olivier Gascuel,
         Christoph Heibl, Daniel Lawson, Vincent Lefort, Pierre
         Legendre, Jim Lemon, Yvonnick Noel, Johan Nylander, Rainer
-        Opgen-Rhein, Klaus Schliep, Korbinian Strimmer, Damien de
-        Vienne
+        Opgen-Rhein, Andrei-Alin Popescu, Klaus Schliep, Korbinian
+        Strimmer, Damien de Vienne
 Maintainer: Emmanuel Paradis <Emmanuel.Paradis@ird.fr>
 Depends: R (>= 2.6.0)
 Suggests: gee
@@ -22,10 +22,12 @@ Description: ape provides functions for reading, writing, plotting, and
         generalized skyline plots, estimation of absolute evolutionary
         rates and clock-like trees using mean path lengths,
         non-parametric rate smoothing and penalized likelihood.
-        Phylogeny estimation can be done with the NJ, BIONJ, and ME
-        methods.
+        Phylogeny estimation can be done with the NJ, BIONJ, ME, MVR,
+        SDM, and triangle methods, and several methods handling
+        incomplete distance matrices (NJ*, BIONJ*, MVR*, and the
+        corresponding triangle method).
 License: GPL (>= 2)
 URL: http://ape.mpl.ird.fr/
-Packaged: 2011-08-08 14:48:09 UTC; paradis
+Packaged: 2011-10-22 08:39:43 UTC; paradis
 Repository: CRAN
-Date/Publication: 2011-08-09 04:59:01
+Date/Publication: 2011-10-24 14:40:07

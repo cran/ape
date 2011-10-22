@@ -1,21 +1,11 @@
-/* nj.c       2010-04-21 */
+/* nj.c       2011-10-20 */
 
-/* Copyright 2006-2010 Emmanuel Paradis
+/* Copyright 2006-2011 Emmanuel Paradis
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
 
-#include <R.h>
-
-#define DINDEX(i, j) n*(i - 1) - i*(i - 1)/2 + j - i - 1
-/* works if i < j strictly, and i = 1, ...;
-   see give_index() below */
-
-int give_index(int i, int j, int n)
-{
-	if (i > j) return(DINDEX(j, i));
-	else return(DINDEX(i, j));
-}
+#include "ape.h"
 
 double sum_dist_to_i(int n, double *D, int i)
 /* returns the sum of all distances D_ij between i and j

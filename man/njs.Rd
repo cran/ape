@@ -1,0 +1,32 @@
+\name{njs}
+\alias{njs}
+\alias{bionjs}
+\title{Tree Reconstruction from Incomplete Distances With NJ* or bio-NJ*}
+\description{
+  Reconstructs a phylogenetic tree from a distance matrix with possibly
+  missing values.
+}
+\usage{
+njs(X, fs = 15)
+bionjs(X, fs = 15)
+}
+\arguments{
+  \item{X}{a distance matrix.}
+  \item{fs}{argument \emph{s} of the agglomerative criterion.}
+}
+\details{
+  Missing values represented by either \code{NA} or any negative number.
+
+  Basically, the Q* criterion is applied to all the pairs of leaves, and
+  the \emph{s} highest scoring ones are chosen for further analysis by
+  the agglomeration criteria that better handle handle missing
+  distances (see references for details).
+}
+\value{
+  an object of class \code{"phylo"}.
+}
+\references{
+  \url{http://www.biomedcentral.com/1471-2105/9/166}
+}
+\author{Andrei Popescu \email{niteloserpopescu@gmail.com}}
+\keyword{models}

@@ -1,4 +1,4 @@
-/* bipartition.c    2011-06-23 */
+/* bipartition.c    2011-10-22 */
 
 /* Copyright 2005-2011 Emmanuel Paradis, and 2007 R Development Core Team */
 
@@ -189,6 +189,11 @@ SEXP prop_part(SEXP TREES, SEXP nbtree, SEXP keep_partitions)
 
     /* We start on the 2nd tree: */
     for (k = 1; k < Ntree; k++) {
+
+/* in case there are trees with multichotomies: */
+	nbnode = getListElement(VECTOR_ELT(TREES, k), "Nnode");
+	Nnode = INTEGER(nbnode)[0];
+
         PROTECT(bp = bipartition(getListElement(VECTOR_ELT(TREES, k), "edge"),
 				 nbtip, nbnode));
 	for (i = 1; i < Nnode; i++) {

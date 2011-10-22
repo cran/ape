@@ -6,7 +6,7 @@ comments, or bug reports: thanks to all of you!
 
 Significant bug fixes were provided by Cécile Ané, Jeremy Beaulieu,
 James Bullard, Otto Cordero, Éric Durand, Olivier François, Rich
-FitzJohn, , Jos Käfer, Bret Larget, Naim Matasci, Nick Matzke, Michael
+FitzJohn, Jos Käfer, Bret Larget, Naim Matasci, Nick Matzke, Michael
 Phelan, Elizabeth Purdom, Dan Rabosky, Filipe Vieira, Tim Wallstrom,
 Li-San Wang, Yan Wong, Peter Wragg, Janet Young, and Jinlong Zhang.
 Contact me if I forgot someone.
@@ -19,3 +19,6 @@ the French "Programme inter-EPST Bioinformatique" (2001-2003).
 
 Financial support was provided by the Department of Information
 Systems of IRD in form a "SPIRALES" project (2006).
+
+Financial support was provided by Google to Andrei-Alin Popescu during
+the 2011 Google Summer of Code (GSoC 2011).

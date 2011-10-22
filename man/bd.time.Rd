@@ -35,7 +35,7 @@ bd.time(phy, birth, death, BIRTH = NULL, DEATH = NULL,
   primitives can be found in the help page of \code{\link{yule.time}}.
 
   The model is fitted by minimizing the least squares deviation between
-  the observed and predicted distributions of branching times. These
+  the observed and the predicted distributions of branching times. These
   computations rely heavily on numerical integrations. If \code{fast =
   FALSE}, integrations are done with R's \code{\link[stats]{integrate}}
   function. If \code{fast = TRUE}, a faster but less accurate function

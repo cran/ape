@@ -1,3 +1,33 @@
+		CHANGES IN APE VERSION 2.8
+
+
+NEW FEATURES
+
+    o Twelve new functions have been written by Andrei-Alin Popescu:
+      additive, ultrametric, is.compatible, arecompatible, mvr, mvrs,
+      njs, bionjs, SDM, treePop, triangMtd, triangMtd*.
+
+    o A new class "bitsplits" has been created by Andrei-Alin Popescu
+      to code splits (aka, bipartition).
+
+    o There is a new generic function as.bitsplits with a method to
+      convert from the class "prop.part" to the class "bitsplits".
+
+    o The new function ltt.coplot plots on the same scales a tree and
+      the derived LTT plot.
+
+    o ltt.plot() has two new options: backward and tol. It can now
+      handle non-ultrametic trees and its internal coding has been
+      improved. The coordinates of the plot can now be computed with
+      the new function ltt.plot.coords.
+
+
+BUG FIXES
+
+    o prop.part() crashed if some trees had some multichotomies.
+
+
+
 		CHANGES IN APE VERSION 2.7-3
 
 
