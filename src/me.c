@@ -1,4 +1,4 @@
-/* me.c    2008-01-14 */
+/* me.c    2012-02-09 */
 
 /* Copyright 2007-2008 Olivier Gascuel, Rick Desper,
    R port by Vincent Lefort, me_*() below modified by Emmanuel Paradis */
@@ -274,8 +274,7 @@ tree *detrifurcate(tree *T)
     return(T);
   if (NULL != v->parentEdge)
     {
-      Rprintf ("Error: root %s is poorly rooted.\n",v->label);
-      exit(0);
+      error("root %s is poorly rooted.", v->label);
     }
   for(e = v->middleEdge, v->middleEdge = NULL; NULL != e; e = f )
     {
@@ -326,8 +325,7 @@ void compareSets(tree *T, set *S)
     }
   if (-1 == v->index2)
     {
-      Rprintf("Error leaf %s in tree not in distance matrix.\n",v->label);
-      exit(0);
+      error("leaf %s in tree not in distance matrix.", v->label);
     }
   e = depthFirstTraverse(T,NULL);
   while (NULL != e)
@@ -335,16 +333,14 @@ void compareSets(tree *T, set *S)
       v = e->head;
       if ((leaf(v)) && (-1 == v->index2))
 	{
-	  Rprintf("Error leaf %s in tree not in distance matrix.\n",v->label);
-	  exit(0);
+	  error("leaf %s in tree not in distance matrix.", v->label);
 	}
       e = depthFirstTraverse(T,e);
       }
   for(X = S; NULL != X; X = X->secondNode)
     if (X->firstNode->index2 > -1)
       {
-	Rprintf("Error node %s in matrix but not a leaf in tree.\n",X->firstNode->label);
-	exit(0);
+	error("node %s in matrix but not a leaf in tree.", X->firstNode->label);
       }
   return;
 }

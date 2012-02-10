@@ -1,9 +1,9 @@
-## dist.topo.R (2011-07-13)
+## dist.topo.R (2012-02-03)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
 
-## Copyright 2005-2011 Emmanuel Paradis
+## Copyright 2005-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -157,24 +157,27 @@ plot.prop.part <- function(x, barcol = "blue", leftmar = 4, ...)
     mtext(attr(x, "labels"), side = 2, at = 1:n, las = 1)
 }
 
-prop.clades <- function(phy, ..., part = NULL)
+prop.clades <- function(phy, ..., part = NULL, rooted = FALSE)
 {
     if (is.null(part)) {
+        ## <FIXME>
+        ## Are we going to keep the '...' way of passing trees?
         obj <- list(...)
         if (length(obj) == 1 && class(obj[[1]]) != "phylo")
-          obj <- unlist(obj, recursive = FALSE)
+            obj <- unlist(obj, recursive = FALSE)
+        ## </FIXME>
         part <- prop.part(obj, check.labels = TRUE)
     }
-    bp <- .Call("bipartition", phy$edge, length(phy$tip.label),
-                phy$Nnode, PACKAGE = "ape")
-    if (!is.null(attr(part, "labels")))
-      for (i in 1:length(part))
-        part[[i]] <- sort(attr(part, "labels")[part[[i]]])
-    bp <- lapply(bp, function(xx) sort(phy$tip.label[xx]))
+
+    bp <- prop.part(phy)
+    if (!rooted) bp <- postprocess.prop.part(bp)
+
     n <- numeric(phy$Nnode)
-    for (i in 1:phy$Nnode) {
-        for (j in 1:length(part)) {
-            if (identical(all.equal(bp[[i]], part[[j]]), TRUE)) {
+    for (i in seq_along(bp)) {
+        for (j in seq_along(part)) {
+            ## we rely on the fact the values returned by prop.part are
+            ## sorted and without attributes, so identical can be used:
+            if (identical(bp[[i]], part[[j]])) {
                 n[i] <- attr(part, "number")[j]
                 done <-  TRUE
                 break
@@ -185,7 +188,7 @@ prop.clades <- function(phy, ..., part = NULL)
 }
 
 boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
-                       trees = FALSE, quiet = FALSE)
+                       trees = FALSE, quiet = FALSE, rooted = FALSE)
 {
     if (is.list(x) && !is.data.frame(x)) {
         if (inherits(x, "DNAbin")) x <- as.matrix(x)
@@ -207,7 +210,7 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
             boot.samp <- numeric(ncol(x))
             boot.samp[y] <- boot.i
             for (j in 1:(block - 1))
-              boot.samp[y - j] <- boot.i - j
+                boot.samp[y - j] <- boot.i - j
         } else boot.samp <- sample(ncol(x), replace = TRUE)
         boot.tree[[i]] <- FUN(x[, boot.samp])
         if (!quiet) utils::setTxtProgressBar(progbar, i/B)
@@ -215,7 +218,11 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
     if (!quiet) close(progbar)
     for (i in 1:B) storage.mode(boot.tree[[i]]$Nnode) <- "integer"
     storage.mode(phy$Nnode) <- "integer"
-    ans <- prop.clades(phy, boot.tree)
+
+    pp <- prop.part(boot.tree)
+    if (!rooted) pp <- postprocess.prop.part(pp)
+    ans <- prop.clades(phy, part = pp, rooted = rooted)
+
     ##ans <- attr(.Call("prop_part", c(list(phy), boot.tree),
     ##                  B + 1, FALSE, PACKAGE = "ape"), "number") - 1
     if (trees) {
@@ -223,6 +230,61 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
         ans <- list(BP = ans, trees = boot.tree)
     }
     ans
+}
+
+### The next function transforms an object of class "prop.part" so
+### that the vectors which are identical in terms of split are aggregated.
+### For instance if n = 5 tips, 1:2 and 3:5 actually represent the same
+### split though they are different clades. The aggregation is done
+### arbitrarily. The call to ONEwise() insures that all splits include
+### the first tip.
+postprocess.prop.part <- function(x)
+{
+    n <- length(x[[1]])
+    N <- length(x)
+    w <- attr(x, "number")
+
+    drop <- logical(N)
+    V <- numeric(n)
+    for (i in 2:(N - 1)) {
+        if (drop[i]) next
+        A <- x[[i]]
+        for (j in (i + 1):N) {
+            if (drop[j]) next
+            B <- x[[j]]
+            if (length(A) + length(B) != n) next
+            V[] <- 0L
+            V[A] <- 1L
+            V[B] <- 1L
+            if (all(V == 1L)) {
+                drop[j] <- TRUE
+                w[i] <- w[i] + w[j]
+            }
+        }
+    }
+    if (any(drop)) {
+        labels <- attr(x, "labels")
+        x <- x[!drop]
+        w <- w[!drop]
+        attr(x, "number") <- w
+        attr(x, "labels") <- labels
+        class(x) <- "prop.part"
+    }
+    ONEwise(x)
+}
+
+### This function changes an object of class "prop.part" so that they
+### all include the first tip. For instance if n = 5 tips, 3:5 is
+### changed to 1:2.
+ONEwise <- function(x)
+{
+    n <- length(x[[1L]])
+    v <- 1:n
+    for (i in 2:length(x)) {
+        y <- x[[i]]
+        if (y[1] != 1) x[[i]] <- v[-y]
+    }
+    x
 }
 
 consensus <- function(..., p = 1, check.labels = TRUE)

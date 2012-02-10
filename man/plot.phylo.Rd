@@ -9,7 +9,8 @@
     cex = par("cex"), adj = NULL, srt = 0, no.margin = FALSE,
     root.edge = FALSE, label.offset = 0, underscore = FALSE,
     x.lim = NULL, y.lim = NULL, direction = "rightwards",
-    lab4ut = "horizontal", tip.color = "black", plot = TRUE, ...)
+    lab4ut = "horizontal", tip.color = "black", plot = TRUE,
+    rotate.tree = 0, ...)
 \method{plot}{multiPhylo}(x, layout = 1, ...)
 }
 \arguments{
@@ -96,6 +97,9 @@
   \item{layout}{the number of trees to be plotted simultaneously.}
   \item{\dots}{further arguments to be passed to \code{plot} or to
     \code{plot.phylo}.}
+  \item{rotate.tree}{for "fan", "unrooted", or "radial" trees: the
+    rotation of the whole tree in degrees (negative values are
+    accepted).}
 }
 \description{
   These functions plot phylogenetic trees on the current graphical

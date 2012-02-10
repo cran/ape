@@ -12,7 +12,7 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
                 scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1)
 {
     if (!inherits(phy, "phylo"))
-        stop('object "phy" is not of class "phylo".')
+        stop('object "phy" is not of class "phylo"')
     if (is.null(phy$edge.length))
         stop("tree has no branch lengths")
     type <- match.arg(type, c("continuous", "discrete"))

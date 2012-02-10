@@ -1,8 +1,8 @@
-## clustal.R (2011-03-16)
+## clustal.R (2012-01-12)
 
 ##   Multiple Sequence Alignment with External Applications
 
-## Copyright 2011 Emmanuel Paradis
+## Copyright 2011-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -15,7 +15,7 @@ clustal <- function(x, pw.gapopen = 10, pw.gapext = 0.1,
     if (is.null(exec)) {
         if (os == "Linux") exec <- "clustalw"
         if (os == "Darwin") exec <- "clustalw2"
-        if (os == "Windows") exec <- "C:/Program Files/ClustalW2/clustalw2"
+        if (os == "Windows") shortPathName("C:/Program Files/ClustalW2/clustalw2.exe")
     }
 
     if (missing(x)) {

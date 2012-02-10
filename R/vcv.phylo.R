@@ -1,8 +1,8 @@
-## vcv.phylo.R (2009-11-19)
+## vcv.phylo.R (2012-02-09)
 
 ##   Phylogenetic Variance-Covariance or Correlation Matrix
 
-## Copyright 2002-2009 Emmanuel Paradis
+## Copyright 2002-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -12,39 +12,41 @@ vcv <- function(phy, ...) UseMethod("vcv")
 vcv.phylo <- function(phy, model = "Brownian", corr = FALSE, ...)
 {
     if (is.null(phy$edge.length))
-      stop("the tree has no branch lengths")
+        stop("the tree has no branch lengths")
 
-    foo <- function(node, var, endofclade) {
-        ## First, get the extent of clade descending
-        ## from `node' in the matrix `edge':
-        from <- which(phy$edge[, 1] == node)
-        to <- c(from[-1] - 1, endofclade)
-        ## Get the #'s of the descendants of `node':
-        desc <- phy$edge[from, 2]
-        ## The variance of each of these is easy:
-        vcv[desc, desc] <<- var + phy$edge.length[from]
-        nd <- length(desc)
-        ## The variance of `node' is equal to the covariance of
-        ## each possible pair among its descendant clades.
-        for (i in 1:(nd - 1))
-          for (j in (i + 1):nd)
-            for (k in phy$edge[from[i]:to[i], 2])
-              for (l in phy$edge[from[j]:to[j], 2])
-                vcv[k, l] <<- vcv[l, k] <<- var
-        for (i in 1:nd) {
-            if (desc[i] <= n) next
-            foo(desc[i], vcv[desc[i], desc[i]], to[i])
+    pp <- prop.part(phy)
+
+    phy <- reorder(phy, "pruningwise")
+
+    n <- length(phy$tip.label)
+    e1 <- phy$edge[, 1]
+    e2 <- phy$edge[, 2]
+    EL <- phy$edge.length
+
+    ## xx: vecteur donnant la distance d'un noeud
+    ##     ou d'un tip à partir de la racine
+    ## (same than in is.ultrametric)
+    xx <- numeric(n + phy$Nnode)
+
+    vcv <- matrix(0, n, n)
+
+    ## the loop below starts from the bottom of the edge matrix, so
+    ## from the root
+
+    for (i in length(e1):1) {
+        var.cur.node <- xx[e1[i]]
+        xx[e2[i]] <- var.cur.node + EL[i] # sets the variance
+        j <- i - 1L
+        while (e1[j] == e1[i] && j > 0) {
+            left <- if (e2[j] > n) pp[[e2[j] - n]] else e2[j]
+            right <- if (e2[i] > n) pp[[e2[i] - n]] else e2[i]
+            vcv[left, right] <- vcv[right, left] <- var.cur.node # sets the covariance
+            j <- j - 1L
         }
     }
 
-    phy <- reorder(phy)
-    n <- length(phy$tip.label)
-    n.node <- phy$Nnode
-    N <- n.node + n
-    vcv <- matrix(0, N, N)
-    foo(n + 1, 0, dim(phy$edge)[1])
+    diag(vcv) <- xx[1:n]
 
-    vcv <- vcv[1:n, 1:n]
     if (corr) {
         ## This is inspired from the code of `cov2cor' (2005-09-08):
         M <- vcv
@@ -52,7 +54,9 @@ vcv.phylo <- function(phy, model = "Brownian", corr = FALSE, ...)
         vcv[] <- Is * M * rep(Is, each = n)
         vcv[1 + 0:(n - 1)*(n + 1)] <- 1
     }
-    rownames(vcv) <- colnames(vcv) <- phy$tip.label
+
+    dimnames(vcv)[1:2] <- list(phy$tip.label)
+
     vcv
 }
 

@@ -1,4 +1,4 @@
-/* BIONJ.c    2008-01-14 */
+/* BIONJ.c    2012-02-09 */
 
 /* Copyright 2007-2008 Olivier Gascuel, Hoa Sien Cuong,
    R port by Vincent Lefort, bionj() below modified by Emmanuel Paradis */
@@ -117,8 +117,7 @@ void Initialize(float **delta, double *X, char **labels, int n, POINTERS *trees)
       name=(WORD *)calloc(1,sizeof(WORD));            /* taxon name is     */
       if(name == NULL)                                /* put in trees      */
 	{
-	  Rprintf("Out of memories !!");
-	  exit(0);
+	  error("out of memory");
 	}
       else
 	{
@@ -206,15 +205,13 @@ void bionj(double *X, int *N, char **labels,
       delta[i]=(float *)calloc(n+1, sizeof(float));
       if(delta[i] == NULL)
 	{
-	  Rprintf("Out of memories!!");
-	  exit(0);
+	  error("out of memory");
 	}
     }
   trees=(POINTERS *)calloc(n+1,sizeof(POINTERS));
   if(trees == NULL)
     {
-      Rprintf("Out of memories!!");
-      exit(0);
+      error("out of memory");
     }
   /*   initialise and symmetrize the running delta matrix    */
   r=n;
@@ -372,8 +369,7 @@ void Concatenate(char chain1[MAX_LABEL_LENGTH], int ind, POINTERS *trees, int po
   bran=(WORD *)calloc(1,sizeof(WORD));
   if(bran == NULL)
     {
-      Rprintf("Out of memories");
-      exit(0);
+      error("out of memory");
     }
   else
     {

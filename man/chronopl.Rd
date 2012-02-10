@@ -1,6 +1,12 @@
 \name{chronopl}
 \alias{chronopl}
 \title{Molecular Dating With Penalized Likelihood}
+\description{
+  This function estimates the node ages of a tree using a
+  semi-parametric method based on penalized likelihood (Sanderson
+  2002). The branch lengths of the input tree are interpreted as mean
+  numbers of substitutions (i.e., per site).
+}
 \usage{
 chronopl(phy, lambda, age.min = 1, age.max = NULL,
          node = "root", S = 1, tol = 1e-8,
@@ -27,12 +33,6 @@ chronopl(phy, lambda, age.min = 1, age.max = NULL,
     algorithm.}
   \item{\dots}{further arguments passed to control \code{nlminb}.}
 }
-\description{
-  This function estimates the node ages of a tree using a
-  semi-parametric method based on penalized likelihood (Sanderson
-  2002). The branch lengths of the input tree are interpreted as mean
-  numbers of substitutions (i.e., per site).
-}
 \details{
   The idea of this method is to use a trade-off between a parametric
   formulation where each branch has its own rate, and a nonparametric
@@ -57,6 +57,15 @@ chronopl(phy, lambda, age.min = 1, age.max = NULL,
   arguments for the former (e.g., \code{age.min = c(10, 5), age.max =
     c(10, 6), node = c(15, 18)} means that the age of node 15 is 10
   units of time, and the age of node 18 is between 5 and 6).
+
+  If two nodes are linked (i.e., one is the ancestor of the other) and
+  have the same values of \code{age.min} and \code{age.max} (say, 10 and
+  15) this will result in an error because the medians of these values
+  are used as initial times (here 12.5) giving initial branch length(s)
+  equal to zero. The easiest way to solve this is to change slightly the
+  given values, for instance use \code{age.max = 14.9} for the youngest
+  node, or \code{age.max = 15.1} for the oldest one (or similarly for
+  \code{age.min}).
 
   The input tree may have multichotomies. If some internal branches are
   of zero-length, they are collapsed (with a warning), and the returned

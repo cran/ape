@@ -234,8 +234,8 @@ void printDoubleTable(double **A, int d)
   for(i=0;i<d;i++)
     {
       for(j=0;j<d;j++)
-	printf("%lf ", A[i][j]);
-      printf("\n");
+	Rprintf("%lf ", A[i][j]);
+      Rprintf("\n");
     }
 }
 

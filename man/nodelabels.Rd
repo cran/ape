@@ -20,7 +20,7 @@ tiplabels(text, tip, adj = c(0.5, 0.5), frame = "rect",
 edgelabels(text, edge, adj = c(0.5, 0.5), frame = "rect",
            pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
            col = "black", bg = "lightgreen", horiz = FALSE,
-           width = NULL, height = NULL, ...)
+           width = NULL, height = NULL, date = NULL, ...)
 
 }
 \arguments{
@@ -63,6 +63,8 @@ edgelabels(text, edge, adj = c(0.5, 0.5), frame = "rect",
   \item{horiz, width, height}{parameters controlling the aspect of
     thermometers; by default, their width and height are determined
     automatically.}
+  \item{date}{specifies the positions of labels on edges of chronograms
+    with respect to the time scale.}
 }
 \details{
   These three functions have the same optional arguments and the same

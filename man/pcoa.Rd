@@ -88,6 +88,7 @@ Lingoes, J. C. (1971) Some boundary conditions for a monotone analysis of symmet
 \examples{
 # Oribatid mite data from Borcard and Legendre (1994)
 
+\dontrun{
 if (require(vegan)) {
 data(mite)  # Community composition data, 70 peat cores, 35 species
 
@@ -111,6 +112,7 @@ biplot(res, mite.log.st)
 par(mfrow=c(1,2))
 biplot(res, mite.log, dir.axis1=-1, dir.axis2=-1)
 biplot(res, mite.log.st, dir.axis1=-1, dir.axis2=-1)
+}
 }
 }
 

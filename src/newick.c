@@ -1,4 +1,4 @@
-/* newick.c    2010-11-23 */
+/* newick.c    2012-02-09 */
 
 /* Copyright 2007-2008 Vincent Lefort */
 
@@ -69,8 +69,7 @@ node *decodeNewickSubtree(char *treeString, tree *T, int *uCount)
 	case(ReadOpenParenthesis):
 	  if('(' != treeString[0])
 	    {
-	      Rprintf("Error reading subtree.\n");
-	      exit(0);
+	      error("error reading subtree");
 	    }
 	  i++;
 	  state = ReadSubTree;
@@ -164,8 +163,7 @@ node *decodeNewickSubtree(char *treeString, tree *T, int *uCount)
 	    centerNode->middleEdge = thisEdge;
 	  else
 	    {
-	      Rprintf("Error: node %s has too many (>3) children.\n",centerNode->label);
-	      exit(0);
+	      error("node %s has too many (>3) children.", centerNode->label);
 	    }
 	  //sprintf(thisEdge->label,"E%d",edgeCount++);
 	  //snprintf(thisEdge->label,MAX_LABEL_LENGTH,"E%d",edgeCount++);
@@ -197,8 +195,7 @@ tree *readNewickString (char *str, int numLeaves)
 
   if ('(' != str[0])
     {
-      Rprintf("Error reading generated tree - does not start with '('.\n");
-      exit(0);
+      error("generated tree does not start with '('");
     }
   inputLength = strlen (str)+1;
   for(i = 0; i < inputLength; i++)
@@ -225,8 +222,7 @@ tree *readNewickString (char *str, int numLeaves)
 	}
       else if (parCount < 0)
 	{
-	  Rprintf("Error reading generated tree. Too many right parentheses.\n");
-	  exit(0);
+	  error("generated tree has too many right parentheses");
 	}
     }
   centerNode = decodeNewickSubtree (str, T, &uCount);

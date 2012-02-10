@@ -2,7 +2,7 @@
 \alias{write.nexus}
 \title{Write Tree File in Nexus Format}
 \usage{
-write.nexus(..., file = "", translate = TRUE, original.data = TRUE)
+write.nexus(..., file = "", translate = TRUE, original.data = NULL)
 }
 \arguments{
   \item{\dots}{either (i) a single object of class \code{"phylo"}, (ii) a
@@ -14,18 +14,12 @@ write.nexus(..., file = "", translate = TRUE, original.data = TRUE)
   \item{translate}{a logical, if \code{TRUE} (the default) a translation
     of the tip labels is done which are replaced in the parenthetic
     representation with tokens.}
-  \item{original.data}{a logical, if \code{TRUE} (the default) the
-    data in the original NEXUS file are eventually written in
-    \code{"file"} (see below).}
+  \item{original.data}{deprecated; will be removed soon.}
 }
 \description{
   This function writes trees in a file with the NEXUS format.
 }
 \details{
-  If \code{original.data = TRUE}, the file as specified by the attribute
-  \code{"origin"} of the first tree is read and its data (except the
-  trees) are written in \code{file}.
-
   If several trees are given, they must have all the same tip labels.
 
   If among the objects given some are not trees of class \code{"phylo"},

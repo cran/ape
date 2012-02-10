@@ -1,8 +1,8 @@
-## rTrait.R (2011-06-15)
+## rTrait.R (2012-02-09)
 
 ##   Trait Evolution
 
-## Copyright 2010-2011 Emmanuel Paradis
+## Copyright 2010-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -64,7 +64,7 @@ rTraitDisc <-
         diag(Q) <- -rowSums(Q)
         for (i in N:1) {
             p <- matexpo(Q * el[i])[x[anc[i]], ]
-            x[des[i]] <- .Internal(sample(k, size = 1, FALSE, prob = p))
+            x[des[i]] <- sample.int(k, size = 1, FALSE, prob = p)
         }
     }
 

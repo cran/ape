@@ -16,7 +16,7 @@ compute.brtime <-
     m <- phy$Nnode
     N <- Nedge(phy)
 
-    ## x: branching times (aka, node ages or heights)
+    ## x: branching times (aka, node ages, depths, or heights)
 
     if (identical(method, "coalescent")) { # the default
         x <- 2 * rexp(m)/(as.double((m + 1):2) * as.double(m:1))

@@ -1,3 +1,63 @@
+		CHANGES IN APE VERSION 3.0
+
+
+NEW FEATURES
+
+    o The three functions dyule, dbd, and dbdTime calculate the
+      density probability (i.e., the distribution of the number of
+      species) for the Yule, the constant and the time-dependent
+      birth-beath models, respectively. These probabilities can be
+      conditional on no extinction and/or on a log-scale.
+
+    o plot.phylo() has a new option 'rotate.tree' to rotate unrooted,
+      fan, or radial trees around the center of the plot.
+
+    o boot.phylo() and prop.clades() have a new option rooted =
+      FALSE. Note that the behaviour of prop.part() is unchanged.
+
+    o edgelabels() has a new option 'date' to place labels on edges of
+      chronograms using the time scale (suggestion by Rob Lanfear).
+
+
+BUG FIXES
+
+    o In chronopl(), the code setting the initial dates failed in
+      complicated settings (several dates known within intervals).
+      This has been generally improved and should result in faster
+      and more efficient convergence even in simple settings.
+
+    o mantel.test() sometimes returned P-values > 1 with the default
+      two-tailed test.
+
+    o extract.clade() sometimes shuffled some tip labels (thanks to
+      Ludovic Mallet and Mahendra Mariadassou for the fix).
+
+    o clustal() should now find by default the executable under Windows.
+
+
+OTHER CHANGES
+
+    o The code of yule() has been simplified and is now much faster for
+      big trees.
+
+    o The code of mantel.test() has been adjusted to be consistent
+      with common permutation tests.
+
+    o The C code of base.freq() has been improved and is now nearly 8
+      times faster.
+
+    o The option 'original.data' of write.nexus() is now deprecated and
+      will be removed in a future release.
+
+    o The code of is.ultrametric() has been improved and is now 3 times
+      faster.
+
+    o The code of vcv.phylo() has been improved and is now 10 or 30
+      times faster for 100 or 1000 tips, respectively. Consequently,
+      fitting models with PGLS will be faster overall.
+
+
+
 		CHANGES IN APE VERSION 2.8
 
 
@@ -149,8 +209,8 @@ BUG FIXES
 
 OTHER CHANGES
 
-    o identify.phylo() now returns NULL if the user right-(instead of
-      left-)clicks (an error was returned previously).
+    o identify.phylo() now returns NULL if the user right- (instead of
+      left-) clicks (an error was returned previously).
 
     o read.nexus() should be robust to commands inserted in the TREES
       block.

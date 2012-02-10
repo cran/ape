@@ -1,8 +1,8 @@
-## rtree.R (2010-03-09)
+## rtree.R (2012-02-09)
 
 ##   Generates Trees
 
-## Copyright 2004-2010 Emmanuel Paradis
+## Copyright 2004-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -10,7 +10,7 @@
 rtree <- function(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
 {
     foo <- function(n, pos) {
-        n1 <- .Internal(sample(n - 1, 1, FALSE, NULL))
+        n1 <- sample.int(n - 1, 1, FALSE, NULL)
         n2 <- n - n1
         po2 <- pos + 2*n1 - 1
         edge[c(pos, po2), 1] <<- nod
@@ -54,11 +54,11 @@ rtree <- function(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
             i <- which(is.na(edge[, 2]))
             edge[i, 2] <- 1:n
         } else { # n > 4
-            n1 <- .Internal(sample(n - 2, 1, FALSE, NULL))
+            n1 <- sample.int(n - 2, 1, FALSE, NULL)
             if (n1 == n - 2) {
                 n2 <- n3 <- 1
             } else {
-                n2 <- .Internal(sample(n - n1 - 1, 1, FALSE, NULL))
+                n2 <- sample.int(n - n1 - 1, 1, FALSE, NULL)
                 n3 <- n - n1 - n2
             }
             po2 <- 2*n1
@@ -207,6 +207,6 @@ stree <- function(n, type = "star", tip.label = NULL)
         tip.label <- paste("t", 1:n, sep = "")
     phy <- list(edge = edge, tip.label = tip.label, Nnode = m)
     class(phy) <- "phylo"
-    attr(phy, "order" <- "cladewise")
+    attr(phy, "order") <- "cladewise"
     phy
 }

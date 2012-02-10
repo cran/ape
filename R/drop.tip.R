@@ -1,4 +1,4 @@
-## drop.tip.R (2011-05-19)
+## drop.tip.R (2011-11-21)
 
 ##   Remove Tips in a Phylogenetic Tree
 
@@ -54,7 +54,11 @@ extract.clade <- function(phy, node, root.edge = 0, interactive = FALSE)
     if (wbl) phy$edge.length <- phy$edge.length[keep]
     TIPS <- phy$edge[, 2] <= Ntip
     tip <- phy$edge[TIPS, 2]
-    phy$tip.label <- phy$tip.label[sort(tip)] # <- added sort to avoid shuffling of tip labels (2010-07-21)
+    ## Fix by Ludovic Mallet and Mahendra Mariadassou (2011-11-21):
+    name <- vector("character", length(tip))
+    name[order(tip)] <- phy$tip.label[tip]
+    phy$tip.label <- name
+    ## End of fix
     ## keep the ordering so no need to reorder tip.label:
     phy$edge[TIPS, 2] <- order(tip)
     if (!is.null(phy$node.label))

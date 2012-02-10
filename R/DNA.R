@@ -1,8 +1,8 @@
-## DNA.R (2011-03-21)
+## DNA.R (2012-01-10)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
-## Copyright 2002-2011 Emmanuel Paradis
+## Copyright 2002-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.

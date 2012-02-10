@@ -2,7 +2,7 @@
 \alias{mantel.test}
 \title{Mantel Test for Similarity of Two Matrices}
 \usage{
-mantel.test(m1, m2, nperm = 1000, graph = FALSE,
+mantel.test(m1, m2, nperm = 999, graph = FALSE,
             alternative = "two.sided",  ...)
 }
 \arguments{

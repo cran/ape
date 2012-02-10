@@ -48,7 +48,7 @@ read.tree(file = "", text = NULL, tree.names = NULL, skip = 0,
   message is issued.
 
   If there are any characters preceding the first "(" in a line then
-  this is assigned to the name. This is returned when a "multiphylo"
+  this is assigned to the name. This is returned when a "multiPhylo"
   object is returned and \code{tree.names = NULL}.
 }
 \value{
@@ -83,6 +83,9 @@ read.tree(file = "", text = NULL, tree.names = NULL, skip = 0,
 
   Paradis, E. (2008) Definition of Formats for Coding Phylogenetic Trees
   in R. \url{http://ape.mpl.ird.fr/misc/FormatTreeR_28July2008.pdf}
+
+  Paradis, E. (2012) \emph{Analysis of Phylogenetics and Evolution with
+    R (Second Edition).} New York: Springer.
 }
 
 \author{Emmanuel Paradis and Daniel Lawson \email{dan.lawson@bristol.ac.uk}}

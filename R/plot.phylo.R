@@ -1,4 +1,4 @@
-## plot.phylo.R (2011-06-14)
+## plot.phylo.R (2011-12-03)
 
 ##   Plot Phylogenies
 
@@ -15,7 +15,7 @@ plot.phylo <-
              adj = NULL, srt = 0, no.margin = FALSE, root.edge = FALSE,
              label.offset = 0, underscore = FALSE, x.lim = NULL,
              y.lim = NULL, direction = "rightwards", lab4ut = "horizontal",
-             tip.color = "black", plot = TRUE, ...)
+             tip.color = "black", plot = TRUE, rotate.tree = 0, ...)
 {
     Ntip <- length(x$tip.label)
     if (Ntip == 1) {
@@ -96,17 +96,7 @@ plot.phylo <-
     }
     ## 'z' is the tree in pruningwise order used in calls to .C
     z <- reorder(x, order = "pruningwise")
-###    edge.color <- rep(edge.color, length.out = Nedge)
-###    edge.width <- rep(edge.width, length.out = Nedge)
-###    edge.lty <- rep(edge.lty, length.out = Nedge)
-###    ## fix from Li-San Wang (2007-01-23):
-###    xe <- x$edge
-###    x <- reorder(x, order = "pruningwise")
-###    ereorder <- match(x$edge[, 2], xe[, 2])
-###    edge.color <- edge.color[ereorder]
-###    edge.width <- edge.width[ereorder]
-###    edge.lty <- edge.lty[ereorder]
-###    ## end of fix
+
     if (phyloORclado) {
         if (is.null(node.pos)) {
             node.pos <- 1
@@ -131,7 +121,9 @@ plot.phylo <-
         } else  {
             xx <- .nodeDepthEdgelength(Ntip, Nnode, z$edge, Nedge, z$edge.length)
         }
-    } else switch(type, "fan" = {
+    } else {
+    rotate.tree <- 2 * pi * rotate.tree/360
+    switch(type, "fan" = {
         ## if the tips are not in the same order in tip.label
         ## and in edge[, 2], we must reorder the angles: we
         ## use `xx' to store temporarily the angles
@@ -147,14 +139,15 @@ plot.phylo <-
             r <- .nodeDepth(Ntip, Nnode, z$edge, Nedge)
             r <- 1/r
         }
+        theta <- theta + rotate.tree
         xx <- r*cos(theta)
         yy <- r*sin(theta)
     }, "unrooted" = {
         nb.sp <- .nodeDepth(Ntip, Nnode, z$edge, Nedge)
         XY <- if (use.edge.length)
-            unrooted.xy(Ntip, Nnode, z$edge, z$edge.length, nb.sp)
+            unrooted.xy(Ntip, Nnode, z$edge, z$edge.length, nb.sp, rotate.tree)
         else
-            unrooted.xy(Ntip, Nnode, z$edge, rep(1, Nedge), nb.sp)
+            unrooted.xy(Ntip, Nnode, z$edge, rep(1, Nedge), nb.sp, rotate.tree)
         ## rescale so that we have only positive values
         xx <- XY$M[, 1] - min(XY$M[, 1])
         yy <- XY$M[, 2] - min(XY$M[, 2])
@@ -166,9 +159,9 @@ plot.phylo <-
         ## angle (1st compute the angles for the tips):
         yy <- c((1:Ntip)*2*pi/Ntip, rep(0, Nnode))
         Y <- .nodeHeight(Ntip, Nnode, z$edge, Nedge, yy)
-        xx <- X * cos(Y)
-        yy <- X * sin(Y)
-    })
+        xx <- X * cos(Y + rotate.tree)
+        yy <- X * sin(Y + rotate.tree)
+    })}
     if (phyloORclado) {
         if (!horizontal) {
             tmp <- yy
@@ -558,7 +551,7 @@ circular.plot <- function(edge, Ntip, Nnode, xx, yy, theta,
     }
 }
 
-unrooted.xy <- function(Ntip, Nnode, edge, edge.length, nb.sp)
+unrooted.xy <- function(Ntip, Nnode, edge, edge.length, nb.sp, rotate.tree)
 {
     foo <- function(node, ANGLE, AXIS) {
         ind <- which(edge[, 1] == node)
@@ -573,7 +566,7 @@ unrooted.xy <- function(Ntip, Nnode, edge, edge.length, nb.sp)
             yy[sons[i]] <<- h*sin(beta) + yy[node]
         }
         for (i in sons)
-          if (i > Ntip) foo(i, angle[i], axis[i])
+            if (i > Ntip) foo(i, angle[i], axis[i])
     }
     Nedge <- dim(edge)[1]
     yy <- xx <- numeric(Ntip + Nnode)
@@ -581,7 +574,7 @@ unrooted.xy <- function(Ntip, Nnode, edge, edge.length, nb.sp)
     ## `axis': the axis of each branch
     axis <- angle <- numeric(Ntip + Nnode)
     ## start with the root...
-    foo(Ntip + 1L, 2*pi, 0)
+    foo(Ntip + 1L, 2*pi, 0 + rotate.tree)
 
     M <- cbind(xx, yy)
     axe <- axis[1:Ntip] # the axis of the terminal branches (for export)

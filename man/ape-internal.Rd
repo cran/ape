@@ -29,11 +29,10 @@
 \alias{plotPhyloCoor}
 \alias{integrateTrapeze}
 \alias{CDF.birth.death}
+\alias{postprocess.prop.part}
+\alias{ONEwise}
 \title{Internal Ape Functions}
 \description{
   Internal \pkg{ape} functions.
-}
-\note{
-  These are not to be called by the user (unless you know what you're doing).
 }
 \keyword{internal}

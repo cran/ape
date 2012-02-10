@@ -1,8 +1,8 @@
-## nodelabels.R (2010-07-17)
+## nodelabels.R (2012-02-10)
 
 ##   Labelling Trees
 
-## Copyright 2004-2010 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
+## Copyright 2004-2012 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -178,7 +178,7 @@ edgelabels <-
     function(text, edge, adj = c(0.5, 0.5), frame = "rect",
              pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
              col = "black", bg = "lightgreen", horiz = FALSE,
-             width = NULL, height = NULL, ...)
+             width = NULL, height = NULL, date = NULL, ...)
 {
     lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
     if (missing(edge)) {
@@ -200,6 +200,11 @@ edgelabels <-
         XX <- (lastPP$xx[subedge[, 1]] + lastPP$xx[subedge[, 2]]) / 2
         YY <- (lastPP$yy[subedge[, 1]] + lastPP$yy[subedge[, 2]]) / 2
     }
+
+    ## suggestion by Rob Lanfear:
+    if (!is.null(date))
+        XX[] <- max(lastPP$xx) - date
+
     BOTHlabels(text, sel, XX, YY, adj, frame, pch, thermo,
                pie, piecol, col, bg, horiz, width, height, ...)
 }

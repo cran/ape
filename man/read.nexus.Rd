@@ -60,12 +60,6 @@ read.nexus(file, tree.names = NULL)
 
   If several trees are read in the file, the returned object is of class
   \code{"multiPhylo"}, and is a list of objects of class \code{"phylo"}.
-
-  An attribute \code{"origin"} is further given to the returned object
-  which gives the name of the source file (with its path). This is used
-  to write a tree in a NEXUS file where all the original data must be
-  written (not only the tree) in accordance to the specifications of
-  Maddison et al. (1997).
 }
 \references{
   Maddison, D. R., Swofford, D. L. and Maddison, W. P. (1997) NEXUS: an

@@ -1,8 +1,8 @@
-## read.nexus.R (2011-03-26)
+## read.nexus.R (2012-02-09)
 
 ##   Read Tree File in Nexus Format
 
-## Copyright 2003-2011 Emmanuel Paradis and 2010 Klaus Schliep
+## Copyright 2003-2012 Emmanuel Paradis and 2010 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -222,7 +222,7 @@ read.nexus <- function(file, tree.names = NULL)
         if (!translation) n <- length(tr$tip.label)
         ROOT <- n + 1
         if (sum(tr$edge[, 1] == ROOT) == 1 && dim(tr$edge)[1] > 1) {
-            stop(paste("There is apparently two root edges in your file: cannot read tree file.\n  Reading NEXUS file aborted at tree no.", i, sep = ""))
+            stop(paste("The tree has apparently singleton node(s): cannot read tree file.\n  Reading NEXUS file aborted at tree no.", i, sep = ""))
         }
     }
     if (Ntree == 1) {
@@ -247,9 +247,5 @@ read.nexus <- function(file, tree.names = NULL)
         class(trees) <- "multiPhylo"
         if (!all(nms.trees == "")) names(trees) <- nms.trees
     }
-    if (length(grep("[\\/]", file)) == 1)
-        if (!file.exists(file)) # suggestion by Francois Michonneau
-            file <- paste(getwd(), file, sep = "/")
-    attr(trees, "origin") <- file
     trees
 }
