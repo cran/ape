@@ -1,8 +1,8 @@
-## read.GenBank.R (2010-07-22)
+## read.GenBank.R (2012-02-17)
 
 ##   Read DNA Sequences from GenBank via Internet
 
-## Copyright 2002-2010 Emmanuel Paradis
+## Copyright 2002-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -22,7 +22,7 @@ read.GenBank <-
         if (i == nrequest) b <- N
         URL <- paste("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nucleotide&id=",
                      paste(access.nb[a:b], collapse = ","),
-                     "&rettype=gb", sep = "")
+                     "&rettype=gb&retmode=text", sep = "")
         X <- c(X, scan(file = URL, what = "", sep = "\n", quiet = TRUE))
     }
     FI <- grep("^ {0,}ORIGIN", X) + 1

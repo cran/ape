@@ -37,9 +37,9 @@ dbdTime(x, birth, death, t, conditional = FALSE,
 }
 \details{
   These three functions compute the probabilities to observe \code{x}
-  species starting from a single one after time units \code{t} (assumed
-  to be continuous). The first one is a short-cut for the second with
-  \code{mu = 0} and with default values for the two other parameters.
+  species starting from a single one after time \code{t} (assumed to be
+  continuous). The first function is a short-cut for the second one with
+  \code{mu = 0} and with default values for the two other arguments.
   \code{dbdTime} is for time-varying \code{lambda} and \code{mu}
   specified as \R functions.
 
@@ -52,7 +52,7 @@ dbdTime(x, birth, death, t, conditional = FALSE,
   The returned value is, logically, zero for values of \code{x} out of
   range, i.e., negative or zero for \code{dyule} or if \code{conditional
   = TRUE}. However, it is not checked if the values of \code{x} are
-  non-integers and the probabilities are computed and returned.
+  positive non-integers and the probabilities are computed and returned.
 
   The details on the form of the arguments \code{birth}, \code{death},
   \code{BIRTH}, \code{DEATH}, and \code{fast} can be found in the links

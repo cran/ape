@@ -1,4 +1,4 @@
-## cophyloplot.R (2010-03-18)
+## cophyloplot.R (2012-02-14)
 
 ##   Plots two phylogenetic trees face to
 ##   face with the links between the tips
@@ -29,14 +29,10 @@ cophyloplot <-
             if (click < length(res$a[, 1]) + 1) {
                 if (click > res$N.tip.x)
                   x <- rotate(x, click)
-            }
-            else if (click < length(res$c[, 1]) + 1) {
+            } else if (click < length(res$c[, 1]) + 1) {
                 if (click > length(res$a[, 1]) + res$N.tip.y)
                   y <- rotate(y, click - length(res$a[, 1]))
             }
-            plotCophylo2(x, y, assoc = assoc, use.edge.length = use.edge.length,
-                space = space, length.line = length.line, gap = gap,
-                type = type, return = TRUE, col = col, lwd=lwd, lty=lty, show.tip.label = show.tip.label, font = font)
         }
         on.exit(print("done"))
     }

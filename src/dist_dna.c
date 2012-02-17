@@ -1,12 +1,12 @@
-/* dist_dna.c       2012-01-10 */
+/* dist_dna.c       2012-02-14 */
 
 /* Copyright 2005-2012 Emmanuel Paradis
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
 
-#include <R.h>
 #include <R_ext/Lapack.h>
+#include "ape.h"
 
 /* from R: print(log(4), d = 22) */
 #define LN4 1.386294361119890572454
@@ -73,6 +73,76 @@ double detFourByFour(double *x)
     }\
     if (IsPyrimidine(x[s1]) && IsPyrimidine(x[s2])) Ns++;
 
+void distDNA_indel(unsigned char *x, int *n, int *s, double *d)
+{
+	int i1, i2, s1, s2, target, N;
+
+	target = 0;
+	for (i1 = 1; i1 < *n; i1++) {
+		for (i2 = i1 + 1; i2 <= *n; i2++) {
+			N = 0;
+
+			for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n)
+				if ((x[s1] ^ x[s2]) & 4) N++;
+
+			d[target] = ((double) N);
+			target++;
+		}
+	}
+}
+
+#define X(i, j) i - 1 + *n * (j - 1)
+
+void distDNA_indelblock(unsigned char *x, int *n, int *s, double *d)
+{
+	int i1, i2, s1, s2, target, N, start_block, end_block;
+
+	for (i1 = 1; i1 <= *n; i1++) {
+
+/* find a block of one or more '-' */
+
+		s1 = 1;
+		while (s1 < *s) {
+			if (x[X(i1, s1)] == 4) {
+				start_block = s1;
+				while (x[X(i1, s1)] == 4) s1++;
+				end_block = s1 - 1;
+
+/* then look if the same block is present in all the other sequences */
+
+				for (i2 = 1; i2 <= *n; i2++) {
+					if (i2 == i1) continue;
+
+					target = give_index(i1, i2, *n);
+
+					if (start_block > 1) {
+						if (x[X(i2, start_block - 1)] == 4) {
+							d[target]++;
+							continue;
+						}
+					}
+					if (end_block < *s) {
+						if (x[X(i2, end_block + 1)] == 4) {
+							d[target]++;
+							continue;
+						}
+					}
+					for (s2 = start_block; s2 <= end_block; s2++) {
+						if (x[X(i2, s2)] != 4) {
+							d[target]++;
+							continue;
+						}
+					}
+				}
+				s1 = end_block + 1;
+			}
+			s1++;
+		}
+	}
+}
+
+#undef X
+
 void distDNA_TsTv(unsigned char *x, int *n, int *s, double *d, int Ts, int pairdel)
 {
 	int i1, i2, s1, s2, target, Nd, Ns;
@@ -81,7 +151,7 @@ void distDNA_TsTv(unsigned char *x, int *n, int *s, double *d, int Ts, int paird
 	for (i1 = 1; i1 < *n; i1++) {
 		for (i2 = i1 + 1; i2 <= *n; i2++) {
 			Nd = Ns = 0;
-			for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+			for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 				if (pairdel && !(KnownBase(x[s1]) && KnownBase(x[s2]))) continue;
 				COUNT_TS_TV
 			}
@@ -100,7 +170,7 @@ void distDNA_raw(unsigned char *x, int *n, int *s, double *d, int scaled)
 	for (i1 = 1; i1 < *n; i1++) {
 		for (i2 = i1 + 1; i2 <= *n; i2++) {
 			Nd = 0;
-			for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n)
+			for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n)
 				if (DifferentBase(x[s1], x[s2])) Nd++;
 			if (scaled) d[target] = ((double) Nd / *s);
 			else d[target] = ((double) Nd);
@@ -117,7 +187,7 @@ void distDNA_raw_pairdel(unsigned char *x, int *n, int *s, double *d, int scaled
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    Nd = L = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
                 CHECK_PAIRWISE_DELETION
 		if (DifferentBase(x[s1], x[s2])) Nd++;
 	    }
@@ -150,7 +220,7 @@ void distDNA_JC69(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
   	    Nd = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n)
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n)
 	      if (DifferentBase(x[s1], x[s2])) Nd++;
 	    COMPUTE_DIST_JC69
 	    target++;
@@ -233,7 +303,7 @@ void distDNA_K80_pairdel(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    Nd = Ns = L = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 	        CHECK_PAIRWISE_DELETION
 		COUNT_TS_TV
 	    }
@@ -285,7 +355,7 @@ void distDNA_F81_pairdel(unsigned char *x, int *n, int *s, double *d, double *BF
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
   	    Nd = L = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 	        CHECK_PAIRWISE_DELETION
 		if (DifferentBase(x[s1], x[s2])) Nd++;
 	    }
@@ -332,7 +402,7 @@ void distDNA_K81(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
   	    Nd = Nv1 = Nv2 = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 	        COUNT_TS_TV1_TV2
 	    }
 	    COMPUTE_DIST_K81
@@ -351,7 +421,7 @@ void distDNA_K81_pairdel(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
   	    Nd = Nv1 = Nv2 = L = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 	        CHECK_PAIRWISE_DELETION
 	        COUNT_TS_TV1_TV2
 	    }
@@ -392,7 +462,7 @@ void distDNA_F84(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    Nd = Ns = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 	        COUNT_TS_TV
 	    }
 	    COMPUTE_DIST_F84
@@ -413,7 +483,7 @@ void distDNA_F84_pairdel(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    Nd = Ns = L = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 		CHECK_PAIRWISE_DELETION
 		COUNT_TS_TV
 	    }
@@ -449,7 +519,7 @@ void distDNA_T92(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    Nd = Ns = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 	        COUNT_TS_TV
 	    }
 	    COMPUTE_DIST_T92
@@ -470,7 +540,7 @@ void distDNA_T92_pairdel(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    Nd = Ns = L = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 	        CHECK_PAIRWISE_DELETION
 	        COUNT_TS_TV
 	    }
@@ -546,7 +616,7 @@ void distDNA_TN93(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    Nd = Ns1 = Ns2 = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 		COUNT_TS1_TS2_TV
 	    }
 	    COMPUTE_DIST_TN93
@@ -568,7 +638,7 @@ void distDNA_TN93_pairdel(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    Nd = Ns1 = Ns2 = L = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 		CHECK_PAIRWISE_DELETION
 		COUNT_TS1_TS2_TV
 	    }
@@ -610,7 +680,7 @@ void distDNA_GG95(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    Nd = Ns = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 	        COUNT_TS_TV
 	    }
 	    P[target] = ((double) Ns / *s);
@@ -686,7 +756,7 @@ void distDNA_GG95_pairdel(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    Nd = Ns = L[target] = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 	        if (KnownBase(x[s1]) && KnownBase(x[s2])) L[target]++;
 		else continue;
 	        COUNT_TS_TV
@@ -772,7 +842,7 @@ void distDNA_LogDet(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    for (k = 0; k < 16; k++) Ntab[k] = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 		DO_CONTINGENCY_NUCLEOTIDES
 	    }
 	    COMPUTE_DIST_LogDet
@@ -792,7 +862,7 @@ void distDNA_LogDet_pairdel(unsigned char *x, int *n, int *s, double *d,
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    for (k = 0; k < 16; k++) Ntab[k] = 0;
 	    L = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 		CHECK_PAIRWISE_DELETION
 		DO_CONTINGENCY_NUCLEOTIDES
 	    }
@@ -818,7 +888,7 @@ void distDNA_BH87(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    for (k = 0; k < 16; k++) Ntab[k] = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 		DO_CONTINGENCY_NUCLEOTIDES
 	    }
 
@@ -916,7 +986,7 @@ void distDNA_ParaLin(unsigned char *x, int *n, int *s, double *d,
     for (i1 = 1; i1 < *n; i1++) {
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    for (k = 0; k < 16; k++) Ntab[k] = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 		DO_CONTINGENCY_NUCLEOTIDES
 	    }
 	    COMPUTE_DIST_ParaLin
@@ -960,7 +1030,7 @@ void distDNA_ParaLin_pairdel(unsigned char *x, int *n, int *s, double *d,
         for (i2 = i1 + 1; i2 <= *n; i2++) {
 	    L = 0;
 	    for (k = 0; k < 16; k++) Ntab[k] = 0;
-	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1+= *n, s2 += *n) {
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n) {
 	        CHECK_PAIRWISE_DELETION
 		DO_CONTINGENCY_NUCLEOTIDES
 	    }
@@ -1115,6 +1185,7 @@ void dist_dna(unsigned char *x, int *n, int *s, int *model, double *d,
 	    else distDNA_TsTv(x, n, s, d, 1, 0); break;
     case 15 : if (pairdel) distDNA_TsTv(x, n, s, d, 0, 1);
 	    else distDNA_TsTv(x, n, s, d, 0, 0); break;
-
+    case 16 : distDNA_indel(x, n, s, d); break;
+    case 17 : distDNA_indelblock(x, n, s, d); break;
     }
 }

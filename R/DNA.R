@@ -1,4 +1,4 @@
-## DNA.R (2012-01-10)
+## DNA.R (2012-02-14)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -227,7 +227,7 @@ print.DNAbin <- function(x, printlen = 6, digits = 3, ...)
 as.DNAbin <- function(x, ...) UseMethod("as.DNAbin")
 
 ._cs_ <- c("a", "g", "c", "t", "r", "m", "w", "s", "k",
-           "y", "v", "h",  "d", "b", "n", "-", "?")
+           "y", "v", "h", "d", "b", "n", "-", "?")
 
 ._bs_ <- c(136, 72, 40, 24, 192, 160, 144, 96, 80,
            48, 224, 176, 208, 112, 240, 4, 2)
@@ -353,16 +353,17 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
                      as.matrix = FALSE)
 {
     MODELS <- c("RAW", "JC69", "K80", "F81", "K81", "F84", "T92", "TN93",
-                "GG95", "LOGDET", "BH87", "PARALIN", "N", "TS", "TV")
+                "GG95", "LOGDET", "BH87", "PARALIN", "N", "TS", "TV",
+                "INDEL", "INDELBLOCK")
     imod <- pmatch(toupper(model), MODELS)
     if (is.na(imod))
         stop(paste("'model' must be one of:",
                    paste("\"", MODELS, "\"", sep = "", collapse = " ")))
     if (imod == 11 && variance) {
-        warning("computing variance not available for model BH87.")
+        warning("computing variance not available for model BH87")
         variance <- FALSE
     }
-    if (gamma && imod %in% c(1, 5:7, 9:15)) {
+    if (gamma && imod %in% c(1, 5:7, 9:17)) {
         warning(paste("gamma-correction not available for model", model))
         gamma <- FALSE
     }
@@ -371,9 +372,13 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     n <- dim(x)
     s <- n[2]
     n <- n[1]
+
     if (imod %in% c(4, 6:8)) {
         BF <- if (is.null(base.freq)) base.freq(x) else base.freq
     } else BF <- 0
+
+    if (imod %in% 16:17) pairwise.deletion <- TRUE
+
     if (!pairwise.deletion) {
         keep <- .C("GlobalDeletionDNA", x, n, s,
                    rep(1L, s), PACKAGE = "ape")[[4]]

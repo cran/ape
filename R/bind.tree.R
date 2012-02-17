@@ -1,8 +1,8 @@
-## bind.tree.R (2011-06-21)
+## bind.tree.R (2012-02-13)
 
 ##    Bind Trees
 
-## Copyright 2003-2011 Emmanuel Paradis
+## Copyright 2003-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -63,9 +63,11 @@ bind.tree <- function(x, y, where = "root", position = 0, interactive = FALSE)
     ## case = 3 -> y is bound on a node of x
 
     ## check that 'position' is correct
-    if (position) {
-        if (!wbl)
-            stop("'position' is non-null but trees have no branch lengths")
+    if (position && wbl) {
+### New in ape 3.0-1: this makes possible binding 'y' below
+### a node of 'x' thus creating a new node in 'x'
+###        if (!wbl)
+###            stop("'position' is non-null but trees have no branch lengths")
         if (case == 1) {
             if (xHasNoRootEdge)
                 stop("tree 'x' has no root edge")

@@ -1,6 +1,6 @@
-/* mvr.c    2011-10-11 */
+/* mvr.c    2012-02-17 */
 
-/* Copyright 2011 Andrei-Alin Popescu */
+/* Copyright 2011-2012 Andrei-Alin Popescu */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -142,7 +142,7 @@ void mvr(double *D, double* v,int *N, int *edge1, int *edge2, double *edge_lengt
 			double xi = D[give_index(i, OTU1, n)]; /* dist between OTU1 and i */
  			double yi = D[give_index(i, OTU2, n)]; /* dist between OTU2 and i */
                         double lamb=v[give_index(i,OTU2,n)]/(v[give_index(i,OTU2,n)]+v[give_index(i,OTU1,n)]);
-			new_dist[ij] = lamb*(xi-edge_length[k])+(1-lamb)*(yi-edge_length[k]);
+			new_dist[ij] = lamb*(xi-edge_length[k])+(1-lamb)*(yi-edge_length[k+1]);
                         new_v[ij]=(v[give_index(i,OTU2,n)]*v[give_index(i,OTU1,n)])/(v[give_index(i,OTU2,n)]+v[give_index(i,OTU1,n)]);
 			ij++;
 		}

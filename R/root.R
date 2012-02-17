@@ -21,43 +21,73 @@ unroot <- function(phy)
 {
     if (!inherits(phy, "phylo"))
         stop('object "phy" is not of class "phylo"')
-    if (dim(phy$edge)[1] < 3)
+    N <- dim(phy$edge)[1]
+    if (N < 3)
         stop("cannot unroot a tree with less than three edges.")
+
     ## delete FIRST the root.edge (in case this is sufficient to
     ## unroot the tree, i.e. there is a multichotomy at the root)
     if (!is.null(phy$root.edge)) phy$root.edge <- NULL
     if (!is.rooted(phy)) return(phy)
-    ## We remove one of the edges coming from the root, and
-    ## eventually adding the branch length to the other one
-    ## also coming from the root.
-    ## In all cases, the node deleted is the 2nd one (numbered
-    ## nb.tip+2 in `edge'), so we simply need to renumber the
-    ## nodes by adding 1, except the root (this remains the
-    ## origin of the tree).
-    nb.tip <- length(phy$tip.label)
-    ROOT <- nb.tip + 1L
-    EDGEROOT <- which(phy$edge[, 1] == ROOT)
-    ## j: the target where to stick the edge
-    ## i: the edge to delete
-    if (phy$edge[EDGEROOT[1], 2] == ROOT + 1L) {
-        j <- EDGEROOT[2]
-        i <- EDGEROOT[1]
+
+    n <- length(phy$tip.label)
+    ROOT <- n + 1L
+
+### EDGEROOT[1]: the edge to delete
+### EDGEROOT[2]: the target where to stick the edge to delete
+
+### If the tree is in pruningwise order, then the last two edges
+### are those connected to the root; the node situated in
+### phy$edge[N - 2L, 1L] will be the new root...
+
+    ophy <- attr(phy, "order")
+    if (!is.null(ophy) && ophy == "pruningwise") {
+        NEWROOT <- phy$edge[N - 2L, 1L]
+        EDGEROOT <- c(N, N - 1L)
     } else {
-        j <- EDGEROOT[1]
-        i <- EDGEROOT[2]
+
+### ... otherwise, we remove one of the edges coming from
+### the root, and eventually adding the branch length to
+### the other one also coming from the root.
+### In all cases, the node deleted is the 2nd one (numbered
+### nb.tip+2 in 'edge'), so we simply need to renumber the
+### nodes by adding 1, except the root (this remains the
+### origin of the tree).
+
+        EDGEROOT <- which(phy$edge[, 1L] == ROOT)
+        NEWROOT <- ROOT + 1L
     }
-    ## This should work whether the tree is in pruningwise or
-    ## cladewise order.
-    phy$edge <- phy$edge[-i, ]
-    nodes <- phy$edge > ROOT # renumber all nodes except the root
-    phy$edge[nodes] <- phy$edge[nodes] - 1L
+
+    ## make sure EDGEROOT is ordered as described above:
+    if (phy$edge[EDGEROOT[1L], 2L] != NEWROOT)
+        EDGEROOT <- EDGEROOT[2:1]
+
+    phy$edge <- phy$edge[-EDGEROOT[1L], ]
+
+    s <- phy$edge == NEWROOT # renumber the new root
+    phy$edge[s] <- ROOT
+
+    s <- phy$edge > NEWROOT # renumber all nodes greater than the new root
+    phy$edge[s] <- phy$edge[s] - 1L
+
     if (!is.null(phy$edge.length)) {
-        phy$edge.length[j] <- phy$edge.length[j] + phy$edge.length[i]
-        phy$edge.length <- phy$edge.length[-i]
+        phy$edge.length[EDGEROOT[2L]] <-
+            phy$edge.length[EDGEROOT[2L]] + phy$edge.length[EDGEROOT[1L]]
+        phy$edge.length <- phy$edge.length[-EDGEROOT[1L]]
     }
+
     phy$Nnode <- phy$Nnode - 1L
-    if (!is.null(phy$node.label))
-      phy$node.label <- phy$node.label[-2]
+
+    if (!is.null(phy$node.label)) {
+        if (NEWROOT == n + 2L)
+            phy$node.label <- phy$node.label[-1]
+        else {
+            lbs <- phy$node.label
+            tmp <- lbs[NEWROOT - n]
+            lbs <- lbs[-c(1, NEWROOT)]
+            phy$node.label <- c(tmp, lbs)
+        }
+    }
     phy
 }
 

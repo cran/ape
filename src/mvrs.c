@@ -1,6 +1,6 @@
-/* mvrs.c    2011-10-11 */
+/* mvrs.c    2012-02-17 */
 
-/* Copyright 2011 Andrei-Alin Popescu */
+/* Copyright 2011-2012 Andrei-Alin Popescu */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -129,7 +129,7 @@ void mvrs(double *D, double* v,int *N, int *edge1, int *edge2, double *edge_leng
 			 for (j = i + 1; j <= n; j++) {
 				 //Rprintf("S[%i]=%f, S[%i]=%f, D[%i,%i]=%f, B=%f",i,S[i],j,S[j],i,j,D[give_index(i,j,n)],B);
                                 A=S[i]+S[j]-B*D[give_index(i,j,n)];
-                                Rprintf("Q[%i,%i]=%f\n",i,j,A);
+                                //Rprintf("Q[%i,%i]=%f\n",i,j,A);
 				if (A > smallest_S) {
 					OTU1 = i;
 					OTU2 = j;
@@ -392,6 +392,3 @@ void mvrs(double *D, double* v,int *N, int *edge1, int *edge2, double *edge_leng
 	edge_length[*N*2 - 5] = (D[0] + D[2] - D[1])/2;
 	edge_length[*N*2 - 6] = (D[2] + D[1] - D[0])/2;
 }
-
-
-

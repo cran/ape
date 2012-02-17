@@ -1,4 +1,4 @@
-## plotPhyloCoor.R (2008-04-30)
+## plotPhyloCoor.R (2012-02-14)
 
 ##   Coordinates of a Tree Plot
 
@@ -32,7 +32,8 @@ plotPhyloCoor <-
     }
 
     xe <- x$edge
-    x <- reorder(x, order = "pruningwise")
+    ## first reorder the tree in cladewise order to avoid cophyloplot() hanging:
+    x <- reorder(reorder(x), order = "pruningwise")
     ereorder <- match(x$edge[, 2], xe[, 2])
 
     if (phyloORclado) {

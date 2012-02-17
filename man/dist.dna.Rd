@@ -14,8 +14,8 @@ dist.dna(x, model = "K80", variance = FALSE,
     used; must be one of \code{"raw"}, \code{"N"}, \code{"TS"},
     \code{"TV"}, \code{"JC69"}, \code{"K80"} (the default),
     \code{"F81"}, \code{"K81"}, \code{"F84"}, \code{"BH87"},
-    \code{"T92"}, \code{"TN93"}, \code{"GG95"}, \code{"logdet"}, or
-    \code{"paralin"}.}
+    \code{"T92"}, \code{"TN93"}, \code{"GG95"}, \code{"logdet"},
+    \code{"paralin"}, \code{"indel"}, or \code{"indelblock"}.}
   \item{variance}{a logical indicating whether to compute the variances
     of the distances; defaults to \code{FALSE} so the variances are not
     computed.}
@@ -24,7 +24,8 @@ dist.dna(x, model = "K80", variance = FALSE,
       FALSE} so no correction is applied).}
   \item{pairwise.deletion}{a logical indicating whether to delete the
     sites with missing data in a pairwise way. The default is to delete
-    the sites with at least one missing data for all sequences.}
+    the sites with at least one missing data for all sequences (ignored
+    if \code{model = "indel"} or \code{"indelblock"}).}
   \item{base.freq}{the base frequencies to be used in the computations
     (if applicable, i.e. if \code{method = "F84"}). By default, the
     base frequencies are computed from the whole sample of sequences.}
@@ -121,6 +122,14 @@ dist.dna(x, model = "K80", variance = FALSE,
 
   \item{\code{paralin}: }{Lake (1994) developed the paralinear distance which
     can be viewed as another variant of the Barry--Hartigan distance.}
+
+  \item{\code{indel}: }{this counts the number of sites where there an
+    insertion/deletion gap in one sequence and not in the other.}
+
+  \item{\code{indelblock}: }{same than before but contiguous gaps are
+    counted as a single unit. Note that the distance between `-A-' and
+    `A--' is 3 because there are three different blocks of gaps, whereas
+    the ``indel'' distance will be 2.}
 }}
 \value{
   an object of class \link[stats]{dist} (by default), or a numeric

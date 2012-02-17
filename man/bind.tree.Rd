@@ -35,6 +35,17 @@ bind.tree(x, y, where = "root", position = 0, interactive = FALSE)
     bind.tree(x, y, position = if (is.null(x$root.edge)) 0 else
     x$root.edge)
   }
+
+  If only one of the trees has no branch length, the branch lengths of
+  the other one are ignored with a warning.
+
+  If one (or both) of the trees has no branch length, it is possible to
+  specify a value of 'position' to graft 'y' below the node of 'x'
+  specified by 'where'. In this case, the exact value of 'position' is
+  not important as long as it is greater than zero. The new node will be
+  multichotomous if 'y' has no root edge. This can be solved by giving
+  an arbitrary root edge to 'y' beforehand (e.g., \code{y$root.edge <-
+  1}): it will be deleted during the binding operation.
 }
 \value{
   an object of class \code{"phylo"}.
