@@ -1,4 +1,4 @@
-/* mvrs.c    2012-02-17 */
+/* mvrs.c    2012-04-02 */
 
 /* Copyright 2011-2012 Andrei-Alin Popescu */
 
@@ -60,6 +60,8 @@ void mvrs(double *D, double* v,int *N, int *edge1, int *edge2, double *edge_leng
 
              if(k==i || k==j)
                {
+		  if(i!=k)R[give_index(i,j,n)]+=D[give_index(i,k,n)];
+		  if(j!=k)R[give_index(i,j,n)]+=D[give_index(j,k,n)];
                   s[give_index(i,j,n)]++;
                   //Rprintf("%i",s[give_index(i,j,n)]);
 
@@ -288,6 +290,8 @@ void mvrs(double *D, double* v,int *N, int *edge1, int *edge2, double *edge_leng
                      {
                        if(j==1 || j==i)
                        {
+			 if(i!=j)newR[give_index(1,i,n-1)]+=new_dist[give_index(i,j,n-1)];
+			 if(1!=j)newR[give_index(1,i,n-1)]+=new_dist[give_index(1,j,n-1)];
                          newS[give_index(1,i,n-1)]++;
                          continue;
                        }
@@ -318,6 +322,7 @@ void mvrs(double *D, double* v,int *N, int *edge1, int *edge2, double *edge_leng
                 {if(new_dist[give_index(1,i,n-1)]==-1)continue;
                  for(j=i+1;j<=n-1;j++)
                   {if(new_dist[give_index(1,j,n-1)]==-1)continue;
+                   if(new_dist[give_index(i,j,n-1)]==-1)continue;
                    newR[give_index(i,j,n-1)]+=(new_dist[give_index(1,i,n-1)]+new_dist[give_index(1,j,n-1)]);
                    newS[give_index(i,j,n-1)]++;
                   }

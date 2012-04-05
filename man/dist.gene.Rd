@@ -6,7 +6,7 @@ dist.gene(x, method = "pairwise", pairwise.deletion = FALSE,
           variance = FALSE)
 }
 \arguments{
-  \item{x}{a matrix or a data frame.}
+  \item{x}{a matrix or a data frame (will be coerced as a matrix).}
   \item{method}{a character string specifying the method used to compute
     the distances; two choices are available: \code{"pairwise"} and
     \code{"percentage"}, or any unambiguous abbreviation of these.}

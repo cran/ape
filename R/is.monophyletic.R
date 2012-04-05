@@ -1,8 +1,8 @@
-## ace.R (2009-06-19)
+## is.monophyletic.R (2012-03-23)
 
-##   Ancestral Character Estimation
+##   Test Monophyly
 
-## Copyright 2009 Johan Nylander and Emmanuel Paradis
+## Copyright 2009-2012 Johan Nylander and Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -12,14 +12,13 @@ is.monophyletic <-
 {
     if (!inherits(phy, "phylo"))
         stop("object 'phy' is not of class 'phylo'")
-    if (length(tips) == 1) return(TRUE)
     n <- length(phy$tip.label)
-    if (length(tips) == n) return(TRUE)
-    ROOT <- n + 1
+    if (length(tips) %in% c(1L, n)) return(TRUE)
+    ROOT <- n + 1L
     if (is.numeric(tips)) {
         if (any(tips > n))
             stop("incorrect tip#: should not be greater than the number of tips")
-        tips <- sort(tips)
+        tips <- sort(as.integer(tips))
     }
     if (is.character(tips))
         tips <- which(phy$tip.label %in% tips)
@@ -50,4 +49,4 @@ is.monophyletic <-
     }
     ## assuming that both vectors are sorted:
     identical(tips, desc)
-} # end of is.monophyletic
+}

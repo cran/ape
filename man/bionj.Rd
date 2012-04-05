@@ -25,9 +25,8 @@ bionj(X)
   ported to \R by Vincent Lefort \email{vincent.lefort@lirmm.fr}
 }
 \seealso{
-  \code{\link{nj}}, \code{\link{fastme}},
-  \code{\link{write.tree}}, \code{\link{read.tree}},
-  \code{\link{dist.dna}}
+  \code{\link{nj}}, \code{\link{fastme}}, \code{\link{mvr}},
+  \code{\link{SDM}}, \code{\link{dist.dna}}
 }
 \examples{
 ### From Saitou and Nei (1987, Table 1):

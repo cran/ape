@@ -1,4 +1,4 @@
-/* mvr.c    2012-02-17 */
+/* mvr.c    2012-05-02 */
 
 /* Copyright 2011-2012 Andrei-Alin Popescu */
 
@@ -74,9 +74,9 @@ void mvr(double *D, double* v,int *N, int *edge1, int *edge2, double *edge_lengt
 			}
 		}
 
-                /*Rprintf("agglomerating %i and %i, Q=%f \n",OTU1,OTU2,smallest_S);
+                //Rprintf("agglomerating %i and %i, Q=%f \n",OTU1,OTU2,smallest_S);
 
-                for(i=1;i<n;i++)
+                /*for(i=1;i<n;i++)
                   {
                     for(j=i+1;j<=n;j++)
                       {
@@ -125,15 +125,15 @@ void mvr(double *D, double* v,int *N, int *edge1, int *edge2, double *edge_lengt
                 edge_length[k]=D[give_index(OTU1,OTU2,n)]/2 + eLenSum;
 
                 eLenSum=0;
-                for(i=1;i<=n;i++)
+                /*for(i=1;i<=n;i++)
                  {
                    if(i == OTU1 || i==OTU2)continue;
 
                    double wi=miu/(v[give_index(i,OTU1,n)]+v[give_index(i,OTU2,n)]);
                    eLenSum+=wi*(D[give_index(i,OTU2,n)]-D[give_index(i,OTU1,n)]);
-                 }
+		 }*/
 
-                edge_length[k+1]=D[give_index(OTU1,OTU2,n)]/2 + eLenSum;
+                edge_length[k+1]=D[give_index(OTU1,OTU2,n)] - edge_length[k];
 
 		A = D[smallest];
 		ij = 0;
@@ -186,4 +186,3 @@ void mvr(double *D, double* v,int *N, int *edge1, int *edge2, double *edge_lengt
 	edge_length[*N*2 - 5] = (D[0] + D[2] - D[1])/2;
 	edge_length[*N*2 - 6] = (D[2] + D[1] - D[0])/2;
 }
-

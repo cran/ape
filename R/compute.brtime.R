@@ -1,8 +1,8 @@
-## compute.brtime.R (2011-07-26)
+## compute.brtime.R (2012-03-02)
 
 ##   Compute and Set Branching Times
 
-## Copyright 2011 Emmanuel Paradis
+## Copyright 2011-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -32,15 +32,24 @@ compute.brtime <-
 
     y <- c(rep(0, n), x) # for all nodes (terminal and internal)
 
-    phy <- reorder(phy, "pruningwise")
-    e1 <- phy$edge[, 1L] # local copies of the pointer
+    e1 <- phy$edge[, 1L] # local copies of the pointers
     e2 <- phy$edge[, 2L] #
-    el <- numeric(N)
-    if (force.positive) y[unique(e1)] <- sort(x)
 
-    for (i in 1:N) el[i] <- y[e1[i]] - y[e2[i]]
+    if (force.positive) {
+        o <- .Call("seq_root2tip", phy$edge, n, m, PACKAGE = "ape")
+        list.nodes <- list(n + 1L)
+        i <- 2L
+        repeat {
+            z <- sapply(o, "[", i)
+            z <- unique(z[!(z <= n | is.na(z))])
+            if (!length(z)) break
+            list.nodes[[i]] <- z
+            i <- i + 1L
+        }
+        nodes <- unlist(lapply(list.nodes, function(x) x[sample(length(x))]))
+        y[nodes] <- sort(x, decreasing = TRUE)
+    }
 
-    phy$edge.length <- el
-    reorder(phy)
+    phy$edge.length <- y[e1] - y[e2]
+    phy
 }
-

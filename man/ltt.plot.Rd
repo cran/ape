@@ -57,8 +57,8 @@ ltt.plot.coords(phy, backward = TRUE, tol = 1e-6)
 
   The option \code{tol} is used as follows: first the most distant tip
   from the root is found, then all tips whose distance to the root is
-  not more different from the previous one than \code{tol} are
-  considered to be contemporaneous with it.
+  not different from the previous one than \code{tol} are considered to
+  be contemporaneous with it.
 
   If the tree is not ultrametric, the plot is done assuming the tips,
   except the most distant from the root, represent extinction events. If
@@ -73,8 +73,11 @@ ltt.plot.coords(phy, backward = TRUE, tol = 1e-6)
   \code{"phylo"} (single trees) and/or \code{"multiPhylo"} (multiple
   trees). Any number of objects may be given. This function is mainly
   for exploratory analyses with the advantages that the axes are set
-  properly to view all lines, and the legend is plotted by default. For
-  more flexible settings of line drawings, it may be better to combine
+  properly to view all lines, and the legend is plotted by default. The
+  plot will certainly make sense if all trees have their
+  most-distant-from-the-root tips contemporaneous (i.e., trees with only
+  extinct lineages will not be represented properly). For more flexible
+  settings of line drawings, it may be better to combine
   \code{ltt.plot()} with successive calls of \code{ltt.lines()} (see
   examples).
 
@@ -101,9 +104,9 @@ ltt.plot.coords(phy, backward = TRUE, tol = 1e-6)
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{skyline}}, \code{\link{branching.times}},
-  \code{\link{birthdeath}}, \code{\link{bd.ext}},
-  \code{\link{yule.cov}}, \code{\link{bd.time}};
+  \code{\link{kronoviz}}, \code{\link{skyline}},
+  \code{\link{branching.times}}, \code{\link{birthdeath}},
+  \code{\link{bd.ext}}, \code{\link{yule.cov}}, \code{\link{bd.time}};
   \code{\link[graphics]{plot}} for the basic plotting function in R
 }
 \examples{

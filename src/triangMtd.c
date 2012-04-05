@@ -1,6 +1,6 @@
-/* triangMtd.c    2011-10-11 */
+/* triangMtd.c    2012-04-02 */
 
-/* Copyright 2011 Andrei-Alin Popescu */
+/* Copyright 2011-2012 Andrei-Alin Popescu */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -268,7 +268,7 @@ void triangMtd(double* d, int* np, int* ed1,int* ed2, double* edLen)
               {
                 if((ed1[i]==aux && ed2[i]==p)||(ed2[i]==aux && ed1[i]==p))
                   {
-                    if(ed2[i]==aux && ed1[i]==p){sw=1;}
+                    if(ed1[i]==aux && ed2[i]==p){sw=1;}
                     subdiv=i;
                     sum+=edLen[i];
                   }

@@ -32,6 +32,10 @@ mcconwaysims.test(x)
   McConway, K. J. and Sims, H. J. (2004) A likelihood-based method for
   testing for nonstochastic variation of diversification rates in
   phylogenies. \emph{Evolution}, \bold{58}, 12--23.
+
+  Paradis, E. (2012) Shift in diversification in sister-clade
+  comparisons: a more powerful test. \emph{Evolution}, \bold{66},
+  288--295.
 }
 \author{Emmanuel Paradis}
 \seealso{

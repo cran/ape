@@ -1,4 +1,4 @@
-## mantel.test.R (2011-11-11)
+## mantel.test.R (2012-03-16)
 
 ##   Mantel Test for Similarity of Two Matrices
 
@@ -18,7 +18,7 @@ mant.zstat <- function(m1, m2) sum(lower.triang(m1 * m2))
 
 lower.triang <- function(m)
 {
-    if (!diff(dim(m))) print("Warning: non-square matrix")
+    if (diff(dim(m))) print("Warning: non-square matrix")
     m[col(m) <= row(m)]
 }
 

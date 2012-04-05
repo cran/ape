@@ -1,6 +1,6 @@
-/* bionjs.c    2011-10-11 */
+/* bionjs.c    2012-04-02 */
 
-/* Copyright 2011 Andrei-Alin Popescu */
+/* Copyright 2011-2012 Andrei-Alin Popescu */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -65,6 +65,10 @@ void bionjs(double *D, int *N, int *edge1, int *edge2, double *edge_length,int* 
 
              if(k==i || k==j)
                {
+		  /* added 2012-04-02: */
+		  if(i!=k)R[give_index(i,j,n)]+=D[give_index(i,k,n)];
+		  if(j!=k)R[give_index(i,j,n)]+=D[give_index(j,k,n)];
+		  /* end of addition */
                   s[give_index(i,j,n)]++;
                   continue;
                }
@@ -141,9 +145,9 @@ void bionjs(double *D, int *N, int *edge1, int *edge2, double *edge_length,int* 
 		        }
                      }
 
-                /*Rprintf("agglomerating %i and %i, Q=%f \n",OTU1,OTU2,smallest_S);
+                //Rprintf("agglomerating %i and %i, Q=%f \n",OTU1,OTU2,smallest_S);
 
-                for(i=1;i<n;i++)
+                /*for(i=1;i<n;i++)
                   {
                     for(j=i+1;j<=n;j++)
                       {
@@ -215,7 +219,7 @@ void bionjs(double *D, int *N, int *edge1, int *edge2, double *edge_length,int* 
                 //if complete distanes, use N-2, else use S
                 int down=B;
                 if(sw==1){down=s[give_index(OTU1,OTU2,n)]-2;}
-                if(down==0)
+                if(down<=0)
                   {error("distance information insufficient to construct a tree, leaves %i and %i isolated from tree",OTU1,OTU2);
                   }
                 //Rprintf("down=%f\n",B);
@@ -286,6 +290,10 @@ void bionjs(double *D, int *N, int *edge1, int *edge2, double *edge_length,int* 
                      {
                        if(j==1 || j==i)
                        {
+                         /* added 2012-04-02 */
+                         if(i!=j)newR[give_index(1,i,n-1)]+=new_dist[give_index(i,j,n-1)];
+			 if(1!=j)newR[give_index(1,i,n-1)]+=new_dist[give_index(1,j,n-1)];
+                         /* end of addition */
                          newS[give_index(1,i,n-1)]++;
                          continue;
                        }
@@ -316,6 +324,7 @@ void bionjs(double *D, int *N, int *edge1, int *edge2, double *edge_length,int* 
                 {if(new_dist[give_index(1,i,n-1)]==-1)continue;
                  for(j=i+1;j<=n-1;j++)
                   {if(new_dist[give_index(1,j,n-1)]==-1)continue;
+		   if(new_dist[give_index(i,j,n-1)]==-1)continue; /* added 2012-04-02 */
                    newR[give_index(i,j,n-1)]+=(new_dist[give_index(1,i,n-1)]+new_dist[give_index(1,j,n-1)]);
                    newS[give_index(i,j,n-1)]++;
                   }

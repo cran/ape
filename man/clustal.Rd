@@ -62,7 +62,7 @@ tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE)
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{image.DNAbin}}, \code{\link{del.gaps}}
+  \code{\link{image.DNAbin}}, \code{\link{del.gaps}}, \code{\link{alex}}
 
   The package \pkg{phyloch} which has similar functions for the MAFFT
   and Prank.

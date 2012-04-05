@@ -90,6 +90,10 @@ prop.clades(phy, ..., part = NULL, rooted = FALSE)
   passed as \code{\dots} fulfills conditions (i) and (ii) above, then it
   might be faster to first call, e.g., \code{pp <- prop.part(...)}, then
   use the option \code{part}: \code{prop.clades(phy, part = pp)}.
+
+  You have to be careful that by default \code{prop.clades} considers
+  the trees as unrooted and this may result in spurious results if the
+  trees are rooted (see examples).
 }
 \value{
   \code{prop.part} returns an object of class \code{"prop.part"} which
@@ -138,6 +142,13 @@ pp20 <- prop.part(TR)
 length(pp20)
 plot(pp10, pch = "x", col = 2)
 plot(pp20, pch = "x", col = 2)
+
+set.seed(1)
+tr <- rtree(10) # rooted by default
+prop.clades(tr, tr) # clearly wrong
+prop.clades(tr, tr, rooted = TRUE)
+tr <- rtree(10, rooted = FALSE)
+prop.clades(tr, tr) # correct
 }
 \keyword{manip}
 \keyword{htest}

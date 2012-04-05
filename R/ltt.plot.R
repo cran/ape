@@ -1,8 +1,8 @@
-## ltt.plot.R (2011-09-24)
+## ltt.plot.R (2012-03-05)
 
 ##    Lineages Through Time Plot
 
-## Copyright 2002-2011 Emmanuel Paradis
+## Copyright 2002-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -99,21 +99,31 @@ mltt.plot <-
         mc <- as.character(match.call())[-(1:2)]
         nms <- mc[1:n]
         for (i in 1:n) {
-            if (class(dts[[i]]) == "phylo") {
+            if (inherits(dts[[i]], "phylo")) {
                 a <- list(ltt.plot.coords(dts[[i]], backward, tol))
                 names(a) <- nms[i]
             } else { # a list of trees
                 a <- lapply(dts[[i]], ltt.plot.coords, backward = backward, tol = tol)
                 names(a) <- names(dts[[i]])
                 if (is.null(names(a)))
-                    names(a) <- paste(deparse(substitute(phy)), "-", 1:length(a))
+                    names(a) <- paste(deparse(substitute(phy)), "-", seq_along(a))
             }
             TREES <- c(TREES, a)
         }
     }
     n <- length(TREES)
-    xl <- c(min(unlist(lapply(TREES, function(x) min(x[, 1])))), 0)
-    yl <- c(1, max(unlist(lapply(TREES, function(x) max(x[, 2])))))
+    range.each.tree <- sapply(TREES, function(x) range(x[, 1]))
+    xl <- range(range.each.tree)
+    yl <- c(1, max(sapply(TREES, function(x) max(x[, 2]))))
+
+    ## if backward is FALSE, we have to rescale the time scales of each tree:
+    if (!backward) {
+        for (i in seq_along(TREES)) {
+            tmp <- TREES[[i]]
+            tmp[, 1] <- tmp[, 1] + xl[2] - range.each.tree[2, i]
+            TREES[[i]] <- tmp
+        }
+    }
 
     plot.default(NA, type = "n", xlim = xl, ylim = yl, xaxs = "r",
                  yaxs = "r", xlab = xlab, ylab = ylab, log = log)

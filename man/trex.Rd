@@ -2,7 +2,7 @@
 \alias{trex}
 \title{Tree Explorer With Multiple Devices}
 \description{
-  This functions requires a plotted tree: the user is invited to click
+  This function requires a plotted tree: the user is invited to click
   close to a node and the corresponding subtree (or clade) is plotted on
   a new window.
 }
@@ -40,7 +40,7 @@ trex(phy, title = TRUE, subbg = "lightyellow3",
   If \code{title = TRUE}, a default title is printed on the new window
   using the node label, or the node number if there are no node labels
   in the tree. If \code{title = FALSE}, no title is printed. If
-  \code{title} is a character string, this is used for the title.
+  \code{title} is a character string, it is used for the title.
 }
 \value{
   an object of class \code{"phylo"} if \code{return.tree = TRUE}

@@ -10,9 +10,10 @@ SDM(...)
 }
 \arguments{
   \item{\dots}{2n elements (with n > 1), the first n elements are the
-    distance matrices, the next n elements are the sequence length from
-    which the matrices have been estimated (can be seen as a degree of
-    confidence in matrices).}
+    distance matrices: these can be (symmetric) matrices, objects of
+    class \code{"dist"}, or a mix of both. The next n elements are the
+    sequence length from which the matrices have been estimated (can be
+    seen as a degree of confidence in matrices).}
 }
 \details{
   Reconstructs a consensus distance matrix from a set of input distance
@@ -31,4 +32,8 @@ SDM(...)
   phylogenomics. \emph{Systematic Biology}, \bold{55}, 740--755.
 }
 \author{Andrei Popescu \email{niteloserpopescu@gmail.com}}
+\seealso{
+  \code{\link{bionj}}, \code{\link{fastme}}, \code{\link{njs}},
+  \code{\link{mvrs}}, \code{\link{triangMtd}}
+}
 \keyword{models}

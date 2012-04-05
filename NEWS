@@ -1,3 +1,57 @@
+		CHANGES IN APE VERSION 3.0-2
+
+
+NEW FEATURES
+
+    o The new function alex (alignment explorator) zooms in a DNA
+      alignment and opens the result in a new window.
+
+
+BUG FIXES
+
+    o compute.brtime() did not completely randomized the order of the
+      branching times.
+
+    o write.nexus() did not work correctly with rooted trees (thanks
+      to Matt Johnson for the fix).
+
+    o mltt.plot(, backward = FALSE) did not set the x-axis correctly.
+
+    o A bug was introduced in prop.clades() with ape 3.0. The help page
+      has been clarified relative to the use of the option 'rooted'.
+
+    o mantel.test() printed a useless warning message.
+
+    o plot.phylo(, direction = "downward") ignored 'y.lim'.
+
+    o is.monophyletic() did not work correctly if 'tips' was not stored
+      as integers.
+
+    o prop.part() could make R crash if the first tree had many
+      multichotomies.
+
+    o njs(), bionjs(), and mvrs() now return an error if 'fs < 1'.
+
+    o SDM() did not work correctly. The code has also been generally
+      improved.
+
+
+OTHER CHANGES
+
+    o The DESCRIPTION file has been updated.
+
+    o The option 'original.data' of write.nexus() has been removed.
+
+    o The files bionjs.c, mvr.c, mvrs.c, njs.c, triangMtd.c, and
+      triangMtds.c have been improved which should fix some bugs in
+      the corresponding functions.
+
+    o dist.gene() now coerces input data frame as matrix resulting in
+      much faster calculations (thanks to a suggestion by Markus
+      Schlegel).
+
+
+
 		CHANGES IN APE VERSION 3.0-1
 
 
@@ -16,6 +70,9 @@ BUG FIXES
       Also the tree is no more plotted twice.
 
     o read.GenBank() has been updated to work with EFetch 2.0.
+
+    o unroot() on trees in "pruningwise" order did not respect this
+      attribute.
 
 
 

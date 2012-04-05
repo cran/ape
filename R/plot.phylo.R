@@ -1,8 +1,8 @@
-## plot.phylo.R (2011-12-03)
+## plot.phylo.R (2012-03-22)
 
 ##   Plot Phylogenies
 
-## Copyright 2002-2011 Emmanuel Paradis
+## Copyright 2002-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -260,12 +260,12 @@ plot.phylo <-
         y.lim <- c(0, y.lim)
         if (phyloORclado && horizontal) y.lim[1] <- 1
         if (type %in% c("fan", "unrooted") && show.tip.label)
-          y.lim[1] <- -max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
+            y.lim[1] <- -max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
         if (type == "radial")
-          y.lim[1] <- if (show.tip.label) -1 - max(nchar(x$tip.label) * 0.018 * max(yy) * cex) else -1
+            y.lim[1] <- if (show.tip.label) -1 - max(nchar(x$tip.label) * 0.018 * max(yy) * cex) else -1
     }
     ## mirror the yy:
-    if (phyloORclado && direction == "downwards") yy <- y.lim[2] - yy
+    if (phyloORclado && direction == "downwards") yy <- max(yy) - yy
     if (phyloORclado && root.edge) {
         if (direction == "leftwards") x.lim[2] <- x.lim[2] + x$root.edge
         if (direction == "downwards") y.lim[2] <- y.lim[2] + x$root.edge

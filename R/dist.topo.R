@@ -1,4 +1,4 @@
-## dist.topo.R (2012-02-03)
+## dist.topo.R (2012-03-13)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -170,7 +170,11 @@ prop.clades <- function(phy, ..., part = NULL, rooted = FALSE)
     }
 
     bp <- prop.part(phy)
-    if (!rooted) bp <- postprocess.prop.part(bp)
+    if (!rooted) {
+        bp <- postprocess.prop.part(bp)
+        part <- postprocess.prop.part(part) # fix by Klaus Schliep
+        ## actually the above line in not needed if called from boot.phylo()
+    }
 
     n <- numeric(phy$Nnode)
     for (i in seq_along(bp)) {
@@ -202,7 +206,8 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
         }
     }
     boot.tree <- vector("list", B)
-    if (!quiet) progbar <- utils::txtProgressBar(style = 3) # suggestion by Alastair Potts
+    if (!quiet) # suggestion by Alastair Potts
+        progbar <- utils::txtProgressBar(style = 3)
     for (i in 1:B) {
         if (block > 1) {
             y <- seq(block, ncol(x), block)

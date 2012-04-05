@@ -1,4 +1,4 @@
-## njs.R (2011-10-11)
+## njs.R (2012-03-30)
 
 ## Tree Reconstruction from Incomplete Distances With NJ* or bio-NJ*
 
@@ -9,6 +9,8 @@
 
 .NJS_BIONJS <- function(libs, X, fs = 15)
 {
+    if (fs < 1)
+        stop("argument 'fs' must be a non-zero positive integer")
     if (is.matrix(X)) X <- as.dist(X)
     X[is.na(X)] <- -1
     X[X < 0] <- -1

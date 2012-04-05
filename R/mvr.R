@@ -1,4 +1,4 @@
-## mvr.R (2011-10-11)
+## mvr.R (2012-03-30)
 
 ##   Minimum Variance Reduction
 
@@ -29,6 +29,9 @@ mvr <- function(X, V)
 
 mvrs <- function(X, V, fs = 15)
 {
+    if (fs < 1)
+        stop("argument 'fs' must be a non-zero positive integer")
+
     if (is.matrix(X)) X <- as.dist(X)
     if (is.matrix(V)) V <- as.dist(V)
 

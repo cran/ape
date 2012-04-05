@@ -22,14 +22,14 @@ Analyses of Phylogenetics and Evolution
   Emmanuel Paradis, Ben Bolker, Julien Claude, Hoa Sien Cuong, Richard
   Desper, Benoit Durand, Julien Dutheil, Olivier Gascuel, Christoph
   Heibl, Daniel Lawson, Vincent Lefort, Pierre Legendre, Jim Lemon,
-  Yvonnick Noel, Johan Nylander, Rainer Opgen-Rhein, Korbinian Strimmer,
-  Damien de Vienne
+  Yvonnick Noel, Johan Nylander, Rainer Opgen-Rhein, Andrei-Alin
+  Popescu, Klaus Schliep, Korbinian Strimmer, Damien de Vienne
 
   Maintainer: Emmanuel Paradis <Emmanuel.Paradis@ird.fr>
 }
 \references{
-  Paradis, E. (2006) \emph{Analyses of Phylogenetics and Evolution with
-    R.} New York: Springer.
+  Paradis, E. (2012) \emph{Analysis of Phylogenetics and Evolution with
+    R (Second Edition).} New York: Springer.
 
   Paradis, E., Claude, J. and Strimmer, K. (2004) APE: analyses of
   phylogenetics and evolution in R language. \emph{Bioinformatics},

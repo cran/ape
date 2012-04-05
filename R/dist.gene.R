@@ -1,8 +1,8 @@
-## dist.gene.R (2009-04-01)
+## dist.gene.R (2012-04-02)
 
 ##   Pairwise Distances from Genetic Data
 
-## Copyright 2002-2009 Emmanuel Paradis
+## Copyright 2002-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -11,8 +11,10 @@ dist.gene <-
     function(x, method = "pairwise", pairwise.deletion = FALSE,
              variance = FALSE)
 {
-    if (!is.data.frame(x) && !is.matrix(x))
-        stop("'x' should be a matrix or a data.frame")
+    if (is.data.frame(x)) x <- as.matrix(x) else { # suggestion by Markus Schlegel
+        if (!is.matrix(x))
+            stop("'x' should be a matrix or a data.frame")
+    }
     method <- match.arg(method, c("pairwise", "percentage"))
 
     if (!pairwise.deletion) {
@@ -23,15 +25,15 @@ dist.gene <-
     n <- dim(x)
     L <- n[2]
     n <- n[1]
-    D <- double(n*(n - 1)/2)
+    D <- double(n * (n - 1)/2)
     if (pairwise.deletion) L <- D
-    k <- 1
+    k <- 1L
     for (i in 1:(n - 1)) {
         for (j in (i + 1):n) {
             y <- x[i, ] != x[j, ]
             if (pairwise.deletion) L[k] <- sum(!is.na(y))
             D[k] <-  sum(y, na.rm = TRUE)
-            k <- k + 1
+            k <- k + 1L
         }
     }
     ## L is either a single integer value if pairwise.deletion = FALSE,
@@ -48,7 +50,7 @@ dist.gene <-
 
     if (variance) {
         y <- if (method == "pairwise") L else 1
-        attr(D, "variance") <- D*(y - D)/L
+        attr(D, "variance") <- D * (y - D)/L
     }
     D
 }

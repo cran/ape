@@ -1,4 +1,4 @@
-## vcv.phylo.R (2012-02-09)
+## vcv.phylo.R (2012-02-21)
 
 ##   Phylogenetic Variance-Covariance or Correlation Matrix
 
@@ -45,18 +45,20 @@ vcv.phylo <- function(phy, model = "Brownian", corr = FALSE, ...)
         }
     }
 
-    diag(vcv) <- xx[1:n]
+    diag.elts <- 1 + 0:(n - 1)*(n + 1)
+    vcv[diag.elts] <- xx[1:n]
 
     if (corr) {
-        ## This is inspired from the code of `cov2cor' (2005-09-08):
-        M <- vcv
-        Is <- sqrt(1/M[1 + 0:(n - 1)*(n + 1)])
-        vcv[] <- Is * M * rep(Is, each = n)
-        vcv[1 + 0:(n - 1)*(n + 1)] <- 1
+        ## This is inspired from the code of cov2cor (2005-09-08):
+        Is <- sqrt(1 / vcv[diag.elts])
+        ## below 'vcv[] <- ...' has been changed to 'vcv <- ...'
+        ## which seems to be twice faster for n = 1000 and
+        ## respects the additional attributes (2012-02-21):
+        vcv <- Is * vcv * rep(Is, each = n)
+        vcv[diag.elts] <- 1
     }
 
     dimnames(vcv)[1:2] <- list(phy$tip.label)
-
     vcv
 }
 

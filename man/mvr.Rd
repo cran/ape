@@ -12,7 +12,8 @@ mvrs(X, V, fs = 15)
 \arguments{
   \item{X}{a distance matrix.}
   \item{V}{a variance matrix.}
-  \item{fs}{agglomeration criterion parameter.}
+  \item{fs}{agglomeration criterion parameter: it is coerced as an
+    integer and must at least equal to one.}
 }
 \details{
   The MVR method can be seen as a version of BIONJ which is not
@@ -30,4 +31,15 @@ mvrs(X, V, fs = 15)
     Classification}, \bold{17}, 67--99.
 }
 \author{Andrei Popescu \email{niteloserpopescu@gmail.com}}
+\seealso{
+  \code{\link{bionj}}, \code{\link{fastme}}, \code{\link{njs}},
+  \code{\link{SDM}}
+}
+\examples{
+data(woodmouse)
+rt <- dist.dna(woodmouse, variance = TRUE)
+v <- attr(rt, "variance")
+tr <- mvr(rt, v)
+plot(tr, "u")
+}
 \keyword{models}

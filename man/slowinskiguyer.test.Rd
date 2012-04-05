@@ -24,8 +24,8 @@ slowinskiguyer.test(x, detail = FALSE)
   then the null hypothesis cannot be rejected.
 
   The present function has mainly a historical interest. The
-  Slowinski--Guyer test generally performs poorly: see McConway and Sims
-  (2004) for an alternative and the functions cited below.
+  Slowinski--Guyer test generally performs poorly: see Paradis (2012)
+  alternatives and the functions cited below.
 }
 \value{
   a data frame with the \eqn{\chi^2}{chi2}, the number of degrees of
@@ -34,9 +34,9 @@ slowinskiguyer.test(x, detail = FALSE)
   \emph{P}-values for each pair of sister-clades.
 }
 \references{
-  McConway, K. J. and Sims, H. J. (2004) A likelihood-based method for
-  testing for nonstochastic variation of diversification rates in
-  phylogenies. \emph{Evolution}, \bold{58}, 12--23.
+  Paradis, E. (2012) Shift in diversification in sister-clade
+  comparisons: a more powerful test. \emph{Evolution}, \bold{66},
+  288--295.
 
   Slowinski, J. B. and Guyer, C. (1993) Testing whether certain traits
   have caused amplified diversification: an improved method based on a

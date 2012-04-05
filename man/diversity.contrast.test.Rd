@@ -31,10 +31,11 @@ diversity.contrast.test(x, method = "ratiolog",
   If \code{method = "ratiolog"}, the test described in Barraclough et
   al. (1996) is performed. If \code{method = "proportion"}, the version
   in Barraclough et al. (1995) is used. If \code{method = "difference"},
-  the signed difference is used (Sargent 2004). If \code{method =
-    "logratio"}, then this is Wiegmann et al.'s (1993) version. These
+  the signed difference is used (Sargent 2004). If \code{method = "logratio"},
+  then this is Wiegmann et al.'s (1993) version. These
   four tests are essentially different versions of the same test (Vamosi
-  and Vamosi 2005, Vamosi 2007).
+  and Vamosi 2005, Vamosi 2007). See Paradis (2012) for a comparison of
+  their statistical performance with other tests.
 
   If \code{nrep = 0}, a Wilcoxon test is done on the species diversity
   contrasts with the null hypothesis is that they are distributed around
@@ -56,6 +57,10 @@ diversity.contrast.test(x, method = "ratiolog",
   \emph{rbc}L gene sequence evolution and species diversification in
   flowering plants (angiosperms). \emph{Proceedings of the Royal Society
     of London. Series B. Biological Sciences}, \bold{263}, 589--591.
+
+  Paradis, E. (2012) Shift in diversification in sister-clade
+  comparisons: a more powerful test. \emph{Evolution}, \bold{66},
+  288--295.
 
   Sargent, R. D. (2004) Floral symmetry affects speciation rates in
   angiosperms. \emph{Proceedings of the Royal Society of London. Series

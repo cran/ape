@@ -1,4 +1,4 @@
-## write.nexus.R (2012-02-09)
+## write.nexus.R (2012-03-30)
 
 ##   Write Tree File in Nexus Format
 
@@ -7,7 +7,7 @@
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-write.nexus <- function(..., file = "", translate = TRUE, original.data = NULL)
+write.nexus <- function(..., file = "", translate = TRUE)
 {
     obj <- list(...)
     ## We insure that all trees are in a list, even if there is a single one:
@@ -21,9 +21,6 @@ write.nexus <- function(..., file = "", translate = TRUE, original.data = NULL)
     cat("#NEXUS\n", file = file)
     cat(paste("[R-package APE, ", date(), "]\n\n", sep = ""),
         file = file, append = TRUE)
-
-    if (!is.null(original.data))
-        warning("the option 'original.data' is deprecated and will be removed soon. Please update your code.")
 
     N <- length(obj[[1]]$tip.label)
 
@@ -67,9 +64,8 @@ write.nexus <- function(..., file = "", translate = TRUE, original.data = NULL)
 
     for (i in 1:ntree) {
         if (class(obj[[i]]) != "phylo") next
-        if (is.rooted(obj[[i]]))
-          cat("\tTREE *,", title[i], "= [&R] ", file = file, append = TRUE)
-        else cat("\tTREE *", title[i], "= [&U] ", file = file, append = TRUE)
+        root.tag <- if (is.rooted(obj[[i]])) "= [&R] " else "= [&U] "
+        cat("\tTREE *", title[i], root.tag, file = file, append = TRUE)
         cat(write.tree(obj[[i]], file = ""),
             "\n", sep = "", file = file, append = TRUE)
     }

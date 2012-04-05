@@ -48,9 +48,9 @@ yule.time(phy, birth, BIRTH = NULL, root.time = 0, opti = "nlm", start = 0.01)
 }
 \author{Emmanuel Paradis}
 \references{
-  Hubert, N., Paradis, E., Bruggemann, H. & Planes, S. (2011) Community
+  Hubert, N., Paradis, E., Bruggemann, H. and Planes, S. (2011) Community
   assembly and diversification in Indo-Pacific coral reef
-  fishes. \emph{Ecology and Evolution} (in press).
+  fishes. \emph{Ecology and Evolution}, \bold{1}, 229--277.
 }
 \seealso{
   \code{\link{branching.times}}, \code{\link{ltt.plot}},

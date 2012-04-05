@@ -27,7 +27,7 @@ nj(X)
 \seealso{
   \code{\link{write.tree}}, \code{\link{read.tree}},
   \code{\link{dist.dna}}, \code{\link{bionj}},
-  \code{\link{fastme}}
+  \code{\link{fastme}}, \code{\link{njs}}
 }
 \examples{
 ### From Saitou and Nei (1987, Table 1):

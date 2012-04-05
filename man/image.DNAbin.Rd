@@ -43,8 +43,8 @@
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{DNAbin}}, \code{\link{del.gaps}}, \code{\link{clustal}},
-  \code{\link[graphics]{grid}}
+  \code{\link{DNAbin}}, \code{\link{del.gaps}}, \code{\link{alex}},
+  \code{\link{clustal}}, \code{\link[graphics]{grid}}
 }
 \examples{
 data(woodmouse)

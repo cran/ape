@@ -22,12 +22,13 @@ richness.yule.test(x, t)
   freedom (= 1), and the \emph{P}-value.
 }
 \references{
-  Paradis, E. Shift in diversification in sister-clade comparisons: a
-  more powerful test. (manuscript submitted)
+  Paradis, E. (2012) Shift in diversification in sister-clade
+  comparisons: a more powerful test. \emph{Evolution}, \bold{66},
+  288--295.
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{slowinskiguyer.test}}, \code{\link{mcconwaysims.test}}
+  \code{\link{slowinskiguyer.test}}, \code{\link{mcconwaysims.test}},
   \code{\link{diversity.contrast.test}}
 }
 \examples{

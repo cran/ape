@@ -1,6 +1,6 @@
-/* bipartition.c    2011-10-22 */
+/* bipartition.c    2012-03-26 */
 
-/* Copyright 2005-2011 Emmanuel Paradis, and 2007 R Development Core Team */
+/* Copyright 2005-2012 Emmanuel Paradis, and 2007 R Development Core Team */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -160,8 +160,8 @@ SEXP prop_part(SEXP TREES, SEXP nbtree, SEXP keep_partitions)
     INTEGER(nbtip)[0] = Ntip;
     INTEGER(nbnode)[0] = Nnode;
 
-    if (KeepPartition) Npart = Ntree*(Nnode - 1) + 1;
-    else Npart = Nnode;
+    if (KeepPartition) Npart = Ntree * (Ntip - 2) + 1;
+    else Npart = Ntip - 1;
 
     PROTECT(number = allocVector(INTSXP, Npart));
     no = INTEGER(number); /* copy the pointer */
