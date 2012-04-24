@@ -1,6 +1,6 @@
 Package: ape
-Version: 3.0-2
-Date: 2012-04-05
+Version: 3.0-3
+Date: 2012-04-24
 Title: Analyses of Phylogenetics and Evolution
 Author: Emmanuel Paradis, Ben Bolker, Julien Claude, Hoa Sien Cuong,
         Richard Desper, Benoit Durand, Julien Dutheil, Olivier Gascuel,
@@ -31,6 +31,6 @@ Description: ape provides functions for reading, writing, plotting, and
         into R.
 License: GPL (>= 2)
 URL: http://ape.mpl.ird.fr/
-Packaged: 2012-04-05 05:08:17 UTC; paradis
+Packaged: 2012-04-24 03:44:11 UTC; paradis
 Repository: CRAN
-Date/Publication: 2012-04-05 05:54:30
+Date/Publication: 2012-04-24 15:08:37

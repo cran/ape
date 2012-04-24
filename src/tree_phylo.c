@@ -1,6 +1,6 @@
-/* tree_phylo.c    2008-01-14 */
+/* tree_phylo.c    2012-04-24 */
 
-/* Copyright 2008 Emmanuel Paradis */
+/* Copyright 2008-2012 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -17,6 +17,7 @@ static int curnod, curtip, iedge;
 	if (leaf(EDGE->head)) {\
 		edge2[iedge] = curtip;\
 		strncpy(tl[curtip - 1], EDGE->head->label, 6);\
+		tl[curtip - 1][6] = '\0';\
 		iedge++;\
 		curtip++;\
 	} else {\
@@ -58,6 +59,7 @@ void tree2phylo(tree *T, int *edge1, int *edge2, double *el, char **tl, int n)
 	edge1[0] = curnod;
 	edge2[0] = 1; /* <- the 1st tip */
 	strncpy(tl[0], T->root->label, 6);
+	tl[0][6] = '\0';
 	el[0] = EDGE->distance;
 	/* now can initialize these two: */
 	curtip = 2; /* <- the 2nd tip */

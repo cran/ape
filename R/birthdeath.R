@@ -1,4 +1,4 @@
-## birthdeath.R (2010-11-04)
+## birthdeath.R (2012-04-20)
 
 ##   Estimation of Speciation and Extinction Rates
 ##             with Birth-Death Models
@@ -6,7 +6,7 @@
 ## birthdeath: standard model
 ## bd.ext: extended version
 
-## Copyright 2002-2010 Emmanuel Paradis
+## Copyright 2002-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -17,7 +17,7 @@ birthdeath <- function(phy)
     N <- length(phy$tip.label)
     x <- c(NA, branching.times(phy))
     dev <- function(a, r) {
-        if (r <= 0) return(1e50)
+        if (r < 0 || a > 1) return(1e100)
         -2 * (lfactorial(N - 1)
               + (N - 2) * log(r)
               + r * sum(x[3:N])
@@ -28,32 +28,47 @@ birthdeath <- function(phy)
     if (out$estimate[1] < 0) {
         out <- nlm(function(p) dev(0, p), 0.2, hessian = TRUE)
         para <- c(0, out$estimate)
-        se <- c(0, sqrt(diag(solve(out$hessian))))
+        inv.hessian <- try(solve(out$hessian))
+        se <-
+            if (class(inv.hessian) == "try-error") NA
+            else sqrt(diag(inv.hessian))
+        se <- c(0, se)
     }
     else {
         para <- out$estimate
-        se <- sqrt(diag(solve(out$hessian)))
+        inv.hessian <- try(solve(out$hessian))
+        se <-
+            if (class(inv.hessian) == "try-error") c(NA, NA)
+            else sqrt(diag(inv.hessian))
     }
     Dev <- out$minimum
-    ## compute the 95 % profile likelihood CIs
-    ## (not very clean... but seems to work -- EP 2003-03-29)
-    CI <- matrix(NA, 2, 2)
-    foo <- function(p) dev(p, para[2]) - 3.84 - Dev
-    inc <- 1e-2
-    lo <- para[1] - inc
-    up <- para[1] + inc
-    while (foo(lo) < 0) lo <- lo - inc
-    while (foo(up) < 0) up <- up + inc
-    CI[1, 1] <- uniroot(foo, lower = lo, upper = para[1])$root
-    if (CI[1, 1] < 0) CI[1, 1] <- 0
-    CI[1, 2] <- uniroot(foo, lower = para[1], upper = up)$root
-    foo <- function(p) dev(para[1], p) - 3.84 - Dev
-    lo <- para[2] - inc
-    up <- para[2] + inc
-    while (foo(lo) < 0) lo <- lo - inc
-    while (foo(up) < 0) up <- up + inc
-    CI[2, 1] <- uniroot(foo, lower = lo, upper = para[2])$root
-    CI[2, 2] <- uniroot(foo, lower = para[2], upper = up)$root
+
+    ## 95% profile likelihood CIs
+
+    ## which: index of the parameter (1 or 2)
+    ## s: sign of the increment (-1 or +1)
+    foo <- function(which, s) {
+        i <- 0.1
+
+        if (which == 1) {
+            p <- para[1] + s * i
+            bar <- function() dev(p, para[2])
+        } else { # which == 2
+            p <- para[2] + s * i
+            bar <- function() dev(para[1], p)
+        }
+
+        while (i > 1e-9) {
+            while (bar() < Dev + 3.84) p <- p + s * i
+            p <- p - s * i
+            i <- i / 10
+        }
+        p
+    }
+
+    CI <- mapply(foo, c(1, 2, 1, 2), c(-1, -1, 1, 1))
+    dim(CI) <- c(2, 2)
+
     names(para) <- names(se) <- rownames(CI) <- c("d/b", "b-d")
     colnames(CI) <- c("lo", "up")
     obj <- list(tree = deparse(substitute(phy)), N = N,

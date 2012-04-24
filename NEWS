@@ -1,3 +1,21 @@
+		CHANGES IN APE VERSION 3.0-3
+
+
+BUG FIXES
+
+    o birthdeath() now catches errors and warnings much better so that
+      a result is returned in most cases.
+
+
+OTHER CHANGES
+
+    o Because of problems with character string manipulation in C, the
+      examples in ?bionj and in ?fastme have been disallowed. In the
+      meantime, these functions might be unstable. This will be solved
+      for the next release.
+
+
+
 		CHANGES IN APE VERSION 3.0-2
 
 
