@@ -45,8 +45,8 @@ compar.cheverud(y, W, tolerance = 1e-06, gold.tol = 1e-04)
   variables: geometric interpretations. \emph{Evolution}, \bold{55},
   2143--2160.
 
-  Harvey, P. H. and Pagel, M. D. (1991) \emph{The comparative method in
-    evolutionary biology}. Oxford University Press.
+  Harvey, P. H. and Pagel, M. D. (1991) \emph{The Comparative Method in
+    Evolutionary Biology}. Oxford University Press.
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
 \seealso{\code{\link{compar.lynch}}}

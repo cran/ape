@@ -1,7 +1,7 @@
-/* me.c    2012-02-09 */
+/* me.c    2012-04-30 */
 
 /* Copyright 2007-2008 Olivier Gascuel, Rick Desper,
-   R port by Vincent Lefort, me_*() below modified by Emmanuel Paradis */
+   R port by Vincent Lefort and Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -26,9 +26,9 @@ void SPR(tree *T, double **D, double **A, int *count);
 void TBR(tree *T, double **D, double **A);
 
 
-void me_b(double *X, int *N, char **labels,
+void me_b(double *X, int *N, int *labels,
 	  int *nni, int *spr, int *tbr,
-	  int *edge1, int *edge2, double *el, char **tl)
+	  int *edge1, int *edge2, double *el)
 {
   double **D, **A;
   set *species, *slooper;
@@ -57,7 +57,7 @@ void me_b(double *X, int *N, char **labels,
   if (*spr) SPR(T, D, A, &nniCount);
   if (*tbr) TBR(T, D, A);
 
-  tree2phylo(T, edge1, edge2, el, tl, n);
+  tree2phylo(T, edge1, edge2, el, labels, n);
 
   freeMatrix(D,n);
   freeMatrix(A,2*n - 2);
@@ -66,8 +66,8 @@ void me_b(double *X, int *N, char **labels,
   T = NULL;
 }
 
-void me_o(double *X, int *N, char **labels, int *nni,
-	  int *edge1, int *edge2, double *el, char **tl)
+void me_o(double *X, int *N, int *labels, int *nni,
+	  int *edge1, int *edge2, double *el)
 {
   double **D, **A;
   set *species, *slooper;
@@ -96,7 +96,7 @@ void me_o(double *X, int *N, char **labels, int *nni,
     NNI(T,A,&nniCount,D,n);
   assignOLSWeights(T,A);
 
-  tree2phylo(T, edge1, edge2, el, tl, n);
+  tree2phylo(T, edge1, edge2, el, labels, n);
 
   freeMatrix(D,n);
   freeMatrix(A,2*n - 2);
@@ -105,11 +105,11 @@ void me_o(double *X, int *N, char **labels, int *nni,
   T = NULL;
 }
 
-/*************************************************************************
+/*
 
-                           MATRIX FUNCTIONS
+  -- MATRIX FUNCTIONS --
 
-*************************************************************************/
+*/
 
 double **initDoubleMatrix(int d)
 {
@@ -125,9 +125,10 @@ double **initDoubleMatrix(int d)
   return(A);
 }
 
-double **loadMatrix (double *X, char **labels, int n, set *S)
+//double **loadMatrix (double *X, char **labels, int n, set *S)
+double **loadMatrix (double *X, int *labels, int n, set *S)
 {
-  char nextString[MAX_LABEL_LENGTH];
+//  char nextString[MAX_LABEL_LENGTH];
   node *v;
   double **table;
   int i, j, a, b;
@@ -138,9 +139,10 @@ double **loadMatrix (double *X, char **labels, int n, set *S)
 
   for(i=0; i<n; i++)
     {
-      strncpy (nextString, labels[i], MAX_LABEL_LENGTH);
+//      strncpy (nextString, labels[i], MAX_LABEL_LENGTH);
 //      ReplaceForbiddenChars (nextString, '_');
-      v = makeNewNode(nextString,-1);
+//      v = makeNewNode(nextString,-1);
+      v = makeNewNode(labels[i], -1);
       v->index2 = i;
       S = addToSet(v,S);
       for (j=i; j<n; j++) {
@@ -155,11 +157,11 @@ double **loadMatrix (double *X, char **labels, int n, set *S)
   return (table);
 }
 
-/*************************************************************************
+/*
 
-                           GRAPH FUNCTIONS
+  -- GRAPH FUNCTIONS --
 
-*************************************************************************/
+*/
 
 set *addToSet(node *v, set *X)
 {
@@ -176,16 +178,19 @@ set *addToSet(node *v, set *X)
   return(X);
 }
 
-node *makeNewNode(char *label, int i)
+//node *makeNewNode(char *label, int i)
+node *makeNewNode(int label, int i)
 {
   return(makeNode(label,NULL,i));
 }
 
-node *makeNode(char *label, edge *parentEdge, int index)
+//node *makeNode(char *label, edge *parentEdge, int index)
+node *makeNode(int label, edge *parentEdge, int index)
 {
   node *newNode;  /*points to new node added to the graph*/
   newNode = (node *) malloc(sizeof(node));
-  strncpy(newNode->label,label,NODE_LABEL_LENGTH);
+//  strncpy(newNode->label,label,NODE_LABEL_LENGTH);
+  newNode->label = label;
   newNode->index = index;
   newNode->index2 = -1;
   newNode->parentEdge = parentEdge;
@@ -274,7 +279,7 @@ tree *detrifurcate(tree *T)
     return(T);
   if (NULL != v->parentEdge)
     {
-      error("root %s is poorly rooted.", v->label);
+      error("root %d is poorly rooted.", v->label);
     }
   for(e = v->middleEdge, v->middleEdge = NULL; NULL != e; e = f )
     {
@@ -303,7 +308,8 @@ void compareSets(tree *T, set *S)
       for(X = S; NULL != X; X = X->secondNode)
 	{
 	  w = X->firstNode;
-	  if (0 == strcmp(v->label,w->label))
+//	  if (0 == strcmp(v->label,w->label))
+	  if (v->label == w->label)
 	    {
 	      v->index2 = w->index2;
 	    w->index2 = -1;
@@ -316,7 +322,8 @@ void compareSets(tree *T, set *S)
   for(X = S; NULL != X; X = X->secondNode)
     {
       w = X->firstNode;
-      if (0 == strcmp(v->label,w->label))
+//      if (0 == strcmp(v->label,w->label))
+      if (v->label == w->label)
 	{
 	  v->index2 = w->index2;
 	  w->index2 = -1;
@@ -325,7 +332,7 @@ void compareSets(tree *T, set *S)
     }
   if (-1 == v->index2)
     {
-      error("leaf %s in tree not in distance matrix.", v->label);
+      error("leaf %d in tree not in distance matrix.", v->label);
     }
   e = depthFirstTraverse(T,NULL);
   while (NULL != e)
@@ -333,14 +340,14 @@ void compareSets(tree *T, set *S)
       v = e->head;
       if ((leaf(v)) && (-1 == v->index2))
 	{
-	  error("leaf %s in tree not in distance matrix.", v->label);
+	  error("leaf %d in tree not in distance matrix.", v->label);
 	}
       e = depthFirstTraverse(T,e);
       }
   for(X = S; NULL != X; X = X->secondNode)
     if (X->firstNode->index2 > -1)
       {
-	error("node %s in matrix but not a leaf in tree.", X->firstNode->label);
+	error("node %d in matrix but not a leaf in tree.", X->firstNode->label);
       }
   return;
 }

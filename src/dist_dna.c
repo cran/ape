@@ -1040,52 +1040,6 @@ void distDNA_ParaLin_pairdel(unsigned char *x, int *n, int *s, double *d,
     }
 }
 
-/* void BaseProportion(unsigned char *x, int *n, double *BF, int *freq) */
-/* { */
-/*     int i, m; */
-
-/*     m = 0; */
-/*     for (i = 0; i < *n; i++) { */
-/*         if (KnownBase(x[i])) { */
-/* 	    m++; */
-/* 	    switch (x[i]) { */
-/* 	    case 136 : BF[0]++; break; */
-/* 	    case 40 : BF[1]++; break; */
-/* 	    case 72 : BF[2]++; break; */
-/* 	    case 24 : BF[3]++; break; */
-/* 	    } */
-/* 	} */
-/*     } */
-/*     if (! *freq) for (i = 0; i < 4; i++) BF[i] /= m; */
-/* } */
-
-/* void BaseProportion(unsigned char *x, int *n, double *BF) */
-/* { */
-/*     int i; */
-
-/*     for (i = 0; i < *n; i++) { */
-/* 	    switch (x[i]) { */
-/* 	    case 136 : BF[0]++; break; */
-/* 	    case 40 : BF[1]++; break; */
-/* 	    case 72 : BF[2]++; break; */
-/* 	    case 24 : BF[3]++; break; */
-/* 	    case 192 : BF[4]++; break; */
-/* 	    case 160 : BF[5]++; break; */
-/* 	    case 144 : BF[6]++; break; */
-/* 	    case 96 : BF[7]++; break; */
-/* 	    case 80 : BF[8]++; break; */
-/* 	    case 48 : BF[9]++; break; */
-/* 	    case 224 : BF[10]++; break; */
-/* 	    case 176 : BF[11]++; break; */
-/* 	    case 208 : BF[12]++; break; */
-/* 	    case 112 : BF[13]++; break; */
-/* 	    case 240 : BF[14]++; break; */
-/* 	    case 4 : BF[15]++; break; */
-/* 	    case 2 : BF[16]++; break; */
-/* 	    } */
-/*     } */
-/* } */
-
 /* a hash table is much faster than switch (2012-01-10) */
 void BaseProportion(unsigned char *x, int *n, double *BF)
 {

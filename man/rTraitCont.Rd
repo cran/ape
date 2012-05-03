@@ -26,7 +26,7 @@ rTraitCont(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
 \description{
   This function simulates the evolution of a continuous character along a
   phylogeny. The calculation is done recursively from the root. See
-  Paradis (2006, p. 151) for a brief introduction.
+  Paradis (2012, pp. 232 and 324) for an introduction.
 }
 \details{
   There are three possibilities to specify \code{model}:
@@ -62,8 +62,8 @@ rTraitCont(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
   Ornstein-Uhlenbeck process and its integral. \emph{Physical Review E},
   \bold{54}, 2084--2091.
 
-  Paradis, E. (2006) \emph{Analyses of Phylogenetics and Evolution with
-    R.} New York: Springer.
+  Paradis, E. (2012) \emph{Analysis of Phylogenetics and Evolution with
+    R (Second Edition).} New York: Springer.
 }
 \author{Emmanuel Paradis}
 \seealso{

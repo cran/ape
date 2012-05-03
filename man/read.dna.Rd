@@ -3,7 +3,7 @@
 \title{Read DNA Sequences in a File}
 \usage{
 read.dna(file, format = "interleaved", skip = 0,
-         nlines = 0, comment.char = "#", seq.names = NULL,
+         nlines = 0, comment.char = "#",
          as.character = FALSE, as.matrix = NULL)
 }
 \arguments{
@@ -19,8 +19,6 @@ read.dna(file, format = "interleaved", skip = 0,
     read untill its end).}
   \item{comment.char}{a single character, the remaining of the line
     after this character is ignored.}
-  \item{seq.names}{the names to give to each sequence; by default the
-    names read in the file are used.}
   \item{as.character}{a logical controlling whether to return the
     sequences as an object of class \code{"DNAbin"} (the default).}
   \item{as.matrix}{(used if \code{format = "fasta"}) one of the three
@@ -50,19 +48,15 @@ read.dna(file, format = "interleaved", skip = 0,
   way with blanks and line-breaks inside (with the restriction that the
   first ten nucleotides must be contiguous for the interleaved and
   sequential formats, see below). The names of the sequences are read in
-  the file unless the `seq.names' option is used. Particularities for
-  each format are detailed below.
+  the file. Particularities for each format are detailed below.
 
 \itemize{
-  \item{Interleaved:}{the function starts to read the sequences when it
-    finds 10 contiguous characters belonging to the ambiguity code of
-    the IUPAC (namely A, C, G, T, U, M, R, W, S, Y, K, V, H, D, B, and
-    N, upper- or lowercase, so you might run into trouble if you have a
-    taxa name with 10 contiguous letters among these!) All characters
-    before the sequences are taken as the taxa names after removing the
-    leading and trailing spaces (so spaces in a taxa name are
-    allowed). It is assumed that the taxa names are not repeated in the
-    subsequent blocks of nucleotides.}
+  \item{Interleaved:}{the function starts to read the sequences after it
+    finds one or more spaces (or tabulations). All characters before the
+    sequences are taken as the taxa names after removing the leading and
+    trailing spaces (so spaces in taxa names are allowed). It is assumed
+    that the taxa names are not repeated in the subsequent blocks of
+    nucleotides.}
 
   \item{Sequential:}{the same criterion than for the interleaved format
     is used to start reading the sequences and the taxa names; the

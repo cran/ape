@@ -77,7 +77,7 @@ dissimilarity coefficients. \emph{Journal of Classification}, \bold{3}, 5--48.
 
 Legendre, P. and Gallagher, E. D. (2001) Ecologically meaningful transformations for ordination of species data. \emph{Oecologia}, \bold{129}, 271--280.
 
-Legendre, P. and Legendre, L. (1998) \emph{Numerical ecology, 2nd English
+Legendre, P. and Legendre, L. (1998) \emph{Numerical Ecology, 2nd English
   edition.} Amsterdam: Elsevier Science BV.
 
 Lingoes, J. C. (1971) Some boundary conditions for a monotone analysis of symmetric matrices. \emph{Psychometrika}, \bold{36}, 195--203.

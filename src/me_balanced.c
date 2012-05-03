@@ -1,3 +1,11 @@
+/* me_balanced.c    2012-04-30 */
+
+/* Copyright 2007 Vincent Lefort
+   BMEsplitEdge() modified by Emmanuel Paradis */
+
+/* This file is part of the R-package `ape'. */
+/* See the file ../COPYING for licensing issues. */
+
 #include "me.h"
 
 void BalWFext(edge *e, double **A) /*works except when e is the one edge
@@ -248,10 +256,10 @@ void BMEsplitEdge(tree *T, node *v, edge *e, double **A)
   edge *newPendantEdge;
   edge *newInternalEdge;
   node *newNode;
-  char nodeLabel[NODE_LABEL_LENGTH];
+  int nodeLabel = 0;//char nodeLabel[NODE_LABEL_LENGTH];
   char edgeLabel1[EDGE_LABEL_LENGTH];
   char edgeLabel2[EDGE_LABEL_LENGTH];
-  snprintf(nodeLabel,1,"");
+  //snprintf(nodeLabel,1,"");
   //sprintf(edgeLabel1,"E%d",T->size);
   //sprintf(edgeLabel2,"E%d",T->size+1);
   snprintf(edgeLabel1,EDGE_LABEL_LENGTH,"E%d",T->size);

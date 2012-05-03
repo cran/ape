@@ -46,8 +46,8 @@ dist.topo(x, y, method = "PH85")
   phylogeny algorithms under equal and unequal evolutionary rates.
   \emph{Molecular Biology and Evolution}, \bold{11}, 459--468.
 
-  Nei, M. and Kumar, S. (2000) \emph{Molecular evolution and
-  phylogenetics}. Oxford: Oxford University Press.
+  Nei, M. and Kumar, S. (2000) \emph{Molecular Evolution and
+  Phylogenetics}. Oxford: Oxford University Press.
 
   Penny, D. and Hendy, M. D. (1985) The use of tree comparison
   metrics. \emph{Systemetic Zoology}, \bold{34}, 75--82.

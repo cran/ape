@@ -1,5 +1,6 @@
 \name{base.freq}
 \alias{base.freq}
+\alias{GC.content}
 \alias{Ftab}
 \title{Base frequencies from DNA Sequences}
 \description{
@@ -7,11 +8,15 @@
   the four DNA bases (adenine, cytosine, guanine, and thymidine) from a
   sample of sequences.
 
+  \code{GC.content} computes the proportion of G+C (using the previous
+  function). All missing or unknown sites are ignored.
+
   \code{Ftab} computes the contingency table with the absolute
   frequencies of the DNA bases from a pair of sequences.
 }
 \usage{
 base.freq(x, freq = FALSE, all = FALSE)
+GC.content(x)
 Ftab(x, y = NULL)
 }
 \arguments{
@@ -26,8 +31,7 @@ Ftab(x, y = NULL)
 }
 \details{
   The base frequencies are computed over all sequences in the
-  sample. All missing or unknown sites are discarded from the
-  computations.
+  sample.
 
   For \code{Ftab}, if the argument \code{y} is given then both \code{x}
   and \code{y} are coerced as vectors and must be of equal length. If
@@ -35,18 +39,21 @@ Ftab(x, y = NULL)
   the two first sequences are used.
 }
 \value{
-  A numeric vector with names \code{c("a", "c", "g", "t")}, or a four by
-  four matrix with similar dimnames.
+  A numeric vector with names \code{c("a", "c", "g", "t")} (and possibly
+  \code{"r", "m", ...}, a single numeric value, or a four by four matrix
+  with similar dimnames.
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{GC.content}}, \code{\link{seg.sites}},
-  \code{\link{nuc.div}}, \code{\link{DNAbin}}
+  \code{\link{seg.sites}}, \code{\link[pegas]{nuc.div}},
+  \code{\link{DNAbin}}
 }
 \examples{
 data(woodmouse)
 base.freq(woodmouse)
 base.freq(woodmouse, TRUE)
+base.freq(woodmouse, TRUE, TRUE)
+GC.content(woodmouse)
 Ftab(woodmouse)
 Ftab(woodmouse[1, ], woodmouse[2, ]) # same than above
 Ftab(woodmouse[14:15, ]) # between the last two

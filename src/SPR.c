@@ -1,8 +1,10 @@
-/* #include <stdio.h> */
-/* #include <stdlib.h> */
-/* #include <math.h> */
-/* #include "graph.h" */
-/* #include "fastme.h" */
+/* SPR.c    2009-01-12 */
+
+/* Copyright 2009 Richard Desper */
+
+/* This file is part of the R-package `ape'. */
+/* See the file ../COPYING for licensing issues. */
+
 #include "me.h"
 
 /*functions from bNNI.c*/

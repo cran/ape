@@ -51,7 +51,7 @@ howmanytrees(n, rooted = TRUE, binary = TRUE,
   used, a named vector or matrix.
 }
 \references{
-  Felsenstein, J. (2004) \emph{Inferring phylogenies}. Sunderland:
+  Felsenstein, J. (2004) \emph{Inferring Phylogenies}. Sunderland:
   Sinauer Associates.
 }
 \author{Emmanuel Paradis}

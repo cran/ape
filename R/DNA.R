@@ -382,7 +382,7 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     if (!pairwise.deletion) {
         keep <- .C("GlobalDeletionDNA", x, n, s,
                    rep(1L, s), PACKAGE = "ape")[[4]]
-        x <- x[,  as.logical(keep)]
+        x <- x[, as.logical(keep)]
         s <- dim(x)[2]
     }
     Ndist <- if (imod == 11) n*n else n*(n - 1)/2

@@ -68,35 +68,35 @@ If parameter \code{mantel} is TRUE, tables of Mantel statistics and P-values are
   \item{Mantel.prob }{One-tailed P-values associated with the Mantel correlations of the previous table. The probabilities are computed in the right-hand tail. H0 is tested against the alternative one-tailed hypothesis that the Mantel correlation under test is positive. No correction is made for multiple testing. }
 }
 
-\references{ 
-Campbell, V., P. Legendre and F.-J. Lapointe. 2009. Assessing congruence among ultrametric distance matrices. Journal of Classification 26: 103-117.
+\references{
+Campbell, V., Legendre, P. and Lapointe, F.-J. (2009) Assessing congruence among ultrametric distance matrices. \emph{Journal of Classification}, \bold{26}, 103--117.
 
-Campbell, V., P. Legendre and F.-J. Lapointe. 2011. The performance of the Congruence Among Distance Matrices (CADM) test in phylogenetic analysis. BMC Evolutionary Biology 11: 64. http://www.biomedcentral.com/1471-2148/11/64.
+Campbell, V., Legendre, P. and Lapointe, F.-J. (2011) The performance of the Congruence Among Distance Matrices (CADM) test in phylogenetic analysis. \emph{BMC Evolutionary Biology}, \bold{11}, 64. \url{http://www.biomedcentral.com/1471-2148/11/64}.
 
-Friedman, M. 1937. The use of ranks to avoid the assumption of normality implicit in the analysis of variance. Journal of the American Statistical Association 32: 675-701.
+Friedman, M. (1937) The use of ranks to avoid the assumption of normality implicit in the analysis of variance. \emph{Journal of the American Statistical Association}, \bold{32}, 675--701.
 
-Kendall, M. G. and B. Babington Smith. 1939. The problem of m rankings. Annals of Mathematical Statistics 10: 275-287.
+Kendall, M. G. and Babington Smith, B. (1939) The problem of m rankings. \emph{Annals of Mathematical Statistics}, \bold{10}, 275--287.
 
-Lapointe, F.-J., J. A. W. Kirsch and J. M. Hutcheon. 1999. Total evidence, consensus, and bat phylogeny: a distance-based approach. Molecular Phylogenetics and Evolution 11: 55-66.
+Lapointe, F.-J., Kirsch, J. A. W. and Hutcheon, J. M. (1999) Total evidence, consensus, and bat phylogeny: a distance-based approach. \emph{Molecular Phylogenetics and Evolution}, \bold{11}, 55--66.
 
-Legendre, P. 2010. Coefficient of concordance. Pp. 164-169 in: Encyclopedia of Research Design, Vol. 1. N. J. Salkind, ed. SAGE Publications, Inc., Los Angeles. 
+Legendre, P. (2010) Coefficient of concordance. Pp. 164-169 in: Encyclopedia of Research Design, Vol. 1. N. J. Salkind, ed. SAGE Publications, Inc., Los Angeles.
 
-Legendre, P. and F.-J. Lapointe. 2004. Assessing congruence among distance matrices: single malt Scotch whiskies revisited. Australian and New Zealand Journal of Statistics 46: 615-629. 
+Legendre, P. and Lapointe, F.-J. (2004) Assessing congruence among distance matrices: single malt Scotch whiskies
+revisited. \emph{Australian and New Zealand Journal of Statistics}, \bold{46}, 615--629.
 
-Legendre, P. et F.-J. Lapointe. 2005. Congruence entre matrices de distance. P. 178-181 in: Makarenkov, V., G. Cucumel et F.-J. Lapointe [eds] Comptes rendus des 12emes Rencontres de la Societe Francophone de Classification, Montreal, 30 mai - 1er juin 2005.
+Legendre, P. and Lapointe, F.-J. (2005) Congruence entre matrices de distance. P. 178-181 in: Makarenkov, V., G. Cucumel et F.-J. Lapointe [eds] Comptes rendus des 12emes Rencontres de la Societe Francophone de Classification, Montreal, 30 mai - 1er juin 2005.
 
-Siegel, S. and N. J. Castellan, Jr. 1988. Nonparametric statistics for the behavioral sciences. 2nd edition. McGraw-Hill, New York.
+Siegel, S. and Castellan, N. J., Jr. (1988) \emph{Nonparametric statistics for the behavioral sciences. 2nd edition}. New York: McGraw-Hill.
 }
 
-\author{ Pierre Legendre, Universite de Montreal }
+\author{Pierre Legendre, Universite de Montreal}
 
 \examples{
-
-# Examples 1 and 2: 5 genetic distance matrices computed from simulated DNA 
-# sequences representing 50 taxa having evolved along additive trees with 
-# identical evolutionary parameters (GTR+ Gamma + I). Distance matrices were 
-# computed from the DNA sequence matrices using a p distance corrected with the 
-# same parameters as those used to simulate the DNA sequences. See Campbell et 
+# Examples 1 and 2: 5 genetic distance matrices computed from simulated DNA
+# sequences representing 50 taxa having evolved along additive trees with
+# identical evolutionary parameters (GTR+ Gamma + I). Distance matrices were
+# computed from the DNA sequence matrices using a p distance corrected with the
+# same parameters as those used to simulate the DNA sequences. See Campbell et
 # al. (2009) for details.
 
 # Example 1: five independent additive trees. Data provided by V. Campbell.
@@ -104,15 +104,15 @@ Siegel, S. and N. J. Castellan, Jr. 1988. Nonparametric statistics for the behav
 data(mat5Mrand)
 res.global <- CADM.global(mat5Mrand, 5, 50)
 
-# Example 2: three partly similar trees, two independent trees. 
+# Example 2: three partly similar trees, two independent trees.
 # Data provided by V. Campbell.
 
 data(mat5M3ID)
 res.global <- CADM.global(mat5M3ID, 5, 50)
 res.post   <- CADM.post(mat5M3ID, 5, 50, mantel=TRUE)
 
-# Example 3: three matrices respectively representing Serological 
-# (asymmetric), DNA hybridization (asymmetric) and Anatomical (symmetric) 
+# Example 3: three matrices respectively representing Serological
+# (asymmetric), DNA hybridization (asymmetric) and Anatomical (symmetric)
 # distances among 9 families. Data from Lapointe et al. (1999).
 
 data(mat3)

@@ -19,7 +19,7 @@ drop.fossil(phy, tol = 1e-8)
 }
 \arguments{
   \item{birth, death}{a numeric value or a (vectorized) function
-    specifying how speciation and extinction through time.}
+    specifying how speciation and extinction rates vary through time.}
   \item{Tmax}{a numeric value giving the length of the simulation.}
   \item{BIRTH, DEATH}{a (vectorized) function which is the primitive
     of \code{birth} or \code{death}. This can be used to speed-up the
@@ -37,7 +37,7 @@ drop.fossil(phy, tol = 1e-8)
   described in Kendall (1948). Speciation (birth) and extinction (death)
   rates may be constant or vary through time according to an \R function
   specified by the user. In the latter case, \code{BIRTH} and/or
-  \code{DEATH} may be used of the primitives of \code{birth} and
+  \code{DEATH} may be used if the primitives of \code{birth} and
   \code{death} are known. In these functions time is the formal argument
   and must be named \code{t}.
 }

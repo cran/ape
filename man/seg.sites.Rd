@@ -28,8 +28,8 @@ seg.sites(x)
   results if there are ambiguous bases in the data.
 }
 \seealso{
-  \code{\link{base.freq}}, \code{\link{GC.content}},
-  \code{\link{theta.s}}, \code{\link{nuc.div}}
+  \code{\link{base.freq}}, \code{\link[pegas]{theta.s}},
+  \code{\link[pegas]{nuc.div}}
 }
 \examples{
 data(woodmouse)

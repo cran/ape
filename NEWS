@@ -1,3 +1,37 @@
+		CHANGES IN APE VERSION 3.0-4
+
+
+BUG FIXES
+
+    o read.dna() failed to read Phylip files if the first line used
+      tabulations instead of white spaces.
+
+    o read.dna() failed to read Phylip or Clustal files with less than
+      10 nucleotides. (See other changes in this function below.)
+
+OTHER CHANGES
+
+    o read.dna() now requires at least one space (or tab) between the
+      taxa names and the sequences (whatever the length of taxa
+      names). write.dna() now follows the same rule.
+
+    o The option 'seq.names' of read.dna has been removed.
+
+    o The files ape-defunct.R and ape-defunct.Rd, which have not been
+      modified for almost two years, have been removed.
+
+    o The C code of bionj() has been reworked: it is more stable (by
+      avoiding passing character strings), slightly faster (by about
+      20%), and numerically more accurate.
+
+    o The C code of fastme.*() has been slightly modified and should
+      be more stable by avoiding passing character strings (the
+      results are identical to the previous versions).
+
+    o The file src/newick.c has been removed.
+
+
+
 		CHANGES IN APE VERSION 3.0-3
 
 

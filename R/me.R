@@ -1,9 +1,9 @@
-## me.R (2011-05-12)
+## me.R (2012-04-30)
 
 ##   Tree Estimation Based on Minimum Evolution Algorithm
 
 ## Copyright 2007 Vincent Lefort with modifications by
-##                 Emmanuel Paradis (2008-2011)
+##                Emmanuel Paradis (2008-2012)
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -12,18 +12,16 @@ fastme.bal <- function(X, nni = TRUE, spr = TRUE, tbr = TRUE)
 {
     if (is.matrix(X)) X <- as.dist(X)
     N <- as.integer(attr(X, "Size"))
-    labels <- sprintf("%6s", 1:N)
-    edge1 <- edge2 <- integer(2*N - 3)
-
-    ans <- .C("me_b", as.double(X), N, labels, as.integer(nni),
-              as.integer(spr), as.integer(tbr), edge1, edge2,
-              double(2*N - 3), character(N), PACKAGE = "ape")
-
-    labels <- substr(ans[[10]], 1, 6)
-    LABS <- attr(X, "Labels")
-    labels <- if (!is.null(LABS)) LABS[as.numeric(labels)]
-    else gsub("^ ", "", labels)
-    structure(list(edge =  cbind(ans[[7]], ans[[8]]), edge.length = ans[[9]],
+    nedge <- 2L * N - 3L
+    ans <- .C("me_b", as.double(X), N, 1:N, as.integer(nni),
+              as.integer(spr), as.integer(tbr), integer(nedge),
+              integer(nedge), double(nedge),
+              DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+    labels <- attr(X, "Labels")
+    if (is.null(labels)) labels <- as.character(1:N)
+    labels <- labels[ans[[3]]]
+    structure(list(edge =  cbind(ans[[7]], ans[[8]]),
+                   edge.length = ans[[9]],
                    tip.label = labels, Nnode = N - 2L),
               class = "phylo")
 }
@@ -32,16 +30,15 @@ fastme.ols <- function(X, nni = TRUE)
 {
     if (is.matrix(X)) X <- as.dist(X)
     N <- as.integer(attr(X, "Size"))
-    labels <- sprintf("%6s", 1:N)
-    edge1 <- edge2 <- integer(2*N - 3)
-    ans <- .C("me_o", as.double(X), N, labels, as.integer(nni),
-              edge1, edge2, double(2*N - 3), character(N),
-              PACKAGE = "ape")
-    labels <- substr(ans[[8]], 1, 6)
-    LABS <- attr(X, "Labels")
-    labels <- if (!is.null(LABS)) LABS[as.numeric(labels)]
-    else gsub("^ ", "", labels)
-    structure(list(edge =  cbind(ans[[5]], ans[[6]]), edge.length = ans[[7]],
+    nedge <- 2L * N - 3L
+    ans <- .C("me_o", as.double(X), N, 1:N, as.integer(nni),
+              integer(nedge), integer(nedge), double(nedge),
+              DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+    labels <- attr(X, "Labels")
+    if (is.null(labels)) labels <- as.character(1:N)
+    labels <- labels[ans[[3]]]
+    structure(list(edge =  cbind(ans[[5]], ans[[6]]),
+                   edge.length = ans[[7]],
                    tip.label = labels, Nnode = N - 2L),
               class = "phylo")
 }
@@ -49,18 +46,19 @@ fastme.ols <- function(X, nni = TRUE)
 bionj <- function(X)
 {
     if (is.matrix(X)) X <- as.dist(X)
+    if (any(is.na(X)))
+        stop("missing values are not allowed in the distance matrix.\nConsider using bionjs()")
     if (any(X > 100))
         stop("at least one distance was greater than 100")
     N <- as.integer(attr(X, "Size"))
-    labels <- sprintf("%6s", 1:N)
-    edge1 <- edge2 <- integer(2*N - 3)
-    ans <- .C("bionj", as.double(X), N, labels, edge1, edge2,
-              double(2*N - 3), character(N), PACKAGE = "ape")
-    labels <- substr(ans[[7]], 1, 6)
-    LABS <- attr(X, "Labels")
-    labels <- if (!is.null(LABS)) LABS[as.numeric(labels)]
-    else gsub("^ ", "", labels)
-    structure(list(edge =  cbind(ans[[4]], ans[[5]]), edge.length = ans[[6]],
-                   tip.label = labels, Nnode = N - 2L),
-              class = "phylo")
+
+    ans <- .C("bionj", as.double(X), N, integer(2 * N - 3),
+              integer(2 * N - 3), double(2*N - 3),
+              DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+    labels <- attr(X, "Labels")
+    if (is.null(labels)) labels <- as.character(1:N)
+    obj <- list(edge =  cbind(ans[[3]], ans[[4]]), edge.length = ans[[5]],
+                tip.label = labels, Nnode = N - 2L)
+    class(obj) <- "phylo"
+    reorder(obj)
 }

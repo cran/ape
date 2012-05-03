@@ -56,7 +56,7 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   Akaike information criterion of a tree. If no such values are
   available, \code{NULL} is returned.
 
-  \code{anova} is another generic function that is used to compare
+  \code{anova} is another generic function which is used to compare
   nested models: the significance of the additional parameter(s) is
   tested with likelihood ratio tests. You must ensure that the models
   are effectively nested (if they are not, the results will be

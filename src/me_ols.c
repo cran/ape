@@ -1,3 +1,11 @@
+/* me_ols.c    2012-04-30 */
+
+/* Copyright 2007 Vincent Lefort
+   GMEsplitEdge() modified by Emmanuel Paradis */
+
+/* This file is part of the R-package `ape'. */
+/* See the file ../COPYING for licensing issues. */
+
 #include "me.h"
 
 /*from NNI.c*/
@@ -396,13 +404,13 @@ void GMEupdateAveragesMatrix(double **A, edge *e, node *v, node *newNode)
 
 void GMEsplitEdge(tree *T, node *v, edge *e, double **A)
 {
-  char nodelabel[NODE_LABEL_LENGTH];
+  int nodelabel = 0;//char nodelabel[NODE_LABEL_LENGTH];
   char edgelabel[EDGE_LABEL_LENGTH];
   edge *newPendantEdge;
   edge *newInternalEdge;
   node *newNode;
 
-  snprintf(nodelabel,1,"");
+  //snprintf(nodelabel,1,"");
   newNode = makeNewNode(nodelabel,T->size + 1);
 
   //sprintf(edgelabel,"E%d",T->size);

@@ -1,3 +1,10 @@
+/* heap.c    2007-09-05 */
+
+/* Copyright 2007 Vincent Lefort */
+
+/* This file is part of the R-package `ape'. */
+/* See the file ../COPYING for licensing issues. */
+
 #include "me.h"
 
 int *initPerm(int size)

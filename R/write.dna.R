@@ -1,8 +1,8 @@
-## write.dna.R (2009-05-10)
+## write.dna.R (2012-05-03)
 
 ##   Write DNA Sequences in a File
 
-## Copyright 2003-2009 Emmanuel Paradis
+## Copyright 2003-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -62,9 +62,7 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
         }
         ## Prepare the names so that they all have the same nb of chars
         max.nc <- max(nchar(names(x)))
-        ## in case all names are 10 char long or less, sequences are
-        ## always started on the 11th column of the file
-        if (max.nc < 11) max.nc <- 9
+        ## always put a space between the sequences and the taxa names
         fmt <- paste("%-", max.nc + 1, "s", sep = "")
         names(x) <- sprintf(fmt, names(x))
     }

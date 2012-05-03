@@ -13,14 +13,14 @@ varcomp(x, scale = FALSE, cum = FALSE)
   \item{cum}{Send cumulative variance components.}
 }
 \details{
-  Variance computations is done as in Venables and Ripley's book.
+  Variance computations is done as in Venables and Ripley (2002).
 }
 \value{
   A named vector of class \code{varcomp} with estimated variance components.
 }
 \references{
-  Venables, W. N. and Ripley, B. D. (2002) \emph{Modern applied statistics
-  with S (fourth edition)}. New York: Springer-Verlag.
+  Venables, W. N. and Ripley, B. D. (2002) \emph{Modern Applied Statistics
+  with S (Fourth Edition)}. New York: Springer-Verlag.
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
 \seealso{\code{\link[nlme]{lme}}}

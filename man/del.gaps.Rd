@@ -26,7 +26,6 @@ del.gaps(x)
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{base.freq}}, \code{\link{GC.content}},
-  \code{\link{theta.s}}, \code{\link{nuc.div}}, \code{\link{seg.sites}},
-  \code{\link{image.DNAbin}}
+  \code{\link{seg.sites}}, \code{\link{image.DNAbin}}
 }
 \keyword{univar}

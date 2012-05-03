@@ -26,10 +26,9 @@ bionj(X)
 }
 \seealso{
   \code{\link{nj}}, \code{\link{fastme}}, \code{\link{mvr}},
-  \code{\link{SDM}}, \code{\link{dist.dna}}
+  \code{\link{bionjs}}, \code{\link{SDM}}, \code{\link{dist.dna}}
 }
 \examples{
-\dontrun{
 ### From Saitou and Nei (1987, Table 1):
 x <- c(7, 8, 11, 13, 16, 13, 17, 5, 8, 10, 13,
        10, 14, 5, 7, 10, 7, 11, 8, 11, 8, 12,
@@ -45,7 +44,6 @@ plot(tr, "u")
 data(woodmouse)
 trw <- bionj(dist.dna(woodmouse))
 plot(trw)
-}
 }
 \keyword{models}
 
