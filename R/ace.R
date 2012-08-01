@@ -1,11 +1,23 @@
-## ace.R (2011-07-18)
+## ace.R (2012-06-25)
 
 ##   Ancestral Character Estimation
 
-## Copyright 2005-2011 Emmanuel Paradis and Ben Bolker
+## Copyright 2005-2012 Emmanuel Paradis and Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
+
+.getSEs <- function(out)
+{
+    h <- out$hessian
+    if (any(diag(h) == 0)) {
+        warning("The likelihood gradient seems flat in at least one dimension (gradient null):\ncannot compute the standard-errors of the transition rates.\n")
+        se <- rep(NaN, nrow(h))
+    } else {
+        se <- sqrt(diag(solve(h)))
+    }
+    se
+}
 
 ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
                 model = if (type == "continuous") "BM" else "ER",
@@ -35,7 +47,7 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
                 if (sig2 < 0) return(1e100)
                 V <- sig2 * vcv(phy)
                 ## next three lines borrowed from dmvnorm() in 'mvtnorm'
-                distval <- mahalanobis(x, center = mu, cov = V)
+                distval <- stats::mahalanobis(x, center = mu, cov = V)
                 logdet <- sum(log(eigen(V, symmetric = TRUE, only.values = TRUE)$values))
                 (nb.tip * log(2 * pi) + logdet + distval)/2
             }
@@ -56,10 +68,10 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
                        p = rep(mu[1], nb.node), hessian = TRUE)
             obj$resloglik <- -out$minimum
             obj$ace <- out$estimate
-            names(obj$ace) <- (nb.tip + 1):(nb.tip + nb.node)
+            names(obj$ace) <- nb.tip + 1:nb.node
             obj$sigma2 <- c(sigma2, se_sgi2)
             if (CI) {
-                se <- sqrt(diag(solve(out$hessian)))
+                se <- .getSEs(out)
                 tmp <- se * qt(0.025, nb.node)
                 obj$CI95 <- cbind(obj$ace + tmp, obj$ace - tmp)
             }
@@ -78,7 +90,7 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
                       as.integer(CI), as.integer(scaled),
                       PACKAGE = "ape")
             obj$ace <- ans[[6]][-(1:nb.tip)]
-            names(obj$ace) <- (nb.tip + 1):(nb.tip + nb.node)
+            names(obj$ace) <- nb.tip + 1:nb.node
             if (CI) {
                 se <- sqrt(ans[[8]])
                 tmp <- se * qnorm(0.025)
@@ -101,7 +113,7 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
                 obj$loglik <- -out$minimum / 2
                 obj$ace <- out$estimate[-1]
                 names(obj$ace) <- (nb.tip + 1):(nb.tip + nb.node)
-                se <- sqrt(diag(solve(out$hessian)))
+                se <- .getSEs(out)
                 obj$sigma2 <- c(out$estimate[1], se[1])
                 if (CI) {
                     tmp <- se[-1] * qt(0.025, nb.node)
@@ -206,12 +218,10 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
         obj$rates <- out$par
         oldwarn <- options("warn")
         options(warn = -1)
-        h <- nlm(function(p) dev(p), p = obj$rates, iterlim = 1,
-                 stepmax = 0, hessian = TRUE)$hessian
+        out.nlm <- nlm(function(p) dev(p), p = obj$rates, iterlim = 1,
+                       stepmax = 0, hessian = TRUE)
         options(oldwarn)
-        if (any(h == 0))
-          warning("The likelihood gradient seems flat in at least one dimension (gradient null):\ncannot compute the standard-errors of the transition rates.\n")
-        else obj$se <- sqrt(diag(solve(h)))
+        obj$se <- .getSEs(out.nlm)
         obj$index.matrix <- index.matrix
         if (CI) {
             obj$lik.anc <- dev(obj$rates, TRUE)

@@ -1,4 +1,4 @@
-## write.dna.R (2012-05-03)
+## write.dna.R (2012-06-22)
 
 ##   Write DNA Sequences in a File
 
@@ -66,7 +66,7 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
         fmt <- paste("%-", max.nc + 1, "s", sep = "")
         names(x) <- sprintf(fmt, names(x))
     }
-    if (format == "interleaved") {
+    switch(format, "interleaved" = {
         ## Write the first block with the taxon names
         colsel <- if (nb.block == 1) 1:totalcol else 1:nbcol
         for (i in 1:N) {
@@ -87,8 +87,7 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
             }
         }
 
-    }
-    if (format == "sequential") {
+    }, "sequential" = {
         if (nb.block == 1) {
             for (i in 1:N) {
                 cat(names(x)[i], file = zz)
@@ -108,10 +107,9 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
                 }
             }
         }
-    }
-    if (format == "fasta") {
+    }, "fasta" = {
         for (i in 1:N) {
-            cat(">", names(x)[i], file = zz)
+            cat(">", names(x)[i], file = zz, sep = "")
             cat("\n", file = zz)
             X <- paste(x[[i]], collapse = "")
             S <- length(x[[i]])
@@ -129,5 +127,5 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
                 cat("\n", file = zz)
             }
         }
-    }
+    })
 }

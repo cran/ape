@@ -151,8 +151,8 @@ root <- function(phy, outgroup, node = NULL,
                 phy$edge <- rbind(phy$edge[a, ], c(ROOT, newnod),
                                   phy$edge[b, ])
                 if (!is.null(phy$edge.length))
-                phy$edge.length <-
-                    c(phy$edge.length[a], 0, phy$edge.length[b])
+                    phy$edge.length <-
+                        c(phy$edge.length[a], 0, phy$edge.length[b])
                 phy$Nnode <- phy$Nnode + 1L
                 ## node renumbering (see comments below)
                 newNb <- integer(n + oldNnode)
@@ -314,8 +314,7 @@ root <- function(phy, outgroup, node = NULL,
     newNb[newroot] <- n + 1L
     sndcol <- phy$edge[, 2] > n
     ## executed from right to left, so newNb is modified before phy$edge:
-    phy$edge[sndcol, 2] <- newNb[phy$edge[sndcol, 2]] <-
-        (n + 2):(n + phy$Nnode)
+    phy$edge[sndcol, 2] <- newNb[phy$edge[sndcol, 2]] <- n + 2:phy$Nnode
     phy$edge[, 1] <- newNb[phy$edge[, 1]]
 
     if (!is.null(phy$node.label)) {

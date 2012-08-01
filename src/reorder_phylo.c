@@ -1,12 +1,11 @@
-/* reorder_phylo.c       2008-03-17 */
+/* reorder_phylo.c       2012-08-01 */
 
-/* Copyright 2008 Emmanuel Paradis */
+/* Copyright 2008-2012 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
 
 #include <R.h>
-#include <R_ext/Applic.h>
 
 void neworder_cladewise(int *n, int *edge1, int *edge2,
 			int *N, int *neworder)
@@ -61,23 +60,19 @@ void neworder_cladewise(int *n, int *edge1, int *edge2,
 void neworder_pruningwise(int *ntip, int *nnode, int *edge1,
 			  int *edge2, int *nedge, int *neworder)
 {
-    int *Ndegr, degree, *ready, rdy, i, j, node, nextI, n;
-    Ndegr = &degree;
-    ready = &rdy;
+    int *ready, *Ndegr, i, j, node, nextI, n;
 
-    ready = (int*)R_alloc(*nedge, sizeof(int));
-
-    /* use `nextI' temporarily because need an address for R_tabulate */
     nextI = *ntip +  *nnode;
     Ndegr = (int*)R_alloc(nextI, sizeof(int));
     memset(Ndegr, 0, nextI*sizeof(int));
-    R_tabulate(edge1, nedge, &nextI, Ndegr);
+    for (i = 0; i < *nedge; i++) (Ndegr[edge1[i] - 1])++;
+
+    ready = (int*)R_alloc(*nedge, sizeof(int));
 
     /* `ready' indicates whether an edge is ready to be */
     /* collected; only the terminal edges are initially ready */
     for (i = 0; i < *nedge; i++)
-      if (edge2[i] <= *ntip) ready[i] = 1;
-      else ready[i] = 0;
+	    ready[i] = (edge2[i] <= *ntip) ? 1 : 0;
 
     /* `n' counts the number of times a node has been seen. */
     /* This algo will work if the tree is in cladewise order, */

@@ -56,6 +56,12 @@ as.igraph(x, ...)
   An object of class \code{"hclust"}, \code{"phylo"}, \code{"network"},
   or \code{"igraph"}.
 }
+\note{
+  In an object of class \code{"hclust"}, the \code{height} gives the
+  distance between the two sets that are being agglomerated. So these
+  distances are divided by two when setting the branch lengths of a
+  phylogenetic tree.
+}
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link[stats]{hclust}}, \code{\link[stats]{as.hclust}},

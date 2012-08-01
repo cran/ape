@@ -24,7 +24,7 @@
   an object of class \code{"multiPhylo"} which is a list of objects of
   class \code{"phylo"}.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{all.equal.phylo}, \code{\link[base]{unique}} for the generic R
   function, \code{read.tree}, \code{read.nexus}

@@ -3,6 +3,12 @@
 \alias{rcoal}
 \alias{rmtree}
 \title{Generates Random Trees}
+\description{
+  These functions generate trees by splitting randomly the edges
+  (\code{rtree}) or randomly clustering the tips (\code{rcoal}).
+  \code{rtree} generates general trees, and \code{rcoal} generates
+  coalescent trees. The algorithms are described in Paradis (2012).
+}
 \usage{
 rtree(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
 rcoal(n, tip.label = NULL, br = "coalescent", ...)
@@ -23,12 +29,6 @@ rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)
   \item{\dots}{further argument(s) to be passed to \code{br}.}
   \item{N}{an integer giving the number of trees to generate.}
 }
-\description{
-  These functions generate trees by splitting randomly the edges
-  (\code{rtree}) or randomly clustering the tips (\code{rcoal}).
-  \code{rtree} generates general (non-ultrametric) trees, and
-  \code{rcoal} generates coalescent (ultrametric) trees.
-}
 \details{
   The trees generated are bifurcating. If \code{rooted = FALSE} in
   (\code{rtree}), the tree is trifurcating at its root.
@@ -43,6 +43,10 @@ rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)
 \value{
   An object of class \code{"phylo"} or of class \code{"multiPhylo"} in
   the case of \code{rmtree}.
+}
+\references{
+  Paradis, E. (2012) \emph{Analysis of Phylogenetics and Evolution with
+    R (Second Edition).} New York: Springer.
 }
 \author{Emmanuel Paradis}
 \seealso{

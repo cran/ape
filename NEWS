@@ -1,3 +1,21 @@
+		CHANGES IN APE VERSION 3.0-5
+
+
+BUG FIXES
+
+    o ace() should better catch errors when SEs cannot be computed.
+
+
+OTHER CHANGES
+
+    o write.dna(format = "fasta") now conforms more closely to the
+      FASTA standard thanks to François Michonneau.
+
+    o print.DNAbin() does not print base compositions if there are more
+      than one million nucleotides.
+
+
+
 		CHANGES IN APE VERSION 3.0-4
 
 
