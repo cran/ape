@@ -1,4 +1,4 @@
-/* reorder_phylo.c       2012-08-01 */
+/* reorder_phylo.c       2012-09-03 */
 
 /* Copyright 2008-2012 Emmanuel Paradis */
 
@@ -7,42 +7,79 @@
 
 #include <R.h>
 
-void neworder_cladewise(int *n, int *edge1, int *edge2,
-			int *N, int *neworder)
-/* n: nb of tips, N: nb of edges */
+static int iii;
+
+void foo_reorder(int node, int n, int m, int *e1, int *e2, int *neworder, int *L, int *pos)
 {
-    int i, j, k, node, *done, dn, *node_back, eb;
-    done = &dn;
-    node_back = &eb;
+	int i = node - n - 1, j, k;
 
-    /* done: indicates whether an edge has been collected
-       node_back: the series of node from the root to `node'
-       node: the current node */
+/* 'i' is the C index corresponding to 'node' */
 
-    done = (int*)R_alloc(*N, sizeof(int));
-    node_back = (int*)R_alloc(*N + 2 - *n, sizeof(int));
-    memset(done, 0, *N * sizeof(int));
-
-    j = k = 0;
-    node = *n + 1;
-    while (j < *N) {
-        for (i = 0; i < *N; i++) {
-  	    if (done[i] || edge1[i] != node) continue;
-	    neworder[j] = i + 1;
-	    j++;
-	    done[i] = 1;
-	    if (edge2[i] > *n) {
-	        node_back[k] = node;
-		k++;
-		node = edge2[i];
-		/* if found a new node, reset the loop */
-		i = -1;
-	    }
+	for (j = 0; j < pos[i]; j++) {
+		k = L[i + m * j];
+		neworder[iii++] = k + 1;
+		if (e2[k] > n) /* is it an internal edge? */
+			foo_reorder(e2[k], n, m, e1, e2, neworder, L, pos);
 	}
-	/* if arrived at the end of `edge', go down one node */
-	k--;
-	node = node_back[k];
-    }
+}
+
+void bar_reorder(int node, int n, int m, int *e1, int *e2, int *neworder, int *L, int *pos)
+{
+	int i = node - n - 1, j, k;
+
+	for (j = pos[i] - 1; j >= 0; j--)
+		neworder[iii--] = L[i + m * j] + 1;
+
+	for (j = 0; j < pos[i]; j++) {
+		k = e2[L[i + m * j]];
+		if (k > n)
+			bar_reorder(k, n, m, e1, e2, neworder, L, pos);
+	}
+}
+
+void neworder_phylo(int *n, int *e1, int *e2, int *N, int *neworder, int *order)
+/* n: nb of tips
+   m: nb of nodes
+   N: nb of edges */
+{
+	int i, j, k, *L, *pos, m = *N - *n + 1, degrmax = *n - m + 1;
+
+/* degrmax is the largest value that a node degree can be */
+
+/* L is a 1-d array storing, for each node, the C indices of the rows of
+   the edge matrix where the node is ancestor (i.e., present in the 1st
+   column). It is used in the same way than a matrix (which is actually
+   a vector) is used in R as a 2-d structure. */
+
+	L = (int*)R_alloc(m * degrmax, sizeof(int));
+
+/* pos gives the position for each 'row' of L, that is the number of elements
+   which have already been stored for that 'row'. */
+
+	pos = (int*)R_alloc(m, sizeof(int));
+	memset(pos, 0, m * sizeof(int));
+
+/* we now go down along the edge matrix */
+
+	for (i = 0; i < *N; i++) {
+		k = e1[i] - *n - 1; /* k is the 'row' index in L corresponding to node e1[i] */
+		j = pos[k]; /* the current 'column' position corresping to k */
+		pos[k]++; /* increment in case the same node is found in another row of the edge matrix */
+		L[k + m * j] = i;
+	}
+
+/* L is now ready: we can start the recursive calls. */
+/* We start with the root 'n + 1': its index will be changed into
+   the corresponding C index inside the recursive function. */
+
+	switch(*order) {
+	case 1 : iii = 0;
+		foo_reorder(*n + 1, *n, m, e1, e2, neworder, L, pos);
+		break;
+	case 2 : iii = *N - 1;
+		bar_reorder(*n + 1, *n, m, e1, e2, neworder, L, pos);
+		break;
+	}
 }
 
 #define DO_NODE_PRUNING\
@@ -112,3 +149,4 @@ void neworder_pruningwise(int *ntip, int *nnode, int *edge1,
 	nextI++;
     }
 }
+

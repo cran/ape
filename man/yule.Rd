@@ -10,7 +10,7 @@ yule(phy, use.root.edge = FALSE)
     edge in the calculations.}
 }
 \description{
-  This function fits by maximum likelihood a Yule model, i.e. a
+  This function fits by maximum likelihood a Yule model, i.e., a
   birth-only model to the branching times computed from a phylogenetic
   tree.
 }

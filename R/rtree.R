@@ -1,4 +1,4 @@
-## rtree.R (2012-02-09)
+## rtree.R (2012-09-14)
 
 ##   Generates Trees
 
@@ -100,6 +100,7 @@ rtree <- function(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
     }
     phy$Nnode <- n - 2L + rooted
     class(phy) <- "phylo"
+    attr(phy, "order") <- "cladewise"
     phy
 }
 

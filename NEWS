@@ -1,3 +1,51 @@
+		CHANGES IN APE VERSION 3.0-6
+
+
+NEW FEATURES
+
+    o reorder.phylo() has a new order, "postorder", and a new option
+      index.only = TRUE to return only the vector of indices (the tree
+      is unmodified, see ?reorder.phylo for details).
+
+    o The three new functions node.depth.edgelength, node.height, and
+      node.height.clado make some internal code available from R. See
+      ?node.depth (which was already documented) for details.
+
+
+BUG FIXES
+
+    o reorder(, "pruningwise") made R crash if the rows of the edge
+      matrix are in random order: this is now fixed.
+
+    o drop.tip() sometimes shuffled node labels (thanks to Rebecca
+      Best for the report).
+
+    o drop.tip(phy, "") returned a tree with zero-length tip labels:
+      it now returns the tree unchanged (thanks to Brian Anacker for
+      the report).
+
+    o plot.phylo() made R crash if the tree has zero-length tip
+      labels: it now returns NULL (thanks again to Brian Anacker).
+
+
+OTHER CHANGES
+
+    o dist.nodes() is now 6 to 10 times faster.
+
+    o reorder(, "cladewise") is now faster. The change is not very
+      visible for small trees (n < 1000) but this can be more than
+      1000 faster for big trees (n >= 1e4).
+
+    o The attribute "order" of the objects of class "phylo" is now
+      strongly recommended, though not mandatory. Most functions in
+      ape should return a tree with this attribute correctly set.
+
+    o dbd() is now vectorized on both arguments 'x' (number of species
+      in clade) and 't' (clade age) to make likelihood calculations
+      easier and faster.
+
+
+
 		CHANGES IN APE VERSION 3.0-5
 
 

@@ -13,8 +13,6 @@
 \alias{circular.plot}
 \alias{unrooted.plot}
 \alias{unrooted.xy}
-\alias{node.height}
-\alias{node.height.clado}
 \alias{birth.step}
 \alias{death.step}
 \alias{ht.move}

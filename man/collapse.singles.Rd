@@ -14,7 +14,7 @@ collapse.singles(tree)
 \value{
   an object of class \code{"phylo"}.
 }
-\author{Ben Bolker \email{bolker@zoo.ufl.edu}}
+\author{Ben Bolker}
 \seealso{
   \code{\link{plot.phylo}}, \code{\link{read.tree}}
 }

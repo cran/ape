@@ -1,4 +1,4 @@
-## plot.phylo.R (2012-03-22)
+## plot.phylo.R (2012-10-20)
 
 ##   Plot Phylogenies
 
@@ -18,8 +18,8 @@ plot.phylo <-
              tip.color = "black", plot = TRUE, rotate.tree = 0, ...)
 {
     Ntip <- length(x$tip.label)
-    if (Ntip == 1) {
-        warning("found only one tip in the tree")
+    if (Ntip < 2) {
+        warning("found less than 2 tips in the tree")
         return(NULL)
     }
     if (any(tabulate(x$edge[, 1]) == 1))
@@ -421,7 +421,7 @@ phylogram.plot <- function(edge, Ntip, Nnode, xx, yy, horizontal,
         yy <- xx
         xx <- tmp
     }
-    ## un trait vertical à chaque noeud...
+    ## un trait vertical a chaque noeud...
     x0v <- xx[nodes]
     y0v <- y1v <- numeric(Nnode)
     ## store the index of each node in the 1st column of edge:
@@ -593,6 +593,57 @@ node.depth <- function(phy)
     .C("node_depth", as.integer(n), as.integer(m),
        as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
        as.integer(N), double(n + m), DUP = FALSE, PACKAGE = "ape")[[6]]
+}
+
+node.depth.edgelength <- function(phy)
+{
+    n <- length(phy$tip.label)
+    m <- phy$Nnode
+    N <- dim(phy$edge)[1]
+    phy <- reorder(phy, order = "pruningwise")
+    .C("node_depth_edgelength", as.integer(n), as.integer(n),
+       as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
+       as.integer(N), as.double(phy$edge.length), double(n + m),
+       DUP = FALSE, PACKAGE = "ape")[[7]]
+}
+
+node.height <- function(phy)
+{
+    n <- length(phy$tip.label)
+    m <- phy$Nnode
+    N <- dim(phy$edge)[1]
+    phy <- reorder(phy, order = "pruningwise")
+
+    e1 <- phy$edge[, 1]
+    e2 <- phy$edge[, 2]
+
+    yy <- numeric(n + m)
+    TIPS <- e2[e2 <= n]
+    yy[TIPS] <- 1:n
+
+    .C("node_height", as.integer(n), as.integer(m),
+       as.integer(e1), as.integer(e2), as.integer(N),
+       as.double(yy), DUP = FALSE, PACKAGE = "ape")[[6]]
+}
+
+node.height.clado <- function(phy)
+{
+    n <- length(phy$tip.label)
+    m <- phy$Nnode
+    N <- dim(phy$edge)[1]
+    phy <- reorder(phy, order = "pruningwise")
+
+    e1 <- phy$edge[, 1]
+    e2 <- phy$edge[, 2]
+
+    yy <- numeric(n + m)
+    TIPS <- e2[e2 <= n]
+    yy[TIPS] <- 1:n
+
+    .C("node_height_clado", as.integer(n), as.integer(m),
+       as.integer(e1), as.integer(e2), as.integer(N),
+       double(n + m), as.double(yy), DUP = FALSE,
+       PACKAGE = "ape")[[7]]
 }
 
 plot.multiPhylo <- function(x, layout = 1, ...)

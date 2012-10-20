@@ -1,4 +1,4 @@
-## DNA.R (2012-06-19)
+## DNA.R (2012-09-13)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -295,7 +295,7 @@ base.freq <- function(x, freq = FALSE, all = FALSE)
 {
     if (is.list(x)) x <- unlist(x)
     n <- length(x)
-    BF <-.C("BaseProportion", x, n, double(17),
+    BF <-.C("BaseProportion", x, as.integer(n), double(17),
             DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")[[3]]
     names(BF) <- c("a", "c", "g", "t", "r", "m", "w", "s",
                    "k", "y", "v", "h", "d", "b", "n", "-", "?")
@@ -351,8 +351,8 @@ seg.sites <- function(x)
         n <- n[1]
     }
     if (n == 1) return(integer(0))
-    ans <- .C("SegSites", x, n, s, integer(s),
-              DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+    ans <- .C("SegSites", x, as.integer(n), as.integer(s),
+              integer(s), DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
     which(as.logical(ans[[4]]))
 }
 
@@ -397,10 +397,10 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     var <- if (variance) double(Ndist) else 0
     if (!gamma) gamma <- alpha <- 0
     else alpha <- gamma <- 1
-    d <- .C("dist_dna", x, n, s, imod, double(Ndist), BF,
-            as.integer(pairwise.deletion), as.integer(variance),
-            var, as.integer(gamma), alpha, DUP = FALSE, NAOK = TRUE,
-            PACKAGE = "ape")
+    d <- .C("dist_dna", x, as.integer(n), as.integer(s), imod,
+            double(Ndist), BF, as.integer(pairwise.deletion),
+            as.integer(variance), var, as.integer(gamma),
+            alpha, DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
     if (variance) var <- d[[9]]
     d <- d[[5]]
     if (imod == 11) {

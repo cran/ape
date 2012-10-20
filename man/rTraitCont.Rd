@@ -73,7 +73,7 @@ rTraitCont(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
 data(bird.orders)
 rTraitCont(bird.orders) # BM with sigma = 0.1
 ### OU model with two optima:
-tr <- reorder(bird.orders, "p")
+tr <- reorder(bird.orders, "postorder")
 plot(tr)
 edgelabels()
 theta <- rep(0, Nedge(tr))

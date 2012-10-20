@@ -43,11 +43,12 @@ dbdTime(x, birth, death, t, conditional = FALSE,
   \code{dbdTime} is for time-varying \code{lambda} and \code{mu}
   specified as \R functions.
 
-  Only \code{dyule} is vectorized simultaneously on its three arguments
+  \code{dyule} is vectorized simultaneously on its three arguments
   \code{x}, \code{lambda}, and \code{t}, according to \R's rules of
-  recycling arguments. The two others are vectorized only on \code{x};
-  the other arguments are eventually shortened with a warning if
-  necessary.
+  recycling arguments. \code{dbd} is vectorized simultaneously \code{x}
+  and \code{t} (to make likelihood calculations easy), and
+  \code{dbdTime} is vectorized only on \code{x}; the other arguments are
+  eventually shortened with a warning if necessary.
 
   The returned value is, logically, zero for values of \code{x} out of
   range, i.e., negative or zero for \code{dyule} or if \code{conditional

@@ -1,8 +1,8 @@
-## read.tree.R (2010-09-27)
+## read.tree.R (2012-09-14)
 
 ##   Read Tree Files in Parenthetic Format
 
-## Copyright 2002-2010 Emmanuel Paradis, Daniel Lawson and Klaus Schliep
+## Copyright 2002-2012 Emmanuel Paradis, Daniel Lawson and Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -95,6 +95,7 @@ tree.build <- function(tp)
     if (any(nzchar(node.label))) obj$node.label <- node.label
     if (!is.na(root.edge)) obj$root.edge <- root.edge
     class(obj) <- "phylo"
+    attr(obj, "order") <- "cladewise"
     obj
 }
 

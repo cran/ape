@@ -1,19 +1,31 @@
 \name{node.depth}
 \alias{node.depth}
-\title{Depth of Nodes and Tips}
+\alias{node.depth.edgelength}
+\alias{node.height}
+\alias{node.height.clado}
+\title{Depth and Heights of Nodes and Tips}
 \description{
-  This function returns the depth of nodes and tips given by the number
-  of descendants (1 is returned for tips).
+  These functions return the depth or height of nodes and tips.
 }
 \usage{
 node.depth(phy)
+node.depth.edgelength(phy)
+node.height(phy)
+node.height.clado(phy)
 }
 \arguments{
   \item{phy}{an object of class "phylo".}
 }
 \details{
-  The depth of a node is computed as the number of tips which are its
-  descendants. The value of 1 is given to the tips.
+  \code{node.depth} computes the depth of a node as the number of tips
+  which are its descendants. The value of 1 is given to the tips.
+
+  \code{node.depth.edgelength} does the same but using branch lengths.
+
+  \code{node.height} computes the heights of nodes and tips as plotted
+  by a phylogram.
+
+  \code{node.height.clado} does the same but for a cladogram.
 }
 \value{
   A numeric vector indexed with the node numbers of the matrix `edge' of

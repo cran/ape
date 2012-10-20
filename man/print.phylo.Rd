@@ -23,7 +23,7 @@
 \value{
   NULL.
 }
-\author{Ben Bolker \email{bolker@zoo.ufl.edu} and Emmanuel Paradis}
+\author{Ben Bolker and Emmanuel Paradis}
 \seealso{
   \code{\link{read.tree}}, \code{\link{summary.phylo}},
   \code{\link[base]{print}} for the generic \R function

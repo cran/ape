@@ -1,4 +1,4 @@
-## read.nexus.R (2012-02-09)
+## read.nexus.R (2012-09-28)
 
 ##   Read Tree File in Nexus Format
 
@@ -16,6 +16,7 @@
     names(phy) <- nms
     if (all(phy$node.label == "")) phy$node.label <- NULL
     class(phy) <- "phylo"
+    attr(phy, "order") <- "cladewise"
     phy
 }
 
@@ -97,6 +98,7 @@ clado.build <- function(tp)
         if (all(obj$node.label == "NA")) NULL
         else gsub("^NA", "", obj$node.label)
     class(obj) <- "phylo"
+    attr(obj, "order") <- "cladewise"
     obj
 }
 

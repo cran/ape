@@ -8,7 +8,8 @@ read.nexus(file, tree.names = NULL)
   \item{file}{a file name specified by either a variable of mode character,
     or a double-quoted string.}
   \item{tree.names}{if there are several trees to be read, a vector of
-    mode character that gives names to the individual trees.}
+    mode character giving names to the individual trees (by default,
+    this uses the labels in the NEXUS file if these are present).}
 }
 \description{
   This function reads one or several trees in a NEXUS file.
@@ -18,8 +19,7 @@ read.nexus(file, tree.names = NULL)
   NEXUS standard (but see the restriction below on TRANSLATION
   tables). Only the block ``TREES'' is read; the other data can be read
   with other functions (e.g., \code{\link{read.dna}},
-  \code{\link[utils]{read.table}}, ...). A trace of the original data is
-  kept with the attribute \code{"origin"} (see below).
+  \code{\link[utils]{read.table}}, \dots).
 
   If a TRANSLATION table is present it is assumed that only the tip
   labels are translated and they are all translated with integers
@@ -39,27 +39,7 @@ read.nexus(file, tree.names = NULL)
   message is issued.
 }
 \value{
-  an object of class \code{"phylo"} with the following components:
-  \item{edge}{a two-column matrix of mode character where each row
-    represents an edge of the tree; the nodes and the tips are
-    symbolized with numbers (these numbers are not treated as numeric,
-    hence the mode character); the nodes are represented with negative
-    numbers (the root being \code{"-1"}), and the tips are represented with
-    positive numbers. For each row, the first column gives the
-    ancestor. This representation allows an easy manipulation of the
-    tree, particularly if it is rooted.}
-  \item{edge.length}{a numeric vector giving the lengths of the
-    branches given by \code{edge}.}
-  \item{tip.label}{a vector of mode character giving the names of the
-    tips; the order of the names in this vector corresponds to the
-    (positive) number in \code{edge}.}
-  \item{node.label}{(optional) a vector of mode character giving the
-    names of the nodes (set to \code{NULL} if not available in the file).}
-  \item{root.edge}{(optional) a numeric value giving the length of the
-    branch at the root is it exists (\code{NULL} otherwise).}
-
-  If several trees are read in the file, the returned object is of class
-  \code{"multiPhylo"}, and is a list of objects of class \code{"phylo"}.
+  an object of class \code{"phylo"} or of class \code{"multiPhylo"}.
 }
 \references{
   Maddison, D. R., Swofford, D. L. and Maddison, W. P. (1997) NEXUS: an

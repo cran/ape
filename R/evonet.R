@@ -1,8 +1,8 @@
-## evonet.R (2011-06-09)
+## evonet.R (2012-09-14)
 
 ##   Evolutionary Networks
 
-## Copyright 2011 Emmanuel Paradis
+## Copyright 2011-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -67,7 +67,7 @@ as.networx.evonet <- function(x, weight = NA, ...)
 {
     if (any(x$reticulation <= Ntip(x)))
         stop("some tips are involved in reticulations: cannot convert to \"networx\"")
-    x <- reorder(x, "p")
+    x <- reorder(x, "pruningwise")
     ned <- Nedge(x)
     nrt <- nrow(x$reticulation)
     x$edge <- rbind(x$edge, x$reticulation)

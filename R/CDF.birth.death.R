@@ -1,9 +1,9 @@
-## CDF.birth.death.R (2010-09-27)
+## CDF.birth.death.R (2012-09-14)
 
-##    Functions to simulate and fit
+##    Functions to Simulate and Fit
 ##  Time-Dependent Birth-Death Models
 
-## Copyright 2010 Emmanuel Paradis
+## Copyright 2010-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -158,7 +158,9 @@ CDF.birth.death <-
 
     if (!case %in% c(1, 3, 6)) Pi <- Vectorize(Pi)
 
-    denom <- if (fast) integrateTrapeze(Pi, 0, Tmax) else integrate(Pi, 0, Tmax)$value
+    denom <-
+        if (fast) integrateTrapeze(Pi, 0, Tmax)
+        else integrate(Pi, 0, Tmax)$value
     n <- length(x)
     p <- numeric(n)
     if (fast) {
@@ -178,6 +180,7 @@ CDF.birth.death <-
     phy <- list(edge = edge, edge.length = edge.length,
                 tip.label = paste("t", 1:(i + 1), sep = ""), Nnode = i)
     class(phy) <- "phylo"
+    attr(phy, "order") <- "cladewise"
     phy
 }
 

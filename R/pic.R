@@ -1,8 +1,8 @@
-## pic.R (2011-03-01)
+## pic.R (2012-09-11)
 
 ##   Phylogenetically Independent Contrasts
 
-## Copyright 2002-2011 Emmanuel Paradis
+## Copyright 2002-2012 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -22,7 +22,7 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
     if (any(is.na(x)))
       stop("missing data in 'x': you may consider removing the species with missing data from your tree with the function 'drop.tip'.")
 
-    phy <- reorder(phy, "pruningwise")
+    phy <- reorder(phy, "postorder")
     phenotype <- numeric(nb.tip + nb.node)
 
     if (is.null(names(x))) {

@@ -10,7 +10,7 @@ dist.dna(x, model = "K80", variance = FALSE,
   \item{x}{a matrix or a list containing the DNA sequences; this must be
     of class \code{"DNAbin"} (use \code{\link{as.DNAbin}} is they are
     stored as character).}
-  \item{model}{a character string specifying the evlutionary model to be
+  \item{model}{a character string specifying the evolutionary model to be
     used; must be one of \code{"raw"}, \code{"N"}, \code{"TS"},
     \code{"TV"}, \code{"JC69"}, \code{"K80"} (the default),
     \code{"F81"}, \code{"K81"}, \code{"F84"}, \code{"BH87"},
@@ -19,16 +19,15 @@ dist.dna(x, model = "K80", variance = FALSE,
   \item{variance}{a logical indicating whether to compute the variances
     of the distances; defaults to \code{FALSE} so the variances are not
     computed.}
-  \item{gamma}{a value for the gamma parameter which is possibly used to
-    apply a gamma correction to the distances (by default \code{gamma =
-      FALSE} so no correction is applied).}
+  \item{gamma}{a value for the gamma parameter possibly used to apply a
+    correction to the distances (by default no correction is applied).}
   \item{pairwise.deletion}{a logical indicating whether to delete the
     sites with missing data in a pairwise way. The default is to delete
     the sites with at least one missing data for all sequences (ignored
     if \code{model = "indel"} or \code{"indelblock"}).}
   \item{base.freq}{the base frequencies to be used in the computations
-    (if applicable, i.e. if \code{method = "F84"}). By default, the
-    base frequencies are computed from the whole sample of sequences.}
+    (if applicable). By default, the base frequencies are computed from
+    the whole set of sequences.}
   \item{as.matrix}{a logical indicating whether to return the results as
     a matrix. The default is to return an object of class
     \link[stats]{dist}.}
@@ -123,12 +122,12 @@ dist.dna(x, model = "K80", variance = FALSE,
   \item{\code{paralin}: }{Lake (1994) developed the paralinear distance which
     can be viewed as another variant of the Barry--Hartigan distance.}
 
-  \item{\code{indel}: }{this counts the number of sites where there an
+  \item{\code{indel}: }{this counts the number of sites where there is an
     insertion/deletion gap in one sequence and not in the other.}
 
   \item{\code{indelblock}: }{same than before but contiguous gaps are
-    counted as a single unit. Note that the distance between `-A-' and
-    `A--' is 3 because there are three different blocks of gaps, whereas
+    counted as a single unit. Note that the distance between \code{-A-} and
+    \code{A--} is 3 because there are three different blocks of gaps, whereas
     the ``indel'' distance will be 2.}
 }}
 \value{

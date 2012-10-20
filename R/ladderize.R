@@ -23,7 +23,7 @@ ladderize <- function(phy, right = TRUE)
         start <- start[o]
         neworder[newpos] <<- start
         for (i in 1:Nclade)
-          if (desc[i] > nb.tip) foo(desc[i], end[i], newpos[i] + 1)
+            if (desc[i] > nb.tip) foo(desc[i], end[i], newpos[i] + 1)
     }
     nb.tip <- length(phy$tip.label)
     nb.node <- phy$Nnode
@@ -37,6 +37,6 @@ ladderize <- function(phy, right = TRUE)
     foo(nb.tip + 1, nb.edge, 1)
     phy$edge <- phy$edge[neworder, ]
     if (!is.null(phy$edge.length))
-      phy$edge.length <- phy$edge.length[neworder]
+        phy$edge.length <- phy$edge.length[neworder]
     phy
 }

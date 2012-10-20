@@ -1,4 +1,4 @@
-## me.R (2012-04-30)
+## me.R (2012-09-14)
 
 ##   Tree Estimation Based on Minimum Evolution Algorithm
 
@@ -20,10 +20,12 @@ fastme.bal <- function(X, nni = TRUE, spr = TRUE, tbr = TRUE)
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
     labels <- labels[ans[[3]]]
-    structure(list(edge =  cbind(ans[[7]], ans[[8]]),
-                   edge.length = ans[[9]],
-                   tip.label = labels, Nnode = N - 2L),
-              class = "phylo")
+    obj <- list(edge =  cbind(ans[[7]], ans[[8]]),
+                edge.length = ans[[9]],
+                tip.label = labels, Nnode = N - 2L)
+    class(obj) <- "phylo"
+    attr(obj, "order") <- "cladewise"
+    obj
 }
 
 fastme.ols <- function(X, nni = TRUE)
@@ -37,10 +39,12 @@ fastme.ols <- function(X, nni = TRUE)
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
     labels <- labels[ans[[3]]]
-    structure(list(edge =  cbind(ans[[5]], ans[[6]]),
-                   edge.length = ans[[7]],
-                   tip.label = labels, Nnode = N - 2L),
-              class = "phylo")
+    obj <- list(edge =  cbind(ans[[5]], ans[[6]]),
+                edge.length = ans[[7]],
+                tip.label = labels, Nnode = N - 2L)
+    class(obj) <- "phylo"
+    attr(obj, "order") <- "cladewise"
+    obj
 }
 
 bionj <- function(X)

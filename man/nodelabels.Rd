@@ -88,8 +88,7 @@ edgelabels(text, edge, adj = c(0.5, 0.5), frame = "rect",
   \code{show.tip.label}) of \code{plot.phylo} in most cases (see the
   examples).
 }
-\author{Emmanuel Paradis, Ben Bolker \email{bolker@zoo.ufl.edu}, and Jim
-  Lemon}
+\author{Emmanuel Paradis, Ben Bolker, and Jim Lemon}
 \seealso{
   \code{\link{plot.phylo}}, \code{\link{edges}},
   \code{\link{mixedFontLabel}}

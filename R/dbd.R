@@ -1,4 +1,4 @@
-## dbd.R (2012-03-19)
+## dbd.R (2012-09-14)
 
 ##   Probability Density Under Birth--Death Models
 
@@ -26,10 +26,6 @@ dbd <- function(x, lambda, mu, t, conditional = FALSE, log = FALSE)
     if (length(mu) > 1) {
         mu <- mu[1]
         warning("only the first value of 'mu' was considered")
-    }
-    if (length(t) > 1) {
-        t <- t[1]
-        warning("only the first value of 't' was considered")
     }
 
     if (mu == 0) return(dyule(x, lambda, t, log))

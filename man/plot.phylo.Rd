@@ -94,12 +94,12 @@
   \item{plot}{a logical controlling whether to draw the tree. If
     \code{FALSE}, the graphical device is set as if the tree was
     plotted, and the coordinates are saved as well.}
-  \item{layout}{the number of trees to be plotted simultaneously.}
-  \item{\dots}{further arguments to be passed to \code{plot} or to
-    \code{plot.phylo}.}
   \item{rotate.tree}{for "fan", "unrooted", or "radial" trees: the
     rotation of the whole tree in degrees (negative values are
     accepted).}
+  \item{layout}{the number of trees to be plotted simultaneously.}
+  \item{\dots}{further arguments to be passed to \code{plot} or to
+    \code{plot.phylo}.}
 }
 \description{
   These functions plot phylogenetic trees on the current graphical

@@ -6,6 +6,22 @@
 \alias{AIC.ace}
 \alias{anova.ace}
 \title{Ancestral Character Estimation}
+\description{
+  This function estimates ancestral character states, and the associated
+  uncertainty, for continuous and discrete characters.
+
+  \code{logLik}, \code{deviance}, and \code{AIC} are generic functions
+  used to extract the log-likelihood, the deviance, or the Akaike
+  information criterion of a fitted object. If no such values are
+  available, \code{NULL} is returned.
+
+  \code{anova} is another generic function which is used to compare
+  nested models: the significance of the additional parameter(s) is
+  tested with likelihood ratio tests. You must ensure that the models
+  are effectively nested (if they are not, the results will be
+  meaningless). It is better to list the models from the smallest to the
+  largest.
+}
 \usage{
 ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
     model = if (type == "continuous") "BM" else "ER",
@@ -47,22 +63,6 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
     information criterion.}
   \item{\dots}{further arguments passed to or from other methods.}
 }
-\description{
-  This function estimates ancestral character states, and the associated
-  uncertainty, for continuous and discrete characters.
-
-  \code{logLik}, \code{deviance}, and \code{AIC} are generic functions
-  used to extract the log-likelihood, the deviance (-2*logLik), or the
-  Akaike information criterion of a tree. If no such values are
-  available, \code{NULL} is returned.
-
-  \code{anova} is another generic function which is used to compare
-  nested models: the significance of the additional parameter(s) is
-  tested with likelihood ratio tests. You must ensure that the models
-  are effectively nested (if they are not, the results will be
-  meaningless). It is better to list the models from the smallest to the
-  largest.
-}
 \details{
   If \code{type = "continuous"}, the default model is Brownian motion
   where characters evolve randomly following a random walk. This model
@@ -74,8 +74,8 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   given through a correlation structure with the option
   \code{corStruct}.
 
-  In the default setting (i.e., \code{method = "ML"} and \code{model =
-  "BM"}) the maximum likelihood estimation is done simultaneously on the
+  In the default setting (\code{method = "ML"} and \code{model = "BM"})
+  the maximum likelihood estimation is done simultaneously on the
   ancestral values and the variance of the Brownian motion process;
   these estimates are then used to compute the confidence intervals in
   the standard way. The REML method first estimates the ancestral value
@@ -89,8 +89,8 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
 
   It could be shown that, with a continous character, REML results in
   unbiased estimates of the variance of the Brownian motion process
-  while ML gives a downward bias. Therefore, the former is recommanded
-  over the latter, even though it is not the default.
+  while ML gives a downward bias. Therefore the former is recommanded,
+  even though it is not the default.
 
   For discrete characters (\code{type = "discrete"}), only maximum
   likelihood estimation is available (Pagel 1994). The model is
@@ -110,7 +110,7 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   is determined from the data.
 }
 \value{
-  a list with the following elements:
+  an object of class \code{"ace"} with the following elements:
 
   \item{ace}{if \code{type = "continuous"}, the estimates of the
     ancestral character values.}
@@ -153,7 +153,7 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   Likelihood of ancestor states in adaptive radiation. \emph{Evolution},
   \bold{51}, 1699--1711.
 }
-\author{Emmanuel Paradis, Ben Bolker \email{bolker@zoo.ufl.edu}}
+\author{Emmanuel Paradis, Ben Bolker}
 \seealso{
   \code{\link{corBrownian}}, \code{\link{corGrafen}},
   \code{\link{corMartins}}, \code{\link{compar.ou}},

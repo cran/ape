@@ -55,8 +55,7 @@ mantel.test(m1, m2, nperm = 999, graph = FALSE,
   London: Chapman & Hall.
 }
 \author{
-  Original code in S by Ben Bolker \email{bolker@zoo.ufl.edu}, ported
-  to \R by Julien Claude \email{claude@isem.univ-montp2.fr}
+  Original code in S by Ben Bolker, ported to \R by Julien Claude
 }
 \examples{
 q1 <- matrix(runif(36), nrow = 6)

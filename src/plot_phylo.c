@@ -1,6 +1,6 @@
-/* plot_phylo.c (2011-06-23) */
+/* plot_phylo.c (2012-10-01) */
 
-/* Copyright 2004-2011 Emmanuel Paradis
+/* Copyright 2004-2012 Emmanuel Paradis
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -35,7 +35,7 @@ void node_depth(int *ntip, int *nnode, int *edge1, int *edge2,
 }
 
 void node_height(int *ntip, int *nnode, int *edge1, int *edge2,
-		int *nedge, double *yy)
+		 int *nedge, double *yy)
 {
     int i, n;
     double S;
@@ -76,19 +76,4 @@ void node_height_clado(int *ntip, int *nnode, int *edge1, int *edge2,
 	    n = 0;
 	}
     }
-}
-
-void get_single_index_integer(int *x, int *val, int *index)
-{
-	while (x[*index] != *val) (*index)++;
-	*index += 1;
-}
-
-void get_two_index_integer(int *x, int *val, int *index)
-{
-	while (x[index[0]] != *val) index[0]++;
-	index[1] = index[0] + 1;
-	while (x[index[1]] != *val) index[1]++;
-	index[0] += 1;
-	index[1] += 1;
 }

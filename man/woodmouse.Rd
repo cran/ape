@@ -17,9 +17,9 @@ data(woodmouse)
 }
 \source{
   Michaux, J. R., Magnanou, E., Paradis, E., Nieberding, C. and Libois,
-  R. (2003) Mitochondrial phylogeography of the Woodmouse (Apodemus
-  sylvaticus) in the Western Palearctic region. \emph{Molecular
-    Ecology}, \bold{12}, 685--697.
+  R. (2003) Mitochondrial phylogeography of the Woodmouse
+  (\emph{Apodemus sylvaticus}) in the Western Palearctic region.
+  \emph{Molecular Ecology}, \bold{12}, 685--697.
 }
 \seealso{
   \code{\link{read.dna}}, \code{\link{DNAbin}}, \code{\link{dist.dna}}
