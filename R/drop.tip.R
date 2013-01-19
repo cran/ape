@@ -1,4 +1,4 @@
-## drop.tip.R (2012-10-20)
+## drop.tip.R (2012-11-29)
 
 ##   Remove Tips in a Phylogenetic Tree
 
@@ -204,8 +204,8 @@ drop.tip <-
             if (is.null(phy$node.label)) rep("NA", length(node2tip))
             else phy$node.label[node2tip - Ntip]
         }
-        if (!is.null(phy$node.label))
-            phy$node.label <- phy$node.label[-(node2tip - Ntip)]
+#        if (!is.null(phy$node.label))
+#            phy$node.label <- phy$node.label[-(node2tip - Ntip)]
         phy$tip.label <- c(phy$tip.label, new.tip.label)
     }
 
@@ -213,7 +213,7 @@ drop.tip <-
 
     ## The block below renumbers the nodes so that they conform
     ## to the "phylo" format, same as in root()
-    newNb <- integer(n + phy$Nnode)
+    newNb <- integer(Ntip + Nnode)
     newNb[NEWROOT] <- n + 1L
     sndcol <- phy$edge[, 2] > n
     ## executed from right to left, so newNb is modified before phy$edge:
@@ -221,10 +221,8 @@ drop.tip <-
         (n + 2):(n + phy$Nnode)
     phy$edge[, 1] <- newNb[phy$edge[, 1]]
     storage.mode(phy$edge) <- "integer"
-    if (!is.null(phy$node.label)) { # update node.label if needed
-        newNb[is.na(newNb)] <- 0L
-        phy$node.label <- phy$node.label[order(newNb[newNb > 0])]
-    }
+    if (!is.null(phy$node.label)) # update node.label if needed
+        phy$node.label <- phy$node.label[which(newNb > 0) - Ntip]
     collapse.singles(phy)
 }
 

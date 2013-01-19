@@ -1,8 +1,8 @@
-## DNA.R (2012-09-13)
+## DNA.R (2013-01-04)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
-## Copyright 2002-2012 Emmanuel Paradis
+## Copyright 2002-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -58,37 +58,28 @@ as.alignment <- function(x)
 
 "[.DNAbin" <- function(x, i, j, drop = FALSE)
 {
-    oc <- oldClass(x)
-    class(x) <- NULL
-    if (is.matrix(x)) {
-        if (nargs() == 2 && !missing(i)) ans <- x[i]
-        else {
-            nd <- dim(x)
-            if (missing(i)) i <- 1:nd[1]
-            if (missing(j)) j <- 1:nd[2]
-            ans <- x[i, j, drop = drop]
-        }
-    } else {
-        if (missing(i)) i <- 1:length(x)
-        ans <- x[i]
-    }
-    class(ans) <- oc
+    ans <- NextMethod("[", drop = drop)
+    class(ans) <- "DNAbin"
     ans
 }
 
 as.matrix.DNAbin <- function(x, ...)
 {
-    if (is.list(x)) {
-        if (length(unique(unlist(lapply(x, length)))) != 1)
-          stop("DNA sequences in list not of the same length.")
-        nms <- names(x)
-        n <- length(x)
-        s <- length(x[[1]])
-        x <- matrix(unlist(x), n, s, byrow = TRUE)
-        rownames(x) <- nms
-        class(x) <- "DNAbin"
+    if (is.matrix(x)) return(x)
+    if (is.vector(x)) {
+        dim(x) <- c(1, length(x))
+        return(x)
     }
-    x
+    s <- unique(unlist(lapply(x, length)))
+    if (length(s) != 1)
+        stop("DNA sequences in list not of the same length.")
+    nms <- names(x)
+    n <- length(x)
+    y <- matrix(as.raw(0), n, s)
+    for (i in seq_len(n)) y[i, ] <- x[[i]]
+    rownames(y) <- nms
+    class(y) <- "DNAbin"
+    y
 }
 
 as.list.DNAbin <- function(x, ...)
@@ -293,10 +284,19 @@ as.character.DNAbin <- function(x, ...)
 
 base.freq <- function(x, freq = FALSE, all = FALSE)
 {
-    if (is.list(x)) x <- unlist(x)
-    n <- length(x)
-    BF <-.C("BaseProportion", x, as.integer(n), double(17),
-            DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")[[3]]
+    f <- function(x)
+        .C("BaseProportion", x, as.integer(length(x)), double(17),
+           DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")[[3]]
+
+    if (is.list(x)) {
+        BF <- rowSums(sapply(x, f))
+        n <- sum(sapply(x, length))
+    } else {
+        n <- length(x)
+        BF <-.C("BaseProportion", x, as.integer(n), double(17),
+                DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")[[3]]
+    }
+
     names(BF) <- c("a", "c", "g", "t", "r", "m", "w", "s",
                    "k", "y", "v", "h", "d", "b", "n", "-", "?")
     if (all) {
@@ -396,7 +396,10 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     Ndist <- if (imod == 11) n*n else n*(n - 1)/2
     var <- if (variance) double(Ndist) else 0
     if (!gamma) gamma <- alpha <- 0
-    else alpha <- gamma <- 1
+    else {
+        alpha <- gamma
+        gamma <- 1
+    }
     d <- .C("dist_dna", x, as.integer(n), as.integer(s), imod,
             double(Ndist), BF, as.integer(pairwise.deletion),
             as.integer(variance), var, as.integer(gamma),
@@ -470,4 +473,30 @@ image.DNAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
                pt.cex = 2, bty = "n", xjust = 0.5, yjust = 0.5,
                horiz = TRUE, xpd = TRUE)
     }
+}
+
+where <- function(x, pattern)
+{
+    pat <- as.DNAbin(strsplit(pattern, NULL)[[1]])
+    p <- as.integer(length(pat))
+
+    foo <- function(x, pat, p) {
+        s <- as.integer(length(x))
+        if (s < p) stop("sequence shorter than the pattern")
+        ans <- .C("where", x, pat, s, p, integer(s), 0L,
+                  DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+        n <- ans[[6]]
+        if (n) ans[[5]][seq_len(n)] - p + 2L else integer()
+    }
+
+    if (is.list(x)) return(lapply(x, foo, pat = pat, p = p))
+    if (is.matrix(x)) {
+        n <- nrow(x)
+        res <- vector("list", n)
+        for (i in seq_along(n))
+            res[[i]] <- foo(x[i, , drop = TRUE], pat, p)
+        names(res) <- rownames(x)
+        return(res)
+    }
+    foo(x, pat, p) # if x is a vector
 }

@@ -1,4 +1,4 @@
-## clustal.R (2012-01-12)
+## clustal.R (2012-11-28)
 
 ##   Multiple Sequence Alignment with External Applications
 
@@ -9,7 +9,7 @@
 
 clustal <- function(x, pw.gapopen = 10, pw.gapext = 0.1,
                     gapopen = 10, gapext = 0.2, exec = NULL,
-                    MoreArgs = "", quiet = TRUE)
+                    MoreArgs = "", quiet = TRUE, original.ordering = TRUE)
 {
     os <- Sys.info()[1]
     if (is.null(exec)) {
@@ -32,10 +32,12 @@ clustal <- function(x, pw.gapopen = 10, pw.gapext = 0.1,
     opts <- paste(prefix, suffix, sep = "=", collapse = " ")
     opts <- paste(opts, MoreArgs)
     system(paste(exec, opts), ignore.stdout = quiet)
-    read.dna(outf, "clustal")
+    res <- read.dna(outf, "clustal")
+    if (original.ordering) res <- res[labels(x), ]
+    res
 }
 
-muscle <- function(x, exec = "muscle", MoreArgs = "", quiet = TRUE)
+muscle <- function(x, exec = "muscle", MoreArgs = "", quiet = TRUE, original.ordering = TRUE)
 {
     if (missing(x)) {
         system(exec)
@@ -50,10 +52,12 @@ muscle <- function(x, exec = "muscle", MoreArgs = "", quiet = TRUE)
     if (quiet) opts <- paste(opts, "-quiet")
     opts <- paste(opts, MoreArgs)
     system(paste(exec, opts))
-    read.dna(outf, "fasta")
+    res <- read.dna(outf, "fasta")
+    if (original.ordering) res <- res[labels(x), ]
+    res
 }
 
-tcoffee <- function(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE)
+tcoffee <- function(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE, original.ordering = TRUE)
 {
     if (missing(x)) {
         system(exec)
@@ -68,5 +72,7 @@ tcoffee <- function(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE)
     opts <- paste(inf, MoreArgs)
     if (quiet) opts <- paste(opts, "-quiet=nothing")
     system(paste(exec, opts))
-    read.dna("input_tcoffee.aln", "clustal")
+    res <- read.dna("input_tcoffee.aln", "clustal")
+    if (original.ordering) res <- res[labels(x), ]
+    res
 }

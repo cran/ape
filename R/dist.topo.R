@@ -1,4 +1,4 @@
-## dist.topo.R (2012-03-13)
+## dist.topo.R (2012-12-12)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -68,32 +68,28 @@ dist.topo <- function(x, y, method = "PH85")
     ## 'x' is a list of objects of class "phylo" possibly with no class
     if (!is.null(attr(x, "TipLabel"))) return(x)
     ref <- x[[1]]$tip.label
-    if (any(table(ref) != 1))
-        stop("some tip labels are duplicated in tree no. 1")
     n <- length(ref)
-    Ntree <- length(x)
-    if (Ntree > 1) {
-        for (i in 2:Ntree) {
-            label <- x[[i]]$tip.label
-            if (!identical(label, ref)) {
-                if (length(label) != length(ref))
-                    stop(paste("tree no.", i, "has a different number of tips"))
-                ilab <- match(label, ref)
-                ## can use tabulate here because 'ilab' contains integers
-                if (any(is.na(ilab)))
-                    stop(paste("tree no.", i, "has different tip labels"))
-### <FIXME> the test below does not seem useful anymore
-###            if (any(tabulate(ilab) > 1))
-###                stop(paste("some tip labels are duplicated in tree no.", i))
-### </FIXME>
-                ie <- match(1:n, x[[i]]$edge[, 2])
-                x[[i]]$edge[ie, 2] <- ilab
-            }
-            x[[i]]$tip.label <- NULL
+    if (length(unique(ref)) != n)
+        stop("some tip labels are duplicated in tree no. 1")
+
+    ## serious improvement by Joseph W. Brown!
+    relabel <- function (y) {
+        label <- y$tip.label
+        if (!identical(label, ref)) {
+            if (length(label) != length(ref))
+                stop(paste("tree ", y, "has a different number of tips"))
+            ilab <- match(label, ref)
+            if (any(is.na(ilab)))
+                stop(paste("tree ", y, "has different tip labels"))
+            ie <- match(1:n, y$edge[, 2])
+            y$edge[ie, 2] <- ilab
         }
+        y$tip.label <- NULL
+        y
     }
-    x[[1]]$tip.label <- NULL
+    x <- lapply(x, relabel)
     attr(x, "TipLabel") <- ref
+    class(x) <- "multiPhylo"
     x
 }
 

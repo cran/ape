@@ -1,4 +1,4 @@
-## scales.R (2011-05-31)
+## scales.R (2012-12-19)
 
 ##   Add a Scale Bar or Axis to a Phylogeny Plot
 
@@ -76,7 +76,14 @@ add.scale.bar <- function(x, y, length = NULL, ask = FALSE,
 axisPhylo <- function(side = 1, ...)
 {
     lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
-    if (lastPP$type %in% c("phylogram", "cladogram")) {
+    type <- lastPP$type
+
+    if (type == "unrooted")
+        stop("axisPhylo() not available for unrooted plots; try add.scale.bar()")
+    if (type == "radial")
+        stop("axisPhylo() not meaningful for this type of plot")
+
+    if (type %in% c("phylogram", "cladogram")) {
         if (lastPP$direction %in% c("rightwards", "leftwards")) {
             x <- pretty(lastPP$xx)
             if (lastPP$direction == "rightwards") maxi <- max(lastPP$xx)
@@ -92,6 +99,33 @@ axisPhylo <- function(side = 1, ...)
                 x <- -x
             }
         }
+        axis(side = side, at = c(maxi - x), labels = abs(x), ...)
+    } else { # type == "fan"
+        n <- lastPP$Ntip
+        xx <- lastPP$xx[1:n]; yy <- lastPP$yy[1:n]
+        r0 <- max(sqrt(xx^2 + yy^2))
+        firstandlast <- c(1, n)
+        theta0 <- mean(atan2(yy[firstandlast], xx[firstandlast]))
+        x0 <- r0 * cos(theta0); y0 <- r0 * sin(theta0)
+        inc <- diff(pretty(c(0, r0))[1:2])
+        srt <- 360*theta0/(2*pi)
+        coef <- -1
+        if (abs(srt) > 90) {
+            srt <- srt + 180
+            coef <- 1
+        }
+        len <- 0.025 * r0 # the length of tick marks
+        r <- r0
+        while (r > 1e-8) {
+            x <- r * cos(theta0); y <- r * sin(theta0)
+            if (len/r < 1) {
+                ra <- sqrt(len^2 + r^2); thetaa <- theta0 + coef * asin(len/r)
+                xa <- ra * cos(thetaa); ya <- ra * sin(thetaa)
+                segments(xa, ya, x, y)
+                text(xa, ya, r0 - r, srt = srt, adj = c(0.5, 1.1), ...)
+            }
+            r <- r - inc
+        }
+        segments(x, y, x0, y0)
     }
-    axis(side = side, at = c(maxi - x), labels = abs(x), ...)
 }

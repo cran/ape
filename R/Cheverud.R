@@ -35,7 +35,7 @@ compar.cheverud <- function(y, W, tolerance=1e-6, gold.tol=1e-4)
 	  }
     sorted[ii] <- Re(sorted[ii]) # Remove imaginary part
   }
-  sorted <- as.real(sorted)
+  sorted <- as.double(sorted)
 
 	Distinct <- numeric(0)
   Distinct[1] <- -Inf

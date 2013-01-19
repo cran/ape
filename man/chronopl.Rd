@@ -101,6 +101,10 @@ chronopl(phy, lambda, age.min = 1, age.max = NULL,
   \item{D2}{the influence of each observation on overall date
     estimates (if \code{CV = TRUE}).}
 }
+\note{
+  The new function \code{\link{chronos}} replaces the present one which
+  is no more maintained.
+}
 \references{
   Sanderson, M. J. (2002) Estimating absolute rates of molecular
   evolution and divergence times: a penalized likelihood
@@ -109,6 +113,6 @@ chronopl(phy, lambda, age.min = 1, age.max = NULL,
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{chronoMPL}}
+  \code{\link{chronos}}, \code{\link{chronoMPL}}
 }
 \keyword{models}

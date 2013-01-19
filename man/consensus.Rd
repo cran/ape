@@ -31,6 +31,10 @@ consensus(..., p = 1, check.labels = TRUE)
 \value{
   an object of class \code{"phylo"}.
 }
+\references{
+  Felsenstein, J. (2004) \emph{Inferring Phylogenies}. Sunderland:
+  Sinauer Associates.
+}
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{prop.part}}, \code{\link{dist.topo}}

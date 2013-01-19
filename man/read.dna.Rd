@@ -1,10 +1,19 @@
 \name{read.dna}
 \alias{read.dna}
+\alias{read.FASTA}
 \title{Read DNA Sequences in a File}
+\description{
+  These functions read DNA sequences in a file, and returns a matrix or a
+  list of DNA sequences with the names of the taxa read in the file as
+  rownames or names, respectively. By default, the sequences are stored
+  in binary format, otherwise (if \code{as.character = "TRUE"}) in lower
+  case.
+}
 \usage{
 read.dna(file, format = "interleaved", skip = 0,
          nlines = 0, comment.char = "#",
          as.character = FALSE, as.matrix = NULL)
+read.FASTA(file)
 }
 \arguments{
   \item{file}{a file name specified by either a variable of mode character,
@@ -14,11 +23,11 @@ read.dna(file, format = "interleaved", skip = 0,
     \code{"sequential"}, \code{"clustal"}, or \code{"fasta"}, or any
     unambiguous abbreviation of these.}
   \item{skip}{the number of lines of the input file to skip before
-    beginning to read data.}
+    beginning to read data (ignored for FASTA files; see below).}
   \item{nlines}{the number of lines to be read (by default the file is
-    read untill its end).}
+    read untill its end; ignored for FASTA files)).}
   \item{comment.char}{a single character, the remaining of the line
-    after this character is ignored.}
+    after this character is ignored (ignored for FASTA files).}
   \item{as.character}{a logical controlling whether to return the
     sequences as an object of class \code{"DNAbin"} (the default).}
   \item{as.matrix}{(used if \code{format = "fasta"}) one of the three
@@ -28,15 +37,8 @@ read.dna(file, format = "interleaved", skip = 0,
     are of different lengths; (iii) \code{FALSE}: always returns the
     sequences in a list.}
 }
-\description{
-  This function reads DNA sequences in a file, and returns a matrix or a
-  list of DNA sequences with the names of the taxa read in the file as
-  rownames or names, respectively. By default, the sequences are stored
-  in binary format, otherwise (if \code{as.character = "TRUE"}) in lower
-  case.
-}
 \details{
-  This function follows the interleaved and sequential formats defined
+  \code{read.dna} follows the interleaved and sequential formats defined
   in PHYLIP (Felsenstein, 1993) but with the original feature than there
   is no restriction on the lengths of the taxa names. For these two
   formats, the first line of the file must contain the dimensions of the
@@ -70,15 +72,17 @@ read.dna(file, format = "interleaved", skip = 0,
 
   \item{FASTA:}{This looks like the sequential format but the taxa names
     (or rather a description of the sequence) are on separate lines
-    beginning with a `greater than' character ``>'' (there may be
+    beginning with a `greater than' character `>' (there may be
     leading spaces before this character). These lines are taken as taxa
-    names after removing the ``>'' and the possible leading and trailing
+    names after removing the `>' and the possible leading and trailing
     spaces. All the data in the file before the first sequence is ignored.}
 }}
 \value{
   a matrix or a list (if \code{format = "fasta"}) of DNA sequences
   stored in binary format, or of mode character (if \code{as.character =
     "TRUE"}).
+
+  \code{read.FASTA} always returns a list of class \code{"DNAbin"}.
 }
 \references{
   Anonymous. FASTA format description.

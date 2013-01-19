@@ -1,3 +1,50 @@
+		CHANGES IN APE VERSION 3.0-7
+
+
+NEW FEATURES
+
+    o The new function chronos estimates chronograms by penalised
+      likelihood and maximum likelihood with a completely reworked
+      code and interface. There is a new function makeChronosCalib to
+      set the calibration points easily. chronos() will eventually
+      replace chronopl().
+
+    o The new function 'where' searches patterns in DNA sequences.
+
+    o pic() gains an option 'rescaled.tree = FALSE' to return the tree
+      with its branch lengths rescaled for the PIC calculation.
+
+    o clustal(), muscle(), and tcoffee() gain an option
+      'original.ordering = TRUE' to ease the comparisons of
+      alignments.
+
+    o plot.phylo() has a new option, open.angle, used when plotting
+      circular trees.
+
+    o The new function read.FASTA reads FASTA files much faster and
+      more efficiently. It is called internally by read.dna(, "fasta")
+      or can be called directly.
+
+
+BUG FIXES
+
+    o drop.tip() shuffled node labels on some trees.
+
+    o axisPhylo() now works correctly with circular trees, and gives a
+      sensible error message when type = "r" or "u".
+
+
+OTHER CHANGES
+
+    o .compressTipLabel() is 10 times faster thanks to Joseph Brown.
+
+    o base.freq() is now faster with lists.
+
+    o as.matrix.DNAbin() should be faster and more efficient with
+      lists; it now accepts vectors.
+
+
+
 		CHANGES IN APE VERSION 3.0-6
 
 
@@ -436,7 +483,7 @@ NEW FEATURES
     o base.freq() gains an option 'all' to count all the possible bases
       including the ambiguous ones (defaults to FALSE).
 
-    o read.nexus() now writes tree names in the NEXUS file if given a
+    o write.nexus() now writes tree names in the NEXUS file if given a
       list of trees with names.
 
 
@@ -1978,14 +2025,14 @@ BUG FIXES
     o A bug was fixed in phymltest(): the executable couldn't be found
       in some cases.
 
-    o Three bug have been fixed in ace(): computing the likelihood of
+    o Three bugs have been fixed in ace(): computing the likelihood of
       ancestral states of discrete characters failed, custom models
       did not work, and the function failed with a null gradient (a
       warning message is now returned; this latter bug was also
       present in yule.cov() as well and is now fixed).
 
-    o pic() hanged out when missing data were present: a message error
-      is now returned.
+    o pic() hanged out when missing data were present: an error is now
+      returned.
 
     o A small bug was fixed in dist.dna() where the gamma correction
       was not always correctly dispatched.
@@ -2049,7 +2096,7 @@ NEW FEATURES
       DNA sequences by specifying model = "raw".
 
     o dist.phylo() has a new option `full' to possibly compute the
-      distances among all tips and nodes of the tree. The default if
+      distances among all tips and nodes of the tree. The default is
       `full = FALSE'.
 
 

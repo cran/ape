@@ -1,8 +1,8 @@
-## plot.phylo.R (2012-10-20)
+## plot.phylo.R (2013-01-11)
 
 ##   Plot Phylogenies
 
-## Copyright 2002-2012 Emmanuel Paradis
+## Copyright 2002-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -15,7 +15,8 @@ plot.phylo <-
              adj = NULL, srt = 0, no.margin = FALSE, root.edge = FALSE,
              label.offset = 0, underscore = FALSE, x.lim = NULL,
              y.lim = NULL, direction = "rightwards", lab4ut = "horizontal",
-             tip.color = "black", plot = TRUE, rotate.tree = 0, ...)
+             tip.color = "black", plot = TRUE, rotate.tree = 0,
+             open.angle = 0, ...)
 {
     Ntip <- length(x$tip.label)
     if (Ntip < 2) {
@@ -122,13 +123,15 @@ plot.phylo <-
             xx <- .nodeDepthEdgelength(Ntip, Nnode, z$edge, Nedge, z$edge.length)
         }
     } else {
-    rotate.tree <- 2 * pi * rotate.tree/360
+    twopi <- 2 * pi
+    rotate.tree <- twopi * rotate.tree/360
     switch(type, "fan" = {
         ## if the tips are not in the same order in tip.label
         ## and in edge[, 2], we must reorder the angles: we
         ## use `xx' to store temporarily the angles
         TIPS <- x$edge[which(x$edge[, 2] <= Ntip), 2]
-        xx <- seq(0, 2*pi*(1 - 1/Ntip), 2*pi/Ntip)
+        xx <- seq(0, twopi * (1 - 1/Ntip) - twopi * open.angle/360,
+                  length.out = Ntip)
         theta <- double(Ntip)
         theta[TIPS] <- xx
         theta <- c(theta, numeric(Nnode))
@@ -140,8 +143,8 @@ plot.phylo <-
             r <- 1/r
         }
         theta <- theta + rotate.tree
-        xx <- r*cos(theta)
-        yy <- r*sin(theta)
+        xx <- r * cos(theta)
+        yy <- r * sin(theta)
     }, "unrooted" = {
         nb.sp <- .nodeDepth(Ntip, Nnode, z$edge, Nedge)
         XY <- if (use.edge.length)
@@ -157,7 +160,7 @@ plot.phylo <-
         ## radius:
         X <- 1 - X/Ntip
         ## angle (1st compute the angles for the tips):
-        yy <- c((1:Ntip)*2*pi/Ntip, rep(0, Nnode))
+        yy <- c((1:Ntip)*twopi/Ntip, rep(0, Nnode))
         Y <- .nodeHeight(Ntip, Nnode, z$edge, Nedge, yy)
         xx <- X * cos(Y + rotate.tree)
         yy <- X * sin(Y + rotate.tree)
@@ -375,7 +378,6 @@ if (plot) {
         if (type %in% c("fan", "radial")) {
             xx.tips <- xx[1:Ntip]
             yy.tips <- yy[1:Ntip]
-            ## using atan2 considerably facilitates things compared to acos...
             angle <- atan2(yy.tips, xx.tips) # in radians
             if (label.offset) {
                 xx.tips <- xx.tips + label.offset * cos(angle)
@@ -648,12 +650,10 @@ node.height.clado <- function(phy)
 
 plot.multiPhylo <- function(x, layout = 1, ...)
 {
-    if (layout > 1)
-      layout(matrix(1:layout, ceiling(sqrt(layout)), byrow = TRUE))
-    else layout(matrix(1))
-    if (!par("ask")) {
-        par(ask = TRUE)
-        on.exit(par(ask = FALSE))
+    layout(matrix(1:layout, ceiling(sqrt(layout)), byrow = TRUE))
+    if (!devAskNewPage() && interactive()) {
+        devAskNewPage(TRUE)
+        on.exit(devAskNewPage(FALSE))
     }
     for (i in 1:length(x)) plot(x[[i]], ...)
 }
@@ -719,9 +719,9 @@ kronoviz <- function(x, layout = length(x), horiz = TRUE, ...)
         h <- 1
     }
     layout(matrix(1:layout, nrow), widths = w, heights = h)
-    if (layout > Ntree && !par("ask")) {
-        par(ask = TRUE)
-        on.exit(par(ask = FALSE))
+    if (layout < Ntree && !devAskNewPage() && interactive()) {
+        devAskNewPage(TRUE)
+        on.exit(devAskNewPage(FALSE))
     }
     if (horiz) {
         for (i in 1:Ntree)

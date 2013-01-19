@@ -42,11 +42,11 @@ cophyloplot <-
 }
 
 plotCophylo2 <-
-    function (x, y, assoc = assoc, use.edge.length = use.edge.length,
-              space = space, length.line = length.line, gap = gap,
-              type = type, return = return, col = col, lwd=lwd, lty=lty,
-              show.tip.label = show.tip.label,
-              font = font, ...)
+    function(x, y, assoc = assoc, use.edge.length = use.edge.length,
+             space = space, length.line = length.line, gap = gap,
+             type = type, return = return, col = col, lwd=lwd, lty=lty,
+             show.tip.label = show.tip.label,
+             font = font, ...)
 {
     res <- list()
 ###choice of the minimum space between the trees

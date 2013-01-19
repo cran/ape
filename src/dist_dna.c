@@ -1,4 +1,4 @@
-/* dist_dna.c       2012-02-14 */
+/* dist_dna.c       2012-11-28 */
 
 /* Copyright 2005-2012 Emmanuel Paradis
 
@@ -1142,4 +1142,25 @@ void dist_dna(unsigned char *x, int *n, int *s, int *model, double *d,
     case 16 : distDNA_indel(x, n, s, d); break;
     case 17 : distDNA_indelblock(x, n, s, d); break;
     }
+}
+
+void where(unsigned char *x, unsigned char *pat, int *s, int *p,
+	   int *ans, int *n)
+{
+	int i, j, k, ln;
+
+	ln = 0; /* local n */
+
+	for (i = 0; i <= *s - *p; i++) {
+		k = i; j = 0;
+		while (1) {
+			if (x[k] != pat[j]) break;
+			j++; k++;
+			if (j == *p) {
+				ans[ln++] = k - 1;
+				break;
+			}
+		}
+	}
+	*n = ln;
 }

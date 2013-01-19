@@ -2,7 +2,8 @@
 \alias{pic}
 \title{Phylogenetically Independent Contrasts}
 \usage{
-pic(x, phy, scaled = TRUE, var.contrasts = FALSE)
+pic(x, phy, scaled = TRUE, var.contrasts = FALSE,
+    rescaled.tree = FALSE)
 }
 \arguments{
   \item{x}{a numeric vector.}
@@ -10,7 +11,10 @@ pic(x, phy, scaled = TRUE, var.contrasts = FALSE)
   \item{scaled}{logical, indicates whether the contrasts should be
     scaled with their expected variances (default to \code{TRUE}).}
   \item{var.contrasts}{logical, indicates whether the expected
-    variances of the contrasts should be returned (default to \code{FALSE}).}
+    variances of the contrasts should be returned (default to
+    \code{FALSE}).}
+  \item{rescaled.tree}{logical, if \code{TRUE} the rescaled tree is
+    returned together with the main results.}
 }
 \description{
   Compute the phylogenetically independent contrasts using the method
@@ -22,10 +26,9 @@ pic(x, phy, scaled = TRUE, var.contrasts = FALSE)
   than the tip labels of \code{phy}.
 
   The user must be careful here since the function requires that both
-  series of names perfectly match, so this operation may fail if there
-  is a typing or syntax error. If both series of names do not match, the
-  values in the \code{x} are taken to be in the same order than the tip
-  labels of \code{phy}, and a warning message is issued.
+  series of names perfectly match. If both series of names do not match,
+  the values in the \code{x} are taken to be in the same order than the
+  tip labels of \code{phy}, and a warning message is issued.
 }
 \value{
   either a vector of phylogenetically independent contrasts (if
@@ -34,6 +37,10 @@ pic(x, phy, scaled = TRUE, var.contrasts = FALSE)
   expected variance in the second column (if \code{var.contrasts =
   TRUE}). If the tree has node labels, these are used as labels of the
   returned object.
+
+  If \code{rescaled.tree = TRUE}, a list is returned with two elements
+  named ``contr'' with the above results and ``rescaled.tree'' with the
+  tree and its rescaled branch lengths (see Felsenstein 1985).
 }
 \references{
   Felsenstein, J. (1985) Phylogenies and the comparative method.

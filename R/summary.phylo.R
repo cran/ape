@@ -85,7 +85,7 @@ print.phylo <- function(x, printlen = 6,...)
                               collapse=", "), ", ...\n", sep = ""))
     } else print(x$tip.label)
     if (!is.null(x$node.label)) {
-        cat("\tNode labels:\n")
+        cat("Node labels:\n")
         if (nb.node > printlen) {
             cat(paste("\t", paste(x$node.label[1:printlen],
                                  collapse=", "), ", ...\n", sep = ""))

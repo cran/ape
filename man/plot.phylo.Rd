@@ -10,7 +10,7 @@
     root.edge = FALSE, label.offset = 0, underscore = FALSE,
     x.lim = NULL, y.lim = NULL, direction = "rightwards",
     lab4ut = "horizontal", tip.color = "black", plot = TRUE,
-    rotate.tree = 0, ...)
+    rotate.tree = 0, open.angle = 0, ...)
 \method{plot}{multiPhylo}(x, layout = 1, ...)
 }
 \arguments{
@@ -97,6 +97,9 @@
   \item{rotate.tree}{for "fan", "unrooted", or "radial" trees: the
     rotation of the whole tree in degrees (negative values are
     accepted).}
+  \item{open.angle}{if \code{type = "f"}, the angle in degrees left
+    blank. Use a non-zero value if you want to call
+    \code{\link{axisPhylo}} after the tree is plotted.}
   \item{layout}{the number of trees to be plotted simultaneously.}
   \item{\dots}{further arguments to be passed to \code{plot} or to
     \code{plot.phylo}.}

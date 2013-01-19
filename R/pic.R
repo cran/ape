@@ -1,4 +1,4 @@
-## pic.R (2012-09-11)
+## pic.R (2012-11-20)
 
 ##   Phylogenetically Independent Contrasts
 
@@ -7,7 +7,7 @@
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
+pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE, rescaled.tree = FALSE)
 {
     if (!inherits(phy, "phylo"))
       stop("object 'phy' is not of class \"phylo\"")
@@ -35,10 +35,10 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
             warning("the names of argument 'x' and the tip labels of the tree did not match: the former were ignored in the analysis.")
         }
     }
+
     ## No need to copy the branch lengths: they are rescaled
     ## in the C code, so it's important to leave the default
     ## `DUP = TRUE' of .C.
-
     ans <- .C("pic", as.integer(nb.tip), as.integer(nb.node),
               as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
               as.double(phy$edge.length), as.double(phenotype),
@@ -46,22 +46,6 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
               as.integer(var.contrasts), as.integer(scaled),
               PACKAGE = "ape")
 
-    ## The "old" R code:
-    ##for (i in seq(from = 1, by = 2, length.out = nb.node)) {
-    ##    j <- i + 1
-    ##    anc <- phy$edge[i, 1]
-    ##    des1 <- phy$edge[i, 2]
-    ##    des2 <- phy$edge[j, 2]
-    ##    sumbl <- bl[i] + bl[j]
-    ##    ic <- anc - nb.tip
-    ##    contr[ic] <- phenotype[des1] - phenotype[des2]
-    ##    if (scaled) contr[ic] <- contr[ic]/sqrt(sumbl)
-    ##    if (var.contrasts) var.con[ic] <- sumbl
-    ##    phenotype[anc] <- (phenotype[des1]*bl[j] + phenotype[des2]*bl[i])/sumbl
-    ##    k <- which(phy$edge[, 2] == anc)
-    ##    bl[k] <- bl[k] + bl[i]*bl[j]/sumbl
-    ##
-    ##}
     contr <- ans[[7]]
     lbls <-
         if (is.null(phy$node.label)) as.character(1:nb.node + nb.tip)
@@ -70,6 +54,10 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE)
         contr <- cbind(contr, ans[[8]])
         dimnames(contr) <- list(lbls, c("contrasts", "variance"))
     } else names(contr) <- lbls
+    if (rescaled.tree) {
+        phy$edge.length <- ans[[5]]
+        contr <- list(contr = contr, rescaled.tree = phy)
+    }
     contr
 }
 

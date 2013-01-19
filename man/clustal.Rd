@@ -10,9 +10,11 @@
 \usage{
 clustal(x, pw.gapopen = 10, pw.gapext = 0.1,
         gapopen = 10, gapext = 0.2, exec = NULL,
-        MoreArgs = "", quiet = TRUE)
-muscle(x, exec = "muscle", MoreArgs = "", quiet = TRUE)
-tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE)
+        MoreArgs = "", quiet = TRUE, original.ordering = TRUE)
+muscle(x, exec = "muscle", MoreArgs = "", quiet = TRUE,
+       original.ordering = TRUE)
+tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE,
+        original.ordering = TRUE)
 }
 \arguments{
   \item{x}{an object of class \code{"DNAbin"}.}
@@ -25,6 +27,8 @@ tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE)
   \item{MoreArgs}{a character string giving additional options.}
   \item{quiet}{a logical: the default is to not print on \R's console the
     messages from the external program.}
+  \item{original.ordering}{a logical specifying whether to return the
+    aligned sequences in the same order than in \code{x}.}
 }
 \details{
   \code{clustal} tries to guess the name of the executable program
