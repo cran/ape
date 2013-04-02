@@ -1,3 +1,47 @@
+		CHANGES IN APE VERSION 3.0-8
+
+
+NEW FEATURES
+
+    o The new function ewLasso tests whether an incomplete set of
+      distances uniquely determines the edge weights of a given
+      unrooted topology using the 'Lasso' method by Dress et
+      al. (2012, J. Math. Biol. 65:77).
+
+    o ace() gains a new option 'use.expm' to use expm() from the
+      package of the same name in place of matexpo().
+
+
+BUG FIXES
+
+    o read.dna(, "fasta") may add '\r' in labels: this is fixed.
+
+    o prop.clades() returned wrong numbers when the tip labels of
+      'phy' are not in the same order than the list of trees (thanks
+      to Rupert Collins for the report).
+
+    o CADM.post() displayed "1" on the diagonal of the matrix of
+      Mantel p-values. It now displays "NA" on the diagonal,
+      indicating that no test of significance is computed between a
+      distance matrix and itself.
+
+    o rtree(n, rooted = FALSE) returned trees with an 'edge' matrix
+      stored as doubles instead of integers for n > 4.
+
+
+OTHER CHANGES
+
+    o The files CDAM.global.R and CDAM.post.R have been renamed
+      CADM.global.R and CADM.post.R.
+
+    o ace() has a new default for its option 'method': this is "REML"
+      for continuous characters and "ML" for discrete ones.
+
+    o ape does not import gee anymore so the latter doesn't need to
+      be installed.
+
+
+
 		CHANGES IN APE VERSION 3.0-7
 
 

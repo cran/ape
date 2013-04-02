@@ -102,9 +102,9 @@ chronos.control(...)
   inference: bridging the parsimony-likelihood gap. \emph{Systematic
     Biology}, \bold{57}, 665--674.
 
-  Paradis, E. (2012) Molecular dating of phylogenies by likelihood
+  Paradis, E. (2013) Molecular dating of phylogenies by likelihood
   methods: a comparison of models and a new information
-  criterion. \emph{Manuscript}.
+  criterion. \emph{Molecular Phylogenetics and Evolution}, in press.
 
   Sanderson, M. J. (2002) Estimating absolute rates of molecular
   evolution and divergence times: a penalized likelihood

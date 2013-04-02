@@ -23,9 +23,11 @@
   largest.
 }
 \usage{
-ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
+ace(x, phy, type = "continuous", method = if (type == "continuous")
+   "REML" else "ML", CI = TRUE,
     model = if (type == "continuous") "BM" else "ER",
-    scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1)
+    scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1,
+    use.expm = FALSE)
 \method{print}{ace}(x, digits = 4, ...)
 \method{logLik}{ace}(object, ...)
 \method{deviance}{ace}(object, ...)
@@ -56,6 +58,10 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
     structure to be used (this also gives the assumed model).}
   \item{ip}{the initial value(s) used for the ML estimation procedure
     when \code{type == "discrete"} (possibly recycled).}
+  \item{use.expm}{a logical specifying whether to use the package
+    \pkg{expm} to compute the matrix exponential (relevant only if
+    \code{type = "d"}). The default is to use the function
+    \code{matexpo} from \pkg{ape} (see details).}
   \item{digits}{the number of digits to be printed.}
   \item{object}{an object of class \code{"ace"}.}
   \item{k}{a numeric value giving the penalty per estimated parameter;
@@ -66,31 +72,30 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
 \details{
   If \code{type = "continuous"}, the default model is Brownian motion
   where characters evolve randomly following a random walk. This model
-  can be fitted by maximum likelihood (the default, Schluter et
-  al. 1997), least squares (\code{method = "pic"}, Felsenstein 1985), or
-  generalized least squares (\code{method = "GLS"}, Martins and Hansen
-  1997, Cunningham et al. 1998). In the latter case, the specification
-  of \code{phy} and \code{model} are actually ignored: it is instead
-  given through a correlation structure with the option
-  \code{corStruct}.
+  can be fitted by residual maximum likelihood (the default), maximum
+  likelihood (Felsenstein 1973, Schluter et al. 1997), least squares
+  (\code{method = "pic"}, Felsenstein 1985), or generalized least
+  squares (\code{method = "GLS"}, Martins and Hansen 1997, Cunningham et
+  al. 1998). In the last case, the specification of \code{phy} and
+  \code{model} are actually ignored: it is instead given through a
+  correlation structure with the option \code{corStruct}.
 
-  In the default setting (\code{method = "ML"} and \code{model = "BM"})
-  the maximum likelihood estimation is done simultaneously on the
-  ancestral values and the variance of the Brownian motion process;
-  these estimates are then used to compute the confidence intervals in
-  the standard way. The REML method first estimates the ancestral value
-  at the root (aka, the phylogenetic mean), then the variance of the
-  Brownian motion process is estimated by optimizing the residual
-  log-likelihood. The ancestral values are finally inferred from the
-  likelihood function giving these two parameters. If \code{method =
-  "pic"} or \code{"GLS"}, the confidence intervals are computed using
-  the expected variances under the model, so they depend only on the
-  tree.
+  In the setting \code{method = "ML"} and \code{model = "BM"} (this used
+  to be the default until \pkg{ape} 3.0-7) the maximum likelihood
+  estimation is done simultaneously on the ancestral values and the
+  variance of the Brownian motion process; these estimates are then used
+  to compute the confidence intervals in the standard way. The REML
+  method first estimates the ancestral value at the root (aka, the
+  phylogenetic mean), then the variance of the Brownian motion process
+  is estimated by optimizing the residual log-likelihood. The ancestral
+  values are finally inferred from the likelihood function giving these
+  two parameters. If \code{method = "pic"} or \code{"GLS"}, the
+  confidence intervals are computed using the expected variances under
+  the model, so they depend only on the tree.
 
   It could be shown that, with a continous character, REML results in
   unbiased estimates of the variance of the Brownian motion process
-  while ML gives a downward bias. Therefore the former is recommanded,
-  even though it is not the default.
+  while ML gives a downward bias. Therefore the former is recommanded.
 
   For discrete characters (\code{type = "discrete"}), only maximum
   likelihood estimation is available (Pagel 1994). The model is
@@ -106,8 +111,16 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   an equal-rates model (e.g., the first and third examples above),
   \code{"ARD"} is an all-rates-different model (the second example), and
   \code{"SYM"} is a symmetrical model (e.g., \code{matrix(c(0, 1, 2, 1,
-    0, 3, 2, 3, 0), 3)}). If a short-cut is used, the number of states
-  is determined from the data.
+  0, 3, 2, 3, 0), 3)}). If a short-cut is used, the number of states is
+  determined from the data.
+
+  With discrete characters it is necessary to compute the exponential of
+  the rate matrix. By default (and the only possible choice until
+  \pkg{ape} 3.0-7) the function \code{\link{matexpo}} in \pkg{ape} is
+  used. If \code{use.expm = TRUE}, the function
+  \code{\link[expm]{expm}}, in the package of the same name, is
+  used. \code{matexpo} is faster but quite inaccurate for large and/or
+  asymmetric matrices. In case of doubt, use the latter.
 }
 \value{
   an object of class \code{"ace"} with the following elements:
@@ -135,6 +148,9 @@ ace(x, phy, type = "continuous", method = "ML", CI = TRUE,
   Reconstructing ancestral character states: a critical
   reappraisal. \emph{Trends in Ecology & Evolution}, \bold{13},
   361--366.
+
+  Felsenstein, J. (1973) Maximum likelihood estimation
+  of evolutionary trees from continuous characters. \emph{American Journal of Human Genetics}, \bold{25}, 471--492.
 
   Felsenstein, J. (1985) Phylogenies and the comparative
   method. \emph{American Naturalist}, \bold{125}, 1--15.

@@ -2,7 +2,7 @@ useDynLib(ape)
 
 exportPattern(".+")
 
-import(gee, nlme)
+import(nlme)
 importFrom(lattice, xyplot, panel.lines, panel.points)
 importFrom(stats, as.hclust, cophenetic, reorder)
 
@@ -24,3 +24,6 @@ S3method("[", DNAbin)
 S3method(labels, DNAbin)
 S3method(as.character, DNAbin)
 S3method(as.matrix, DNAbin)
+S3method(c, DNAbin)
+S3method(image, DNAbin)
+S3method(as.list, DNAbin)

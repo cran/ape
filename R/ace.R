@@ -1,8 +1,8 @@
-## ace.R (2012-06-25)
+## ace.R (2013-03-18)
 
 ##   Ancestral Character Estimation
 
-## Copyright 2005-2012 Emmanuel Paradis and Ben Bolker
+## Copyright 2005-2013 Emmanuel Paradis and Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -19,9 +19,12 @@
     se
 }
 
-ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
-                model = if (type == "continuous") "BM" else "ER",
-                scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1)
+ace <-
+  function(x, phy, type = "continuous",
+           method = if (type == "continuous") "REML" else "ML",
+           CI = TRUE, model = if (type == "continuous") "BM" else "ER",
+           scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1,
+           use.expm = FALSE)
 {
     if (!inherits(phy, "phylo"))
         stop('object "phy" is not of class "phylo"')
@@ -190,6 +193,12 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
         liks[cbind(TIPS, x)] <- 1
         phy <- reorder(phy, "pruningwise")
 
+        ## E <- if (use.expm) expm::expm else ape::matexpo
+        E <- if (use.expm) {
+            library(expm)
+            get("expm", "package:expm")
+        } else ape::matexpo
+
         Q <- matrix(0, nl, nl)
         dev <- function(p, output.liks = FALSE) {
             if (any(is.nan(p)) || any(is.infinite(p))) return(1e50)
@@ -202,8 +211,8 @@ ace <- function(x, phy, type = "continuous", method = "ML", CI = TRUE,
                 anc <- phy$edge[i, 1]
                 des1 <- phy$edge[i, 2]
                 des2 <- phy$edge[j, 2]
-                v.l <- matexpo(Q * phy$edge.length[i]) %*% liks[des1, ]
-                v.r <- matexpo(Q * phy$edge.length[j]) %*% liks[des2, ]
+                v.l <- E(Q * phy$edge.length[i]) %*% liks[des1, ]
+                v.r <- E(Q * phy$edge.length[j]) %*% liks[des2, ]
                 v <- v.l * v.r
                 comp[anc] <- sum(v)
                 liks[anc, ] <- v/comp[anc]

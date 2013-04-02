@@ -129,11 +129,11 @@ cat("CLUSTAL (ape) multiple sequence alignment", "",
 file = "exdna.txt", sep = "\n")
 ex.dna3 <- read.dna("exdna.txt", format = "clustal")
 ### ... and in FASTA format
-cat("> No305",
+cat(">No305",
 "NTTCGAAAAACACACCCACTACTAAAANTTATCAGTCACT",
-"> No304",
+">No304",
 "ATTCGAAAAACACACCCACTACTAAAAATTATCAACCACT",
-"> No306",
+">No306",
 "ATTCGAAAAACACACCCACTACTAAAAATTATCAATCACT",
 file = "exdna.txt", sep = "\n")
 ex.dna4 <- read.dna("exdna.txt", format = "fasta")

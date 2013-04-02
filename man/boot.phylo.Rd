@@ -133,11 +133,11 @@ tr <- f(woodmouse)
 for (i in 1:5)
   print(boot.phylo(tr, woodmouse, f, quiet = TRUE))
 ### How many partitions in 100 random trees of 10 labels?...
-TR <- replicate(100, rtree(10), FALSE)
+TR <- rmtree(100, 10)
 pp10 <- prop.part(TR)
 length(pp10)
 ### ... and in 100 random trees of 20 labels?
-TR <- replicate(100, rtree(20), FALSE)
+TR <- rmtree(100, 20)
 pp20 <- prop.part(TR)
 length(pp20)
 plot(pp10, pch = "x", col = 2)

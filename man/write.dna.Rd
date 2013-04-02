@@ -64,14 +64,12 @@ write.dna(x, file, format = "interleaved", append = FALSE,
 }
 \note{
   Specifying a negative value for `nbcol' (meaning that the nucleotides
-  are printed on a single line) gives the same result for the
+  are printed on a single line) gives the same output for the
   interleaved and sequential formats.
 
   The names of the sequences may be truncated with the function
   \code{\link{makeLabel}}. In particular, Clustal is limited to 30
-  characters, whereas PHYML seems limited to 99 characters.
-
-  The FASTA format may be used as input for Clustal.
+  characters, and PHYML seems limited to 99 characters.
 }
 \value{
   None (invisible `NULL').

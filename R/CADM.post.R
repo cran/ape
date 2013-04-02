@@ -257,7 +257,7 @@
 				}
 			}
 		Mantel.prob <- as.matrix(as.dist(Mantel.prob/(nperm+1)))
-		diag(Mantel.prob) <- 1
+		diag(Mantel.prob) <- NA # Corrected 08feb13
 		}
 	
 	})

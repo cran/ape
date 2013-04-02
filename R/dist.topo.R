@@ -1,9 +1,9 @@
-## dist.topo.R (2012-12-12)
+## dist.topo.R (2013-02-09)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
 
-## Copyright 2005-2012 Emmanuel Paradis
+## Copyright 2005-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -87,6 +87,7 @@ dist.topo <- function(x, y, method = "PH85")
         y$tip.label <- NULL
         y
     }
+    x <- unclass(x) # another killer improvement by Tucson's hackathon (1/2/2013)
     x <- lapply(x, relabel)
     attr(x, "TipLabel") <- ref
     class(x) <- "multiPhylo"
@@ -165,6 +166,14 @@ prop.clades <- function(phy, ..., part = NULL, rooted = FALSE)
         part <- prop.part(obj, check.labels = TRUE)
     }
 
+    ## until ape 3.0-7 it was assumed implicitly that the labels in phy
+    ## are in the same order than in 'part' (bug report by Rupert Collins)
+    if (!identical(phy$tip.label, attr(part, "labels"))) {
+        i <- match(phy$tip.label, attr(part, "labels"))
+        j <- match(seq_len(Ntip(phy)), phy$edge[, 2])
+        phy$edge[j, 2] <- i
+        phy$tip.label <- attr(part, "labels")
+    }
     bp <- prop.part(phy)
     if (!rooted) {
         bp <- postprocess.prop.part(bp)

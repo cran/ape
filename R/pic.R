@@ -1,26 +1,24 @@
-## pic.R (2012-11-20)
+## pic.R (2013-02-18)
 
 ##   Phylogenetically Independent Contrasts
 
-## Copyright 2002-2012 Emmanuel Paradis
+## Copyright 2002-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE, rescaled.tree = FALSE)
 {
-    if (!inherits(phy, "phylo"))
-      stop("object 'phy' is not of class \"phylo\"")
-    if (is.null(phy$edge.length))
-      stop("your tree has no branch lengths")
+    if (!inherits(phy, "phylo")) stop("object 'phy' is not of class \"phylo\"")
+    if (is.null(phy$edge.length)) stop("your tree has no branch lengths")
     nb.tip <- length(phy$tip.label)
     nb.node <- phy$Nnode
     if (nb.node != nb.tip - 1)
-      stop("'phy' is not rooted and fully dichotomous")
+        stop("'phy' is not rooted and fully dichotomous")
     if (length(x) != nb.tip)
-      stop("length of phenotypic and of phylogenetic data do not match")
+        stop("length of phenotypic and of phylogenetic data do not match")
     if (any(is.na(x)))
-      stop("missing data in 'x': you may consider removing the species with missing data from your tree with the function 'drop.tip'.")
+        stop("missing data in 'x': you may consider removing the species with missing data from your tree with the function 'drop.tip'.")
 
     phy <- reorder(phy, "postorder")
     phenotype <- numeric(nb.tip + nb.node)
@@ -65,7 +63,7 @@ pic.ortho <- function(x, phy, var.contrasts = FALSE, intra = FALSE)
 {
     n <- length(x)
     m <- n - 1L # number of nodes
-    phy <- reorder(phy, "pruningwise")
+    phy <- reorder(phy, "postorder")
     xx <- unlist(lapply(x, mean)) # 'x' in Felsenstein's paper
     xx <- c(xx, numeric(m))
     delta.v <- numeric(n + m)

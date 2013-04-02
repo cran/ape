@@ -19,10 +19,10 @@ write.nexus(..., file = "", translate = TRUE)
   This function writes trees in a file with the NEXUS format.
 }
 \details{
-  If several trees are given, they must have all the same tip labels.
+  If several trees are given, they must all have the same tip labels.
 
   If among the objects given some are not trees of class \code{"phylo"},
-  they are simply skipped and not written to the file.
+  they are simply skipped and not written in the file.
 }
 \value{
   None (invisible `NULL').

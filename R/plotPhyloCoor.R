@@ -1,15 +1,15 @@
-## plotPhyloCoor.R (2012-02-14)
+## plotPhyloCoor.R (2013-03-30)
 
 ##   Coordinates of a Tree Plot
 
-## Copyright 2008 Damien de Vienne
+## Copyright 2008 Damien de Vienne, 2013 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 plotPhyloCoor <-
     function (x, type = "phylogram", use.edge.length = TRUE, node.pos = NULL,
-              direction = "rightwards", ...)
+              direction = "rightwards", tip.order = NULL, ...)
 {
     Ntip <- length(x$tip.label)
     if (Ntip == 1)
@@ -22,18 +22,21 @@ plotPhyloCoor <-
     phyloORclado <- type %in% c("phylogram", "cladogram")
     horizontal <- direction %in% c("rightwards", "leftwards")
     if (phyloORclado) {
-        if (!is.null(attr(x, "order")))
-            if (attr(x, "order") == "pruningwise")
-                x <- reorder(x)
+        ## changed by KS:
         yy <- numeric(Ntip + Nnode)
-        TIPS <- x$edge[x$edge[, 2] <= Ntip, 2]
-        yy[TIPS] <- 1:Ntip
-
+        if (!is.null(tip.order)) {
+            yy[tip.order] <- 1:length(tip.order)
+        } else {
+            x <- reorder(x)
+            TIPS <- x$edge[x$edge[, 2] <= Ntip, 2]
+            yy[TIPS] <- 1:Ntip
+        }
     }
 
     xe <- x$edge
     ## first reorder the tree in cladewise order to avoid cophyloplot() hanging:
-    x <- reorder(reorder(x), order = "pruningwise")
+    ## x <- reorder(reorder(x), order = "pruningwise") ... maybe not needed anymore (EP)
+    x <- reorder(x, order = "postorder")
     ereorder <- match(x$edge[, 2], xe[, 2])
 
     if (phyloORclado) {

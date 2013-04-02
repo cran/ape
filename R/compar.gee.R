@@ -11,7 +11,7 @@ compar.gee <-
     function(formula, data = NULL, family = gaussian, phy,
              corStruct, scale.fix = FALSE, scale.value = 1)
 {
-    require(gee, quietly = TRUE)
+    library(gee)
 
     if (!missing(corStruct)) {
         if (!missing(phy))

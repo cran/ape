@@ -1,8 +1,8 @@
-## read.dna.R (2013-01-04)
+## read.dna.R (2013-04-02)
 
 ##   Read DNA Sequences in a File
 
-## Copyright 2003-2012 Emmanuel Paradis
+## Copyright 2003-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -11,10 +11,8 @@ read.FASTA <- function(file)
 {
     sz <- file.info(file)$size
     x <- readBin(file, "raw", sz)
-    if (Sys.info()[1] == "Windows") {
-        icr <- which(x == as.raw(0x0d)) # CR
-        x <- x[-icr]
-    }
+    icr <- which(x == as.raw(0x0d)) # CR
+    if (length(icr)) x <- x[-icr]
     res <- .Call("rawStreamToDNAbin", x, PACKAGE = "ape")
     names(res) <- sub("^ +", "", names(res)) # to permit phylosim
     class(res) <- "DNAbin"

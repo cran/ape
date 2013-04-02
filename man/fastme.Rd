@@ -8,7 +8,7 @@
 }
 \description{
   The two FastME functions (balanced and OLS) perform the
-  Minimum Evolution algorithm of Desper and Gascuel (2002).
+  minimum evolution algorithm of Desper and Gascuel (2002).
 }
 \usage{
   fastme.bal(X, nni = TRUE, spr = TRUE, tbr = TRUE)

@@ -1,8 +1,8 @@
-## rtree.R (2012-09-14)
+## rtree.R (2013-04-02)
 
 ##   Generates Trees
 
-## Copyright 2004-2012 Emmanuel Paradis
+## Copyright 2004-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -54,39 +54,39 @@ rtree <- function(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
             i <- which(is.na(edge[, 2]))
             edge[i, 2] <- 1:n
         } else { # n > 4
-            n1 <- sample.int(n - 2, 1, FALSE, NULL)
-            if (n1 == n - 2) {
-                n2 <- n3 <- 1
+            n1 <- sample.int(n - 2L, 1L)
+            if (n1 == n - 2L) {
+                n2 <- n3 <- 1L
             } else {
-                n2 <- sample.int(n - n1 - 1, 1, FALSE, NULL)
+                n2 <- sample.int(n - n1 - 1L, 1L)
                 n3 <- n - n1 - n2
             }
-            po2 <- 2*n1
-            po3 <- 2*(n1 + n2) - 1
-            edge[c(1, po2, po3), 1] <- nod
-            nod <- nod + 1
-            if (n1 > 2) {
-                edge[1, 2] <- nod
-                foo(n1, 2)
-            } else if (n1 == 2) {
-                edge[2:3, 1] <- edge[1, 2] <- nod
+            po2 <- 2L * n1
+            po3 <- 2L * (n1 + n2) - 1L
+            edge[c(1, po2, po3), 1L] <- nod
+            nod <- nod + 1L
+            if (n1 > 2L) {
+                edge[1L, 2L] <- nod
+                foo(n1, 2L)
+            } else if (n1 == 2L) {
+                edge[2:3, 1L] <- edge[1L, 2L] <- nod
                 nod <- nod + 1L
             }
-            if (n2 > 2) {
-                edge[po2, 2] <- nod
-                foo(n2, po2 + 1)
-            } else if (n2 == 2) {
-                edge[c(po2 + 1, po2 + 2), 1] <- edge[po2, 2] <- nod
+            if (n2 > 2L) {
+                edge[po2, 2L] <- nod
+                foo(n2, po2 + 1L)
+            } else if (n2 == 2L) {
+                edge[c(po2 + 1L, po2 + 2), 1L] <- edge[po2, 2L] <- nod
                 nod <- nod + 1L
             }
             if (n3 > 2) {
-                edge[po3, 2] <- nod
-                foo(n3, po3 + 1)
-            } else if (n3 == 2) {
-                edge[c(po3 + 1, po3 + 2), 1] <- edge[po3, 2] <- nod
+                edge[po3, 2L] <- nod
+                foo(n3, po3 + 1L)
+            } else if (n3 == 2L) {
+                edge[c(po3 + 1L, po3 + 2), 1L] <- edge[po3, 2L] <- nod
                 ## nod <- nod + 1L
             }
-            i <- which(is.na(edge[, 2]))
+            i <- which(is.na(edge[, 2L]))
             edge[i, 2] <- 1:n
         }
     }

@@ -55,7 +55,7 @@ yule.cov(phy, formula, data = NULL)
   be equal to the number of tips of the tree + the number of nodes. The
   order is the following: first the values for the tips in the same
   order than for the labels, then the values for the nodes sequentially
-  from the root to the most terminal nodes (i.e. in the order given by
+  from the root to the most terminal nodes (i.e., in the order given by
   \code{phy$edge}).
 }
 
