@@ -1,8 +1,8 @@
-## makeLabel.R (2010-05-27)
+## makeLabel.R (2013-06-04)
 
 ##   Label Management
 
-## Copyright 2010 Emmanuel Paradis
+## Copyright 2010-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -76,13 +76,13 @@ mixedFontLabel <-
 {
     x <- list(...)
     n <- length(x)
-    sep <- rep(sep, length.out = n - 1L)
 
     if (!is.null(italic)) {
         for (i in italic) {
             y <- x[[i]]
             s <- ! y %in% always.upright
-            y[s] <- paste("italic('", y[s], "')", sep = "")
+            y[s] <- paste("italic(\"", y[s], "\")", sep = "")
+            if (any(!s)) y[!s] <- paste("plain(\"", y[!s], "\")", sep = "")
             x[[i]] <- y
         }
     }
@@ -93,17 +93,25 @@ mixedFontLabel <-
             s <- logical(length(y))
             s[grep("^italic", y)] <- TRUE
             y[s] <- sub("^italic", "bolditalic", y[s])
-            y[!s] <- paste("bold('", y[!s], "')", sep = "")
+            y[!s] <- paste("bold(\"", y[!s], "\")", sep = "")
             x[[i]] <- y
         }
     }
+
+    k <- which(! 1:n %in% c(italic, bold)) # those in upright
+    if (length(k))
+        for (i in k)
+            x[[i]] <- paste("plain(\"", x[[i]], "\")", sep = "")
 
     if (!is.null(parenthesis))
         for (i in parenthesis)
             x[[i]] <- paste("(", x[[i]], ")", sep = "")
 
     res <- x[[1L]]
-    for (i in 2:n)
-        res <- paste(res, "*'", sep[i - 1L], "'*", x[[i]], sep = "")
+    if (n > 1) {
+        sep <- rep(sep, length.out = n - 1L)
+        for (i in 2:n)
+            res <- paste(res, "*\"", sep[i - 1L], "\"*", x[[i]], sep = "")
+    }
     parse(text = res)
 }

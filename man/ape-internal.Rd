@@ -22,7 +22,6 @@
 \alias{chronopl.cv}
 \alias{floating.pie.asp}
 \alias{checkLabel}
-\alias{getMRCA}
 \alias{plotCophylo2}
 \alias{plotPhyloCoor}
 \alias{integrateTrapeze}

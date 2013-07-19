@@ -199,7 +199,7 @@
 	## Correction to P-values for multiple testing
 		if(mult == "sidak") {
 			vec.corr = NA
-			for(i in 1:p) vec.corr = c(vec.corr, (1-(1-counter[i])^p))
+			for(i in 1:nmat) vec.corr = c(vec.corr, (1-(1-counter[i])^nmat))
 			vec.corr <- vec.corr[-1]
 			}
 		if(mult == "holm") vec.corr <- p.adjust(counter, method="holm")

@@ -1,8 +1,8 @@
-## which.edge.R (2009-05-10)
+## which.edge.R (2013-05-10)
 
 ##   Identifies Edges of a Tree
 
-## Copyright 2004-2009 Emmanuel Paradis
+## Copyright 2004-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -11,6 +11,10 @@ getMRCA <- function(phy, tip)
 ### Find the MRCA of the tips given as `tip'
 ### (see `root.R' for comments on the code)
 {
+    if (!inherits(phy, "phylo"))
+        stop('object "phy" is not of class "phylo"')
+    if (is.character(tip)) tip <- which(phy$tip.label %in% tip)
+    if (length(tip) < 2) return(NULL)
     Ntip <- length(phy$tip.label)
     seq.nod <- .Call("seq_root2tip", phy$edge, Ntip,
                      phy$Nnode, PACKAGE = "ape")

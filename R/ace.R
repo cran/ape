@@ -1,4 +1,4 @@
-## ace.R (2013-03-18)
+## ace.R (2013-05-13)
 
 ##   Ancestral Character Estimation
 
@@ -156,6 +156,8 @@ ace <-
     } else { # type == "discrete"
         if (method != "ML")
             stop("only ML estimation is possible for discrete characters.")
+        if (any(phy$edge.length <= 0))
+            stop("some branches have length zero or negative")
         if (!is.factor(x)) x <- factor(x)
         nl <- nlevels(x)
         lvls <- levels(x)
@@ -227,10 +229,13 @@ ace <-
         obj$rates <- out$par
         oldwarn <- options("warn")
         options(warn = -1)
-        out.nlm <- nlm(function(p) dev(p), p = obj$rates, iterlim = 1,
-                       stepmax = 0, hessian = TRUE)
+        out.nlm <- try(nlm(function(p) dev(p), p = obj$rates, iterlim = 1,
+                           stepmax = 0, hessian = TRUE), silent = TRUE)
         options(oldwarn)
-        obj$se <- .getSEs(out.nlm)
+        obj$se <-  if (class(out.nlm) == "try-error") {
+            warning("model fit suspicious: gradients apparently non-finite")
+            rep(NaN, np)
+        } else .getSEs(out.nlm)
         obj$index.matrix <- index.matrix
         if (CI) {
             obj$lik.anc <- dev(obj$rates, TRUE)

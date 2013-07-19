@@ -1,8 +1,8 @@
-## reorder.phylo.R (2012-10-12)
+## reorder.phylo.R (2013-05-17)
 
 ##   Internal Reordering of Trees
 
-## Copyright 2006-2012 Emmanuel Paradis
+## Copyright 2006-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -20,6 +20,12 @@ reorder.phylo <- function(x, order = "cladewise", index.only = FALSE, ...)
     nb.node <- x$Nnode
     if (nb.node == 1) return(x)
     nb.tip <- length(x$tip.label)
+
+    ## I'm adding the next check for badly conformed trees to avoid R
+    ## crashing (2013-05-17):
+    if (nb.node >= nb.tip)
+        stop("tree apparently badly conformed")
+
     if (io == 3) {
         x <- reorder(x)
         neworder <-

@@ -1,8 +1,8 @@
-## root.R (2011-08-05)
+## root.R (2013-06-18)
 
 ##   Root of Phylogenetic Trees
 
-## Copyright 2004-2011 Emmanuel Paradis
+## Copyright 2004-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -126,11 +126,12 @@ root <- function(phy, outgroup, node = NULL,
             newroot <- 0L
             for (i in 2:phy$Nnode) {
                 if (identical(pp[[i]], ingroup)) {
-                    newroot <- i + n
+                    ## inverted with the next if (... (2013-06-16)
+                    newroot <- phy$edge[which(phy$edge[, 2] == i + n), 1]
                     break
                 }
                 if (identical(pp[[i]], outgroup)) {
-                    newroot <- phy$edge[which(phy$edge[, 2] == i + n), 1]
+                    newroot <- i + n
                     break
                 }
             }
@@ -298,10 +299,8 @@ root <- function(phy, outgroup, node = NULL,
             phy$edge <-
                 rbind(phy$edge[s1, ], c(newroot, newnod), phy$edge[s2, ])
             if (!is.null(phy$edge.length)) {
-                tmp <- phy$edge.length[1]
-                phy$edge.length[1] <- 0
                 phy$edge.length <-
-                    c(phy$edge.length[s1], tmp, phy$edge.length[s2])
+                    c(phy$edge.length[s1], 0, phy$edge.length[s2])
             }
         }
         ## N <- N + 1L ... not needed
@@ -318,7 +317,6 @@ root <- function(phy, outgroup, node = NULL,
     phy$edge[, 1] <- newNb[phy$edge[, 1]]
 
     if (!is.null(phy$node.label)) {
-        #browser()
         newNb <- newNb[-(1:n)]
         if (fuseRoot) {
             newNb <- newNb[-1]
@@ -327,7 +325,7 @@ root <- function(phy, outgroup, node = NULL,
         phy$node.label <- phy$node.label[order(newNb)]
         if (resolve.root) {
             phy$node.label[is.na(phy$node.label)] <- phy$node.label[1]
-            phy$node.label[1] <- NA
+            phy$node.label[1] <- "Root"
             ##phy$node.label <- c(phy$node.label[1], NA, phy$node.label[-1])
             ##phy$node.label <- c("NA", phy$node.label)
         }

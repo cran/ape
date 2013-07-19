@@ -1,7 +1,7 @@
 \name{write.nexus.data}
 \alias{write.nexus.data}
 \title{
-  Write Character Data In NEXUS Format
+  Write Character Data in NEXUS Format
 }
 \description{
   This function writes in a file a list of sequences in the NEXUS
@@ -65,13 +65,14 @@ write.nexus.data(x, file, format = "dna", datablock = TRUE,
   \code{\link{read.nexus.data}}
 }
 \examples{
-\dontrun{\dontshow{library(ape)}}
+\dontrun{
 ## Write interleaved DNA data with 100 characters per line in a DATA block
-\dontrun{data("woodmouse")}
-\dontrun{write.nexus.data(woodmouse, file= "woodmouse.example.nex", interleaved = TRUE, charsperline = 100)}
+data("woodmouse")
+write.nexus.data(woodmouse, file= "wood.ex.nex", interleaved = TRUE, charsperline = 100)
 ## Write sequential DNA data in TAXA and CHARACTERS blocks
-\dontrun{data("cynipids")}
-\dontrun{write.nexus.data(cynipids, file= "cynipids.example.nex", format = "protein", datablock = FALSE, interleaved = FALSE)}
-\dontrun{\dontshow{unlink(c("woodmouse.example.nex", "cynipids.example.nex"))}}
-}
+data("cynipids")
+write.nexus.data(cynipids, file = "cyn.ex.nex", format = "protein",
+                 datablock = FALSE, interleaved = FALSE)
+unlink(c("wood.ex.nex", "cyn.ex.nex"))
+}}
 \keyword{file}

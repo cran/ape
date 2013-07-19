@@ -1,4 +1,4 @@
-## DNA.R (2013-01-04)
+## DNA.R (2013-07-04)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -493,7 +493,7 @@ where <- function(x, pattern)
     if (is.matrix(x)) {
         n <- nrow(x)
         res <- vector("list", n)
-        for (i in seq_along(n))
+        for (i in seq_len(n))
             res[[i]] <- foo(x[i, , drop = TRUE], pat, p)
         names(res) <- rownames(x)
         return(res)

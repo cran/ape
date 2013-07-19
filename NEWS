@@ -1,3 +1,38 @@
+		CHANGES IN APE VERSION 3.0-9
+
+
+NEW FEATURES
+
+    o getMRCA() is now documented.
+
+
+BUG FIXES
+
+    o ace(, type = "d") now checks for zero or negative branch lengths.
+
+    o ace(, type = "d") now catches the error if the SEs of the rates
+      cannot be calculated (usually due to a poor model fit).
+
+    o reorder.phylo() made R crash with badly conformed "phylo" trees.
+
+    o drop.tip(phy, interactive = TRUE) did not work.
+
+    o drop.tip() now returns NULL (with a warning) if all tips are
+      dropped.
+
+    o mixedFontLabel() failed when passed only one vector of
+      labels. It also failed when labels included - or '. In some
+      cases, spaces in labels were not treated correctly.
+
+    o root(, resolve.root = TRUE) wrongly placed the new root node
+      when the outgroup has more than one tip. This is fixed, and now
+      the root node is placed at the MRCA of the outgroup (and not of
+      the ingroup).
+
+    o where() failed with matrices.
+
+
+
 		CHANGES IN APE VERSION 3.0-8
 
 

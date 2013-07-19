@@ -32,7 +32,7 @@ ltt.plot.coords(phy, backward = TRUE, tol = 1e-6)
     or \code{ltt.coplot()} these are further (graphical) arguments to be
     passed to \code{plot()}, \code{lines()}, or \code{plot.phylo()},
     respectively (see details on how to transform the axes); in
-    the case \code{mltt.plot()} these are additional trees to be plotted
+    the case of \code{mltt.plot()} these are additional trees to be plotted
     (see details).}
   \item{dcol}{a logical specifying whether the different curves should
     be differentiated with colors (default is \code{TRUE}).}
@@ -57,8 +57,8 @@ ltt.plot.coords(phy, backward = TRUE, tol = 1e-6)
 
   The option \code{tol} is used as follows: first the most distant tip
   from the root is found, then all tips whose distance to the root is
-  not different from the previous one than \code{tol} are considered to
-  be contemporaneous with it.
+  not different from the previous one more than \code{tol} are
+  considered to be contemporaneous with it.
 
   If the tree is not ultrametric, the plot is done assuming the tips,
   except the most distant from the root, represent extinction events. If

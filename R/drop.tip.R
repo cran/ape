@@ -1,8 +1,8 @@
-## drop.tip.R (2012-11-29)
+## drop.tip.R (2013-05-17)
 
 ##   Remove Tips in a Phylogenetic Tree
 
-## Copyright 2003-2012 Emmanuel Paradis
+## Copyright 2003-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -83,7 +83,6 @@ drop.tip <-
 {
     if (!inherits(phy, "phylo"))
         stop('object "phy" is not of class "phylo"')
-    if (!length(tip)) return(phy)
 
     Ntip <- length(phy$tip.label)
     ## find the tips to drop:
@@ -101,9 +100,21 @@ drop.tip <-
         if (is.character(tip))
             tip <- which(phy$tip.label %in% tip)
     }
+
+    out.of.range <- tip > Ntip
+    if (any(out.of.range)) {
+        warning("some tip numbers were larger than the number of tips: they were ignored")
+        tip <- tip[!out.of.range]
+    }
+
     if (!length(tip)) return(phy)
-    if (any(tip > Ntip))
-        warning("some tip numbers were higher than the number of tips")
+
+    if (length(tip) == Ntip) {
+        warning("drop all tips of the tree: returning NULL")
+        return(NULL)
+    }
+
+    wbl <- !is.null(phy$edge.length)
 
     if (!rooted && subtree) {
         phy <- root(phy, (1:Ntip)[-tip][1])
@@ -122,7 +133,7 @@ drop.tip <-
                 as.integer(Nedge), double(Ntip + Nnode),
                 DUP = FALSE, PACKAGE = "ape")[[6]]
     }
-    wbl <- !is.null(phy$edge.length)
+
     edge1 <- phy$edge[, 1] # local copies
     edge2 <- phy$edge[, 2] #
     keep <- !logical(Nedge)

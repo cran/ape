@@ -41,6 +41,8 @@ integrateTrapeze <- function(FUN, from, to, nint = 10)
     }
 }
 
+if(getRversion() >= "2.15.1")  utils::globalVariables("Tmax")
+
 .getRHOetINT <- function(birth, death, BIRTH = NULL, DEATH = NULL, case, fast)
 {
     ## build the RHO(), \rho(t), and INT(), I(t), functions

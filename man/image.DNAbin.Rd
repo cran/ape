@@ -6,7 +6,7 @@
 }
 \usage{
 \method{image}{DNAbin}(x, what, col, bg = "white", xlab = "", ylab = "",
-       show.labels = TRUE, cex.lab = 1, legend = TRUE, ...)
+      show.labels = TRUE, cex.lab = 1, legend = TRUE, ...)
 }
 \arguments{
   \item{x}{a matrix of DNA sequences (class \code{"DNAbin"}).}

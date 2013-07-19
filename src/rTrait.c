@@ -26,7 +26,7 @@ void rTraitCont(int *model, int *Nedge, int *edge1, int *edge2, double *el,
 				alphaT = alpha[i] * el[i];
 				M = exp(-alphaT);
 				S = sigma[i] * sqrt((1 - exp(-2 * alphaT))/(2 * alpha[i]));
-			} else { /* same than if (alpha[i] ==0) */
+			} else { /* same than if (alpha[i] == 0) */
 				M = 1;
 				S = sqrt(el[i]) * sigma[i];
 			}

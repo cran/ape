@@ -1,4 +1,4 @@
-## as.phylo.R (2011-03-25)
+## as.phylo.R (2013-07-19)
 
 ##     Conversion Among Tree Objects
 
@@ -112,6 +112,7 @@ as.hclust.phylo <- function(x, ...)
     obj
 }
 
+if (getRversion() >= "2.15.1") utils::globalVariables(c("network", "network.vertex.names<-"))
 as.network.phylo <- function(x, directed = is.rooted(x), ...)
 {
     if (is.null(x$node.label)) x <- makeNodeLabel(x)
@@ -122,6 +123,7 @@ as.network.phylo <- function(x, directed = is.rooted(x), ...)
 
 as.igraph <- function(x, ...) UseMethod("as.igraph")
 
+if (getRversion() >= "2.15.1") utils::globalVariables("graph.edgelist")
 as.igraph.phylo <- function(x, directed = is.rooted(x), use.labels = TRUE, ...)
 {
     ## local copy because x will be changed before evaluating is.rooted(x):
