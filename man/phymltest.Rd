@@ -127,7 +127,7 @@ phymltest(seqfile, format = "interleaved", itree = NULL,
 ### make sense, but does not need PhyML and gives you a flavour
 ### of what the output looks like:
 x <- runif(28, -100, -50)
-names(x) <- .phymltest.model
+names(x) <- ape:::.phymltest.model
 class(x) <- "phymltest"
 x
 summary(x)

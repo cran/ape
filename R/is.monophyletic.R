@@ -31,7 +31,7 @@ is.monophyletic <-
 
     phy <- reorder(phy)
 
-    seq.nod <- .Call("seq_root2tip", phy$edge, n, phy$Nnode, PACKAGE = "ape")
+    seq.nod <- .Call(seq_root2tip, phy$edge, n, phy$Nnode)
     sn <- seq.nod[tips]
     newroot <- ROOT
     i <- 2

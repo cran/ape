@@ -1,8 +1,8 @@
-## as.phylo.R (2013-07-19)
+## as.phylo.R (2013-08-13)
 
 ##     Conversion Among Tree Objects
 
-## Copyright 2005-2011 Emmanuel Paradis
+## Copyright 2005-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -120,8 +120,6 @@ as.network.phylo <- function(x, directed = is.rooted(x), ...)
     network.vertex.names(res) <- c(x$tip.label, x$node.label)
     res
 }
-
-as.igraph <- function(x, ...) UseMethod("as.igraph")
 
 if (getRversion() >= "2.15.1") utils::globalVariables("graph.edgelist")
 as.igraph.phylo <- function(x, directed = is.rooted(x), use.labels = TRUE, ...)

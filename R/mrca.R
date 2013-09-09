@@ -14,8 +14,7 @@ mrca <- function(phy, full = FALSE)
     ## Get all clades:
     nb.tip <- length(phy$tip.label)
     nb.node <- phy$Nnode
-    BP <- .Call("bipartition", phy$edge, nb.tip,
-                nb.node, PACKAGE = "ape")
+    BP <- .Call(bipartition, phy$edge, nb.tip, nb.node)
     N <- nb.tip + nb.node
     ROOT <- nb.tip + 1
     ## In the following matrix, numeric indexing will be used:

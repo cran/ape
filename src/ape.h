@@ -20,7 +20,7 @@ double nxy(int x, int y, int n, double* D);
 int cxy(int x, int y, int n, double* D);
 
 /* in triangMtd.c */
-void triangMtd(double* d, int* np, int* ed1, int* ed2, double* edLen);
+void C_triangMtd(double* d, int* np, int* ed1, int* ed2, double* edLen);
 int * getPathBetween(int x, int y, int n, int* ed1, int* ed2, int numEdges);
 int give_indexx(int i, int j, int n); /* a variant of the above */
 

@@ -7,7 +7,7 @@
 
 #include "ape.h"
 
-void additive(double *dd, int* np,int* mp,double *ret)//d received as dist object, -1 for missing entries
+void C_additive(double *dd, int* np, int* mp, double *ret)//d received as dist object, -1 for missing entries
 {
     int n=*np;
     int m=*mp;

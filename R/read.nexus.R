@@ -9,7 +9,7 @@
 
 .treeBuildWithTokens <- function(x)
 {
-    phy <- .Call("treeBuildWithTokens", x, PACKAGE = "ape")
+    phy <- .Call(treeBuildWithTokens, x)
     dim(phy[[1]]) <- c(length(phy[[1]])/2, 2)
     nms <- c("edge", "edge.length", "Nnode", "node.label", "root.edge")
     if (length(phy) == 4) nms <- nms[-5]

@@ -13,7 +13,7 @@ int H(double t)
 	return 0;
 }
 
-void choosePair(double* D,int n,double* R,int* s, int* sw, int* x, int* y,int fS)
+void choosePair(double* D,int n,double* R,int* s, int* sw, int* x, int* y, int fS)
 {
     int i=0,j=0,k=0;
     int sww=0;
@@ -318,9 +318,9 @@ int cxy(int x, int y, int n,double* D)
     return sCXY;
 }
 
-void njs(double *D, int *N, int *edge1, int *edge2, double *edge_length,int *fsS)
+void C_njs(double *D, int *N, int *edge1, int *edge2, double *edge_length, int *fsS)
 {       //assume missing values are denoted by -1
-	double *S,*R, Sdist, Ndist, *new_dist, A, B, smallest_S, x, y;
+	double *S,*R, Sdist, Ndist, *new_dist, A, B, smallest_S;
 	int n, i, j, k, ij, smallest, OTU1, OTU2, cur_nod, o_l, *otu_label;
         /*for(i=0;i<n*(n-1)/2;i++)
           {if(isNA(D[i])){D[i]=-1;}

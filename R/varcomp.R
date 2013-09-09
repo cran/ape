@@ -26,7 +26,7 @@ varcomp <- function(x, scale = FALSE, cum = FALSE)
 
 plot.varcomp <- function(x, xlab = "Levels", ylab = "Variance", type = "b", ...) {
   if (!("varcomp" %in% class(x))) stop("Object \"x\" is not of class \"varcomp\"")
-  return(lattice::xyplot(x ~ ordered(names(x), levels=rev(names(x))), xlab=xlab, ylab=ylab, type=type, ...))
+  return(xyplot(x ~ ordered(names(x), levels=rev(names(x))), xlab=xlab, ylab=ylab, type=type, ...))
 }
 
 # For debuging:

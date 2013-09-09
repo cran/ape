@@ -7,7 +7,7 @@
 
 #include <R.h>
 
-void rTraitCont(int *model, int *Nedge, int *edge1, int *edge2, double *el,
+void C_rTraitCont(int *model, int *Nedge, int *edge1, int *edge2, double *el,
 		double *sigma, double *alpha, double *theta, double *x)
 {
 /* The tree must be in pruningwise order */

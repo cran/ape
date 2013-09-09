@@ -15,7 +15,7 @@ as.matching.phylo <- function(x, labels = TRUE, ...)
     nb.node <- x$Nnode
     if (nb.tip != nb.node + 1)
         stop("the tree must be dichotomous AND rooted.")
-    x <- reorder(x, "pruningwise")
+    x <- reorder(x, "pruningwise") # cannot use "postorder" here!
     mat <- matrix(x$edge[, 2], ncol = 2, byrow = TRUE)
     nodes <- x$edge[seq(by = 2, length.out = nb.node), 1]
     ## we can use match() becoz each node appears once in `mat'

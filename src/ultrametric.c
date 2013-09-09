@@ -7,7 +7,7 @@
 
 #include "ape.h"
 
-void ultrametric(double *dd, int* np,int* mp,double *ret)//d received as dist object, -1 for missing entries
+void C_ultrametric(double *dd, int* np, int* mp, double *ret)//d received as dist object, -1 for missing entries
 {
     int n=*np;
     int m=*mp;

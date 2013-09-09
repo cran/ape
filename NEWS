@@ -1,3 +1,52 @@
+		CHANGES IN APE VERSION 3.0-10
+
+
+NEW FEATURES
+
+    o The new function rotateConstr rotates internal branches given a
+      constraint on the order of the tips.
+
+    o plot.phylo() has a new option, node.depth, to specify the depths
+      of nodes when the tree is plotted without branch lengths.
+      node.depth() has a new option, method, with the same effect.
+
+    o ace() has a new option, use.eigen, used when type = "d" to avoid
+      computing matrix exponentials. With other coding improvements,
+      the function is now about five times faster.
+
+
+BUG FIXES
+
+    o node.height() and node.height.clado() returned wrong values.
+
+    o pie charts drawn by nodelabels(), and other functions, used to
+      draw a "3-o'clock" segment when only one proportion was equal to
+      one (fixed by Klaus).
+
+    o plot(phy, main = "title...") now works again.
+
+
+OTHER CHANGES
+
+    o Improved DESCRIPTION and NAMESPACE files.
+
+    o The C routines are now registered.
+
+    o The generic function as.igraph has been removed from ape as it
+      is now defined in the package igraph.
+
+    o node.height() has now an option 'clado.style' (FALSE by default).
+      node.height.clado() will be removed soon.
+
+    o The code of several functions has been improved.
+
+
+DEPRECATED & DEFUNCT
+
+    o mst() has been moved to pegas.
+
+
+
 		CHANGES IN APE VERSION 3.0-9
 
 

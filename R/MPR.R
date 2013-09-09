@@ -31,7 +31,7 @@ MPR <- function(x, phy, outgroup)
     phy <- drop.tip(root(phy, outgroup), outgroup)
     n <- n - 1L
     m <- phy$Nnode
-    phy <- reorder(phy, "pruningwise")
+    phy <- reorder(phy, "postorder")
 
     root.state <- x[outgroup]
     I <- as.integer(x[-outgroup])

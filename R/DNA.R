@@ -1,4 +1,4 @@
-## DNA.R (2013-07-04)
+## DNA.R (2013-08-12)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -285,16 +285,16 @@ as.character.DNAbin <- function(x, ...)
 base.freq <- function(x, freq = FALSE, all = FALSE)
 {
     f <- function(x)
-        .C("BaseProportion", x, as.integer(length(x)), double(17),
-           DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")[[3]]
+        .C(BaseProportion, x, as.integer(length(x)), double(17),
+           DUP = FALSE, NAOK = TRUE)[[3]]
 
     if (is.list(x)) {
         BF <- rowSums(sapply(x, f))
         n <- sum(sapply(x, length))
     } else {
         n <- length(x)
-        BF <-.C("BaseProportion", x, as.integer(n), double(17),
-                DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")[[3]]
+        BF <- .C(BaseProportion, x, as.integer(n), double(17),
+                DUP = FALSE, NAOK = TRUE)[[3]]
     }
 
     names(BF) <- c("a", "c", "g", "t", "r", "m", "w", "s",
@@ -315,7 +315,7 @@ Ftab <- function(x, y = NULL)
             y <- x[[2]]
             x <- x[[1]]
             if (length(x) != length(y))
-                stop("'x' and 'y' not of same lenght")
+                stop("'x' and 'y' not of the same length")
         } else { # 'x' is a matrix
             y <- x[2, , drop = TRUE]
             x <- x[1, , drop = TRUE]
@@ -324,7 +324,7 @@ Ftab <- function(x, y = NULL)
         x <- as.vector(x)
         y <- as.vector(y)
         if (length(x) != length(y))
-            stop("'x' and 'y' not of same lenght")
+            stop("'x' and 'y' not of the same length")
     }
     out <- matrix(0, 4, 4)
     k <- c(136, 40, 72, 24)
@@ -351,8 +351,8 @@ seg.sites <- function(x)
         n <- n[1]
     }
     if (n == 1) return(integer(0))
-    ans <- .C("SegSites", x, as.integer(n), as.integer(s),
-              integer(s), DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+    ans <- .C(SegSites, x, as.integer(n), as.integer(s),
+              integer(s), DUP = FALSE, NAOK = TRUE)
     which(as.logical(ans[[4]]))
 }
 
@@ -388,8 +388,7 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     if (imod %in% 16:17) pairwise.deletion <- TRUE
 
     if (!pairwise.deletion) {
-        keep <- .C("GlobalDeletionDNA", x, n, s,
-                   rep(1L, s), PACKAGE = "ape")[[4]]
+        keep <- .C(GlobalDeletionDNA, x, n, s, rep(1L, s))[[4]]
         x <- x[, as.logical(keep)]
         s <- dim(x)[2]
     }
@@ -400,10 +399,10 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
         alpha <- gamma
         gamma <- 1
     }
-    d <- .C("dist_dna", x, as.integer(n), as.integer(s), imod,
+    d <- .C(dist_dna, x, as.integer(n), as.integer(s), imod,
             double(Ndist), BF, as.integer(pairwise.deletion),
             as.integer(variance), var, as.integer(gamma),
-            alpha, DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+            alpha, DUP = FALSE, NAOK = TRUE)
     if (variance) var <- d[[9]]
     d <- d[[5]]
     if (imod == 11) {
@@ -460,8 +459,8 @@ image.DNAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
         brks <- c(-0.5, brks)
     }
     yaxt <- if (show.labels) "n" else "s"
-    graphics::image.default(1:s, 1:n, t(y), col = co, xlab = xlab,
-                            ylab = ylab, yaxt = yaxt, breaks = brks, ...)
+    image.default(1:s, 1:n, t(y), col = co, xlab = xlab,
+                  ylab = ylab, yaxt = yaxt, breaks = brks, ...)
     if (show.labels)
         mtext(rownames(x), side = 2, line = 0.1, at = 1:n,
               cex = cex.lab, adj = 1, las = 1)
@@ -483,8 +482,8 @@ where <- function(x, pattern)
     foo <- function(x, pat, p) {
         s <- as.integer(length(x))
         if (s < p) stop("sequence shorter than the pattern")
-        ans <- .C("where", x, pat, s, p, integer(s), 0L,
-                  DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+        ans <- .C(C_where, x, pat, s, p, integer(s), 0L,
+                  DUP = FALSE, NAOK = TRUE)
         n <- ans[[6]]
         if (n) ans[[5]][seq_len(n)] - p + 2L else integer()
     }

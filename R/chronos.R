@@ -117,7 +117,7 @@ chronos <-
 ### This bit sets 'ini.time' and should result in no negative branch lengths
 
     if (!quiet) cat("\nSetting initial dates...\n")
-    seq.nod <- .Call("seq_root2tip", phy$edge, n, phy$Nnode, PACKAGE = "ape")
+    seq.nod <- .Call(seq_root2tip, phy$edge, n, phy$Nnode)
 
     ii <- 1L
     repeat {

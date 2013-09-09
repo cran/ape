@@ -28,11 +28,11 @@ ladderize <- function(phy, right = TRUE)
     nb.tip <- length(phy$tip.label)
     nb.node <- phy$Nnode
     nb.edge <- dim(phy$edge)[1]
-    tmp <- reorder(phy, "pruningwise")
-    N <- .C("node_depth", as.integer(nb.tip), as.integer(nb.node),
+    tmp <- reorder(phy, "postorder")
+    N <- .C(node_depth, as.integer(nb.tip), as.integer(nb.node),
             as.integer(tmp$edge[, 1]), as.integer(tmp$edge[, 2]),
-            as.integer(nb.edge), double(nb.tip + nb.node),
-            DUP = FALSE, PACKAGE = "ape")[[6]]
+            as.integer(nb.edge), double(nb.tip + nb.node), 1L,
+            DUP = FALSE)[[6]]
     neworder <- integer(nb.edge)
     foo(nb.tip + 1, nb.edge, 1)
     phy$edge <- phy$edge[neworder, ]

@@ -1,4 +1,4 @@
-## ace.R (2013-05-13)
+## ace.R (2013-08-14)
 
 ##   Ancestral Character Estimation
 
@@ -24,7 +24,7 @@ ace <-
            method = if (type == "continuous") "REML" else "ML",
            CI = TRUE, model = if (type == "continuous") "BM" else "ER",
            scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1,
-           use.expm = FALSE)
+           use.expm = FALSE, use.eigen = TRUE)
 {
     if (!inherits(phy, "phylo"))
         stop('object "phy" is not of class "phylo"')
@@ -50,7 +50,7 @@ ace <-
                 if (sig2 < 0) return(1e100)
                 V <- sig2 * vcv(phy)
                 ## next three lines borrowed from dmvnorm() in 'mvtnorm'
-                distval <- stats::mahalanobis(x, center = mu, cov = V)
+                distval <- mahalanobis(x, center = mu, cov = V)
                 logdet <- sum(log(eigen(V, symmetric = TRUE, only.values = TRUE)$values))
                 (nb.tip * log(2 * pi) + logdet + distval)/2
             }
@@ -82,16 +82,15 @@ ace <-
             if (model != "BM")
                 stop('the "pic" method can be used only with model = "BM".')
             ## See pic.R for some annotations.
-            phy <- reorder(phy, "pruningwise")
+            phy <- reorder(phy, "postorder")
             phenotype <- numeric(nb.tip + nb.node)
             phenotype[1:nb.tip] <- if (is.null(names(x))) x else x[phy$tip.label]
             contr <- var.con <- numeric(nb.node)
-            ans <- .C("pic", as.integer(nb.tip), as.integer(nb.node),
+            ans <- .C(C_pic, as.integer(nb.tip), as.integer(nb.node),
                       as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
                       as.double(phy$edge.length), as.double(phenotype),
                       as.double(contr), as.double(var.con),
-                      as.integer(CI), as.integer(scaled),
-                      PACKAGE = "ape")
+                      as.integer(CI), as.integer(scaled))
             obj$ace <- ans[[6]][-(1:nb.tip)]
             names(obj$ace) <- nb.tip + 1:nb.node
             if (CI) {
@@ -103,7 +102,7 @@ ace <-
             if (model == "BM") {
                 tip <- phy$edge[, 2] <= nb.tip
                 dev.BM <- function(p) {
-                    if (p[1] < 0) return(1e100) # in case sigma² is negative
+                    if (p[1] < 0) return(1e100) # in case sigma^2 is negative
                     x1 <- p[-1][phy$edge[, 1] - nb.tip]
                     x2 <- numeric(length(x1))
                     x2[tip] <- x[phy$edge[tip, 2]]
@@ -164,18 +163,19 @@ ace <-
         x <- as.integer(x)
         if (is.character(model)) {
             rate <- matrix(NA, nl, nl)
-            if (model == "ER") np <- rate[] <- 1
-            if (model == "ARD") {
-                np <- nl*(nl - 1)
-                rate[col(rate) != row(rate)] <- 1:np
-            }
-            if (model == "SYM") {
-                np <- nl * (nl - 1)/2
-                sel <- col(rate) < row(rate)
-                rate[sel] <- 1:np
-                rate <- t(rate)
-                rate[sel] <- 1:np
-            }
+            switch(model,
+                   "ER" = np <- rate[] <- 1,
+                   "ARD" = {
+                       np <- nl*(nl - 1)
+                       rate[col(rate) != row(rate)] <- 1:np
+                   },
+                   "SYM" = {
+                       np <- nl * (nl - 1)/2
+                       sel <- col(rate) < row(rate)
+                       rate[sel] <- 1:np
+                       rate <- t(rate)
+                       rate[sel] <- 1:np
+                   })
         } else {
             if (ncol(model) != nrow(model))
               stop("the matrix given as 'model' is not square")
@@ -193,36 +193,67 @@ ace <-
         liks <- matrix(0, nb.tip + nb.node, nl)
         TIPS <- 1:nb.tip
         liks[cbind(TIPS, x)] <- 1
-        phy <- reorder(phy, "pruningwise")
-
-        ## E <- if (use.expm) expm::expm else ape::matexpo
-        E <- if (use.expm) {
-            library(expm)
-            get("expm", "package:expm")
-        } else ape::matexpo
+        phy <- reorder(phy, "postorder")
 
         Q <- matrix(0, nl, nl)
-        dev <- function(p, output.liks = FALSE) {
-            if (any(is.nan(p)) || any(is.infinite(p))) return(1e50)
-            ## from Rich FitzJohn:
-            comp <- numeric(nb.tip + nb.node) # Storage...
-            Q[] <- c(p, 0)[rate]
-            diag(Q) <- -rowSums(Q)
-            for (i  in seq(from = 1, by = 2, length.out = nb.node)) {
-                j <- i + 1L
-                anc <- phy$edge[i, 1]
-                des1 <- phy$edge[i, 2]
-                des2 <- phy$edge[j, 2]
-                v.l <- E(Q * phy$edge.length[i]) %*% liks[des1, ]
-                v.r <- E(Q * phy$edge.length[j]) %*% liks[des2, ]
-                v <- v.l * v.r
-                comp[anc] <- sum(v)
-                liks[anc, ] <- v/comp[anc]
+
+        e1 <- phy$edge[, 1]
+        e2 <- phy$edge[, 2]
+        EL <- phy$edge.length
+
+        if (use.eigen) {
+            dev <- function(p, output.liks = FALSE) {
+                if (any(is.nan(p)) || any(is.infinite(p))) return(1e+50)
+                comp <- numeric(nb.tip + nb.node)
+                Q[] <- c(p, 0)[rate]
+                diag(Q) <- -rowSums(Q)
+                decompo <- eigen(Q)
+                lambda <- decompo$values
+                GAMMA <- decompo$vectors
+                invGAMMA <- solve(GAMMA)
+                for (i in seq(from = 1, by = 2, length.out = nb.node)) {
+                    j <- i + 1L
+                    anc <- e1[i]
+                    des1 <- e2[i]
+                    des2 <- e2[j]
+                    v.l <- GAMMA %*% diag(exp(lambda * EL[i])) %*% invGAMMA %*% liks[des1, ]
+                    v.r <- GAMMA %*% diag(exp(lambda * EL[j])) %*% invGAMMA %*% liks[des2, ]
+                    v <- v.l * v.r
+                    comp[anc] <- sum(v)
+                    liks[anc, ] <- v/comp[anc]
+                }
+                if (output.liks) return(liks[-TIPS, ])
+                dev <- -2 * sum(log(comp[-TIPS]))
+                if (is.na(dev)) Inf else dev
             }
-            if (output.liks) return(liks[-TIPS, ])
-            dev <- -2 * sum(log(comp[-TIPS]))
-            if (is.na(dev)) Inf else dev
+        } else {
+            E <- if (use.expm) {
+                library(expm)
+                get("expm", "package:expm") # to avoid Matrix::expm
+            } else matexpo
+            dev <- function(p, output.liks = FALSE) {
+                if (any(is.nan(p)) || any(is.infinite(p))) return(1e50)
+                ## from Rich FitzJohn:
+                comp <- numeric(nb.tip + nb.node) # Storage...
+                Q[] <- c(p, 0)[rate]
+                diag(Q) <- -rowSums(Q)
+                for (i  in seq(from = 1, by = 2, length.out = nb.node)) {
+                    j <- i + 1L
+                    anc <- e1[i]
+                    des1 <- e2[i]
+                    des2 <- e2[j]
+                    v.l <- E(Q * EL[i]) %*% liks[des1, ]
+                    v.r <- E(Q * EL[j]) %*% liks[des2, ]
+                    v <- v.l * v.r
+                    comp[anc] <- sum(v)
+                    liks[anc, ] <- v/comp[anc]
+                }
+                if (output.liks) return(liks[-TIPS, ])
+                dev <- -2 * sum(log(comp[-TIPS]))
+                if (is.na(dev)) Inf else dev
+            }
         }
+
         out <- nlminb(rep(ip, length.out = np), function(p) dev(p),
                       lower = rep(0, np), upper = rep(1e50, np))
         obj$loglik <- -out$objective/2
@@ -303,7 +334,9 @@ print.ace <- function(x, digits = 4, ...)
         cat("Parameter estimates:\n")
         names(estim) <- c("rate index", "estimate", "std-err")
         print(estim, row.names = FALSE)
-        cat("\nScaled likelihoods at the root (type '...$lik.anc' to get them for all nodes):\n")
-        print(x$lik.anc[1, ])
+        if (!is.null(x$lik.anc)) {
+            cat("\nScaled likelihoods at the root (type '...$lik.anc' to get them for all nodes):\n")
+            print(x$lik.anc[1, ])
+        }
     }
 }

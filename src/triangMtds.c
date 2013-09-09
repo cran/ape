@@ -7,7 +7,7 @@
 
 #include "ape.h"
 
-void triangMtds(double* d, int* np, int* ed1,int* ed2, double* edLen)
+void C_triangMtds(double* d, int* np, int* ed1,int* ed2, double* edLen)
  {
     int n=*np;
     int k=0;
@@ -75,7 +75,7 @@ void triangMtds(double* d, int* np, int* ed1,int* ed2, double* edLen)
      }
    }
 
-   triangMtd(sub_d,&k,ed1,ed2,edLen);
+   C_triangMtd(sub_d,&k,ed1,ed2,edLen);
    for(i=0;i<2*k-3;i++)
      {
        if(ed1[i]>k)

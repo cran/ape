@@ -23,8 +23,7 @@
 
   \code{as.network} and \code{as.igraph} convert trees of class
   \code{"phylo"} into these respective classes defined in the packages
-  of the same names. Note that the generic of the former is defined in
-  \pkg{network}.
+  of the same names (where the generics are defined).
 
   \code{old2new.phylo} and \code{new2old.phylo} are utility functions
   for converting between the old and new coding of the class
@@ -38,7 +37,6 @@ as.phylo(x, ...)
 old2new.phylo(phy)
 new2old.phylo(phy)
 \method{as.network}{phylo}(x, directed = is.rooted(x), ...)
-as.igraph(x, ...)
 \method{as.igraph}{phylo}(x, directed = is.rooted(x), use.labels = TRUE, ...)
 }
 \arguments{

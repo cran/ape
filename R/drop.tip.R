@@ -127,11 +127,11 @@ drop.tip <-
     Nedge <- dim(phy$edge)[1]
     if (subtree) {
         trim.internal <- TRUE
-        tr <- reorder(phy, "pruningwise")
-        N <- .C("node_depth", as.integer(Ntip), as.integer(Nnode),
+        tr <- reorder(phy, "postorder")
+        N <- .C(node_depth, as.integer(Ntip), as.integer(Nnode),
                 as.integer(tr$edge[, 1]), as.integer(tr$edge[, 2]),
-                as.integer(Nedge), double(Ntip + Nnode),
-                DUP = FALSE, PACKAGE = "ape")[[6]]
+                as.integer(Nedge), double(Ntip + Nnode), 1L,
+                DUP = FALSE)[[6]]
     }
 
     edge1 <- phy$edge[, 1] # local copies

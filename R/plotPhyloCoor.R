@@ -61,12 +61,11 @@ plotPhyloCoor <-
         if (!use.edge.length) {
             if (node.pos != 2)
                 xx <- .C("node_depth", as.integer(Ntip), as.integer(Nnode),
-                  as.integer(x$edge[, 1]), as.integer(x$edge[,
-                    2]), as.integer(Nedge), double(Ntip + Nnode),
-                  DUP = FALSE, PACKAGE = "ape")[[6]] - 1
+                         as.integer(x$edge[, 1]), as.integer(x$edge[, 2]),
+                         as.integer(Nedge), double(Ntip + Nnode), 1L,
+                         DUP = FALSE, PACKAGE = "ape")[[6]] - 1
             xx <- max(xx) - xx
-        }
-        else {
+        } else {
             xx <- .C("node_depth_edgelength", as.integer(Ntip),
                 as.integer(Nnode), as.integer(x$edge[, 1]), as.integer(x$edge[,
                   2]), as.integer(Nedge), as.double(x$edge.length),

@@ -7,9 +7,9 @@
 
 #include <R.h>
 
-void pic(int *ntip, int *nnode, int *edge1, int *edge2,
-	 double *edge_len, double *phe, double *contr,
-	 double *var_contr, int *var, int *scaled)
+void C_pic(int *ntip, int *nnode, int *edge1, int *edge2,
+	   double *edge_len, double *phe, double *contr,
+	   double *var_contr, int *var, int *scaled)
 {
 /* The tree must be in pruningwise order */
     int anc, d1, d2, ic, i, j, k;

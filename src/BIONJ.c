@@ -22,7 +22,7 @@
 #include "me.h"
 
 void Initialize(float **delta, double *X, int n);
-void bionj(double *X, int *N, int *edge1, int *edge2, double *el);
+void C_bionj(double *X, int *N, int *edge1, int *edge2, double *el);
 float Distance(int i, int j, float **delta);
 float Variance(int i, int j, float **delta);
 int Emptied(int i, float **delta);
@@ -67,7 +67,7 @@ void Initialize(float **delta, double *X, int n)
 		delta[i][i] = delta[i][0] = 0;
 }
 
-void bionj(double *X, int *N, int *edge1, int *edge2, double *el)
+void C_bionj(double *X, int *N, int *edge1, int *edge2, double *el)
 {
 	int *a, *b;    /* pair to be agglomerated */
 	float **delta; /* delta matrix */

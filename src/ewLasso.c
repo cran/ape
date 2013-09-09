@@ -36,16 +36,13 @@ int isTripletCover(int nmb, int n, int** s, int stat, int sSoFar[n], int* a)//nu
   return ret;
 }
 
-void ewLasso(double *D, int *N, int *e1, int *e2)
+void C_ewLasso(double *D, int *N, int *e1, int *e2)
 {
-	double *S, Sdist, Ndist, *new_dist, A, B, smallest_S, x, y;
-	int n, i, j, k, ij, smallest, OTU1, OTU2, cur_nod, o_l, *otu_label;
+	int n, i, j, k;
 
 	n=*N;
 	int tCov=1;
 	int* a = (int*)R_alloc((n+1)*(n+1), sizeof(int));//adjacency matrix of G_{\cL} graph
-
-	ij=0;
 
 	for(i=1;i<=n;i++)
 	 {
@@ -72,7 +69,7 @@ void ewLasso(double *D, int *N, int *e1, int *e2)
 
    int stNBipartite=1, con=1, comp=1;
    int ini=1;
-   ij=0;
+
    /*for(i=1;i<=n;i++)
     {
 	 for(j=1;j<=n;j++)
@@ -134,7 +131,7 @@ void ewLasso(double *D, int *N, int *e1, int *e2)
 
    //adjencency matrix of tree, 1 to n are leaves
 
-   int *at= R_alloc((2*n-1)*(2*n-1), sizeof(int));
+   int *at= (int*)R_alloc((2*n-1)*(2*n-1), sizeof(int));
 
    for(i=1;i<=2*n-2;i++)
     {
@@ -183,7 +180,7 @@ void ewLasso(double *D, int *N, int *e1, int *e2)
 
 	 for(j=0;j<nmb;j++)
 	  {
-       for(int k=1;k<=n;k++)s[j][k]=0;
+       for(k=1;k<=n;k++)s[j][k]=0;
 	  }
 
 	 /*Rprintf("for %i \n",i);

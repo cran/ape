@@ -7,7 +7,7 @@
 
 #include "ape.h"
 
-void bionjs(double *D, int *N, int *edge1, int *edge2, double *edge_length,int* fsS)
+void C_bionjs(double *D, int *N, int *edge1, int *edge2, double *edge_length, int* fsS)
 {       //assume missing values are denoted by -1
 	double *S,*R , *v,*new_v, Sdist, Ndist, *new_dist, A, B, smallest_S, x, y;
 	int n, i, j, k, ij, smallest, OTU1, OTU2, cur_nod, o_l, *otu_label;

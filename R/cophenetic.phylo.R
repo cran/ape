@@ -14,11 +14,10 @@ dist.nodes <- function(x)
     m <- x$Nnode
     nm <- n + m
 
-    d <- .C("dist_nodes", as.integer(n), as.integer(m),
+    d <- .C(dist_nodes, as.integer(n), as.integer(m),
             as.integer(x$edge[, 1] - 1L), as.integer(x$edge[, 2] - 1L),
             as.double(x$edge.length), as.integer(Nedge(x)),
-            double(nm * nm), DUP = FALSE, NAOK = TRUE,
-            PACKAGE = "ape")[[7]]
+            double(nm * nm), DUP = FALSE, NAOK = TRUE)[[7]]
     dim(d) <- c(nm, nm)
     dimnames(d) <- list(1:nm, 1:nm)
     d

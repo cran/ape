@@ -50,19 +50,18 @@ The \code{rotate} argument can be used to transform both phylogenies in order to
 }
 \author{Damien de Vienne \email{damien.de-vienne@u-psud.fr}}
 \seealso{
-  \code{\link{plot.phylo}}, \code{\link{rotate}}
+  \code{\link{plot.phylo}}, \code{\link{rotate}}, \code{\link{rotateConstr}}
 }
 \examples{
 #two random trees
-tree1<-rtree(40) #random tree with 40 leaves
-tree2<-rtree(20) #random tree with 20 leaves
+tree1 <- rtree(40)
+tree2 <- rtree(20)
 
-#creation of the association matrix
-association<-matrix(ncol=2, nrow=40)
-association[,1]<-association[,2]<-tree2$tip.label
+#creation of the association matrix:
+association <- cbind(tree2$tip.label, tree2$tip.label)
 
-#plot
-cophyloplot(tree1, tree2, assoc=association, length.line=4, space=28, gap=3)
+cophyloplot(tree1, tree2, assoc = association,
+            length.line = 4, space = 28, gap = 3)
 
 #plot with rotations
 \dontrun{

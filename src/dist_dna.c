@@ -1,6 +1,6 @@
-/* dist_dna.c       2012-11-28 */
+/* dist_dna.c       2013-08-20 */
 
-/* Copyright 2005-2012 Emmanuel Paradis
+/* Copyright 2005-2013 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -95,7 +95,7 @@ void distDNA_indel(unsigned char *x, int *n, int *s, double *d)
 
 void distDNA_indelblock(unsigned char *x, int *n, int *s, double *d)
 {
-	int i1, i2, s1, s2, target, N, start_block, end_block;
+	int i1, i2, s1, s2, target, start_block, end_block;
 
 	for (i1 = 1; i1 <= *n; i1++) {
 
@@ -1144,7 +1144,7 @@ void dist_dna(unsigned char *x, int *n, int *s, int *model, double *d,
     }
 }
 
-void where(unsigned char *x, unsigned char *pat, int *s, int *p,
+void C_where(unsigned char *x, unsigned char *pat, int *s, int *p,
 	   int *ans, int *n)
 {
 	int i, j, k, ln;

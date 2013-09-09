@@ -13,11 +13,10 @@ chronoMPL <- function(phy, se = TRUE, test = TRUE)
     n <- length(phy$tip.label)
     m <- phy$Nnode
     N <- dim(phy$edge)[1]
-    obj <- reorder(phy, "pruningwise")
-    ndesc <- .C("node_depth", as.integer(n), as.integer(m),
+    obj <- reorder(phy, "postorder")
+    ndesc <- .C(node_depth, as.integer(n), as.integer(m),
                 as.integer(obj$edge[, 1]), as.integer(obj$edge[, 2]),
-                as.integer(N), double(n + m), DUP = FALSE,
-                PACKAGE = "ape")[[6]]
+                as.integer(N), double(n + m), 1L, DUP = FALSE)[[6]]
     s <- numeric(n + m) # sum of path lengths
     if (se) ss <- s
     if (test) Pval <- numeric(m)

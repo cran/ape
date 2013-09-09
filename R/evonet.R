@@ -57,17 +57,17 @@ plot.evonet <- function(x, col = "blue", lty = 1, lwd = 1, alpha = 0.5,
                         arrows = 0, arrow.type = "classical", ...)
 {
     plot.phylo(as.phylo(x), ...)
-    ape::edges(x$reticulation[, 1], x$reticulation[, 2],
-               col = rgb(t(col2rgb(col)), alpha = 255 * alpha,
-               maxColorValue = 255), lty = lty, lwd = lwd,
-               arrows = arrows, type = arrow.type)
+    edges(x$reticulation[, 1], x$reticulation[, 2],
+          col = rgb(t(col2rgb(col)), alpha = 255 * alpha,
+          maxColorValue = 255), lty = lty, lwd = lwd,
+          arrows = arrows, type = arrow.type)
 }
 
 as.networx.evonet <- function(x, weight = NA, ...)
 {
     if (any(x$reticulation <= Ntip(x)))
         stop("some tips are involved in reticulations: cannot convert to \"networx\"")
-    x <- reorder(x, "pruningwise")
+    x <- reorder(x, "postorder")
     ned <- Nedge(x)
     nrt <- nrow(x$reticulation)
     x$edge <- rbind(x$edge, x$reticulation)

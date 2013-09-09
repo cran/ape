@@ -1,6 +1,6 @@
 /* delta_plot.c       2011-06-23 */
 
-/* Copyright 2010-2011 Emmanuel Paradis
+/* Copyright 2010-2011 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */

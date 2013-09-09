@@ -1,4 +1,4 @@
-## dist.topo.R (2013-02-09)
+## dist.topo.R (2013-08-12)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -15,11 +15,11 @@ dist.topo <- function(x, y, method = "PH85")
     nx <- length(x$tip.label)
     x <- unroot(x)
     y <- unroot(y)
-    bp1 <- .Call("bipartition", x$edge, nx, x$Nnode, PACKAGE = "ape")
+    bp1 <- .Call(bipartition, x$edge, nx, x$Nnode)
     bp1 <- lapply(bp1, function(xx) sort(x$tip.label[xx]))
     ny <- length(y$tip.label) # fix by Otto Cordero
     ## fix by Tim Wallstrom:
-    bp2.tmp <- .Call("bipartition", y$edge, ny, y$Nnode, PACKAGE = "ape")
+    bp2.tmp <- .Call(bipartition, y$edge, ny, y$Nnode)
     bp2 <- lapply(bp2.tmp, function(xx) sort(y$tip.label[xx]))
     bp2.comp <- lapply(bp2.tmp, function(xx) setdiff(1:ny, xx))
     bp2.comp <- lapply(bp2.comp, function(xx) sort(y$tip.label[xx]))
@@ -111,7 +111,7 @@ prop.part <- function(..., check.labels = TRUE)
     ## Maybe simply pass the number of tips to the C code??
     obj <- .uncompressTipLabel(obj) # fix a bug (2010-11-18)
     ## </FIXME>
-    clades <- .Call("prop_part", obj, ntree, TRUE, PACKAGE = "ape")
+    clades <- .Call(prop_part, obj, ntree, TRUE)
     attr(clades, "number") <- attr(clades, "number")[1:length(clades)]
     attr(clades, "labels") <- obj[[1]]$tip.label
     class(clades) <- "prop.part"
@@ -212,7 +212,7 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
     }
     boot.tree <- vector("list", B)
     if (!quiet) # suggestion by Alastair Potts
-        progbar <- utils::txtProgressBar(style = 3)
+        progbar <- txtProgressBar(style = 3)
     for (i in 1:B) {
         if (block > 1) {
             y <- seq(block, ncol(x), block)
@@ -223,7 +223,7 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
                 boot.samp[y - j] <- boot.i - j
         } else boot.samp <- sample(ncol(x), replace = TRUE)
         boot.tree[[i]] <- FUN(x[, boot.samp])
-        if (!quiet) utils::setTxtProgressBar(progbar, i/B)
+        if (!quiet) setTxtProgressBar(progbar, i/B)
     }
     if (!quiet) close(progbar)
     for (i in 1:B) storage.mode(boot.tree[[i]]$Nnode) <- "integer"

@@ -7,9 +7,9 @@
 
 #include "ape.h"
 
-void mvr(double *D, double* v,int *N, int *edge1, int *edge2, double *edge_length)
+void C_mvr(double *D, double* v,int *N, int *edge1, int *edge2, double *edge_length)
 {
-	double *S, Sdist, *new_v, Ndist, *new_dist, A, B, smallest_S, x, y;
+	double *S, Sdist, *new_v, Ndist, *new_dist, A, B, smallest_S;
 	int n, i, j, k, ij, smallest, OTU1, OTU2, cur_nod, o_l, *otu_label;
 
 	S = &Sdist;

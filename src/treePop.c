@@ -63,7 +63,7 @@ uint8_t* setdiff(uint8_t* x, uint8_t *y, int nrow) //x-y
 	return ret;
 }
 
-void treePop(int* splits, double* w,int* ncolp,int* np, int* ed1, int* ed2, double* edLen)
+void C_treePop(int* splits, double* w,int* ncolp,int* np, int* ed1, int* ed2, double* edLen)
   {
     int n=*np;
     int ncol=*ncolp;

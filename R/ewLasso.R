@@ -22,7 +22,7 @@ ewLasso <- function(X, phy)
     N <- attr(X, "Size")
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
-    ans <- .C("ewLasso", as.double(X), as.integer(N),
+    ans <- .C(C_ewLasso, as.double(X), as.integer(N),
               as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
-              DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+              DUP = FALSE, NAOK = TRUE)
 }

@@ -36,7 +36,7 @@ compute.brtime <-
     e2 <- phy$edge[, 2L] #
 
     if (force.positive) {
-        o <- .Call("seq_root2tip", phy$edge, n, m, PACKAGE = "ape")
+        o <- .Call(seq_root2tip, phy$edge, n, m)
         list.nodes <- list(n + 1L)
         i <- 2L
         repeat {

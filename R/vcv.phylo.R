@@ -16,7 +16,7 @@ vcv.phylo <- function(phy, model = "Brownian", corr = FALSE, ...)
 
     pp <- prop.part(phy)
 
-    phy <- reorder(phy, "pruningwise")
+    phy <- reorder(phy, "postorder")
 
     n <- length(phy$tip.label)
     e1 <- phy$edge[, 1]
@@ -66,7 +66,7 @@ vcv.corPhyl <- function(phy, corr = FALSE, ...)
 {
     labels <- attr(phy, "tree")$tip.label
     dummy.df <- data.frame(1:length(labels), row.names = labels)
-    res <- nlme::corMatrix(Initialize.corPhyl(phy, dummy.df), corr = corr)
+    res <- corMatrix(Initialize.corPhyl(phy, dummy.df), corr = corr)
     dimnames(res) <- list(labels, labels)
     res
 }

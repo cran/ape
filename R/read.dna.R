@@ -13,7 +13,7 @@ read.FASTA <- function(file)
     x <- readBin(file, "raw", sz)
     icr <- which(x == as.raw(0x0d)) # CR
     if (length(icr)) x <- x[-icr]
-    res <- .Call("rawStreamToDNAbin", x, PACKAGE = "ape")
+    res <- .Call(rawStreamToDNAbin, x)
     names(res) <- sub("^ +", "", names(res)) # to permit phylosim
     class(res) <- "DNAbin"
     res

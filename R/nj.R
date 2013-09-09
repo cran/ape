@@ -15,9 +15,9 @@ nj <- function(X)
     N <- attr(X, "Size")
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
-    ans <- .C("nj", as.double(X), as.integer(N), integer(2*N - 3),
+    ans <- .C(C_nj, as.double(X), as.integer(N), integer(2*N - 3),
               integer(2*N - 3), double(2*N - 3),
-              DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+              DUP = FALSE, NAOK = TRUE)
     obj <- list(edge = cbind(ans[[3]], ans[[4]]), edge.length = ans[[5]],
                 tip.label = labels, Nnode = N - 2L)
     class(obj) <- "phylo"

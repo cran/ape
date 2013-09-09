@@ -36,12 +36,12 @@ unroot <- function(phy)
 ### EDGEROOT[1]: the edge to delete
 ### EDGEROOT[2]: the target where to stick the edge to delete
 
-### If the tree is in pruningwise order, then the last two edges
-### are those connected to the root; the node situated in
-### phy$edge[N - 2L, 1L] will be the new root...
+### If the tree is in pruningwise (or postorder) order, then
+### the last two edges are those connected to the root; the node
+### situated in phy$edge[N - 2L, 1L] will be the new root...
 
     ophy <- attr(phy, "order")
-    if (!is.null(ophy) && ophy == "pruningwise") {
+    if (!is.null(ophy) && ophy != "cladewise") {
         NEWROOT <- phy$edge[N - 2L, 1L]
         EDGEROOT <- c(N, N - 1L)
     } else {

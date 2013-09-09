@@ -1,4 +1,4 @@
-## reorder.phylo.R (2013-05-17)
+## reorder.phylo.R (2013-09-03)
 
 ##   Internal Reordering of Trees
 
@@ -29,16 +29,16 @@ reorder.phylo <- function(x, order = "cladewise", index.only = FALSE, ...)
     if (io == 3) {
         x <- reorder(x)
         neworder <-
-            .C("neworder_pruningwise", as.integer(nb.tip),
+            .C(neworder_pruningwise, as.integer(nb.tip),
                as.integer(nb.node), as.integer(x$edge[, 1]),
                as.integer(x$edge[, 2]), as.integer(nb.edge),
-               integer(nb.edge), PACKAGE = "ape")[[6]]
+               integer(nb.edge))[[6]]
     } else {
         neworder <-
-            .C("neworder_phylo", as.integer(nb.tip),
+            .C(neworder_phylo, as.integer(nb.tip),
                as.integer(x$edge[, 1]), as.integer(x$edge[, 2]),
                as.integer(nb.edge), integer(nb.edge), io,
-               DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")[[5]]
+               DUP = FALSE, NAOK = TRUE)[[5]]
     }
     if (index.only) return(neworder)
     x$edge <- x$edge[neworder, ]
@@ -48,3 +48,35 @@ reorder.phylo <- function(x, order = "cladewise", index.only = FALSE, ...)
     x
 }
 
+rotateConstr <- function(phy, constraint)
+{
+    D <- match(phy$tip.label, constraint)
+    n <- Ntip(phy)
+
+    P <- c(as.list(1:n), prop.part(phy))
+    e1 <- phy$edge[, 1L]
+    e2 <- phy$edge[, 2L]
+
+    foo <- function(node) {
+        i <- which(e1 == node) # the edges where 'node' is ancestral
+        desc <- e2[i] # the descendants of 'node'
+        ## below, min() seems to work better than median() which
+        ## seems to work better than mean() which seems to work
+        ## better than sum()
+        o <- order(sapply(desc, function(x) min(D[P[[x]]])))
+        for (k in o) {
+            j <<- j + 1L
+            neworder[j] <<- i[k]
+            if ((dk <- desc[k]) > n) foo(dk)
+        }
+    }
+
+    neworder <- integer(Nedge(phy))
+    j <- 0L
+    foo(n + 1L)
+    phy$edge <- phy$edge[neworder, ]
+    if (!is.null(phy$edge.length))
+        phy$edge.length <- phy$edge.length[neworder]
+    attr(phy, "order") <- "cladewise"
+    phy
+}

@@ -1,6 +1,6 @@
 /* dist_nodes.c       2012-08-14 */
 
-/* Copyright 2012 Emmanuel Paradis
+/* Copyright 2012 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */

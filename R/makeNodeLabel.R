@@ -35,8 +35,7 @@ makeNodeLabel <- function(phy, method = "number", prefix = "Node",
         nl <- names(nodeList)
         if (is.null(nl)) stop("argument 'nodeList' has no names")
         Ntip <- length(phy$tip.label)
-        seq.nod <- .Call("seq_root2tip", phy$edge, Ntip, phy$Nnode,
-                         PACKAGE = "ape")
+        seq.nod <- .Call(seq_root2tip, phy$edge, Ntip, phy$Nnode)
         ## a local version to avoid the above call many times:
         .getMRCA <- function(seq.nod, tip) {
             sn <- seq.nod[tip]

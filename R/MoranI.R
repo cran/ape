@@ -180,12 +180,12 @@ plot.correlogramList <-
     BG <- col[(pval < test.level) + 1]
     if (lattice) {
         ## trellis.par.set(list(plot.symbol=list(pch=19)))
-        lattice::xyplot(obs ~ gr | vars, xlab = xlab, ylab = ylab,
-                        panel = function(x, y) {
-                            lattice::panel.lines(x, y, lty = 2)
-                            lattice::panel.points(x, y, cex = cex, pch = 19, col = BG)
-                            ##lattice::panel.abline(h = 0, lty = 3)
-                        })
+        xyplot(obs ~ gr | vars, xlab = xlab, ylab = ylab,
+               panel = function(x, y) {
+                   panel.lines(x, y, lty = 2)
+                   panel.points(x, y, cex = cex, pch = 19, col = BG)
+                   ##lattice::panel.abline(h = 0, lty = 3)
+               })
     } else {
         if (pch > 20 && pch < 26) {
             bg <- col

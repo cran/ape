@@ -1,8 +1,8 @@
-## nodelabels.R (2012-02-10)
+## nodelabels.R (2013-09-04)
 
 ##   Labelling Trees
 
-## Copyright 2004-2012 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
+## Copyright 2004-2013 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -21,28 +21,27 @@ floating.pie.asp <- function(xpos, ypos, x, edges = 200, radius = 1,
     p <- par("pin")
     inches.asp <- p[2]/p[1]
     asp <- user.asp/inches.asp
-    if (!is.numeric(x) || any(is.na(x) | x < 0)) {
-      ## browser()
-      stop("floating.pie: x values must be non-negative")
-    }
+    if (!is.numeric(x) || any(is.na(x) | x < 0))
+        stop("floating.pie: x values must be non-negative")
     x <- c(0, cumsum(x)/sum(x))
     dx <- diff(x)
     nx <- length(dx)
-    if (is.null(col)) col <- rainbow(nx)
-    else if (length(col) < nx) col <- rep(col, nx)
-    bc <- 2 * pi * (x[1:nx] + dx/2) + startpos
-    for (i in 1:nx) {
-        n <- max(2, floor(edges * dx[i]))
-        t2p <- 2 * pi * seq(x[i], x[i + 1], length = n) + startpos
-        xc <- c(cos(t2p) * radius + xpos, xpos)
-        yc <- c(sin(t2p) * radius*asp + ypos, ypos)
-        polygon(xc, yc, col = col[i], ...)
-        ## t2p <- 2 * pi * mean(x[i + 0:1]) + startpos
-        ## xc <- cos(t2p) * radius
-        ## yc <- sin(t2p) * radius*asp
-        ## lines(c(1, 1.05) * xc, c(1, 1.05) * yc)
+    col <- if (is.null(col)) rainbow(nx) else rep_len(col, nx)
+    ## next a fix from Klaus to avoid a "3-o'clock" segment on pies with
+    ## only one proportion equal to 1:
+    if (length(i <- which(dx == 1))) {
+        symbols(xpos, ypos, circles = radius, inches = FALSE, add = TRUE,
+                fg = 1, bg = col[i])
+    } else {
+        bc <- 2 * pi * (x[1:nx] + dx/2) + startpos
+        for (i in seq_len(nx)) {
+            n <- max(2, floor(edges * dx[i]))
+            t2p <- 2 * pi * seq(x[i], x[i + 1], length = n) + startpos
+            xc <- c(cos(t2p) * radius + xpos, xpos)
+            yc <- c(sin(t2p) * radius*asp + ypos, ypos)
+            polygon(xc, yc, col = col[i], ...)
+        }
     }
-    ## return(bc)
 }
 
 BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
@@ -136,7 +135,7 @@ BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
         xrad <- rep(xrad, length(sel))
         XX <- XX + adj[1] - 0.5
         YY <- YY + adj[2] - 0.5
-        for (i in 1:length(sel)) {
+        for (i in seq_along(sel)) {
             if (any(is.na(pie[i, ]))) next
             floating.pie.asp(XX[i], YY[i], pie[i, ], radius = xrad[i], col = piecol)
         }
@@ -225,11 +224,11 @@ edges <- function(nodes0, nodes1, arrows = 0, type = "classical", ...)
     y1 <- lastPP$yy[nodes1]
     if (arrows)
         if (type == "classical")
-            graphics::arrows(x0, y0, x1, y1, code = arrows, ...)
+            arrows(x0, y0, x1, y1, code = arrows, ...)
         else
             fancyarrows(x0, y0, x1, y1, code = arrows, type = type, ...)
     else
-        graphics::segments(x0, y0, x1, y1, ...)
+        segments(x0, y0, x1, y1, ...)
 }
 
 fancyarrows <-

@@ -22,6 +22,6 @@
     matrix(ans[[4]], N, N)
 }
 
-additive <- function(X) .addit_ultra("additive", X)
+additive <- function(X) .addit_ultra(C_additive, X)
 
-ultrametric <- function(X) .addit_ultra("ultrametric", X)
+ultrametric <- function(X) .addit_ultra(C_ultrametric, X)

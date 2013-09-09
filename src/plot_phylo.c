@@ -1,6 +1,6 @@
-/* plot_phylo.c (2013-04-18) */
+/* plot_phylo.c (2013-09-09) */
 
-/* Copyright 2004-2013 Emmanuel Paradis
+/* Copyright 2004-2013 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -19,8 +19,10 @@ void node_depth_edgelength(int *ntip, int *nnode, int *edge1, int *edge2,
       xx[edge2[i] - 1] = xx[edge1[i] - 1] + edge_length[i];
 }
 
-void node_depth(int *ntip, int *nnode, int *edge1, int *edge2,
-		int *nedge, double *xx)
+void node_depth(int *ntip, int *nnode, int *e1, int *e2,
+		int *nedge, double *xx, int *method)
+/* method == 1: the node depths are proportional to the number of tips
+   method == 2: the node depths are evenly spaced */
 {
     int i;
 
@@ -30,8 +32,19 @@ void node_depth(int *ntip, int *nnode, int *edge1, int *edge2,
     /* Then compute recursively for the nodes; we assume `xx' has */
     /* been initialized with 0's which is true if it has been */
     /* created in R (the tree must be in pruningwise order) */
-    for (i = 0; i < *nedge; i++)
-      xx[edge1[i] - 1] = xx[edge1[i] - 1] + xx[edge2[i] - 1];
+    if (*method == 1) {
+	for (i = 0; i < *nedge; i++)
+	    xx[e1[i] - 1] = xx[e1[i] - 1] + xx[e2[i] - 1];
+    } else { /* *method == 2 */
+	for (i = 0; i < *nedge; i++) {
+	    /* if a value > 0 has already been assigned to the ancestor
+	       node of this edge, check that the descendant node is not
+	       at the same level or more */
+	    if (xx[e1[i] - 1])
+		if (xx[e1[i] - 1] >= xx[e2[i] - 1] + 1) continue;
+	    xx[e1[i] - 1] = xx[e2[i] - 1] + 1;
+	}
+    }
 }
 
 void node_height(int *ntip, int *nnode, int *edge1, int *edge2,
@@ -61,7 +74,8 @@ void node_height_clado(int *ntip, int *nnode, int *edge1, int *edge2,
     int i, j, n;
     double S;
 
-    node_depth(ntip, nnode, edge1, edge2, nedge, xx);
+    i = 1;
+    node_depth(ntip, nnode, edge1, edge2, nedge, xx, &i);
 
     /* The coordinates of the tips have been already computed */
 

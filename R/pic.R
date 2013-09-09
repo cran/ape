@@ -37,12 +37,11 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE, rescaled.tree = FA
     ## No need to copy the branch lengths: they are rescaled
     ## in the C code, so it's important to leave the default
     ## `DUP = TRUE' of .C.
-    ans <- .C("pic", as.integer(nb.tip), as.integer(nb.node),
+    ans <- .C(C_pic, as.integer(nb.tip), as.integer(nb.node),
               as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
               as.double(phy$edge.length), as.double(phenotype),
               double(nb.node), double(nb.node),
-              as.integer(var.contrasts), as.integer(scaled),
-              PACKAGE = "ape")
+              as.integer(var.contrasts), as.integer(scaled))
 
     contr <- ans[[7]]
     lbls <-

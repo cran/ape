@@ -10,7 +10,7 @@
     root.edge = FALSE, label.offset = 0, underscore = FALSE,
     x.lim = NULL, y.lim = NULL, direction = "rightwards",
     lab4ut = "horizontal", tip.color = "black", plot = TRUE,
-    rotate.tree = 0, open.angle = 0, ...)
+    rotate.tree = 0, open.angle = 0, node.depth = 1, ...)
 \method{plot}{multiPhylo}(x, layout = 1, ...)
 }
 \arguments{
@@ -100,6 +100,10 @@
   \item{open.angle}{if \code{type = "f"}, the angle in degrees left
     blank. Use a non-zero value if you want to call
     \code{\link{axisPhylo}} after the tree is plotted.}
+  \item{node.depth}{an integer value (1 or 2) used if branch lengths are
+    not used to plot the tree; 1: the node depths are proportional to
+    the number of tips descending from each node (the default and was the
+    only possibility previously), 2: they are evenly spaced.}
   \item{layout}{the number of trees to be plotted simultaneously.}
   \item{\dots}{further arguments to be passed to \code{plot} or to
     \code{plot.phylo}.}
@@ -121,7 +125,7 @@
   coordinates system of the plot.
 
   The option `node.pos' allows the user to alter the vertical position
-  (i.e. ordinates) of the nodes. If \code{node.pos = 1}, then the
+  (i.e., ordinates) of the nodes. If \code{node.pos = 1}, then the
   ordinate of a node is the mean of the ordinates of its direct
   descendants (nodes and/or tips). If \code{node.pos = 2}, then the
   ordinate of a node is the mean of the ordinates of all the tips of
@@ -155,6 +159,7 @@
   \item{type}{}
   \item{use.edge.length}{}
   \item{node.pos}{}
+  \item{node.depth}{}
   \item{show.tip.label}{}
   \item{show.node.label}{}
   \item{font}{}

@@ -13,10 +13,10 @@ fastme.bal <- function(X, nni = TRUE, spr = TRUE, tbr = TRUE)
     if (is.matrix(X)) X <- as.dist(X)
     N <- as.integer(attr(X, "Size"))
     nedge <- 2L * N - 3L
-    ans <- .C("me_b", as.double(X), N, 1:N, as.integer(nni),
+    ans <- .C(me_b, as.double(X), N, 1:N, as.integer(nni),
               as.integer(spr), as.integer(tbr), integer(nedge),
               integer(nedge), double(nedge),
-              DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+              DUP = FALSE, NAOK = TRUE)
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
     labels <- labels[ans[[3]]]
@@ -33,9 +33,9 @@ fastme.ols <- function(X, nni = TRUE)
     if (is.matrix(X)) X <- as.dist(X)
     N <- as.integer(attr(X, "Size"))
     nedge <- 2L * N - 3L
-    ans <- .C("me_o", as.double(X), N, 1:N, as.integer(nni),
+    ans <- .C(me_o, as.double(X), N, 1:N, as.integer(nni),
               integer(nedge), integer(nedge), double(nedge),
-              DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+              DUP = FALSE, NAOK = TRUE)
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
     labels <- labels[ans[[3]]]
@@ -56,9 +56,9 @@ bionj <- function(X)
         stop("at least one distance was greater than 100")
     N <- as.integer(attr(X, "Size"))
 
-    ans <- .C("bionj", as.double(X), N, integer(2 * N - 3),
+    ans <- .C(C_bionj, as.double(X), N, integer(2 * N - 3),
               integer(2 * N - 3), double(2*N - 3),
-              DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+              DUP = FALSE, NAOK = TRUE)
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
     obj <- list(edge =  cbind(ans[[3]], ans[[4]]), edge.length = ans[[5]],

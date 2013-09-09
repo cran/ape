@@ -27,7 +27,7 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
    "REML" else "ML", CI = TRUE,
     model = if (type == "continuous") "BM" else "ER",
     scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1,
-    use.expm = FALSE)
+    use.expm = FALSE, use.eigen = TRUE)
 \method{print}{ace}(x, digits = 4, ...)
 \method{logLik}{ace}(object, ...)
 \method{deviance}{ace}(object, ...)
@@ -60,8 +60,12 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
     when \code{type == "discrete"} (possibly recycled).}
   \item{use.expm}{a logical specifying whether to use the package
     \pkg{expm} to compute the matrix exponential (relevant only if
-    \code{type = "d"}). The default is to use the function
-    \code{matexpo} from \pkg{ape} (see details).}
+    \code{type = "d"}). If \code{FALSE}, the function \code{matexpo}
+    from \pkg{ape} is used (see details). This option is ignored if
+    \code{use.eigen = TRUE} (see next).}
+  \item{use.eigen}{a logical (relevant if \code{type = "d"}); if
+    \code{TRUE} then the probability matrix is computed with an eigen
+    decomposition instead of a matrix exponential (see details).}
   \item{digits}{the number of digits to be printed.}
   \item{object}{an object of class \code{"ace"}.}
   \item{k}{a numeric value giving the penalty per estimated parameter;
@@ -98,29 +102,33 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
   while ML gives a downward bias. Therefore the former is recommanded.
 
   For discrete characters (\code{type = "discrete"}), only maximum
-  likelihood estimation is available (Pagel 1994). The model is
-  specified through a numeric matrix with integer values taken as
-  indices of the parameters. The numbers of rows and of columns of this
-  matrix must be equal, and are taken to give the number of states of
-  the character. For instance, \code{matrix(c(0, 1, 1, 0), 2)} will
-  represent a model with two character states and equal rates of
-  transition, \code{matrix(c(0, 1, 2, 0), 2)} a model with unequal
-  rates, \code{matrix(c(0, 1, 1, 1, 0, 1, 1, 1, 0), 3)} a model with
-  three states and equal rates of transition (the diagonal is always
-  ignored). There are short-cuts to specify these models: \code{"ER"} is
-  an equal-rates model (e.g., the first and third examples above),
-  \code{"ARD"} is an all-rates-different model (the second example), and
-  \code{"SYM"} is a symmetrical model (e.g., \code{matrix(c(0, 1, 2, 1,
-  0, 3, 2, 3, 0), 3)}). If a short-cut is used, the number of states is
-  determined from the data.
+  likelihood estimation is available (Pagel 1994) (see \code{\link{MPR}}
+  for an alternative method). The model is specified through a numeric
+  matrix with integer values taken as indices of the parameters. The
+  numbers of rows and of columns of this matrix must be equal, and are
+  taken to give the number of states of the character. For instance,
+  \code{matrix(c(0, 1, 1, 0), 2)} will represent a model with two
+  character states and equal rates of transition, \code{matrix(c(0, 1,
+  2, 0), 2)} a model with unequal rates, \code{matrix(c(0, 1, 1, 1, 0,
+  1, 1, 1, 0), 3)} a model with three states and equal rates of
+  transition (the diagonal is always ignored). There are short-cuts to
+  specify these models: \code{"ER"} is an equal-rates model (e.g., the
+  first and third examples above), \code{"ARD"} is an
+  all-rates-different model (the second example), and \code{"SYM"} is a
+  symmetrical model (e.g., \code{matrix(c(0, 1, 2, 1, 0, 3, 2, 3, 0),
+  3)}). If a short-cut is used, the number of states is determined from
+  the data.
 
   With discrete characters it is necessary to compute the exponential of
-  the rate matrix. By default (and the only possible choice until
-  \pkg{ape} 3.0-7) the function \code{\link{matexpo}} in \pkg{ape} is
-  used. If \code{use.expm = TRUE}, the function
-  \code{\link[expm]{expm}}, in the package of the same name, is
-  used. \code{matexpo} is faster but quite inaccurate for large and/or
-  asymmetric matrices. In case of doubt, use the latter.
+  the rate matrix. The only possibility until \pkg{ape} 3.0-7) was the
+  function \code{\link{matexpo}} in \pkg{ape}. If \code{use.expm = TRUE}
+  and \code{use.eigen = FALSE}, the function \code{\link[expm]{expm}},
+  in the package of the same name, is used. \code{matexpo} is faster but
+  quite inaccurate for large and/or asymmetric matrices. In case of
+  doubt, use the latter. Since \pkg{ape} 3.0-10, it is possible to use
+  an eigen decomposition avoiding the need to compute the matrix
+  exponential; see details in Lebl (2013, sect. 3.8.3). This is much
+  faster and is now the default.
 }
 \value{
   an object of class \code{"ace"} with the following elements:
@@ -150,10 +158,14 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
   361--366.
 
   Felsenstein, J. (1973) Maximum likelihood estimation
-  of evolutionary trees from continuous characters. \emph{American Journal of Human Genetics}, \bold{25}, 471--492.
+  of evolutionary trees from continuous characters. \emph{American
+  Journal of Human Genetics}, \bold{25}, 471--492.
 
   Felsenstein, J. (1985) Phylogenies and the comparative
   method. \emph{American Naturalist}, \bold{125}, 1--15.
+
+  Lebl, J. (2013) \emph{Notes on Diffy Qs: Differential Equations for
+  Engineers}. \url{http://www.jirka.org/diffyqs/}.
 
   Martins, E. P. and Hansen, T. F. (1997) Phylogenies and the
   comparative method: a general approach to incorporating phylogenetic
@@ -171,9 +183,8 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
 }
 \author{Emmanuel Paradis, Ben Bolker}
 \seealso{
-  \code{\link{corBrownian}}, \code{\link{corGrafen}},
-  \code{\link{corMartins}}, \code{\link{compar.ou}},
-  \code{\link[stats]{anova}}
+  \code{\link{MPR}}, \code{\link{corBrownian}}, \code{\link{corGrafen}},
+  \code{\link{corMartins}}, \code{\link{compar.ou}}, \code{\link[stats]{anova}}
 }
 \examples{
 ### Just some random data...

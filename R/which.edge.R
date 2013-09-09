@@ -16,8 +16,7 @@ getMRCA <- function(phy, tip)
     if (is.character(tip)) tip <- which(phy$tip.label %in% tip)
     if (length(tip) < 2) return(NULL)
     Ntip <- length(phy$tip.label)
-    seq.nod <- .Call("seq_root2tip", phy$edge, Ntip,
-                     phy$Nnode, PACKAGE = "ape")
+    seq.nod <- .Call(seq_root2tip, phy$edge, Ntip, phy$Nnode)
     sn <- seq.nod[tip]
     MRCA <- Ntip + 1
     i <- 2

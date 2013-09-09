@@ -28,6 +28,6 @@
 }
 
 
-njs <- function(X, fs = 15) .NJS_BIONJS("njs", X = X, fs = fs)
+njs <- function(X, fs = 15) .NJS_BIONJS(C_njs, X = X, fs = fs)
 
-bionjs <- function(X, fs = 15) .NJS_BIONJS("bionjs", X = X, fs = fs)
+bionjs <- function(X, fs = 15) .NJS_BIONJS(C_bionjs, X = X, fs = fs)

@@ -1,6 +1,6 @@
 /* nj.c       2011-10-20 */
 
-/* Copyright 2006-2011 Emmanuel Paradis
+/* Copyright 2006-2011 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -50,7 +50,7 @@ j 4  2  6  9
 	return(sum);
 }
 
-void nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
+void C_nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
 {
 	double *S, Sdist, Ndist, *new_dist, A, B, smallest_S, x, y;
 	int n, i, j, k, ij, smallest, OTU1, OTU2, cur_nod, o_l, *otu_label;

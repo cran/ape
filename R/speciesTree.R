@@ -1,3 +1,12 @@
+## speciesTree.R (2013-08-12)
+
+##   Species Trees
+
+## Copyright 2010-2013 Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
+
 speciesTree <- function(x, FUN = min)
 ### FUN = min => MAXTREE (Liu et al. 2010)
 ### FUN = sum => shallowest divergence (Maddison & Knowles 2006)
@@ -16,5 +25,5 @@ speciesTree <- function(x, FUN = min)
     Y <- apply(M, 1, FUN)
     attributes(Y) <- list(Size = n, Labels = nms, Diag = FALSE,
                           Upper = FALSE, class = "dist")
-    as.phylo(stats::hclust(Y, "single"))
+    as.phylo(hclust(Y, "single"))
 }

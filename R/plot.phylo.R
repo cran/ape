@@ -1,4 +1,4 @@
-## plot.phylo.R (2013-01-11)
+## plot.phylo.R (2013-09-10)
 
 ##   Plot Phylogenies
 
@@ -16,7 +16,7 @@ plot.phylo <-
              label.offset = 0, underscore = FALSE, x.lim = NULL,
              y.lim = NULL, direction = "rightwards", lab4ut = "horizontal",
              tip.color = "black", plot = TRUE, rotate.tree = 0,
-             open.angle = 0, ...)
+             open.angle = 0, node.depth = 1, ...)
 {
     Ntip <- length(x$tip.label)
     if (Ntip < 2) {
@@ -27,26 +27,28 @@ plot.phylo <-
       stop("there are single (non-splitting) nodes in your tree; you may need to use collapse.singles()")
 
     .nodeHeight <- function(Ntip, Nnode, edge, Nedge, yy)
-        .C("node_height", as.integer(Ntip), as.integer(Nnode),
+        .C(node_height, as.integer(Ntip), as.integer(Nnode),
            as.integer(edge[, 1]), as.integer(edge[, 2]),
            as.integer(Nedge), as.double(yy),
-           DUP = FALSE, PACKAGE = "ape")[[6]]
+           DUP = FALSE)[[6]]
 
-    .nodeDepth <- function(Ntip, Nnode, edge, Nedge)
-        .C("node_depth", as.integer(Ntip), as.integer(Nnode),
+    .nodeDepth <- function(Ntip, Nnode, edge, Nedge, node.depth)
+        .C(node_depth, as.integer(Ntip), as.integer(Nnode),
            as.integer(edge[, 1]), as.integer(edge[, 2]),
-           as.integer(Nedge), double(Ntip + Nnode),
-           DUP = FALSE, PACKAGE = "ape")[[6]]
+           as.integer(Nedge), double(Ntip + Nnode), as.integer(node.depth),
+           DUP = FALSE)[[6]]
 
     .nodeDepthEdgelength <- function(Ntip, Nnode, edge, Nedge, edge.length)
-        .C("node_depth_edgelength", as.integer(Ntip),
+        .C(node_depth_edgelength, as.integer(Ntip),
            as.integer(Nnode), as.integer(edge[, 1]),
            as.integer(edge[, 2]), as.integer(Nedge),
            as.double(edge.length), double(Ntip + Nnode),
-           DUP = FALSE, PACKAGE = "ape")[[7]]
+           DUP = FALSE)[[7]]
 
     Nedge <- dim(x$edge)[1]
     Nnode <- x$Nnode
+    if (any(x$edge < 1) || any(x$edge > Ntip + Nnode))
+        stop("tree badly conformed; cannot plot. Check the edge matrix.")
     ROOT <- Ntip + 1
     type <- match.arg(type, c("phylogram", "cladogram", "fan",
                               "unrooted", "radial"))
@@ -95,8 +97,8 @@ plot.phylo <-
         TIPS <- x$edge[x$edge[, 2] <= Ntip, 2]
         yy[TIPS] <- 1:Ntip
     }
-    ## 'z' is the tree in pruningwise order used in calls to .C
-    z <- reorder(x, order = "pruningwise")
+    ## 'z' is the tree in postorder order used in calls to .C
+    z <- reorder(x, order = "postorder")
 
     if (phyloORclado) {
         if (is.null(node.pos)) {
@@ -108,16 +110,16 @@ plot.phylo <-
         else {
           ## node_height_clado requires the number of descendants
           ## for each node, so we compute `xx' at the same time
-          ans <- .C("node_height_clado", as.integer(Ntip),
+          ans <- .C(node_height_clado, as.integer(Ntip),
                     as.integer(Nnode), as.integer(z$edge[, 1]),
                     as.integer(z$edge[, 2]), as.integer(Nedge),
                     double(Ntip + Nnode), as.double(yy),
-                    DUP = FALSE, PACKAGE = "ape")
+                    DUP = FALSE)
           xx <- ans[[6]] - 1
           yy <- ans[[7]]
         }
         if (!use.edge.length) {
-            if (node.pos != 2) xx <- .nodeDepth(Ntip, Nnode, z$edge, Nedge) - 1
+            if (node.pos != 2) xx <- .nodeDepth(Ntip, Nnode, z$edge, Nedge, node.depth) - 1
             xx <- max(xx) - xx
         } else  {
             xx <- .nodeDepthEdgelength(Ntip, Nnode, z$edge, Nedge, z$edge.length)
@@ -139,14 +141,14 @@ plot.phylo <-
         if (use.edge.length) {
             r <- .nodeDepthEdgelength(Ntip, Nnode, z$edge, Nedge, z$edge.length)
         } else {
-            r <- .nodeDepth(Ntip, Nnode, z$edge, Nedge)
+            r <- .nodeDepth(Ntip, Nnode, z$edge, Nedge, node.depth)
             r <- 1/r
         }
         theta <- theta + rotate.tree
         xx <- r * cos(theta)
         yy <- r * sin(theta)
     }, "unrooted" = {
-        nb.sp <- .nodeDepth(Ntip, Nnode, z$edge, Nedge)
+        nb.sp <- .nodeDepth(Ntip, Nnode, z$edge, Nedge, node.depth)
         XY <- if (use.edge.length)
             unrooted.xy(Ntip, Nnode, z$edge, z$edge.length, nb.sp, rotate.tree)
         else
@@ -155,7 +157,7 @@ plot.phylo <-
         xx <- XY$M[, 1] - min(XY$M[, 1])
         yy <- XY$M[, 2] - min(XY$M[, 2])
     }, "radial" = {
-        X <- .nodeDepth(Ntip, Nnode, z$edge, Nedge)
+        X <- .nodeDepth(Ntip, Nnode, z$edge, Nedge, node.depth)
         X[X == 1] <- 0
         ## radius:
         X <- 1 - X/Ntip
@@ -274,7 +276,8 @@ plot.phylo <-
         if (direction == "downwards") y.lim[2] <- y.lim[2] + x$root.edge
     }
     asp <- if (type %in% c("fan", "radial", "unrooted")) 1 else NA # fixes by Klaus Schliep (2008-03-28 and 2010-08-12)
-    plot(0, type = "n", xlim = x.lim, ylim = y.lim, ann = FALSE, axes = FALSE, asp = asp, ...)
+    plot.default(0, type = "n", xlim = x.lim, ylim = y.lim, xlab = "",
+                 ylab = "", axes = FALSE, asp = asp, ...)
 
 if (plot) {
     if (is.null(adj))
@@ -403,7 +406,8 @@ if (plot) {
              x$node.label, adj = adj, font = font, srt = srt, cex = cex)
 }
     L <- list(type = type, use.edge.length = use.edge.length,
-              node.pos = node.pos, show.tip.label = show.tip.label,
+              node.pos = node.pos, node.depth = node.depth,
+              show.tip.label = show.tip.label,
               show.node.label = show.node.label, font = font,
               cex = cex, adj = adj, srt = srt, no.margin = no.margin,
               label.offset = label.offset, x.lim = x.lim, y.lim = y.lim,
@@ -507,7 +511,7 @@ cladogram.plot <- function(edge, xx, yy, edge.color, edge.width, edge.lty)
 
 circular.plot <- function(edge, Ntip, Nnode, xx, yy, theta,
                           r, edge.color, edge.width, edge.lty)
-### 'edge' must be in pruningwise order
+### 'edge' must be in postorder order
 {
     r0 <- r[edge[, 1]]
     r1 <- r[edge[, 2]]
@@ -586,15 +590,16 @@ unrooted.xy <- function(Ntip, Nnode, edge, edge.length, nb.sp, rotate.tree)
     list(M = M, axe = axe)
 }
 
-node.depth <- function(phy)
+node.depth <- function(phy, method = 1)
 {
     n <- length(phy$tip.label)
     m <- phy$Nnode
     N <- dim(phy$edge)[1]
-    phy <- reorder(phy, order = "pruningwise")
-    .C("node_depth", as.integer(n), as.integer(m),
+    phy <- reorder(phy, order = "postorder")
+    .C(node_depth, as.integer(n), as.integer(m),
        as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
-       as.integer(N), double(n + m), DUP = FALSE, PACKAGE = "ape")[[6]]
+       as.integer(N), double(n + m), as.integer(method),
+       DUP = FALSE)[[6]]
 }
 
 node.depth.edgelength <- function(phy)
@@ -602,50 +607,42 @@ node.depth.edgelength <- function(phy)
     n <- length(phy$tip.label)
     m <- phy$Nnode
     N <- dim(phy$edge)[1]
-    phy <- reorder(phy, order = "pruningwise")
-    .C("node_depth_edgelength", as.integer(n), as.integer(n),
+    phy <- reorder(phy, order = "postorder")
+    .C(node_depth_edgelength, as.integer(n), as.integer(n),
        as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
        as.integer(N), as.double(phy$edge.length), double(n + m),
-       DUP = FALSE, PACKAGE = "ape")[[7]]
+       DUP = FALSE)[[7]]
 }
 
-node.height <- function(phy)
+node.height <- function(phy, clado.style = FALSE)
 {
     n <- length(phy$tip.label)
     m <- phy$Nnode
     N <- dim(phy$edge)[1]
-    phy <- reorder(phy, order = "pruningwise")
 
+    phy <- reorder(phy)
+    yy <- numeric(n + m)
+    e2 <- phy$edge[, 2]
+    yy[e2[e2 <= n]] <- 1:n
+
+    phy <- reorder(phy, order = "postorder")
     e1 <- phy$edge[, 1]
     e2 <- phy$edge[, 2]
 
-    yy <- numeric(n + m)
-    TIPS <- e2[e2 <= n]
-    yy[TIPS] <- 1:n
-
-    .C("node_height", as.integer(n), as.integer(m),
-       as.integer(e1), as.integer(e2), as.integer(N),
-       as.double(yy), DUP = FALSE, PACKAGE = "ape")[[6]]
+    if (clado.style)
+        .C(node_height_clado, as.integer(n), as.integer(m),
+           as.integer(e1), as.integer(e2), as.integer(N),
+           double(n + m), as.double(yy), DUP = FALSE)[[7]]
+    else
+        .C(node_height, as.integer(n), as.integer(m),
+           as.integer(e1), as.integer(e2), as.integer(N),
+           as.double(yy), DUP = FALSE)[[6]]
 }
 
 node.height.clado <- function(phy)
 {
-    n <- length(phy$tip.label)
-    m <- phy$Nnode
-    N <- dim(phy$edge)[1]
-    phy <- reorder(phy, order = "pruningwise")
-
-    e1 <- phy$edge[, 1]
-    e2 <- phy$edge[, 2]
-
-    yy <- numeric(n + m)
-    TIPS <- e2[e2 <= n]
-    yy[TIPS] <- 1:n
-
-    .C("node_height_clado", as.integer(n), as.integer(m),
-       as.integer(e1), as.integer(e2), as.integer(N),
-       double(n + m), as.double(yy), DUP = FALSE,
-       PACKAGE = "ape")[[7]]
+    warning("the function 'node.height.clado' will be removed soon.\nUse node.height(phy, clado.style = TRUE) instead.")
+    node.height(phy, TRUE)
 }
 
 plot.multiPhylo <- function(x, layout = 1, ...)

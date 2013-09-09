@@ -43,7 +43,7 @@ rTraitDisc <-
             stop("the matrix given as `model' must be square")
     }
 
-    phy <- reorder(phy, "pruningwise")
+    phy <- reorder(phy, "postorder")
     n <- length(phy$tip.label)
     N <- dim(phy$edge)[1]
     ROOT <- n + 1L
@@ -89,7 +89,7 @@ rTraitCont <-
     if (any(phy$edge.length < 0))
         stop("at least one branch length negative")
 
-    phy <- reorder(phy, "pruningwise")
+    phy <- reorder(phy, "postorder")
     n <- length(phy$tip.label)
     N <- dim(phy$edge)[1]
     ROOT <- n + 1L
@@ -116,10 +116,10 @@ rTraitCont <-
             else if (length(theta) != N)
                 stop("'theta' must have one or Nedge(phy) elements")
         }
-        .C("rTraitCont", as.integer(model), as.integer(N),
+        .C(C_rTraitCont, as.integer(model), as.integer(N),
            as.integer(anc - 1L), as.integer(des - 1L), el,
            as.double(sigma), as.double(alpha), as.double(theta), x,
-           DUP = FALSE, NAOK = TRUE, PACKAGE = "ape")
+           DUP = FALSE, NAOK = TRUE)
     }
 
     if (ancestor) {
@@ -136,7 +136,7 @@ rTraitMult <-
     function(phy, model, p = 1, root.value = rep(0, p), ancestor = FALSE,
              asFactor = NULL, trait.labels = paste("x", 1:p, sep = ""), ...)
 {
-    phy <- reorder(phy, "pruningwise")
+    phy <- reorder(phy, "postorder")
     n <- length(phy$tip.label)
     m <- phy$Nnode
     N <- dim(phy$edge)[1]

@@ -82,7 +82,7 @@ int getLength(int x, int y, int* ed1, int* ed2, int numEdges, int* edLen)
 	return -1;
 }
 
-void triangMtd(double* d, int* np, int* ed1,int* ed2, double* edLen)
+void C_triangMtd(double* d, int* np, int* ed1,int* ed2, double* edLen)
 {
     int n=*np;
     int i=0;
