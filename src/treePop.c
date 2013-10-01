@@ -1,6 +1,6 @@
-/* treePop.c    2011-10-11 */
+/* treePop.c    2013-09-19 */
 
-/* Copyright 2011 Andrei-Alin Popescu */
+/* Copyright 2011-2013 Andrei-Alin Popescu */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -9,7 +9,7 @@
 #include <R.h>
 #include <stdint.h>
 
-int lsb(char* a)
+int lsb(uint8_t * a)
 {
 	int i = 0;
 	while (a[i] == 0) i++; /* count number of elements = 0 */

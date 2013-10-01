@@ -1,4 +1,4 @@
-/* read_dna.c       2013-01-19 */
+/* read_dna.c       2013-09-18 */
 
 /* Copyright 2013 Emmanuel Paradis */
 
@@ -124,7 +124,7 @@ SEXP rawStreamToDNAbin(SEXP x)
 		k = 0;
 		while (xr[i] != lineFeed) buffer[k++] = xr[i++];
 		buffer[k] = '\0';
-		SET_STRING_ELT(nms, j, mkChar(buffer));
+		SET_STRING_ELT(nms, j, mkChar((char *)buffer));
 		/* ... then read the sequence */
 		n = 0;
 		while (xr[i] != hook && i < N) {

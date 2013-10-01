@@ -1,4 +1,4 @@
-/* SPR.c    2009-01-12 */
+/* SPR.c    2013-09-26 */
 
 /* Copyright 2009 Richard Desper */
 
@@ -251,7 +251,7 @@ void assignUpWeights(edge *etest, node *vtest, node *va, edge *back, node *cprev
   /*sib is tree C being passed by B*/
   /*D is tree below etest*/
   double D_AB, D_CD, D_AC, D_BD;
-  double thisWeight;
+  // double thisWeight; deleted by EP, 2013-09-16, also below
   sib = siblingEdge(etest);
   left = etest->head->leftEdge;
   right = etest->head->rightEdge;
@@ -271,7 +271,8 @@ void assignUpWeights(edge *etest, node *vtest, node *va, edge *back, node *cprev
       D_CD = A[sib->head->index][etest->head->index];
       D_AC = A[back->head->index][sib->head->index] + coeff*(A[va->index][sib->head->index] - A[vtest->index][sib->head->index]);
       D_AB = 0.5*(oldD_AB + A[vtest->index][cprev->index]);
-      thisWeight = swapWeights[1][vtest->index][etest->head->index] = swapWeights[1][vtest->index][back->head->index] + (D_AC + D_BD - D_AB - D_CD);
+      // thisWeight =  deleted by EP, 2013-09-16
+      swapWeights[1][vtest->index][etest->head->index] = swapWeights[1][vtest->index][back->head->index] + (D_AC + D_BD - D_AB - D_CD);
       if (NULL != left)
 	{
 	  assignUpWeights(left,vtest, va, etest, sib->head, D_AB, 0.5*coeff, A, swapWeights);

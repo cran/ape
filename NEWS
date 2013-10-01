@@ -1,3 +1,22 @@
+		CHANGES IN APE VERSION 3.0-11
+
+
+BUG FIXES
+
+    o branching.times() now reorders the tree if needed.
+
+    o root(, resolved.root = TRUE) sometimes misplaced the root when
+      'outgroup' was of length one.
+
+    o nodelabels() didn't work with versions of R older than 3.0.0.
+
+
+OTHER CHANGES
+
+    o The code of branching.times() is now ca. 3 times faster.
+
+
+
 		CHANGES IN APE VERSION 3.0-10
 
 

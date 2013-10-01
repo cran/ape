@@ -1,4 +1,4 @@
-## root.R (2013-06-18)
+## root.R (2013-09-25)
 
 ##   Root of Phylogenetic Trees
 
@@ -142,25 +142,34 @@ root <- function(phy, outgroup, node = NULL,
     N <- Nedge(phy)
     oldNnode <- phy$Nnode
     if (newroot == ROOT) {
+        ## assumes length(outgroup) == 1
         if (resolve.root) {
             snw <- which(phy$edge[, 1] == newroot)
             if (length(snw) > 2) {
-                a <- snw[1]:(snw[2] - 1)
-                b <- snw[2]:N
+                i <- which(phy$edge[snw, 2L] == outgroup) # see comment above
+                j <- snw[snw != i]
                 newnod <- oldNnode + n + 1
-                phy$edge[snw[-1], 1] <- newnod
-                phy$edge <- rbind(phy$edge[a, ], c(ROOT, newnod),
-                                  phy$edge[b, ])
+                phy$edge[j, 1] <- newnod
+
+                ## put the row with the outgroup as the last one in 'edge':
+                if (i != N) {
+                    no <- 1:N
+                    no <- c(no[-i], i)
+                    phy$edge <- phy$edge[no, ]
+                    if (!is.null(phy$edge.length))
+                        phy$edge.length <- phy$edge.length[no]
+                }
+
+                phy$edge <- rbind(c(ROOT, newnod), phy$edge)
                 if (!is.null(phy$edge.length))
-                    phy$edge.length <-
-                        c(phy$edge.length[a], 0, phy$edge.length[b])
+                    phy$edge.length <- c(0, phy$edge.length)
+
                 phy$Nnode <- phy$Nnode + 1L
                 ## node renumbering (see comments below)
                 newNb <- integer(n + oldNnode)
                 newNb[newroot] <- n + 1L
                 sndcol <- phy$edge[, 2] > n
-                phy$edge[sndcol, 2] <- newNb[phy$edge[sndcol, 2]] <-
-                    (n + 2):(n + phy$Nnode)
+                phy$edge[sndcol, 2] <- newNb[phy$edge[sndcol, 2]] <- n + 2:phy$Nnode
                 phy$edge[, 1] <- newNb[phy$edge[, 1]]
             }
         }
@@ -199,7 +208,7 @@ root <- function(phy, outgroup, node = NULL,
         repeat {
             if (phy$edge[i, 2] == nod) {
                 if (stack) {
-                    o[NEXT:(NEXT + stack - 1L)] <- (i + 1L):(i + stack)
+                    o[NEXT:(NEXT + stack - 1L)] <- i + 1:stack
                     NEXT <- NEXT + stack
                     stack <- 0L
                 }
@@ -231,8 +240,7 @@ root <- function(phy, outgroup, node = NULL,
         if (fuseRoot) {
             phy$edge[start[j], 1] <- phy$edge[i, 2]
             if (!is.null(phy$edge.length))
-                phy$edge.length[start[j]] <- phy$edge.length[start[j]] +
-                    phy$edge.length[i]
+                phy$edge.length[start[j]] <- phy$edge.length[start[j]] + phy$edge.length[i]
         } #else {
           #  o[NEXT] <- i#start[j]
           #  NEXT <- NEXT + 1L

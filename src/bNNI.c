@@ -1,4 +1,4 @@
-/* bNNI.c    2007-09-05 */
+/* bNNI.c    2013-09-26 */
 
 /* Copyright 2007 Vincent Lefort */
 
@@ -64,7 +64,7 @@ void weighTree(tree *T)
 //void bNNI(tree *T, double **avgDistArray, int *count)
 void bNNI(tree *T, double **avgDistArray, int *count, double **D, int numSpecies)
 {
-  edge *e, *centerEdge;
+    edge *e;//, *centerEdge deleted by EP, 2013-09-26, see also below
   edge **edgeArray;
   int *p, *location, *q;
   int i,j;
@@ -108,7 +108,7 @@ void bNNI(tree *T, double **avgDistArray, int *count, double **D, int numSpecies
     in the heap, q[j] is the position of edge j in the heap */
   while (weights[p[1]] + epsilon < 0)
     {
-      centerEdge = edgeArray[p[1]];
+	/* centerEdge = edgeArray[p[1]]; apparently unused later, deleted by EP, 2013-09-26 */
       (*count)++;
 /*      if (verbose)
 	{

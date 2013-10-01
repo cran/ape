@@ -1,4 +1,4 @@
-/* bionjs.c    2012-04-02 */
+/* bionjs.c    2013-09-26 */
 
 /* Copyright 2011-2012 Andrei-Alin Popescu */
 
@@ -9,8 +9,8 @@
 
 void C_bionjs(double *D, int *N, int *edge1, int *edge2, double *edge_length, int* fsS)
 {       //assume missing values are denoted by -1
-	double *S,*R , *v,*new_v, Sdist, Ndist, *new_dist, A, B, smallest_S, x, y;
-	int n, i, j, k, ij, smallest, OTU1, OTU2, cur_nod, o_l, *otu_label;
+	double *S,*R , *v,*new_v, Sdist, Ndist, *new_dist, A, B, smallest_S;
+	int n, i, j, k, ij, OTU1, OTU2, cur_nod, o_l, *otu_label;
         /*for(i=0;i<n*(n-1)/2;i++)
           {if(isNA(D[i])){D[i]=-1;}
           }*/
@@ -138,7 +138,7 @@ void C_bionjs(double *D, int *N, int *edge1, int *edge2, double *edge_length, in
 					OTU1 = i;
 					OTU2 = j;
 					smallest_S = A;
-					smallest = ij;
+					/* smallest = ij; */
 				}
 				ij++;
 			}
