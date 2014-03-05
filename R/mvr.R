@@ -20,7 +20,7 @@ mvr <- function(X, V)
     if (is.null(labels)) labels <- as.character(1:N)
     ans <- .C(C_mvr, as.double(X), as.double(V), as.integer(N),
               integer(2*N - 3), integer(2*N - 3), double(2*N - 3),
-              DUP = FALSE, NAOK = TRUE)
+              NAOK = TRUE)
     obj <- list(edge = cbind(ans[[4]], ans[[5]]), edge.length = ans[[6]],
                 tip.label = labels, Nnode = N - 2L)
     class(obj) <- "phylo"
@@ -44,7 +44,7 @@ mvrs <- function(X, V, fs = 15)
     if (is.null(labels)) labels <- as.character(1:N)
     ans <- .C(C_mvrs, as.double(X), as.double(V), as.integer(N),
               integer(2*N - 3), integer(2*N - 3), double(2*N - 3),
-              as.integer(fs), DUP = FALSE, NAOK = TRUE)
+              as.integer(fs), NAOK = TRUE)
     obj <- list(edge = cbind(ans[[4]], ans[[5]]), edge.length = ans[[6]],
                 tip.label = labels, Nnode = N - 2L)
     class(obj) <- "phylo"

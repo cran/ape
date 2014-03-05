@@ -1,9 +1,9 @@
-## dist.topo.R (2013-08-12)
+## dist.topo.R (2014-01-02)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
 
-## Copyright 2005-2013 Emmanuel Paradis
+## Copyright 2005-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -77,10 +77,10 @@ dist.topo <- function(x, y, method = "PH85")
         label <- y$tip.label
         if (!identical(label, ref)) {
             if (length(label) != length(ref))
-                stop(paste("tree ", y, "has a different number of tips"))
+                stop("one tree has a different number of tips")
             ilab <- match(label, ref)
             if (any(is.na(ilab)))
-                stop(paste("tree ", y, "has different tip labels"))
+                stop("one tree has different tip labels")
             ie <- match(1:n, y$edge[, 2])
             y$edge[ie, 2] <- ilab
         }
@@ -199,46 +199,50 @@ prop.clades <- function(phy, ..., part = NULL, rooted = FALSE)
 boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
                        trees = FALSE, quiet = FALSE, rooted = FALSE)
 {
-    if (is.list(x) && !is.data.frame(x)) {
-        if (inherits(x, "DNAbin")) x <- as.matrix(x)
-        else {
-            nm <- names(x)
-            n <- length(x)
-            x <- unlist(x)
-            nL <- length(x)
-            x <- matrix(x, n, nL/n, byrow = TRUE)
-            rownames(x) <- nm
-        }
-    }
+    if (!is.matrix(x) && !is.data.frame(x))
+        stop("the data 'x' must a matrix or a data frame")
+
     boot.tree <- vector("list", B)
+
     if (!quiet) # suggestion by Alastair Potts
         progbar <- txtProgressBar(style = 3)
+
+    y <- nc <- ncol(x)
+
+    if (block > 1) {
+        a <- seq(1, nc - 1, block)
+        b <- seq(block, nc, block)
+        y <- mapply(":", a, b, SIMPLIFY = FALSE)
+    }
+
     for (i in 1:B) {
-        if (block > 1) {
-            y <- seq(block, ncol(x), block)
-            boot.i <- sample(y, replace = TRUE)
-            boot.samp <- numeric(ncol(x))
-            boot.samp[y] <- boot.i
-            for (j in 1:(block - 1))
-                boot.samp[y - j] <- boot.i - j
-        } else boot.samp <- sample(ncol(x), replace = TRUE)
+        boot.samp <- unlist(sample(y, replace = TRUE))
         boot.tree[[i]] <- FUN(x[, boot.samp])
         if (!quiet) setTxtProgressBar(progbar, i/B)
     }
     if (!quiet) close(progbar)
-    for (i in 1:B) storage.mode(boot.tree[[i]]$Nnode) <- "integer"
-    storage.mode(phy$Nnode) <- "integer"
 
-    pp <- prop.part(boot.tree)
-    if (!rooted) pp <- postprocess.prop.part(pp)
-    ans <- prop.clades(phy, part = pp, rooted = rooted)
+    ## for (i in 1:B) storage.mode(boot.tree[[i]]$Nnode) <- "integer"
+    ## storage.mode(phy$Nnode) <- "integer"
 
-    ##ans <- attr(.Call("prop_part", c(list(phy), boot.tree),
-    ##                  B + 1, FALSE, PACKAGE = "ape"), "number") - 1
+    if (!quiet) cat("Calculating bootstrap values...")
+
+     if (rooted) {
+        pp <- prop.part(boot.tree)
+        if (!rooted) pp <- postprocess.prop.part(pp)
+        ans <- prop.clades(phy, part = pp, rooted = rooted)
+    } else {
+        phy <- reorder(phy, "postorder")
+        ints <- phy$edge[, 2] > Ntip(phy)
+        ans <- countBipartitions(phy, boot.tree)
+        ans <- c(B, ans[order(phy$edge[ints, 2])])
+    }
+
     if (trees) {
         class(boot.tree) <- "multiPhylo"
         ans <- list(BP = ans, trees = boot.tree)
     }
+    if (!quiet) cat(" done.\n")
     ans
 }
 

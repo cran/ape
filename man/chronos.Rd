@@ -104,7 +104,8 @@ chronos.control(...)
 
   Paradis, E. (2013) Molecular dating of phylogenies by likelihood
   methods: a comparison of models and a new information
-  criterion. \emph{Molecular Phylogenetics and Evolution}, in press.
+  criterion. \emph{Molecular Phylogenetics and Evolution}, \bold{67},
+  436--444.
 
   Sanderson, M. J. (2002) Estimating absolute rates of molecular
   evolution and divergence times: a penalized likelihood

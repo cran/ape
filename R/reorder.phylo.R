@@ -38,7 +38,7 @@ reorder.phylo <- function(x, order = "cladewise", index.only = FALSE, ...)
             .C(neworder_phylo, as.integer(nb.tip),
                as.integer(x$edge[, 1]), as.integer(x$edge[, 2]),
                as.integer(nb.edge), integer(nb.edge), io,
-               DUP = FALSE, NAOK = TRUE)[[5]]
+               NAOK = TRUE)[[5]]
     }
     if (index.only) return(neworder)
     x$edge <- x$edge[neworder, ]

@@ -2,6 +2,10 @@
 \alias{plot.phylo}
 \alias{plot.multiPhylo}
 \title{Plot Phylogenies}
+\description{
+  These functions plot phylogenetic trees on the current graphical
+  device.
+}
 \usage{
 \method{plot}{phylo}(x, type = "phylogram", use.edge.length = TRUE,
     node.pos = NULL, show.tip.label = TRUE, show.node.label = FALSE,
@@ -107,10 +111,6 @@
   \item{layout}{the number of trees to be plotted simultaneously.}
   \item{\dots}{further arguments to be passed to \code{plot} or to
     \code{plot.phylo}.}
-}
-\description{
-  These functions plot phylogenetic trees on the current graphical
-  device.
 }
 \details{
   If \code{x} is a list of trees (i.e., an object of class

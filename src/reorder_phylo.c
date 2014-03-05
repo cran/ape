@@ -63,7 +63,7 @@ void neworder_phylo(int *n, int *e1, int *e2, int *N, int *neworder, int *order)
 
 	for (i = 0; i < *N; i++) {
 		k = e1[i] - *n - 1; /* k is the 'row' index in L corresponding to node e1[i] */
-		j = pos[k]; /* the current 'column' position corresping to k */
+		j = pos[k]; /* the current 'column' position corresponding to k */
 		pos[k]++; /* increment in case the same node is found in another row of the edge matrix */
 		L[k + m * j] = i;
 	}

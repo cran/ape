@@ -1,12 +1,11 @@
-/* bipartition.c    2012-03-26 */
+/* bipartition.c    2014-01-02 */
 
-/* Copyright 2005-2012 Emmanuel Paradis, and 2007 R Development Core Team */
+/* Copyright 2005-2014 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
 
-#include <R.h>
-#include <Rinternals.h>
+#include "ape.h"
 
 SEXP seq_root2tip(SEXP edge, SEXP nbtip, SEXP nbnode)
 {
@@ -111,21 +110,6 @@ SEXP bipartition(SEXP edge, SEXP nbtip, SEXP nbnode)
     UNPROTECT(5);
     return ans;
 } /* bipartition */
-
-/* From R-ext manual
-   (not the same than in library/stats/src/nls.c) */
-SEXP getListElement(SEXP list, char *str)
-{
-    SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
-    int i;
-
-    for (i = 0; i < length(list); i++)
-      if(strcmp(CHAR(STRING_ELT(names, i)), str) == 0) {
-	  elmt = VECTOR_ELT(list, i);
-	  break;
-      }
-    return elmt;
-}
 
 int SameClade(SEXP clade1, SEXP clade2)
 {

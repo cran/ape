@@ -21,6 +21,7 @@ S3method(deviance, ace)
 S3method(logLik, ace)
 S3method(print, ace)
 
+S3method(as.prop.part, bitsplits)
 S3method(is.compatible, bitsplits)
 S3method(print, bitsplits)
 

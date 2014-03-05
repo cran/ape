@@ -15,8 +15,7 @@ fastme.bal <- function(X, nni = TRUE, spr = TRUE, tbr = TRUE)
     nedge <- 2L * N - 3L
     ans <- .C(me_b, as.double(X), N, 1:N, as.integer(nni),
               as.integer(spr), as.integer(tbr), integer(nedge),
-              integer(nedge), double(nedge),
-              DUP = FALSE, NAOK = TRUE)
+              integer(nedge), double(nedge), NAOK = TRUE)
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
     labels <- labels[ans[[3]]]
@@ -35,7 +34,7 @@ fastme.ols <- function(X, nni = TRUE)
     nedge <- 2L * N - 3L
     ans <- .C(me_o, as.double(X), N, 1:N, as.integer(nni),
               integer(nedge), integer(nedge), double(nedge),
-              DUP = FALSE, NAOK = TRUE)
+              NAOK = TRUE)
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
     labels <- labels[ans[[3]]]
@@ -57,8 +56,7 @@ bionj <- function(X)
     N <- as.integer(attr(X, "Size"))
 
     ans <- .C(C_bionj, as.double(X), N, integer(2 * N - 3),
-              integer(2 * N - 3), double(2*N - 3),
-              DUP = FALSE, NAOK = TRUE)
+              integer(2 * N - 3), double(2*N - 3), NAOK = TRUE)
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
     obj <- list(edge =  cbind(ans[[3]], ans[[4]]), edge.length = ans[[5]],

@@ -63,6 +63,11 @@
 \alias{rawStreamToDNAbin}
 \alias{seq_root2tip}
 \alias{treeBuildWithTokens}
+\alias{polar2rect}
+\alias{rect2polar}
+\alias{CountBipartitionsFromTrees}
+\alias{bitsplits_multiPhylo}
+\alias{bitsplits_phylo}
 \title{Internal Ape Functions}
 \description{
   Internal \pkg{ape} functions.

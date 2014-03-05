@@ -277,7 +277,7 @@ void Best_pair(float **delta, int r, int *a, int *b, int n)
 	int x, y;   /* the pair which is tested */
 	float Qmin; /* current minimun of the criterion */
 
-	Qmin = 1.0e300;
+	Qmin = 1.0e30;
 	for (x = 1; x <= n; x++) {
 		if (Emptied(x, delta)) continue;
 		for (y = 1; y < x; y++) {

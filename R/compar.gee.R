@@ -1,8 +1,8 @@
-## compar.gee.R (2011-06-14)
+## compar.gee.R (2013-12-19)
 
 ##   Comparative Analysis with GEEs
 
-## Copyright 2002-2010 Emmanuel Paradis
+## Copyright 2002-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -50,7 +50,7 @@ compar.gee <-
                                   scale.value = scale.value))
     W <- geemod$naive.variance
     fname <-
-        if (is.function(family)) deparse(substitute(family)) else family
+        if (is.function(family)) deparse(substitute(family)) else if (is.list(family)) family$family else family
     if (fname == "binomial")
         W <- summary(glm(formula, family = quasibinomial, data = data))$cov.scaled
     N <- geemod$nobs
@@ -154,10 +154,15 @@ you should be careful when interpreting the significance of the main effects.")
 }
 
 predict.compar.gee <-
-    function(object, type = c("link", "response"), ...)
+    function(object, newdata = NULL, type = c("link", "response"), ...)
 {
     type <- match.arg(type)
-    pred <- object$fitted.values
+    pred <- if (is.null(newdata)) object$fitted.values else {
+        frm <- formula(object$call$formula)[-2]
+        X <-  model.matrix(frm, data = newdata)
+        beta <- object$coefficients
+        X[, names(beta), drop = FALSE] %*% beta
+    }
     if (type == "link") return(pred)
     f <- match.fun(object$family)
     f(link = object$link)$linkinv(pred)

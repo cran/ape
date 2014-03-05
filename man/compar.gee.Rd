@@ -17,7 +17,7 @@
 compar.gee(formula, data = NULL, family = "gaussian", phy, corStruct,
           scale.fix = FALSE, scale.value = 1)
 \method{drop1}{compar.gee}(object, scope, quiet = FALSE, ...)
-\method{predict}{compar.gee}(object, type = c("link", "response"), ...)
+\method{predict}{compar.gee}(object, newdata = NULL, type = c("link", "response"), ...)
 }
 \arguments{
   \item{formula}{a formula giving the model to be fitted.}
@@ -40,6 +40,9 @@ compar.gee(formula, data = NULL, family = "gaussian", phy, corStruct,
   \item{scope}{<unused>.}
   \item{quiet}{a logical specifying whether to display a warning message
     about eventual ``marginality principle violation''.}
+  \item{newdata}{a data frame with column names matching the variables
+    in the formula of the fitted object (see
+    \code{\link[stats]{predict}} for details).}
   \item{type}{a character string specifying the type of predicted
     values. By default, the linear (link) prediction is returned.}
   \item{\dots}{further arguments to be passed to \code{drop1}.}
@@ -83,6 +86,8 @@ compar.gee(formula, data = NULL, family = "gaussian", phy, corStruct,
     for details on this).}
 
   \code{drop1} returns an object of class \code{"\link[stats]{anova}"}.
+
+  \code{predict} returns a vector or a data frame if \code{newdata} is used.
 }
 \references{
   Pan, W. (2001) Akaike's information criterion in generalized
@@ -102,10 +107,8 @@ compar.gee(formula, data = NULL, family = "gaussian", phy, corStruct,
 \examples{
 ### The example in Phylip 3.5c (originally from Lynch 1991)
 ### (the same analysis than in help(pic)...)
-cat("((((Homo:0.21,Pongo:0.21):0.28,",
-   "Macaca:0.49):0.13,Ateles:0.62):0.38,Galago:1.00);",
-   file = "ex.tre", sep = "\n")
-tree.primates <- read.tree("ex.tre")
+tr <- "((((Homo:0.21,Pongo:0.21):0.28,Macaca:0.49):0.13,Ateles:0.62):0.38,Galago:1.00);"
+tree.primates <- read.tree(text = tr)
 X <- c(4.09434, 3.61092, 2.37024, 2.02815, -1.46968)
 Y <- c(4.74493, 3.33220, 3.36730, 2.89037, 2.30259)
 ### Both regressions... the results are quite close to those obtained
@@ -116,6 +119,5 @@ compar.gee(Y ~ X, phy = tree.primates)
 ### different!
 compar.gee(X ~ Y - 1, phy = tree.primates)
 compar.gee(Y ~ X - 1, phy = tree.primates)
-unlink("ex.tre") # delete the file "ex.tre"
 }
 \keyword{regression}

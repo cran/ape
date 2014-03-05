@@ -119,7 +119,7 @@ rTraitCont <-
         .C(C_rTraitCont, as.integer(model), as.integer(N),
            as.integer(anc - 1L), as.integer(des - 1L), el,
            as.double(sigma), as.double(alpha), as.double(theta), x,
-           DUP = FALSE, NAOK = TRUE)
+           NAOK = TRUE)
     }
 
     if (ancestor) {

@@ -1,4 +1,4 @@
-## root.R (2013-09-25)
+## root.R (2013-10-04)
 
 ##   Root of Phylogenetic Trees
 
@@ -144,11 +144,11 @@ root <- function(phy, outgroup, node = NULL,
     if (newroot == ROOT) {
         ## assumes length(outgroup) == 1
         if (resolve.root) {
-            snw <- which(phy$edge[, 1] == newroot)
+            snw <- which(phy$edge[, 1L] == newroot)
             if (length(snw) > 2) {
-                i <- which(phy$edge[snw, 2L] == outgroup) # see comment above
+                i <- which(phy$edge[, 2L] == outgroup) # see comment above
                 j <- snw[snw != i]
-                newnod <- oldNnode + n + 1
+                newnod <- oldNnode + n + 1L
                 phy$edge[j, 1] <- newnod
 
                 ## put the row with the outgroup as the last one in 'edge':

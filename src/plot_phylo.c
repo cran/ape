@@ -1,6 +1,6 @@
-/* plot_phylo.c (2013-09-09) */
+/* plot_phylo.c (2014-03-05) */
 
-/* Copyright 2004-2013 Emmanuel Paradis */
+/* Copyright 2004-2014 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -57,15 +57,20 @@ void node_height(int *ntip, int *nnode, int *edge1, int *edge2,
 
     S = 0;
     n = 0;
-    for (i = 0; i < *nedge; i++) {
+    for (i = 0; i < *nedge - 1; i++) {
 	S += yy[edge2[i] - 1];
-	n += 1;
+	n++;
         if (edge1[i + 1] != edge1[i]) {
 	    yy[edge1[i] - 1] = S/n;
 	    S = 0;
 	    n = 0;
 	}
     }
+    /* do the last edge */
+    /* i = *nedge - 1; */
+    S += yy[edge2[i] - 1];
+    n++;
+    yy[edge1[i] - 1] = S/n;
 }
 
 void node_height_clado(int *ntip, int *nnode, int *edge1, int *edge2,

@@ -286,7 +286,7 @@ base.freq <- function(x, freq = FALSE, all = FALSE)
 {
     f <- function(x)
         .C(BaseProportion, x, as.integer(length(x)), double(17),
-           DUP = FALSE, NAOK = TRUE)[[3]]
+           NAOK = TRUE)[[3]]
 
     if (is.list(x)) {
         BF <- rowSums(sapply(x, f))
@@ -294,7 +294,7 @@ base.freq <- function(x, freq = FALSE, all = FALSE)
     } else {
         n <- length(x)
         BF <- .C(BaseProportion, x, as.integer(n), double(17),
-                DUP = FALSE, NAOK = TRUE)[[3]]
+                 NAOK = TRUE)[[3]]
     }
 
     names(BF) <- c("a", "c", "g", "t", "r", "m", "w", "s",
@@ -352,7 +352,7 @@ seg.sites <- function(x)
     }
     if (n == 1) return(integer(0))
     ans <- .C(SegSites, x, as.integer(n), as.integer(s),
-              integer(s), DUP = FALSE, NAOK = TRUE)
+              integer(s), NAOK = TRUE)
     which(as.logical(ans[[4]]))
 }
 
@@ -402,7 +402,7 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     d <- .C(dist_dna, x, as.integer(n), as.integer(s), imod,
             double(Ndist), BF, as.integer(pairwise.deletion),
             as.integer(variance), var, as.integer(gamma),
-            alpha, DUP = FALSE, NAOK = TRUE)
+            alpha, NAOK = TRUE)
     if (variance) var <- d[[9]]
     d <- d[[5]]
     if (imod == 11) {
@@ -482,8 +482,7 @@ where <- function(x, pattern)
     foo <- function(x, pat, p) {
         s <- as.integer(length(x))
         if (s < p) stop("sequence shorter than the pattern")
-        ans <- .C(C_where, x, pat, s, p, integer(s), 0L,
-                  DUP = FALSE, NAOK = TRUE)
+        ans <- .C(C_where, x, pat, s, p, integer(s), 0L, NAOK = TRUE)
         n <- ans[[6]]
         if (n) ans[[5]][seq_len(n)] - p + 2L else integer()
     }

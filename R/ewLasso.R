@@ -24,5 +24,5 @@ ewLasso <- function(X, phy)
     if (is.null(labels)) labels <- as.character(1:N)
     ans <- .C(C_ewLasso, as.double(X), as.integer(N),
               as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
-              DUP = FALSE, NAOK = TRUE)
+              NAOK = TRUE)
 }

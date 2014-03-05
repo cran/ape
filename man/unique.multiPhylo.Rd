@@ -21,8 +21,9 @@
   \item{\dots}{further arguments passed to or from other methods.}
 }
 \value{
-  an object of class \code{"multiPhylo"} which is a list of objects of
-  class \code{"phylo"}.
+  an object of class \code{"multiPhylo"} with an attribute
+  \code{"old.index"} indicating which trees of the original list are
+  similar (the tree of smaller index is taken as reference).
 }
 \author{Emmanuel Paradis}
 \seealso{

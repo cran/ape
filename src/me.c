@@ -1,4 +1,4 @@
-/* me.c    2012-04-30 */
+/* me.c    2014-03-04 */
 
 /* Copyright 2007-2008 Olivier Gascuel, Rick Desper,
    R port by Vincent Lefort and Emmanuel Paradis */
@@ -467,9 +467,11 @@ void freeMatrix(double **D, int size)
 
 void freeSet(set *S)
 {
-  if (NULL != S)
-    freeSet(S->secondNode);
-  free(S);
+    if (NULL != S) {
+	free(S->firstNode); /* added by EP 2014-03-04 */
+	freeSet(S->secondNode);
+    }
+    free(S);
 }
 
 void freeTree(tree *T)

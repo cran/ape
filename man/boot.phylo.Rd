@@ -6,6 +6,20 @@
 \alias{summary.prop.part}
 \alias{plot.prop.part}
 \title{Tree Bipartition and Bootstrapping Phylogenies}
+\description{
+  These functions analyse bipartitions found in a series of trees.
+
+  \code{prop.part} counts the number of bipartitions found in a series
+  of trees given as \code{\dots}. If a single tree is passed, the
+  returned object is a list of vectors with the tips descending from
+  each node (i.e., clade compositions indexed by node number).
+
+  \code{prop.clades} counts the number of times the bipartitions present
+  in \code{phy} are present in a series of trees given as \code{\dots} or
+  in the list previously computed and given with \code{part}.
+
+  \code{boot.phylo} performs a bootstrap analysis.
+}
 \usage{
 boot.phylo(phy, x, FUN, B = 100, block = 1,
            trees = FALSE, quiet = FALSE, rooted = FALSE)
@@ -18,8 +32,8 @@ prop.clades(phy, ..., part = NULL, rooted = FALSE)
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
   \item{x}{in the case of \code{boot.phylo}: a taxa (rows) by characters
-    (columns) matrix; this may be presented as a list; in the case of
-    \code{print} and \code{plot}: an object of class \code{"prop.part"}.}
+    (columns) matrix; in the case of \code{print} and \code{plot}: an
+    object of class \code{"prop.part"}.}
   \item{FUN}{the function used to estimate \code{phy} (see details).}
   \item{B}{the number of bootstrap replicates.}
   \item{block}{the number of columns in \code{x} that will be resampled
@@ -43,20 +57,6 @@ prop.clades(phy, ..., part = NULL, rooted = FALSE)
     partitions in the upper panel.}
   \item{leftmar}{the size of the margin on the left to display the tip
     labels.}
-}
-\description{
-  These functions analyse bipartitions found in a series of trees.
-
-  \code{prop.part} counts the number of bipartitions found in a series
-  of trees given as \code{\dots}. If a single tree is passed, the
-  returned object is a list of vectors with the tips descending from
-  each node (i.e., clade compositions indexed by node number).
-
-  \code{prop.clades} counts the number of times the bipartitions present
-  in \code{phy} are present in a series of trees given as \code{\dots} or
-  in the list previously computed and given with \code{part}.
-
-  \code{boot.phylo} performs a bootstrap analysis.
 }
 \details{
   The argument \code{FUN} in \code{boot.phylo} must be the function used
@@ -123,7 +123,8 @@ prop.clades(phy, ..., part = NULL, rooted = FALSE)
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{dist.topo}}, \code{\link{consensus}}, \code{\link{nodelabels}}
+  \code{\link{as.bitsplits}}, \code{\link{dist.topo}},
+  \code{\link{consensus}}, \code{\link{nodelabels}}
 }
 \examples{
 data(woodmouse)

@@ -17,7 +17,7 @@ treePop <- function(obj)
     mimf <- matrix(imf, nrow(mf), ncol(mf))
     ans <- .C(C_treePop, mimf, as.double(freq), as.integer(ncol(mf)),
               as.integer(n), integer(2*n - 3), integer(2*n - 3),
-              double(2*n - 3), DUP = FALSE, NAOK = TRUE)
+              double(2*n - 3), NAOK = TRUE)
     obj <- list(edge = cbind(ans[[5]], ans[[6]]), edge.length = ans[[7]],
                 tip.label = labels, Nnode = n - 2L)
     class(obj) <- "phylo"

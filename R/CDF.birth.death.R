@@ -1,9 +1,9 @@
-## CDF.birth.death.R (2012-09-14)
+## CDF.birth.death.R (2014-03-03)
 
 ##    Functions to Simulate and Fit
 ##  Time-Dependent Birth-Death Models
 
-## Copyright 2010-2012 Emmanuel Paradis
+## Copyright 2010-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -485,4 +485,35 @@ bd.time <- function(phy, birth, death, BIRTH = NULL, DEATH = NULL,
         out$boot <- PAR
     }
     out
+}
+
+LTT <- function(birth = 0.1, death = 0, N = 100, Tmax = 50, PI = 95,
+                scaled = TRUE, eps = 0.1, add = FALSE, backward = TRUE,
+                ltt.style = list("black", 1, 1),
+                pi.style = list("blue", 1, 2))
+{
+    case <- .getCase(birth, death, NULL, NULL)
+    Time <- seq(0, Tmax, eps)
+    F <- CDF.birth.death(birth, death, BIRTH = NULL, DEATH = NULL,
+                         Tmax = Tmax, x = Time, case = case, fast = TRUE)
+    if (PI) {
+        i <- (1 - PI/100)/2
+        Flow <- qbinom(i, N - 2, F)
+        Fup <- qbinom(1 - i, N - 2, F)
+        if (scaled) {
+            Flow <- Flow/N
+            Fup <- Fup/N
+        }
+    }
+    if (!scaled) F <- F * N
+    if (backward) Time <- Time - Tmax
+    if (add)
+        lines(Time, F, "l", col = ltt.style[[1]], lwd = ltt.style[[2]],
+              lty = ltt.style[[3]])
+    else
+        plot(Time, F, "l", col = ltt.style[[1]], lwd = ltt.style[[2]],
+             lty = ltt.style[[3]], ylab = "Number of lineages")
+    if (PI)
+        lines(c(Time, NA, Time), c(Flow, NA, Fup),
+              col = pi.style[[1]], lwd = pi.style[[2]], lty = pi.style[[3]])
 }

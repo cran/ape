@@ -1,11 +1,11 @@
-## scales.R (2012-12-19)
+## scales.R (2013-12-20)
 
 ##   Add a Scale Bar or Axis to a Phylogeny Plot
 
 ## add.scale.bar: add a scale bar to a phylogeny plot
 ## axisPhylo: add a scale axis on the side of a phylogeny plot
 
-## Copyright 2002-2011 Emmanuel Paradis
+## Copyright 2002-2013 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -19,8 +19,7 @@ add.scale.bar <- function(x, y, length = NULL, ask = FALSE,
         nb.digit <-
           if (direc %in% c("rightwards", "leftwards")) diff(range(lastPP$xx))
           else diff(range(lastPP$yy))
-        nb.digit <- ceiling(log10(nb.digit)) - 2
-        length <- eval(parse(text = paste("1e", nb.digit, sep = "")))
+        length <- pretty(c(0, nb.digit) / 6, 1)[2] # by Klaus
     }
 
     if (ask) {

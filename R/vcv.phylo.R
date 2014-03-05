@@ -65,7 +65,7 @@ vcv.phylo <- function(phy, model = "Brownian", corr = FALSE, ...)
 vcv.corPhyl <- function(phy, corr = FALSE, ...)
 {
     labels <- attr(phy, "tree")$tip.label
-    dummy.df <- data.frame(1:length(labels), row.names = labels)
+    dummy.df <- data.frame(seq_along(labels), row.names = labels)
     res <- corMatrix(Initialize.corPhyl(phy, dummy.df), corr = corr)
     dimnames(res) <- list(labels, labels)
     res

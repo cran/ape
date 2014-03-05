@@ -16,8 +16,7 @@ triangMtd <- function(X)
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
     ans <- .C(C_triangMtd, as.double(X), as.integer(N), integer(2*N - 3),
-              integer(2*N - 3), double(2*N - 3),
-              DUP = FALSE, NAOK = TRUE)
+              integer(2*N - 3), double(2*N - 3), NAOK = TRUE)
     obj <- list(edge = cbind(ans[[3]], ans[[4]]), edge.length = ans[[5]],
                 tip.label = labels, Nnode = N - 2L)
     class(obj) <- "phylo"
@@ -33,8 +32,7 @@ triangMtds <- function(X)
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
     ans <- .C(C_triangMtds, as.double(X), as.integer(N), integer(2*N - 3),
-              integer(2*N - 3), double(2*N - 3),
-              DUP = FALSE, NAOK = TRUE)
+              integer(2*N - 3), double(2*N - 3), NAOK = TRUE)
     obj <- list(edge = cbind(ans[[3]], ans[[4]]), edge.length = ans[[5]],
                 tip.label = labels, Nnode = N - 2L)
     class(obj) <- "phylo"

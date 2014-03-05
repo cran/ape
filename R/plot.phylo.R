@@ -1,8 +1,8 @@
-## plot.phylo.R (2013-09-10)
+## plot.phylo.R (2014-03-03)
 
 ##   Plot Phylogenies
 
-## Copyright 2002-2013 Emmanuel Paradis
+## Copyright 2002-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -29,21 +29,18 @@ plot.phylo <-
     .nodeHeight <- function(Ntip, Nnode, edge, Nedge, yy)
         .C(node_height, as.integer(Ntip), as.integer(Nnode),
            as.integer(edge[, 1]), as.integer(edge[, 2]),
-           as.integer(Nedge), as.double(yy),
-           DUP = FALSE)[[6]]
+           as.integer(Nedge), as.double(yy))[[6]]
 
     .nodeDepth <- function(Ntip, Nnode, edge, Nedge, node.depth)
         .C(node_depth, as.integer(Ntip), as.integer(Nnode),
            as.integer(edge[, 1]), as.integer(edge[, 2]),
-           as.integer(Nedge), double(Ntip + Nnode), as.integer(node.depth),
-           DUP = FALSE)[[6]]
+           as.integer(Nedge), double(Ntip + Nnode), as.integer(node.depth))[[6]]
 
     .nodeDepthEdgelength <- function(Ntip, Nnode, edge, Nedge, edge.length)
         .C(node_depth_edgelength, as.integer(Ntip),
            as.integer(Nnode), as.integer(edge[, 1]),
            as.integer(edge[, 2]), as.integer(Nedge),
-           as.double(edge.length), double(Ntip + Nnode),
-           DUP = FALSE)[[7]]
+           as.double(edge.length), double(Ntip + Nnode))[[7]]
 
     Nedge <- dim(x$edge)[1]
     Nnode <- x$Nnode
@@ -113,8 +110,7 @@ plot.phylo <-
           ans <- .C(node_height_clado, as.integer(Ntip),
                     as.integer(Nnode), as.integer(z$edge[, 1]),
                     as.integer(z$edge[, 2]), as.integer(Nedge),
-                    double(Ntip + Nnode), as.double(yy),
-                    DUP = FALSE)
+                    double(Ntip + Nnode), as.double(yy))
           xx <- ans[[6]] - 1
           yy <- ans[[7]]
         }
@@ -270,7 +266,7 @@ plot.phylo <-
             y.lim[1] <- if (show.tip.label) -1 - max(nchar(x$tip.label) * 0.018 * max(yy) * cex) else -1
     }
     ## mirror the yy:
-    if (phyloORclado && direction == "downwards") yy <- max(yy) - yy
+    if (phyloORclado && direction == "downwards") yy <- y.lim[2] - yy # fix by Klaus
     if (phyloORclado && root.edge) {
         if (direction == "leftwards") x.lim[2] <- x.lim[2] + x$root.edge
         if (direction == "downwards") y.lim[2] <- y.lim[2] + x$root.edge
@@ -329,11 +325,11 @@ if (plot) {
         cladogram.plot(x$edge, xx, yy, edge.color, edge.width, edge.lty)
     }
     if (root.edge)
-      switch(direction,
-             "rightwards" = segments(0, yy[ROOT], x$root.edge, yy[ROOT]),
-             "leftwards" = segments(xx[ROOT], yy[ROOT], xx[ROOT] + x$root.edge, yy[ROOT]),
-             "upwards" = segments(xx[ROOT], 0, xx[ROOT], x$root.edge),
-             "downwards" = segments(xx[ROOT], yy[ROOT], xx[ROOT], yy[ROOT] + x$root.edge))
+        switch(direction,
+               "rightwards" = segments(0, yy[ROOT], x$root.edge, yy[ROOT]),
+               "leftwards" = segments(xx[ROOT], yy[ROOT], xx[ROOT] + x$root.edge, yy[ROOT]),
+               "upwards" = segments(xx[ROOT], 0, xx[ROOT], x$root.edge),
+               "downwards" = segments(xx[ROOT], yy[ROOT], xx[ROOT], yy[ROOT] + x$root.edge))
     if (show.tip.label) {
         if (is.expression(x$tip.label)) underscore <- TRUE
         if (!underscore) x$tip.label <- gsub("_", " ", x$tip.label)
@@ -533,17 +529,19 @@ circular.plot <- function(edge, Ntip, Nnode, xx, yy, theta,
 
     ## function dispatching the features to the arcs
     foo <- function(edge.feat, default) {
-        if (length(edge.feat) == 1) return(rep(edge.feat, Nnode))
-        else {
-            edge.feat <- rep(edge.feat, length.out = Nedge)
-            feat.arc <- rep(default, Nnode)
-            for (k in 1:Nnode) {
-                tmp <- edge.feat[start[k]]
-                if (tmp == edge.feat[end[k]]) feat.arc[k] <- tmp
-            }
+        if (length(edge.feat) == 1) return(as.list(rep(edge.feat, Nnode)))
+        edge.feat <- rep(edge.feat, length.out = Nedge)
+        feat.arc <- as.list(rep(default, Nnode))
+        for (k in 1:Nnode) {
+            tmp <- edge.feat[start[k]]
+            feat.arc[[k]] <-
+                if (tmp == edge.feat[end[k]]) tmp
+                else if (nodedegree[k] == 2)
+                    rep(c(tmp, edge.feat[end[k]]), each = 50)
         }
         feat.arc
     }
+    nodedegree <- tabulate(edge[, 1L])[-seq_len(Ntip)]
     co <- foo(edge.color, "black")
     lw <- foo(edge.width, 1)
     ly <- foo(edge.lty, 1)
@@ -553,7 +551,9 @@ circular.plot <- function(edge, Ntip, Nnode, xx, yy, theta,
         j <- end[k]
         X <- rep(r[edge[i, 1]], 100)
         Y <- seq(theta[edge[i, 2]], theta[edge[j, 2]], length.out = 100)
-        lines(X*cos(Y), X*sin(Y), col = co[k], lwd = lw[k], lty = ly[k])
+        x <- X * cos(Y); y <- X * sin(Y)
+        x0 <- x[-100]; y0 <- y[-100]; x1 <- x[-1]; y1 <- y[-1]
+        segments(x0, y0, x1, y1, col = co[[k]], lwd = lw[[k]], lty = ly[[k]])
     }
 }
 
@@ -598,8 +598,7 @@ node.depth <- function(phy, method = 1)
     phy <- reorder(phy, order = "postorder")
     .C(node_depth, as.integer(n), as.integer(m),
        as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
-       as.integer(N), double(n + m), as.integer(method),
-       DUP = FALSE)[[6]]
+       as.integer(N), double(n + m), as.integer(method))[[6]]
 }
 
 node.depth.edgelength <- function(phy)
@@ -610,13 +609,11 @@ node.depth.edgelength <- function(phy)
     phy <- reorder(phy, order = "postorder")
     .C(node_depth_edgelength, as.integer(n), as.integer(n),
        as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
-       as.integer(N), as.double(phy$edge.length), double(n + m),
-       DUP = FALSE)[[7]]
+       as.integer(N), as.double(phy$edge.length), double(n + m))[[7]]
 }
 
 node.height <- function(phy, clado.style = FALSE)
-{
-    n <- length(phy$tip.label)
+{    n <- length(phy$tip.label)
     m <- phy$Nnode
     N <- dim(phy$edge)[1]
 
@@ -632,11 +629,11 @@ node.height <- function(phy, clado.style = FALSE)
     if (clado.style)
         .C(node_height_clado, as.integer(n), as.integer(m),
            as.integer(e1), as.integer(e2), as.integer(N),
-           double(n + m), as.double(yy), DUP = FALSE)[[7]]
+           double(n + m), as.double(yy))[[7]]
     else
         .C(node_height, as.integer(n), as.integer(m),
            as.integer(e1), as.integer(e2), as.integer(N),
-           as.double(yy), DUP = FALSE)[[6]]
+           as.double(yy))[[6]]
 }
 
 node.height.clado <- function(phy)

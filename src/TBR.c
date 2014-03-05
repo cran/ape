@@ -1,4 +1,4 @@
-/* TBR.c    2009-01-12 */
+/* TBR.c    2014-03-04 */
 
 /* Copyright 2009 Richard Desper */
 
@@ -440,6 +440,7 @@ void TBR(tree *T, double **D, double **A)
   for(i=0;i<T->size;i++)
     freeMatrix(TBRWeights[i],T->size);
   freeMatrix(dXTop,T->size);
+  free(TBRWeights); /* added by EP 2014-03-04 */
 }
 
 void SPRTopShift(tree *T, node *v, edge *e, int UpOrDown);

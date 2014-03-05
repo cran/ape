@@ -19,7 +19,7 @@ speciesTree(x, FUN = min)
   distance matrix used to calculate the species tree with a
   single-linkage hierarchical clustering. The default for \code{FUN}
   computes the maximum tree (maxtree) of Liu et al. (2010). Using
-  \code{FUN = sum} gives the shallowest divergence tree of Maddison and
+  \code{FUN = mean} gives the shallowest divergence tree of Maddison and
   Knowles (2006).
 }
 \value{
@@ -40,7 +40,7 @@ tr1 <- read.tree(text = "(((B:0.05,C:0.05):0.01,D:0.06):0.04,A:0.1);")
 tr2 <- read.tree(text = "(((A:0.07,C:0.07):0.02,D:0.09):0.03,B:0.12);")
 TR <- c(tr1, tr2)
 TSmax <- speciesTree(TR) # MAXTREE
-TSsha <- speciesTree(TR, sum) # shallowest divergence
+TSsha <- speciesTree(TR, mean) # shallowest divergence
 
 layout(matrix(1:4, 1))
 ## playing with 'x.lim' is not so complicated

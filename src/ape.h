@@ -1,16 +1,18 @@
-/* ape.h    2011-10-11 */
+/* ape.h    2014-01-02 */
 
-/* Copyright 2011 Emmanuel Paradis */
+/* Copyright 2011-2014 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
 
 #include <R.h>
+#include <Rinternals.h>
 
 #define DINDEX(i, j) n*(i - 1) - i*(i - 1)/2 + j - i - 1
 
 /* in ape.c */
 int give_index(int i, int j, int n);
+SEXP getListElement(SEXP list, char *str);
 
 /* in njs.c */
 void choosePair(double* D, int n, double* R, int* s, int* sw, int* x, int* y, int fS);

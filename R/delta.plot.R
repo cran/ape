@@ -16,7 +16,7 @@ delta.plot <- function(X, k = 20, plot = TRUE, which = 1:2)
     ## add a category for the cases delta = 1
     ans <- .C(delta_plot, as.double(X), as.integer(n),
               as.integer(k), integer(k + 1), double(n),
-              NAOK = TRUE, DUP = FALSE)
+              NAOK = TRUE)
     counts <- ans[[4]]
     ## add the counts of delta=1 to the last category:
     counts[k] <- counts[k] + counts[k + 1]

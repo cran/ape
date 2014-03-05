@@ -1,6 +1,6 @@
-/* read_dna.c       2013-09-18 */
+/* read_dna.c       2014-03-05 */
 
-/* Copyright 2013 Emmanuel Paradis */
+/* Copyright 2013-2014 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -127,7 +127,7 @@ SEXP rawStreamToDNAbin(SEXP x)
 		SET_STRING_ELT(nms, j, mkChar((char *)buffer));
 		/* ... then read the sequence */
 		n = 0;
-		while (xr[i] != hook && i < N) {
+		while (i < N && xr[i] != hook) {
 			tmp = tab_trans[xr[i++]];
 /* If we are sure that the FASTA file is correct (ie, the sequence on
    a single line and only the IUAPC code (plus '-' and '?') is used,

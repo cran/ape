@@ -31,8 +31,7 @@ ladderize <- function(phy, right = TRUE)
     tmp <- reorder(phy, "postorder")
     N <- .C(node_depth, as.integer(nb.tip), as.integer(nb.node),
             as.integer(tmp$edge[, 1]), as.integer(tmp$edge[, 2]),
-            as.integer(nb.edge), double(nb.tip + nb.node), 1L,
-            DUP = FALSE)[[6]]
+            as.integer(nb.edge), double(nb.tip + nb.node), 1L)[[6]]
     neworder <- integer(nb.edge)
     foo(nb.tip + 1, nb.edge, 1)
     phy$edge <- phy$edge[neworder, ]

@@ -130,8 +130,7 @@ drop.tip <-
         tr <- reorder(phy, "postorder")
         N <- .C(node_depth, as.integer(Ntip), as.integer(Nnode),
                 as.integer(tr$edge[, 1]), as.integer(tr$edge[, 2]),
-                as.integer(Nedge), double(Ntip + Nnode), 1L,
-                DUP = FALSE)[[6]]
+                as.integer(Nedge), double(Ntip + Nnode), 1L)[[6]]
     }
 
     edge1 <- phy$edge[, 1] # local copies

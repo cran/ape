@@ -104,7 +104,7 @@ ltt.plot.coords(phy, backward = TRUE, tol = 1e-6)
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{kronoviz}}, \code{\link{skyline}},
+  \code{\link{kronoviz}}, \code{\link{skyline}}, \code{\link{LTT}},
   \code{\link{branching.times}}, \code{\link{birthdeath}},
   \code{\link{bd.ext}}, \code{\link{yule.cov}}, \code{\link{bd.time}};
   \code{\link[graphics]{plot}} for the basic plotting function in R

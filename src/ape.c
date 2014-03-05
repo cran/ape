@@ -1,11 +1,10 @@
-/* ape.c    2013-08-13 */
+/* ape.c    2014-01-02 */
 
-/* Copyright 2011-2013 Emmanuel Paradis */
+/* Copyright 2011-2014 Emmanuel Paradis, and 2007 R Development Core Team */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
 
-#include <Rinternals.h>
 #include <R_ext/Rdynload.h>
 #include "ape.h"
 
@@ -13,6 +12,21 @@ int give_index(int i, int j, int n)
 {
 	if (i > j) return(DINDEX(j, i));
 	else return(DINDEX(i, j));
+}
+
+/* From R-ext manual
+   (not the same than in library/stats/src/nls.c) */
+SEXP getListElement(SEXP list, char *str)
+{
+    SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
+    int i;
+
+    for (i = 0; i < length(list); i++)
+      if(strcmp(CHAR(STRING_ELT(names, i)), str) == 0) {
+	  elmt = VECTOR_ELT(list, i);
+	  break;
+      }
+    return elmt;
 }
 
 /* declare functions here to register them below */
@@ -61,12 +75,16 @@ void C_triangMtds(double* d, int* np, int* ed1,int* ed2, double* edLen);
 void C_ultrametric(double *dd, int* np, int* mp, double *ret);
 void C_where(unsigned char *x, unsigned char *pat, int *s, int *p,
 	   int *ans, int *n);
+void bitsplits_phylo(int *n, int *m, int *e, int *N, int *nr, unsigned char *mat);
+void CountBipartitionsFromTrees(int *n, int *m, int *e, int *N, int *nr, int *nc,
+				unsigned char *mat, double *freq);
 
 SEXP bipartition(SEXP edge, SEXP nbtip, SEXP nbnode);
 SEXP prop_part(SEXP TREES, SEXP nbtree, SEXP keep_partitions);
 SEXP rawStreamToDNAbin(SEXP x);
 SEXP seq_root2tip(SEXP edge, SEXP nbtip, SEXP nbnode);
 SEXP treeBuildWithTokens(SEXP nwk);
+SEXP bitsplits_multiPhylo(SEXP x, SEXP n, SEXP nr);
 
 static R_CMethodDef C_entries[] = {
     {"C_additive", (DL_FUNC) &C_additive, 4},
@@ -99,40 +117,10 @@ static R_CMethodDef C_entries[] = {
     {"C_triangMtds", (DL_FUNC) &C_triangMtds, 5},
     {"C_ultrametric", (DL_FUNC) &C_ultrametric, 4},
     {"C_where", (DL_FUNC) &C_where, 6},
+    {"bitsplits_phylo", (DL_FUNC) &bitsplits_phylo, 6},
+    {"CountBipartitionsFromTrees", (DL_FUNC) &CountBipartitionsFromTrees, 8},
     {NULL, NULL, 0}
 };
-
-/*
-static R_CMethodDef C_entries[] = {
-    {"BaseProportion", (DL_FUNC) &BaseProportion, 3, {RAWSXP, INTSXP, REALSXP}},
-    {"C_bionj", (DL_FUNC) &C_bionj, 5, {REALSXP, INTSXP, INTSXP, INTSXP, REALSXP}},
-    {"delta_plot", (DL_FUNC) &delta_plot, 5, {REALSXP, INTSXP, INTSXP, INTSXP, REALSXP}},
-    {"dist_dna", (DL_FUNC) &dist_dna, 11, {RAWSXP, INTSXP, INTSXP, INTSXP, REALSXP, REALSXP, INTSXP, INTSXP, REALSXP, INTSXP, REALSXP}},
-    {"dist_nodes", (DL_FUNC) &dist_nodes, 7, {INTSXP, INTSXP, INTSXP, INTSXP, REALSXP, INTSXP, REALSXP}},
-    {"C_ewLasso", (DL_FUNC) &C_ewLasso, 4, {REALSXP, INTSXP, INTSXP, INTSXP}},
-    {"GlobalDeletionDNA", (DL_FUNC) &GlobalDeletionDNA, 4, {RAWSXP, INTSXP, INTSXP, INTSXP}},
-    {"mat_expo", (DL_FUNC) &mat_expo, 2, {REALSXP, INTSXP}},
-    {"me_b", (DL_FUNC) &me_b, 9, {REALSXP, INTSXP, INTSXP, INTSXP, INTSXP, INTSXP, INTSXP, INTSXP, REALSXP}},
-    {"me_o", (DL_FUNC) &me_o, 7, {REALSXP, INTSXP, INTSXP, INTSXP, INTSXP, INTSXP, REALSXP}},
-    {"C_mvr", (DL_FUNC) &C_mvr, 6, {REALSXP, REALSXP, INTSXP, INTSXP, INTSXP, REALSXP}},
-    {"C_mvrs", (DL_FUNC) &C_mvrs, 7, {REALSXP, REALSXP, INTSXP, INTSXP, INTSXP, REALSXP, INTSXP}},
-    {"neworder_phylo", (DL_FUNC) &neworder_phylo, 6, {INTSXP, INTSXP, INTSXP, INTSXP, INTSXP, INTSXP}},
-    {"neworder_pruningwise", (DL_FUNC) &neworder_pruningwise, 6, {INTSXP, INTSXP, INTSXP, INTSXP, INTSXP, INTSXP}},
-    {"C_nj", (DL_FUNC) &C_nj, 5, {REALSXP, INTSXP, INTSXP, INTSXP, REALSXP}},
-    {"node_depth", (DL_FUNC) &node_depth, 7, {INTSXP, INTSXP, INTSXP, INTSXP, INTSXP, REALSXP, INTSXP}},
-    {"node_depth_edgelength", (DL_FUNC) &node_depth_edgelength, 7, {INTSXP, INTSXP, INTSXP, INTSXP, INTSXP, REALSXP, REALSXP}},
-    {"node_height", (DL_FUNC) &node_height, 6, {INTSXP, INTSXP, INTSXP, INTSXP, INTSXP, REALSXP}},
-    {"node_height_clado", (DL_FUNC) &node_height_clado, 7, {INTSXP, INTSXP, INTSXP, INTSXP, INTSXP, REALSXP, REALSXP}},
-    {"C_pic", (DL_FUNC) &C_pic, 9, {INTSXP, INTSXP, INTSXP, INTSXP, REALSXP, REALSXP, REALSXP, INTSXP, INTSXP}},
-    {"C_rTraitCont", (DL_FUNC) &C_rTraitCont, 9, {INTSXP, INTSXP, INTSXP, INTSXP, REALSXP, REALSXP, REALSXP, REALSXP, REALSXP}},
-    {"SegSites", (DL_FUNC) &SegSites, 4, {RAWSXP, INTSXP, INTSXP, INTSXP}},
-    {"C_treePop", (DL_FUNC) &C_treePop, 7, {INTSXP, REALSXP, INTSXP, INTSXP, INTSXP, INTSXP, REALSXP}},
-    {"C_triangMtd", (DL_FUNC) &C_triangMtd, 5, {REALSXP, INTSXP, INTSXP, INTSXP, REALSXP}},
-    {"C_triangMtds", (DL_FUNC) &C_triangMtds, 5, {REALSXP, INTSXP, INTSXP, INTSXP, REALSXP}},
-    {"C_where", (DL_FUNC) &C_where, 6, {RAWSXP, RAWSXP, INTSXP, INTSXP, INTSXP, INTSXP}},
-    {NULL, NULL, 0}
-};
-*/
 
 static R_CallMethodDef Call_entries[] = {
     {"bipartition", (DL_FUNC) &bipartition, 3},
@@ -140,6 +128,7 @@ static R_CallMethodDef Call_entries[] = {
     {"rawStreamToDNAbin", (DL_FUNC) &rawStreamToDNAbin, 1},
     {"seq_root2tip", (DL_FUNC) &seq_root2tip, 3},
     {"treeBuildWithTokens", (DL_FUNC) &treeBuildWithTokens, 1},
+    {"bitsplits_multiPhylo", (DL_FUNC) &bitsplits_multiPhylo, 3},
     {NULL, NULL, 0}
 };
 

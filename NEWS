@@ -1,3 +1,60 @@
+		CHANGES IN APE VERSION 3.1
+
+
+NEW FEATURES
+
+    o Two new functions, bitsplits and countBipartitions, handle
+      bipartitions (aka splits) more efficiently.
+
+    o The new generic function as.prop.part helps to convert among
+      classes of bipartitions.
+
+    o Two new functions, phydataplot and ring, helps to graphically
+      annotate trees. The help page has many examples.
+
+    o The new function LLT draws the theoretical LTT-plot under
+      specified values of speciation and extinction rates together
+      with a prediction interval. The function has several options for
+      flexible plotting.
+
+    o predict.compar.gee() gains a new option, newdata, to predict
+      values from new observations of the predictors. This works like
+      most predict() methods.
+
+
+BUG FIXES
+
+    o root: the fix introduced in the previous version was not correct.
+
+    o compar.gee: using a user-defined link failed.
+
+    o plot.phylo: the tip labels were often outside the plotting area
+      with direction = "downward".
+
+    o unique.multiPhylo() did not work correctly with compressed lists.
+      This function now returns a vector of integers giving the
+      correspondance among similar trees.
+
+
+OTHER CHANGES
+
+    o add.scale.bar() now draws a longer bar by default.
+
+    o In boot.phylo(), the data 'x' must be a matrix-like object
+      (lists are no more accepted).
+
+    o boot.phylo() uses by default (ie, if rooted = FALSE) the new
+      function countBipartitions, and so should be much faster even
+      with small sample sizes and especially if the number of
+      bootstrap replicates is large.
+
+    o plot.phylo(, type = "fan") now colours the arcs in the same way
+      than the default type = "p".
+
+    o All instances of DUP=FALSE in calls of .C have been removed.
+
+
+
 		CHANGES IN APE VERSION 3.0-11
 
 

@@ -48,13 +48,13 @@ plotPhyloCoor <-
         if (node.pos == 1)
             yy <- .C("node_height", as.integer(Ntip), as.integer(Nnode),
                 as.integer(x$edge[, 1]), as.integer(x$edge[,
-                  2]), as.integer(Nedge), as.double(yy), DUP = FALSE,
+                  2]), as.integer(Nedge), as.double(yy),
                 PACKAGE = "ape")[[6]]
         else {
             ans <- .C("node_height_clado", as.integer(Ntip),
                 as.integer(Nnode), as.integer(x$edge[, 1]), as.integer(x$edge[,
                   2]), as.integer(Nedge), double(Ntip + Nnode),
-                as.double(yy), DUP = FALSE, PACKAGE = "ape")
+                as.double(yy), PACKAGE = "ape")
             xx <- ans[[6]] - 1
             yy <- ans[[7]]
         }
@@ -63,13 +63,13 @@ plotPhyloCoor <-
                 xx <- .C("node_depth", as.integer(Ntip), as.integer(Nnode),
                          as.integer(x$edge[, 1]), as.integer(x$edge[, 2]),
                          as.integer(Nedge), double(Ntip + Nnode), 1L,
-                         DUP = FALSE, PACKAGE = "ape")[[6]] - 1
+                         PACKAGE = "ape")[[6]] - 1
             xx <- max(xx) - xx
         } else {
             xx <- .C("node_depth_edgelength", as.integer(Ntip),
                 as.integer(Nnode), as.integer(x$edge[, 1]), as.integer(x$edge[,
                   2]), as.integer(Nedge), as.double(x$edge.length),
-                double(Ntip + Nnode), DUP = FALSE, PACKAGE = "ape")[[7]]
+                double(Ntip + Nnode), PACKAGE = "ape")[[7]]
         }
     }
     ##if (type == "fan") {

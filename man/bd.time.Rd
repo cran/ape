@@ -64,7 +64,7 @@ bd.time(phy, birth, death, BIRTH = NULL, DEATH = NULL,
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{ltt.plot}}, \code{\link{birthdeath}},
-  \code{\link{yule.time}}
+  \code{\link{yule.time}}, \code{\link{LTT}}
 }
 \examples{
 set.seed(3)
@@ -84,3 +84,4 @@ bd.time(tr, birth.logis, 0, ip = c(0, -2, 0.01))
 ## [1] 20.73023
 }
 }
+\keyword{models}

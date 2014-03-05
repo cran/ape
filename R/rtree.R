@@ -120,7 +120,7 @@ rcoal <- function(n, tip.label = NULL, br = "coalescent", ...)
         edge.length <- c(x[c(2, 1, 1)], sum(x))
     } else {
         edge.length <- numeric(nbr)
-        h <- numeric(2*n - 1) # initialized with 0's
+        h <- numeric(2*n - 1)
         node.height <- cumsum(x)
         pool <- 1:n
         nextnode <- 2L*n - 1L

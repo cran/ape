@@ -193,8 +193,7 @@ compute.brlen <- function(phy, method = "Grafen", power = 1, ...)
         tr <- reorder(phy, "postorder")
         xx <- .C(node_depth, as.integer(Ntip), as.integer(Nnode),
                  as.integer(tr$edge[, 1]), as.integer(tr$edge[, 2]),
-                 as.integer(Nedge), double(Ntip + Nnode), 1L,
-                 DUP = FALSE)[[6]] - 1
+                 as.integer(Nedge), double(Ntip + Nnode), 1L)[[6]] - 1
         m <- Ntip - 1
         phy$edge.length <-
           (xx[phy$edge[, 1]]/m)^power - (xx[phy$edge[, 2]]/m)^power
