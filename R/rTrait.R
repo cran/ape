@@ -1,8 +1,8 @@
-## rTrait.R (2012-02-09)
+## rTrait.R (2014-03-06)
 
 ##   Trait Evolution
 
-## Copyright 2010-2012 Emmanuel Paradis
+## Copyright 2010-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -116,10 +116,10 @@ rTraitCont <-
             else if (length(theta) != N)
                 stop("'theta' must have one or Nedge(phy) elements")
         }
-        .C(C_rTraitCont, as.integer(model), as.integer(N),
-           as.integer(anc - 1L), as.integer(des - 1L), el,
-           as.double(sigma), as.double(alpha), as.double(theta), x,
-           NAOK = TRUE)
+        x <- .C(C_rTraitCont, as.integer(model), as.integer(N),
+                as.integer(anc - 1L), as.integer(des - 1L), el,
+                as.double(sigma), as.double(alpha), as.double(theta),
+                x = x, NAOK = TRUE)$x
     }
 
     if (ancestor) {

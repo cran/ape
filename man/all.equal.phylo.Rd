@@ -63,10 +63,5 @@ t4 <- read.tree(text = "(c:2,(a:1,b:1):1);")
 all.equal(t3, t4) # == all.equal.phylo(t3, t4)
 ### ... here we force the comparison as lists:
 all.equal.list(t3, t4)
-t5 <- read.tree(text = "(a:2,(c:1,b:1):1);")
-### note that this does NOT return FALSE...:
-all.equal(t3, t5)
-### ... do this instead:
-identical(all.equal(t3, t5), TRUE)
 }
 \keyword{manip}

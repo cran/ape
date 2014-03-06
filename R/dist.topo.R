@@ -1,4 +1,4 @@
-## dist.topo.R (2014-01-02)
+## dist.topo.R (2014-03-07)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -99,18 +99,13 @@ prop.part <- function(..., check.labels = TRUE)
     obj <- list(...)
     if (length(obj) == 1 && class(obj[[1]]) != "phylo")
         obj <- obj[[1]]
-    ## <FIXME>
-    ## class(obj) <- NULL # needed? apparently not, see below (2010-11-18)
-    ## </FIXME>
     ntree <- length(obj)
     if (ntree == 1) check.labels <- FALSE
     if (check.labels) obj <- .compressTipLabel(obj) # fix by Klaus Schliep (2011-02-21)
+    class(obj) <- NULL # fix by Klaus Schliep (2014-03-06)
     for (i in 1:ntree) storage.mode(obj[[i]]$Nnode) <- "integer"
-    ## <FIXME>
-    ## The 1st must have tip labels
-    ## Maybe simply pass the number of tips to the C code??
+    class(obj) <- "multiPhylo"
     obj <- .uncompressTipLabel(obj) # fix a bug (2010-11-18)
-    ## </FIXME>
     clades <- .Call(prop_part, obj, ntree, TRUE)
     attr(clades, "number") <- attr(clades, "number")[1:length(clades)]
     attr(clades, "labels") <- obj[[1]]$tip.label
@@ -199,8 +194,8 @@ prop.clades <- function(phy, ..., part = NULL, rooted = FALSE)
 boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
                        trees = FALSE, quiet = FALSE, rooted = FALSE)
 {
-    if (!is.matrix(x) && !is.data.frame(x))
-        stop("the data 'x' must a matrix or a data frame")
+    if (is.null(dim(x)) || length(dim(x)) != 2)
+        stop("the data 'x' must have two dimensions (e.g., a matrix or a data frame)")
 
     boot.tree <- vector("list", B)
 

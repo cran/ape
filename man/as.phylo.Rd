@@ -70,7 +70,8 @@ new2old.phylo(phy)
 data(bird.orders)
 hc <- as.hclust(bird.orders)
 tr <- as.phylo(hc)
-identical(bird.orders, tr) # FALSE, but...
+all.equal(bird.orders, tr) # FALSE, but...
+tr$edge.length <- 2 * tr$edge.length
 all.equal(bird.orders, tr) # ... TRUE
 
 ### shows the three plots for tree objects:
