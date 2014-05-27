@@ -42,7 +42,6 @@ richness.yule.test <- function(x, t)
     n <- c(n1, n2)
     tb <- c(t, t)
 
-    ## taken from /home/paradis/data/Projets/FISHLOSS/BDfit.R:
     .PrNt.Yule <- function(N, age, birth) {
         tmp <- exp(-birth * age)
         tmp * (1 - tmp)^(N - 1)

@@ -1,4 +1,4 @@
-## plot.phylo.R (2014-03-03)
+## plot.phylo.R (2014-05-07)
 
 ##   Plot Phylogenies
 
@@ -14,7 +14,7 @@ plot.phylo <-
              edge.width = 1, edge.lty = 1, font = 3, cex = par("cex"),
              adj = NULL, srt = 0, no.margin = FALSE, root.edge = FALSE,
              label.offset = 0, underscore = FALSE, x.lim = NULL,
-             y.lim = NULL, direction = "rightwards", lab4ut = "horizontal",
+             y.lim = NULL, direction = "rightwards", lab4ut = NULL,
              tip.color = "black", plot = TRUE, rotate.tree = 0,
              open.angle = 0, node.depth = 1, ...)
 {
@@ -97,11 +97,11 @@ plot.phylo <-
     ## 'z' is the tree in postorder order used in calls to .C
     z <- reorder(x, order = "postorder")
 
-    if (phyloORclado) {
-        if (is.null(node.pos)) {
-            node.pos <- 1
-            if (type == "cladogram" && !use.edge.length) node.pos <- 2
-        }
+if (phyloORclado) {
+        if (is.null(node.pos))
+            node.pos <-
+                if (type == "cladogram" && !use.edge.length) 2 else 1
+
         if (node.pos == 1)
             yy <- .nodeHeight(Ntip, Nnode, z$edge, Nedge, yy)
         else {
@@ -120,10 +120,11 @@ plot.phylo <-
         } else  {
             xx <- .nodeDepthEdgelength(Ntip, Nnode, z$edge, Nedge, z$edge.length)
         }
-    } else {
+} else {
     twopi <- 2 * pi
     rotate.tree <- twopi * rotate.tree/360
-    switch(type, "fan" = {
+
+    if (type != "unrooted") { # for "fan" and "radial" trees (open.angle)
         ## if the tips are not in the same order in tip.label
         ## and in edge[, 2], we must reorder the angles: we
         ## use `xx' to store temporarily the angles
@@ -133,6 +134,9 @@ plot.phylo <-
         theta <- double(Ntip)
         theta[TIPS] <- xx
         theta <- c(theta, numeric(Nnode))
+    }
+
+    switch(type, "fan" = {
         theta <- .nodeHeight(Ntip, Nnode, z$edge, Nedge, theta)
         if (use.edge.length) {
             r <- .nodeDepthEdgelength(Ntip, Nnode, z$edge, Nedge, z$edge.length)
@@ -153,16 +157,15 @@ plot.phylo <-
         xx <- XY$M[, 1] - min(XY$M[, 1])
         yy <- XY$M[, 2] - min(XY$M[, 2])
     }, "radial" = {
-        X <- .nodeDepth(Ntip, Nnode, z$edge, Nedge, node.depth)
-        X[X == 1] <- 0
-        ## radius:
-        X <- 1 - X/Ntip
-        ## angle (1st compute the angles for the tips):
-        yy <- c((1:Ntip)*twopi/Ntip, rep(0, Nnode))
-        Y <- .nodeHeight(Ntip, Nnode, z$edge, Nedge, yy)
-        xx <- X * cos(Y + rotate.tree)
-        yy <- X * sin(Y + rotate.tree)
-    })}
+        r <- .nodeDepth(Ntip, Nnode, z$edge, Nedge, node.depth)
+        r[r == 1] <- 0
+        r <- 1 - r/Ntip
+        theta <- .nodeHeight(Ntip, Nnode, z$edge, Nedge, theta) + rotate.tree
+        xx <- r * cos(theta)
+        yy <- r * sin(theta)
+    })
+}
+
     if (phyloORclado) {
         if (!horizontal) {
             tmp <- yy
@@ -174,13 +177,18 @@ plot.phylo <-
             if (direction == "upwards") yy <- yy + x$root.edge
         }
     }
+
     if (no.margin) par(mai = rep(0, 4))
+
+    if (show.tip.label) nchar.tip.label <- nchar(x$tip.label)
+    max.yy <- max(yy)
+
     if (is.null(x.lim)) {
         if (phyloORclado) {
             if (horizontal) {
                 x.lim <- c(0, NA)
                 pin1 <- par("pin")[1] # width of the device in inches
-                strWi <- strwidth(x$tip.label, "inches") # id. for the tip labels
+                strWi <- strwidth(x$tip.label, "inches", cex = cex) # id. for the tip labels
                 ## 1.04 comes from that we are using a regular axis system
                 ## with 4% on both sides of the range of x:
                 xx.tips <- xx[1:Ntip] * 1.04
@@ -188,25 +196,26 @@ plot.phylo <-
                 ## user coordinates to inches:
                 alp <- try(uniroot(function(a) max(a*xx.tips + strWi) - pin1,
                                    c(0, 1e6))$root, silent = TRUE)
-                ## if the above fails, give 1/3 of the device for the tip labels:
+                ## if the above fails, give 1/3 of the plot for the tip labels:
                 if (is.character(alp)) tmp <- max(xx.tips)*1.5 else {
                     tmp <- if (show.tip.label) max(xx.tips + strWi/alp) else max(xx.tips)
                 }
+                if (show.tip.label) tmp <- tmp + label.offset
                 x.lim[2] <- tmp
             } else x.lim <- c(1, Ntip)
         } else switch(type, "fan" = {
             if (show.tip.label) {
-                offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
-                x.lim <- c(min(xx) - offset, max(xx) + offset)
-            } else x.lim <- c(min(xx), max(xx))
+                offset <- max(nchar.tip.label * 0.018 * max.yy * cex)
+                x.lim <- range(xx) + c(-offset, offset)
+            } else x.lim <- range(xx)
         }, "unrooted" = {
             if (show.tip.label) {
-                offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
+                offset <- max(nchar.tip.label * 0.018 * max.yy * cex)
                 x.lim <- c(0 - offset, max(xx) + offset)
             } else x.lim <- c(0, max(xx))
         }, "radial" = {
             if (show.tip.label) {
-                offset <- max(nchar(x$tip.label) * 0.03 * cex)
+                offset <- max(nchar.tip.label * 0.03 * cex)
                 x.lim <- c(-1 - offset, 1 + offset)
             } else x.lim <- c(-1, 1)
         })
@@ -214,10 +223,10 @@ plot.phylo <-
         x.lim <- c(0, x.lim)
         if (phyloORclado && !horizontal) x.lim[1] <- 1
         if (type %in% c("fan", "unrooted") && show.tip.label)
-          x.lim[1] <- -max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
+          x.lim[1] <- -max(nchar.tip.label * 0.018 * max.yy * cex)
         if (type == "radial")
           x.lim[1] <-
-            if (show.tip.label) -1 - max(nchar(x$tip.label) * 0.03 * cex)
+            if (show.tip.label) -1 - max(nchar.tip.label * 0.03 * cex)
             else -1
     }
     ## mirror the xx:
@@ -227,7 +236,7 @@ plot.phylo <-
             if (horizontal) y.lim <- c(1, Ntip) else {
                 y.lim <- c(0, NA)
                 pin2 <- par("pin")[2] # height of the device in inches
-                strWi <- strwidth(x$tip.label, "inches")
+                strWi <- strwidth(x$tip.label, "inches", cex = cex)
                 ## 1.04 comes from that we are using a regular axis system
                 ## with 4% on both sides of the range of x:
                 yy.tips <- yy[1:Ntip] * 1.04
@@ -239,21 +248,22 @@ plot.phylo <-
                 if (is.character(alp)) tmp <- max(yy.tips)*1.5 else {
                     tmp <- if (show.tip.label) max(yy.tips + strWi/alp) else max(yy.tips)
                 }
+                if (show.tip.label) tmp <- tmp + label.offset
                 y.lim[2] <- tmp
             }
         } else switch(type, "fan" = {
             if (show.tip.label) {
-                offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
-                y.lim <- c(min(yy) - offset, max(yy) + offset)
-            } else y.lim <- c(min(yy), max(yy))
+                offset <- max(nchar.tip.label * 0.018 * max.yy * cex)
+                y.lim <- c(min(yy) - offset, max.yy + offset)
+            } else y.lim <- c(min(yy), max.yy)
         }, "unrooted" = {
             if (show.tip.label) {
-                offset <- max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
-                y.lim <- c(0 - offset, max(yy) + offset)
-            } else y.lim <- c(0, max(yy))
+                offset <- max(nchar.tip.label * 0.018 * max.yy * cex)
+                y.lim <- c(0 - offset, max.yy + offset)
+            } else y.lim <- c(0, max.yy)
         }, "radial" = {
             if (show.tip.label) {
-                offset <- max(nchar(x$tip.label) * 0.03 * cex)
+                offset <- max(nchar.tip.label * 0.03 * cex)
                 y.lim <- c(-1 - offset, 1 + offset)
             } else y.lim <- c(-1, 1)
         })
@@ -261,9 +271,9 @@ plot.phylo <-
         y.lim <- c(0, y.lim)
         if (phyloORclado && horizontal) y.lim[1] <- 1
         if (type %in% c("fan", "unrooted") && show.tip.label)
-            y.lim[1] <- -max(nchar(x$tip.label) * 0.018 * max(yy) * cex)
+            y.lim[1] <- -max(nchar.tip.label * 0.018 * max.yy * cex)
         if (type == "radial")
-            y.lim[1] <- if (show.tip.label) -1 - max(nchar(x$tip.label) * 0.018 * max(yy) * cex) else -1
+            y.lim[1] <- if (show.tip.label) -1 - max(nchar.tip.label * 0.018 * max.yy * cex) else -1
     }
     ## mirror the yy:
     if (phyloORclado && direction == "downwards") yy <- y.lim[2] - yy # fix by Klaus
@@ -337,31 +347,71 @@ if (plot) {
         if (phyloORclado)
             text(xx[1:Ntip] + lox, yy[1:Ntip] + loy, x$tip.label, adj = adj,
                  font = font, srt = srt, cex = cex, col = tip.color)
+        else {
+            angle <- if (type == "unrooted") XY$axe else atan2(yy[1:Ntip], xx[1:Ntip]) # in radians
 
-        if (type == "unrooted") {
+            lab4ut <-
+                if (is.null(lab4ut)) {
+                    if (type == "unrooted") "horizontal" else "axial"
+                } else match.arg(lab4ut, c("horizontal", "axial"))
+
             if (lab4ut == "horizontal") {
                 y.adj <- x.adj <- numeric(Ntip)
-                sel <- abs(XY$axe) > 0.75 * pi
+                sel <- abs(angle) > 0.75 * pi
                 x.adj[sel] <- -strwidth(x$tip.label)[sel] * 1.05
-                sel <- abs(XY$axe) > pi/4 & abs(XY$axe) < 0.75 * pi
-                x.adj[sel] <- -strwidth(x$tip.label)[sel] * (2 * abs(XY$axe)[sel] / pi - 0.5)
-                sel <- XY$axe > pi / 4 & XY$axe < 0.75 * pi
+                sel <- abs(angle) > pi/4 & abs(angle) < 0.75 * pi
+                x.adj[sel] <- -strwidth(x$tip.label)[sel] * (2 * abs(angle)[sel] / pi - 0.5)
+                sel <- angle > pi / 4 & angle < 0.75 * pi
                 y.adj[sel] <- strheight(x$tip.label)[sel] / 2
-                sel <- XY$axe < -pi / 4 & XY$axe > -0.75 * pi
+                sel <- angle < -pi / 4 & angle > -0.75 * pi
                 y.adj[sel] <- -strheight(x$tip.label)[sel] * 0.75
                 text(xx[1:Ntip] + x.adj * cex, yy[1:Ntip] + y.adj * cex,
                      x$tip.label, adj = c(adj, 0), font = font,
                      srt = srt, cex = cex, col = tip.color)
             } else { # if lab4ut == "axial"
-                adj <- abs(XY$axe) > pi/2
-                srt <- 180 * XY$axe / pi
-                srt[adj] <- srt[adj] - 180
-                adj <- as.numeric(adj)
+###                adj <- abs(XY$axe) > pi/2
+###                srt <- 180 * XY$axe / pi
+###                srt[adj] <- srt[adj] - 180
+###                adj <- as.numeric(adj)
+###                xx.tips <- xx[1:Ntip]
+###                yy.tips <- yy[1:Ntip]
+###                if (label.offset) {
+###                    xx.tips <- xx.tips + label.offset * cos(XY$axe)
+###                    yy.tips <- yy.tips + label.offset * sin(XY$axe)
+###                }
+###                ## `srt' takes only a single value, so can't vectorize this:
+###                ## (and need to 'elongate' these vectors:)
+###                font <- rep(font, length.out = Ntip)
+###                tip.color <- rep(tip.color, length.out = Ntip)
+###                cex <- rep(cex, length.out = Ntip)
+###                for (i in 1:Ntip)
+###                    text(xx.tips[i], yy.tips[i], cex = cex[i],
+###                         x$tip.label[i], adj = adj[i], font = font[i],
+###                         srt = srt[i], col = tip.color[i])
+###            }
+###        }
+###        if (type %in% c("fan", "radial")) {
                 xx.tips <- xx[1:Ntip]
                 yy.tips <- yy[1:Ntip]
+###            angle <- atan2(yy.tips, xx.tips) # in radians
                 if (label.offset) {
-                    xx.tips <- xx.tips + label.offset * cos(XY$axe)
-                    yy.tips <- yy.tips + label.offset * sin(XY$axe)
+                    xx.tips <- xx.tips + label.offset * cos(angle)
+                    yy.tips <- yy.tips + label.offset * sin(angle)
+                }
+###            s <- xx.tips < 0
+###            angle <- angle * 180/pi # switch to degrees
+###            angle[s] <- angle[s] + 180
+###            adj <- as.numeric(s)
+                if (type == "unrooted"){
+                    adj <- abs(angle) > pi/2
+                    angle <- angle * 180/pi # switch to degrees
+                    angle[adj] <- angle[adj] - 180
+                    adj <- as.numeric(adj)
+                } else {
+                    s <- xx.tips < 0
+                    angle <- angle * 180/pi
+                    angle[s] <- angle[s] + 180
+                    adj <- as.numeric(s)
                 }
                 ## `srt' takes only a single value, so can't vectorize this:
                 ## (and need to 'elongate' these vectors:)
@@ -369,32 +419,10 @@ if (plot) {
                 tip.color <- rep(tip.color, length.out = Ntip)
                 cex <- rep(cex, length.out = Ntip)
                 for (i in 1:Ntip)
-                    text(xx.tips[i], yy.tips[i], cex = cex[i],
-                         x$tip.label[i], adj = adj[i], font = font[i],
-                         srt = srt[i], col = tip.color[i])
+                    text(xx.tips[i], yy.tips[i], x$tip.label[i], font = font[i],
+                         cex = cex[i], srt = angle[i], adj = adj[i],
+                         col = tip.color[i])
             }
-        }
-        if (type %in% c("fan", "radial")) {
-            xx.tips <- xx[1:Ntip]
-            yy.tips <- yy[1:Ntip]
-            angle <- atan2(yy.tips, xx.tips) # in radians
-            if (label.offset) {
-                xx.tips <- xx.tips + label.offset * cos(angle)
-                yy.tips <- yy.tips + label.offset * sin(angle)
-            }
-            s <- xx.tips < 0
-            angle <- angle * 180/pi # switch to degrees
-            angle[s] <- angle[s] + 180
-            adj <- as.numeric(s)
-            ## `srt' takes only a single value, so can't vectorize this:
-            ## (and need to 'elongate' these vectors:)
-            font <- rep(font, length.out = Ntip)
-            tip.color <- rep(tip.color, length.out = Ntip)
-            cex <- rep(cex, length.out = Ntip)
-            for (i in 1:Ntip)
-                text(xx.tips[i], yy.tips[i], x$tip.label[i], font = font[i],
-                     cex = cex[i], srt = angle[i], adj = adj[i],
-                     col = tip.color[i])
         }
     }
     if (show.node.label)
@@ -426,14 +454,20 @@ phylogram.plot <- function(edge, Ntip, Nnode, xx, yy, horizontal,
     ## un trait vertical a chaque noeud...
     x0v <- xx[nodes]
     y0v <- y1v <- numeric(Nnode)
+
     ## store the index of each node in the 1st column of edge:
     NodeInEdge1 <- vector("list", Nnode)
-    for (i in nodes) {
-        ii <- i - Ntip
-        j <- NodeInEdge1[[ii]] <- which(edge[, 1] == i)
+    e1 <- edge[, 1]
+    for (i in seq_along(e1)) {
+        j <- e1[i] - Ntip
+        NodeInEdge1[[j]] <- c(NodeInEdge1[[j]], i)
+    }
+
+    for (i in 1:Nnode) {
+        j <- NodeInEdge1[[i]]
         tmp <- range(yy[edge[j, 2]])
-        y0v[ii] <- tmp[1]
-        y1v[ii] <- tmp[2]
+        y0v[i] <- tmp[1]
+        y1v[i] <- tmp[2]
     }
     ## ... et un trait horizontal partant de chaque tip et chaque noeud
     ##  vers la racine

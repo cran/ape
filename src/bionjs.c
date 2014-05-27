@@ -1,6 +1,6 @@
-/* bionjs.c    2013-09-26 */
+/* bionjs.c    2014-03-21 */
 
-/* Copyright 2011-2012 Andrei-Alin Popescu */
+/* Copyright 2011-2014 Andrei-Alin Popescu */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -209,11 +209,20 @@ void C_bionjs(double *D, int *N, int *edge1, int *edge2, double *edge_length, in
                 //if we stil have incomplete distances
                 if(sw==1)
                 {
-                 lamb=0.5+(1/(2*(s[give_index(OTU1,OTU2,n)]-2)*v[give_index(OTU2,OTU1,n)]))*lambSum;
+		    if(v[give_index(OTU2,OTU1,n)]!=0.0)
+			lamb=0.5+(1.0/(2*(s[give_index(OTU1,OTU2,n)]-2)*v[give_index(OTU2,OTU1,n)]))*lambSum;
+		    else
+			lamb=0.5;
+		    if(lamb<0.0)lamb=0.0;
+		    if(lamb>1.0)lamb=1.0;
                 }else{
-                 lamb=0.5+(1/(2*(n-2)*v[give_index(OTU2,OTU1,n)]))*lambSum;
-                     }
-
+		    if(v[give_index(OTU2,OTU1,n)]!=0.0)
+			lamb=0.5+(1.0/(2*(n-2)*v[give_index(OTU1,OTU2,n)]))*lambSum;
+		    else
+			lamb=0.5;
+		    if(lamb<0.0)lamb=0.0;
+		    if(lamb>1.0)lamb=1.0;
+		}
                 //although s was updated above, s[otu1,otu2] has remained unchanged
                 //so it is safe to use it here
                 //if complete distanes, use N-2, else use S

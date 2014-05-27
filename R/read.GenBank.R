@@ -1,8 +1,8 @@
-## read.GenBank.R (2012-02-17)
+## read.GenBank.R (2014-04-02)
 
 ##   Read DNA Sequences from GenBank via Internet
 
-## Copyright 2002-2012 Emmanuel Paradis
+## Copyright 2002-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -25,7 +25,7 @@ read.GenBank <-
                      "&rettype=gb&retmode=text", sep = "")
         X <- c(X, scan(file = URL, what = "", sep = "\n", quiet = TRUE))
     }
-    FI <- grep("^ {0,}ORIGIN", X) + 1
+    FI <- which(X == "ORIGIN      ") + 1 # fix by Sofia Sal Bregua (2014-04-02)
     LA <- which(X == "//") - 1
     obj <- vector("list", N)
     for (i in 1:N) {

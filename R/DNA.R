@@ -1,8 +1,8 @@
-## DNA.R (2013-08-12)
+## DNA.R (2014-03-12)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
-## Copyright 2002-2013 Emmanuel Paradis
+## Copyright 2002-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -284,6 +284,8 @@ as.character.DNAbin <- function(x, ...)
 
 base.freq <- function(x, freq = FALSE, all = FALSE)
 {
+    if (!inherits(x, "DNAbin")) stop('base.freq requires an object of class "DNAbin"')
+
     f <- function(x)
         .C(BaseProportion, x, as.integer(length(x)), double(17),
            NAOK = TRUE)[[3]]

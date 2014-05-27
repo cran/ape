@@ -1,8 +1,8 @@
-## read.nexus.R (2012-09-28)
+## read.nexus.R (2014-04-09)
 
 ##   Read Tree File in Nexus Format
 
-## Copyright 2003-2012 Emmanuel Paradis and 2010 Klaus Schliep
+## Copyright 2003-2014 Emmanuel Paradis and 2010 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -23,29 +23,29 @@
 clado.build <- function(tp)
 {
     add.internal <- function() {
-        edge[j, 1] <<- current.node
-        node <<- node + 1
-        edge[j, 2] <<- current.node <<- node
+        edge[j, 1L] <<- current.node
+        node <<- node + 1L
+        edge[j, 2L] <<- current.node <<- node
         index[node] <<- j # set index
-        j <<- j + 1
+        j <<- j + 1L
     }
     add.terminal <- function() {
-        edge[j, 1] <<- current.node
-        edge[j, 2] <<- tip
+        edge[j, 1L] <<- current.node
+        edge[j, 2L] <<- tip
         index[tip] <<- j # set index
         tip.label[tip] <<- tpc[k]
-        k <<- k + 1
-        tip <<- tip + 1
-        j <<- j + 1
+        k <<- k + 1L
+        tip <<- tip + 1L
+        j <<- j + 1L
     }
     go.down <- function() {
         l <- index[current.node]
         node.label[current.node - nb.tip] <<- tpc[k]
-        k <<- k + 1
-        current.node <<- edge[l, 1]
+        k <<- k + 1L
+        current.node <<- edge[l, 1L]
     }
     if (!length(grep(",", tp))) {
-        obj <- list(edge = matrix(c(2, 1), 1, 2), Nnode = 1)
+        obj <- list(edge = matrix(c(2L, 1L), 1L, 2L), Nnode = 1L)
         tp <- unlist(strsplit(tp, "[\\(\\);]"))
         obj$tip.label <- tp[2]
         if (tp[3] != "") obj$node.label <- tp[3]
@@ -60,24 +60,24 @@ clado.build <- function(tp)
     skeleton <- tsp[tsp == "(" | tsp == ")" | tsp == "," | tsp == ";"]
     nsk <- length(skeleton)
     nb.node <- length(skeleton[skeleton == ")"])
-    nb.tip <- length(skeleton[skeleton == ","]) + 1
+    nb.tip <- length(skeleton[skeleton == ","]) + 1L
     ## We will assume there is an edge at the root;
     ## if so, it will be removed and put in a vector
     nb.edge <- nb.node + nb.tip
     node.label <- character(nb.node)
     tip.label <- character(nb.tip)
 
-    edge <- matrix(NA, nb.edge, 2)
-    current.node <- node <- nb.tip + 1 # node number
-    edge[nb.edge, 1] <- 0    # see comment above
-    edge[nb.edge, 2] <- node #
+    edge <- matrix(NA_integer_, nb.edge, 2L)
+    current.node <- node <- nb.tip + 1L # node number
+    edge[nb.edge, 1L] <- 0L   # see comment above
+    edge[nb.edge, 2L] <- node #
 
-    index <- numeric(nb.edge + 1)
+    index <- numeric(nb.edge + 1L)
     index[node] <- nb.edge
     ## j: index of the line number of edge
     ## k: index of the line number of tpc
     ## tip: tip number
-    j <- k <- tip <- 1
+    j <- k <- tip <- 1L
     for (i in 2:nsk) {
         if (skeleton[i] == "(") add.internal()      # add an internal branch (on top)
         if (skeleton[i] == ",") {

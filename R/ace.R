@@ -1,8 +1,8 @@
-## ace.R (2013-08-14)
+## ace.R (2014-05-27)
 
 ##   Ancestral Character Estimation
 
-## Copyright 2005-2013 Emmanuel Paradis and Ben Bolker
+## Copyright 2005-2014 Emmanuel Paradis and Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -24,7 +24,7 @@ ace <-
            method = if (type == "continuous") "REML" else "ML",
            CI = TRUE, model = if (type == "continuous") "BM" else "ER",
            scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1,
-           use.expm = FALSE, use.eigen = TRUE)
+           use.expm = FALSE, use.eigen = TRUE, marginal = FALSE)
 {
     if (!inherits(phy, "phylo"))
         stop('object "phy" is not of class "phylo"')
@@ -178,9 +178,9 @@ ace <-
                    })
         } else {
             if (ncol(model) != nrow(model))
-              stop("the matrix given as 'model' is not square")
+                stop("the matrix given as 'model' is not square")
             if (ncol(model) != nl)
-              stop("the matrix 'model' must have as many rows as the number of categories in 'x'")
+                stop("the matrix 'model' must have as many rows as the number of categories in 'x'")
             rate <- model
             np <- max(rate)
         }
@@ -233,11 +233,10 @@ ace <-
             } else matexpo
             dev <- function(p, output.liks = FALSE) {
                 if (any(is.nan(p)) || any(is.infinite(p))) return(1e50)
-                ## from Rich FitzJohn:
-                comp <- numeric(nb.tip + nb.node) # Storage...
+                comp <- numeric(nb.tip + nb.node) # from Rich FitzJohn
                 Q[] <- c(p, 0)[rate]
                 diag(Q) <- -rowSums(Q)
-                for (i  in seq(from = 1, by = 2, length.out = nb.node)) {
+                for (i in seq(from = 1, by = 2, length.out = nb.node)) {
                     j <- i + 1L
                     anc <- e1[i]
                     des1 <- e2[i]
@@ -263,20 +262,43 @@ ace <-
         out.nlm <- try(nlm(function(p) dev(p), p = obj$rates, iterlim = 1,
                            stepmax = 0, hessian = TRUE), silent = TRUE)
         options(oldwarn)
-        obj$se <-  if (class(out.nlm) == "try-error") {
+        obj$se <- if (class(out.nlm) == "try-error") {
             warning("model fit suspicious: gradients apparently non-finite")
             rep(NaN, np)
         } else .getSEs(out.nlm)
         obj$index.matrix <- index.matrix
         if (CI) {
-            obj$lik.anc <- dev(obj$rates, TRUE)
-            colnames(obj$lik.anc) <- lvls
+            lik.anc <- dev(obj$rates, TRUE)
+            if (!marginal) {
+                Q[] <- c(obj$rates, 0)[rate]
+                diag(Q) <- -rowSums(Q)
+                for (i in seq(to = 1, by = -2, length.out = nb.node)) {
+                    anc <- e1[i] - nb.tip
+                    des1 <- e2[i] - nb.tip
+                    if (des1 > 0) {
+                        P <- matexpo(Q * EL[i])
+                        tmp <- lik.anc[anc, ] / (lik.anc[des1, ] %*% P)
+                        lik.anc[des1, ] <- (tmp %*% P) * lik.anc[des1, ]
+                    }
+                    j <- i + 1L
+                    des2 <- e2[j] - nb.tip
+                    if (des2 > 0) {
+                        P <- matexpo(Q * EL[j])
+                        tmp <- lik.anc[anc, ] / (lik.anc[des2, ] %*% P)
+                        lik.anc[des2, ] <- (tmp %*% P) * lik.anc[des2, ]
+                    }
+                    lik.anc <- lik.anc / rowSums(lik.anc)
+                }
+            }
+            colnames(lik.anc) <- lvls
+            obj$lik.anc <- lik.anc
         }
     }
     obj$call <- match.call()
     class(obj) <- "ace"
     obj
 }
+
 
 logLik.ace <- function(object, ...) object$loglik
 

@@ -1,4 +1,4 @@
-## cophyloplot.R (2012-02-14)
+## cophyloplot.R (2014-04-07)
 
 ##   Plots two phylogenetic trees face to
 ##   face with the links between the tips
@@ -34,7 +34,7 @@ cophyloplot <-
                   y <- rotate(y, click - length(res$a[, 1]))
             }
         }
-        on.exit(print("done"))
+        on.exit(cat("done\n"))
     }
     else plotCophylo2(x, y, assoc = assoc, use.edge.length = use.edge.length,
         space = space, length.line = length.line, gap = gap,
@@ -152,17 +152,19 @@ plotCophylo2 <-
             decx[i] <- decy[i] <- 0
         }
 
-        segments(a[lsa[x$tip.label == assoc[i, 1]], 1] + decx[i] + gap,
-                 a[lsa[x$tip.label == assoc[i, 1]], 2],
-                 a[lsa[x$tip.label == assoc[i, 1]], 1] + gap + left,
-                 a[lsa[x$tip.label ==  assoc[i, 1]], 2],
-                 col = colors[i], lwd = lwidths[i], lty = ltype[i])
+        if (length.line) { # added by EP (2014-04-07)
+            segments(a[lsa[x$tip.label == assoc[i, 1]], 1] + decx[i] + gap,
+                     a[lsa[x$tip.label == assoc[i, 1]], 2],
+                     a[lsa[x$tip.label == assoc[i, 1]], 1] + gap + left,
+                     a[lsa[x$tip.label ==  assoc[i, 1]], 2],
+                     col = colors[i], lwd = lwidths[i], lty = ltype[i])
 
-        segments(b2[lsb[y$tip.label == assoc[i, 2]], 1] - (decy[i] + gap),
-                 b2[lsb[y$tip.label == assoc[i, 2]], 2],
-                 b2[lsb[y$tip.label == assoc[i, 2]], 1] - (gap + right),
-                 b2[lsb[y$tip.label ==  assoc[i, 2]], 2],
-                 col = colors[i], lwd = lwidths[i], lty = ltype[i])
+            segments(b2[lsb[y$tip.label == assoc[i, 2]], 1] - (decy[i] + gap),
+                     b2[lsb[y$tip.label == assoc[i, 2]], 2],
+                     b2[lsb[y$tip.label == assoc[i, 2]], 1] - (gap + right),
+                     b2[lsb[y$tip.label ==  assoc[i, 2]], 2],
+                     col = colors[i], lwd = lwidths[i], lty = ltype[i])
+        }
 
         segments(a[lsa[x$tip.label == assoc[i, 1]], 1] + gap + left,
                  a[lsa[x$tip.label == assoc[i, 1]], 2],

@@ -13,7 +13,7 @@
     cex = par("cex"), adj = NULL, srt = 0, no.margin = FALSE,
     root.edge = FALSE, label.offset = 0, underscore = FALSE,
     x.lim = NULL, y.lim = NULL, direction = "rightwards",
-    lab4ut = "horizontal", tip.color = "black", plot = TRUE,
+    lab4ut = NULL, tip.color = "black", plot = TRUE,
     rotate.tree = 0, open.angle = 0, node.depth = 1, ...)
 \method{plot}{multiPhylo}(x, layout = 1, ...)
 }
@@ -88,11 +88,12 @@
     tree. Four values are possible: "rightwards" (the default),
     "leftwards", "upwards", and "downwards".}
   \item{lab4ut}{(= labels for unrooted trees) a character string
-    specifying the display of tip labels for unrooted trees: either
-    \code{"horizontal"} where all labels are horizontal (the default),
-    or \code{"axial"} where the labels are displayed in the axis of the
-    corresponding terminal branches. This option has an effect only if
-    \code{type = "unrooted"}.}
+    specifying the display of tip labels for unrooted trees (can be
+    abbreviated): either \code{"horizontal"} where all labels are
+    horizontal (the default if \code{type = "u"}), or \code{"axial"}
+    where the labels are displayed in the axis of the corresponding
+    terminal branches. This option has an effect if \code{type = "u"},
+    \code{"f"}, or \code{"r"}.}
   \item{tip.color}{the colours used for the tip labels, eventually
     recycled (see examples).}
   \item{plot}{a logical controlling whether to draw the tree. If
@@ -101,8 +102,8 @@
   \item{rotate.tree}{for "fan", "unrooted", or "radial" trees: the
     rotation of the whole tree in degrees (negative values are
     accepted).}
-  \item{open.angle}{if \code{type = "f"}, the angle in degrees left
-    blank. Use a non-zero value if you want to call
+  \item{open.angle}{if \code{type = "f"} or \code{"r"}, the angle in
+    degrees left blank. Use a non-zero value if you want to call
     \code{\link{axisPhylo}} after the tree is plotted.}
   \item{node.depth}{an integer value (1 or 2) used if branch lengths are
     not used to plot the tree; 1: the node depths are proportional to

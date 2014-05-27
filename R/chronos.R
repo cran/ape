@@ -1,8 +1,8 @@
-## chronos.R (2013-01-03)
+## chronos.R (2014-05-15)
 
 ##   Molecular Dating With Penalized and Maximum Likelihood
 
-## Copyright 2013 Emmanuel Paradis
+## Copyright 2013-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -244,14 +244,15 @@ maybe you need to adjust the calibration dates")
     gradient.poisson <- function(rate, node.time) {
         age[unknown.ages] <- node.time
         real.edge.length <- age[e1] - age[e2]
-        #if (any(real.edge.length < 0))
-        #    return(numeric(N + length(unknown.ages)))
+
         ## gradient for the rates:
         gr <- el/rate - real.edge.length
 
         ## gradient for the dates:
         tmp <- el/real.edge.length - rate
-        gr.dates <- sapply(A_ki, function(x) sum(tmp[x])) - tmp[D_ki]
+        tmp2 <- tmp[D_ki]
+        tmp2[is.na(tmp2)] <- 0
+        gr.dates <- sapply(A_ki, function(x) sum(tmp[x])) - tmp2
 
         c(gr, gr.dates)
     }

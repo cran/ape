@@ -1,4 +1,4 @@
-## dist.topo.R (2014-03-07)
+## dist.topo.R (2014-05-16)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -97,7 +97,7 @@ dist.topo <- function(x, y, method = "PH85")
 prop.part <- function(..., check.labels = TRUE)
 {
     obj <- list(...)
-    if (length(obj) == 1 && class(obj[[1]]) != "phylo")
+    if (length(obj) == 1 && !inherits(obj[[1]], "phylo")) # fix by Steve Walker (2014-03-31)
         obj <- obj[[1]]
     ntree <- length(obj)
     if (ntree == 1) check.labels <- FALSE

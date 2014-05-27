@@ -27,7 +27,7 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
    "REML" else "ML", CI = TRUE,
     model = if (type == "continuous") "BM" else "ER",
     scaled = TRUE, kappa = 1, corStruct = NULL, ip = 0.1,
-    use.expm = FALSE, use.eigen = TRUE)
+    use.expm = FALSE, use.eigen = TRUE, marginal = FALSE)
 \method{print}{ace}(x, digits = 4, ...)
 \method{logLik}{ace}(object, ...)
 \method{deviance}{ace}(object, ...)
@@ -66,6 +66,10 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
   \item{use.eigen}{a logical (relevant if \code{type = "d"}); if
     \code{TRUE} then the probability matrix is computed with an eigen
     decomposition instead of a matrix exponential (see details).}
+  \item{marginal}{a logical (relevant if \code{type = "d"}). By default,
+    the joint reconstruction of the ancestral states are done. Set this
+    option to \code{TRUE} if you want the marginal reconstruction (see
+    details.)}
   \item{digits}{the number of digits to be printed.}
   \item{object}{an object of class \code{"ace"}.}
   \item{k}{a numeric value giving the penalty per estimated parameter;
@@ -119,6 +123,20 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
   3)}). If a short-cut is used, the number of states is determined from
   the data.
 
+  By default, the likelihood of the different ancestral states of
+  discrete characters are computed with a joint estimation procedure
+  using a procedure similar to the one described in Pupko et al. (2000).
+  If \code{marginal = TRUE}, a marginal estimation procedure is used
+  (this was the only choice until ape 3.1-1). With this second method,
+  the likelihood values at a given node are computed using only the
+  information from the tips (and branches) descending from this node.
+  With the joint estimation, all information is used for each node. The
+  difference between these two methods is further explained in
+  Felsenstein (2004, pp. 259-260) and in Yang (2006, pp. 121-126). The
+  present implementation of the joint estimation uses a ``two-pass''
+  algorithm which is much faster than stochastic mapping while the
+  estimates of both methods are very close.
+
   With discrete characters it is necessary to compute the exponential of
   the rate matrix. The only possibility until \pkg{ape} 3.0-7) was the
   function \code{\link{matexpo}} in \pkg{ape}. If \code{use.expm = TRUE}
@@ -164,6 +182,9 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
   Felsenstein, J. (1985) Phylogenies and the comparative
   method. \emph{American Naturalist}, \bold{125}, 1--15.
 
+  Felsenstein, J. (2004) \emph{Inferring Phylogenies}. Sunderland:
+  Sinauer Associates.
+
   Lebl, J. (2013) \emph{Notes on Diffy Qs: Differential Equations for
   Engineers}. \url{http://www.jirka.org/diffyqs/}.
 
@@ -177,17 +198,27 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
   characters. \emph{Proceedings of the Royal Society of London. Series
     B. Biological Sciences}, \bold{255}, 37--45.
 
+  Pupko, T., Pe'er, I, Shamir, R., and Graur, D. (2000) A fast algorithm
+  for joint reconstruction of ancestral amino acid sequences.
+  \emph{Molecular Biology and Evolution}, \bold{17}, 890--896.
+
   Schluter, D., Price, T., Mooers, A. O. and Ludwig, D. (1997)
   Likelihood of ancestor states in adaptive radiation. \emph{Evolution},
   \bold{51}, 1699--1711.
+
+  Yang, Z. (2006) \emph{Computational Molecular Evolution}. Oxford:
+  Oxford University Press.
 }
 \author{Emmanuel Paradis, Ben Bolker}
 \seealso{
-  \code{\link{MPR}}, \code{\link{corBrownian}}, \code{\link{corGrafen}},
-  \code{\link{corMartins}}, \code{\link{compar.ou}}, \code{\link[stats]{anova}}
+  \code{\link{MPR}}, \code{\link{corBrownian}}, \code{\link{compar.ou}},
+  \code{\link[stats]{anova}}
+
+  Reconstruction of ancestral sequences can be done with the package
+  \pkg{phangorn} (see function \code{?ancestral.pml}).
 }
 \examples{
-### Just some random data...
+### Some random data...
 data(bird.orders)
 x <- rnorm(23)
 ### Compare the three methods for continuous characters:

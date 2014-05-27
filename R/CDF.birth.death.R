@@ -243,7 +243,7 @@ rlineage <-
         if (Foo(t, Tmax) < P) return(Tmax + 1)
         inc <- 10
         x <- t + inc
-        while (inc > eps) { # la précision influe sur le temps de calcul
+        while (inc > eps) { # la precision influe sur le temps de calcul
             if (Foo(t, x) > P) {
                 x <- x - inc
                 inc <- inc/10
@@ -331,7 +331,7 @@ rbdtree <-
         if (Foo(t, Tmax) < P) return(Tmax + 1)
         inc <- 10
         x <- t + inc
-        while (inc > eps) { # la précision influe sur le temps de calcul
+        while (inc > eps) { # la precision influe sur le temps de calcul
             if (Foo(t, x) > P) {
                 x <- x - inc
                 inc <- inc/10

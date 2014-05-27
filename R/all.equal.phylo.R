@@ -2,23 +2,23 @@
 ##
 ##     Global Comparison of two Phylogenies
 
-## Copyright 2006 Benoît Durand
+## Copyright 2006 Benoit Durand
 ##    modified by EP for the new coding of "phylo" (2006-10-04)
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 ## Recherche de la correspondance entre deux arbres
-## Parcours en profondeur et en parallèle des deux arbres (current et target)
-## current, target: les deux arbres à comparer
+## Parcours en profondeur et en parallele des deux arbres (current et target)
+## current, target: les deux arbres a comparer
 ## use.edge.length: faut-il comparer les longueurs de branches ?
-## use.tip.label: faut-il comparer les étiquettes de feuilles ou seulement la
+## use.tip.label: faut-il comparer les etiquettes de feuilles ou seulement la
 ##	topologie des deux arbres ?
 ## index.return: si TRUE, retourner la matrice de correspondance entre noeuds
-##	et feuilles, une matrice à deux colonnes (current et target) avec pour
+##	et feuilles, une matrice a deux colonnes (current et target) avec pour
 ##	chaque ligne des paires d'identifiants de noeuds/feuilles, tels qu'ils
 ##	apparaissent dans l'attribut 'edge' des objets phylo
-## tolerance, scale: paramètres de comparaison des longueurs de branches
+## tolerance, scale: parametres de comparaison des longueurs de branches
 ##	(voir 'all.equal')
 all.equal.phylo <- function(target, current,
                         use.edge.length = TRUE,
