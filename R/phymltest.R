@@ -1,8 +1,8 @@
-## phymltest.R (2009-03-29)
+## phymltest.R (2014-06-16)
 
 ##   Fits a Bunch of Models with PhyML
 
-## Copyright 2004-2009 Emmanuel Paradis
+## Copyright 2004-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -26,9 +26,10 @@ phymltest <- function(seqfile, format = "interleaved", itree = NULL,
     os <- Sys.info()[1]
     ## default names of PhyML:
     if (is.null(execname)) {
-        if (os == "Linux") execname <- "phyml_3.0.1_linux32"
-        if (os == "Darwin") execname <- "phyml_3.0.1_macintel"
-        if (os == "Windows") execname <- "phyml_3.0.1_win32"
+        execname <- switch(os, "Linux" = {
+            ## PhyML location for Debian and Fedora packages and maybe for other distributions (fix by Dylan A\"issi)
+            if (file.exists("/usr/bin/phyml")) "/usr/bin/phyml" else "phyml_3.0.1_linux32"
+	}, "Darwin" = "phyml_3.0.1_macintel", "Windows" = "phyml_3.0.1_win32")
     }
     if (is.null(execname))
         stop("you must give an executable file name for PHYML")
@@ -87,7 +88,7 @@ summary.phymltest <- function(object, ...)
             m1 <- unlist(strsplit(names(object)[i], "\\+"))
             m2 <- unlist(strsplit(names(object)[j], "\\+"))
             if (m1[1] == "K80" && m2[1] == "F81") next
-            ## à vérifier que ds les 2 lignes suivantes les conversions
+            ## a verifier que ds les 2 lignes suivantes les conversions
             ## se font bien correctement!!!!
             if (length(grep("\\+I", names(object)[i])) > 0 && length(grep("\\+I", names(object)[j])) == 0) next
             if (length(grep("\\+G", names(object)[i])) > 0 && length(grep("\\+G", names(object)[j])) == 0) next

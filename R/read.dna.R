@@ -1,14 +1,19 @@
-## read.dna.R (2013-04-02)
+## read.dna.R (2014-05-29)
 
 ##   Read DNA Sequences in a File
 
-## Copyright 2003-2013 Emmanuel Paradis
+## Copyright 2003-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 read.FASTA <- function(file)
 {
+    if (length(grep("^(ht|f)tp:", file))) {
+        url <- file
+        file <- tempfile()
+        download.file(url, file)
+    }
     sz <- file.info(file)$size
     x <- readBin(file, "raw", sz)
     icr <- which(x == as.raw(0x0d)) # CR

@@ -1,8 +1,8 @@
-## which.edge.R (2013-05-10)
+## which.edge.R (2014-06-05)
 
 ##   Identifies Edges of a Tree
 
-## Copyright 2004-2013 Emmanuel Paradis
+## Copyright 2004-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -32,36 +32,19 @@ getMRCA <- function(phy, tip)
 which.edge <- function(phy, group)
 {
     if (!inherits(phy, "phylo"))
-      stop('object "phy" is not of class "phylo"')
+        stop('object "phy" is not of class "phylo"')
     if (is.character(group))
-      group <- which(phy$tip.label %in% group)
-    if (length(group) == 1)
-      return(match(group, phy$edge[, 2]))
-    nb.tip <- length(phy$tip.label)
-    MRCA <- getMRCA(phy, group)
-    if (MRCA == nb.tip + 1) {
-        from <- 1
-        to <- dim(phy$edge)[1]
-    } else {
-        from <- which(phy$edge[, 2] == MRCA) + 1
-        to <- max(which(phy$edge[, 2] %in% group))
+        group <- which(phy$tip.label %in% group)
+
+    n <- length(phy$tip.label)
+    sn <- .Call(seq_root2tip, phy$edge, n, phy$Nnode)[group]
+    i <- 2L
+    repeat {
+        x <- unique(unlist(lapply(sn, "[", i)))
+        if (length(x) != 1) break
+        i <- i + 1L
     }
-    wh <- from:to
-    tmp <- phy$edge[wh, 2]
-    ## check that there are no extra tips:
-    ## (we do this by selecting the tips in `group' and the nodes
-    ##  i.e., the internal edges)
-    test <- tmp %in% group | tmp > nb.tip
-    if (any(!test)) {
-        wh <- wh[test] # drop the extra tips
-        ## see if there are no extra internal edges:
-        tmp <- phy$edge[wh, ]
-        test <- !(tmp[, 2] %in% tmp[, 1]) & tmp[, 2] > nb.tip
-        while (any(test)){
-            wh <- wh[!test]
-            tmp <- phy$edge[wh, ]
-            test <- !(tmp[, 2] %in% tmp[, 1]) & tmp[, 2] > nb.tip
-        }
-    }
-    wh
+    d <- -(1:(i - 1L))
+    x <- unique(unlist(lapply(sn, function(x) x[d])))
+    match(x, phy$edge[, 2L])
 }

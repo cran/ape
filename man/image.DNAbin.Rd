@@ -49,6 +49,7 @@
 \examples{
 data(woodmouse)
 image(woodmouse)
+rug(seg.sites(woodmouse), -0.02, 3, 1)
 image(woodmouse, "n", "blue") # show missing data
 image(woodmouse, c("g", "c"), "green") # G+C
 par(mfcol = c(2, 2))

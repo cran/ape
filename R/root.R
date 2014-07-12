@@ -1,8 +1,8 @@
-## root.R (2013-10-04)
+## root.R (2014-05-28)
 
 ##   Root of Phylogenetic Trees
 
-## Copyright 2004-2013 Emmanuel Paradis
+## Copyright 2004-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -172,11 +172,17 @@ root <- function(phy, outgroup, node = NULL,
                 phy$edge[sndcol, 2] <- newNb[phy$edge[sndcol, 2]] <- n + 2:phy$Nnode
                 phy$edge[, 1] <- newNb[phy$edge[, 1]]
             }
+            if (!is.null(phy$node.label)) {
+                newNb <- newNb[-(1:n)]
+                phy$node.label <- phy$node.label[order(newNb)]
+                phy$node.label[is.na(phy$node.label)] <- phy$node.label[1]
+                phy$node.label[1] <- "Root"
+            }
         }
         return(phy)
     }
 
-    phy$root.edge <- NULL # just in case...
+    phy$root.edge <- NULL # just in case
     Nclade <- tabulate(phy$edge[, 1])[ROOT] # degree of the root node
     ## if only 2 edges connect to the root, we have to fuse them:
     fuseRoot <- Nclade == 2

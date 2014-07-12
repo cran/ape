@@ -1,17 +1,11 @@
-### ROTATE
-### Last update CH on 09.08.2007 (updated by EP 2011-06-14)
+## rotate.R (2014-06-05)
 
-# Contents:
-# 1. rotate
+##   Ancestral Character Estimation
 
-# 1: This function swops sister clades in a phylogenetic tree. 
-# Branch lengths are considered.
-# Arguments: 
-# phy: an object of class phylo
-# node: the number (integer) of the corresponding node or number or names of two tips that coalesce to th internal node
-# polytom: use a vector of two integers to define those two clades of a tritomy, that are swopped. The default is c(1,2). The clade number is counted from the from bottom to top in the plotted tree.
-# Author: C.Heibl
+## Copyright 2007 Christoph Heibl
 
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
 
 rotate <- function(phy, node, polytom = c(1,2)){
 	# load DESCENDANTS function
@@ -19,17 +13,17 @@ rotate <- function(phy, node, polytom = c(1,2)){
 		tips <- length(tree$tip.label)
 		x <- tree$edge[,2][tree$edge[,1] == node]
 		while(max(x) > tips){
-			x <- x[x > tips] 
+			x <- x[x > tips]
 			for(h in 1:length(x)) tree$edge <- tree$edge[!tree$edge[,2] == x[h],]
 			for(i in 1:length(x)) tree$edge[,1][tree$edge[,1] == x[i]] <- node
-			x <- tree$edge[,2][tree$edge[,1] == node] 
+			x <- tree$edge[,2][tree$edge[,1] == node]
 			}
-		x	
+		x
 		}
-# function starts here	
-# definitions
+
 	if (!inherits(phy, "phylo")) # is phy of class phylo?
         stop("object \"phy\" is not of class \"phylo\"")
+        phy <- reorder(phy) # added by EP 2014-06-05
     nb.tips <- length(phy$tip.label) # number of tiplabels
 	max.int.node <- phy$Nnode+nb.tips # number of last internal node
 	nb.edges <- dim(phy$edge)[1] # number of branches
@@ -42,17 +36,17 @@ rotate <- function(phy, node, polytom = c(1,2)){
 			node[2] <- tips[,2][tips[,1] == node[2]]
 			node <- as.numeric(node)
     		}
-    	if (any(!node %in% 1:nb.tips)) # is phy of class phylo?
+    	if (any(!node %in% 1:nb.tips))
         	stop("object \"node\" does not contain terminal nodes")
     	node <- getMRCA(phy, node)
     	}
 	if (node  <= nb.tips || node > max.int.node) # is node really internal?
-        stop("object \"node\" is not an internal node of object \"phy\"")  
+        stop("object \"node\" is not an internal node of object \"phy\"")
 	with.br.length <- !is.null(phy$edge.length) # does phy contain brlength?
-	G <- cbind(phy$edge, 1:(length(phy$edge)/2)) 
+	G <- cbind(phy$edge, 1:(length(phy$edge)/2))
 	N <- phy$edge[phy$edge[,1] == node]
 	N <- N[N != node]
-	if (length(N) > 2) N <- N[polytom] 
+	if (length(N) > 2) N <- N[polytom]
 	CLADE1 <- N[1]
 	CLADE2 <- N[2]
 # do clades comprise interior nodes?
@@ -68,12 +62,12 @@ rotate <- function(phy, node, polytom = c(1,2)){
 			}
 		if (CLADE2 > nb.tips){
 			c3 <- G[,3][G[,2] == CLADE2]
-			c4 <- G[,3][G[,2] == max(CLADE22)]	
+			c4 <- G[,3][G[,2] == max(CLADE22)]
 			} else {
 			c3 <- G[,3][G[,2] == CLADE2]
 			c4 <- G[,3][G[,2] == CLADE2]
 			}
-	
+
 # create new phy$edge and  phy$edge.length
 if (c2+1 == c3){
 	if (c1 == 1 && c4 != nb.edges){
@@ -119,8 +113,5 @@ else {
 			phy$edge.length <- c(phy$edge.length[c3:c4], phy$edge.length[(c2+1):(c3-1)], phy$edge.length[c1:c2])
 		}
 	}
-        ## deleted by EP (2011-06-14):
-	## S <- write.tree(phy)
-        ## phy <- if (!with.br.length) clado.build(S) else tree.build(S)
 	phy
 	}

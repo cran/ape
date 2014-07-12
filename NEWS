@@ -1,3 +1,30 @@
+		CHANGES IN APE VERSION 3.1-3
+
+
+NEW FEATURES
+
+    o The new function rtt contributed by Rosemary McCloskey roots a
+      tree with dated tips in the location most compatible with the
+      assumption of a strict molecular clock.
+
+
+BUG FIXES
+
+    o root(, resolve.root = TRUE) did not manage node labels correctly
+      in the case where 'outgroup' was already an outgroup of the tree.
+
+    o read.dna(file, format = "fasta") works (again) with URIs (i.e.,
+      file = "http://..." or "ftp://...").
+
+    o rotate() made R crash if the tree was not in cladewise order.
+
+    o which.edge() did not work correctly for trees not in cladewise
+      order.
+
+    o read.GenBank failed to read older GenBank records.
+
+
+
 		CHANGES IN APE VERSION 3.1-2
 
 

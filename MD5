@@ -1,7 +1,7 @@
 eb723b61539feef013de476e68b5c50a *COPYING
-0886cb4ddb9055dd86d406fd8d35c226 *DESCRIPTION
+2bfd1bb4d4d1c00d776da77748e929d7 *DESCRIPTION
 1434ba4e31040404e8b049f75a705af5 *NAMESPACE
-c12ba812ce8e6465319ef3c40499dee8 *NEWS
+dbdd47f2098b6439b7d12e841b6bd14b *NEWS
 0c7bc9101516fd26fb3ddbedbe25b6a3 *R/CADM.global.R
 e042efca1d8a00d4178204f5f481b64d *R/CADM.post.R
 5fd68920346c5aca7e7695fd9dbc1c3c *R/CDF.birth.death.R
@@ -71,11 +71,11 @@ baf380fc68864e9a4c3d07f5158d3722 *R/multi2di.R
 0850fdd19c01d37ac632fc308632a463 *R/mvr.R
 282308c27ac1e78e330711d635d2e572 *R/nj.R
 e3f22d0f260c43be87a17b0ab091e2bb *R/njs.R
-1413a267f2ca08adce203e2ba44d74ad *R/nodelabels.R
+080c82acd4a90a88a1bbd098ebfe6b60 *R/nodelabels.R
 7425d422f7ca9b3966bb65a4e4336bbe *R/parafit.R
 fc0260f9e8e17fc1446117580bbc93cc *R/pcoa.R
 4999c85e82105ded85a214204321c3d1 *R/phydataplot.R
-2730f72b8b261609ae8a57a7f0c0bb8b *R/phymltest.R
+f71b4d1a0cba643e7c5cbc6f01c0e9a1 *R/phymltest.R
 61d1360195bf4d5e6e2d8c30de335dc8 *R/pic.R
 57478ff610b5d0d3010c12ad17d968f8 *R/plot.phylo.R
 e579ec65c808c29e1ecaae1501784b37 *R/plot.popsize.R
@@ -83,16 +83,17 @@ e579ec65c808c29e1ecaae1501784b37 *R/plot.popsize.R
 1e2485437566ca9af99d93b4580cbbc2 *R/print.lmorigin.R
 d0e8bd41d5acc217fdee3578adcf635b *R/print.parafit.R
 8c401518738b9cda403fa9f0eb382757 *R/rTrait.R
-77eddff87cbbebdf5dc2c2fd81e74961 *R/read.GenBank.R
+1895483cd4f45095860092900e0672c8 *R/read.GenBank.R
 b13dfb8f455b1c9e74a364085f72dbce *R/read.caic.R
-0b661f16611ef934c60f0a003734d471 *R/read.dna.R
+c1fc8ab4715f1d58145f533fbaf776e4 *R/read.dna.R
 fca9cd2c52414a936ab10a522136cf8a *R/read.nexus.R
 13ce7f5c7d1bcb7101469d12651e99c8 *R/read.nexus.data.R
 8aefdf68a66fc5ad148b4d5211a285ed *R/read.tree.R
 b1218f7862a66f566e4f3165f28fe47c *R/reorder.phylo.R
-cda4c985d8f4a51682c387c07bc6761b *R/root.R
-b31509f82422b3db2d2bc035bd3ad561 *R/rotate.R
+a71f335ebf44985121b28bfcf86d698d *R/root.R
+f584366b32e7414c669714ba5b84951b *R/rotate.R
 b7158b84c7ee7d9dcb2e0abeb6005cb0 *R/rtree.R
+01db17803643af9627fbde7dcb34dd8b *R/rtt.R
 cee88a7a00b3a858c18a3299eef49b79 *R/scales.R
 d2e06f8288af941a00c46248b586225a *R/skyline.R
 1f82059f740388b7430b2359e54a147f *R/skylineplot.R
@@ -105,7 +106,7 @@ b5081fca8758fe4458183c3e25e3e661 *R/triangMtd.R
 6e92716e8004feb088d5c093bad3828f *R/unique.multiPhylo.R
 2937379ad9e91e263b7956c264926466 *R/varcomp.R
 d2fef53445996fca1a2fca2d67f8dbb9 *R/vcv.phylo.R
-98260df0d86f094c3c9da02dbe1b27ac *R/which.edge.R
+e96c64f02ab104073d8b889193ae5152 *R/which.edge.R
 aa484437bf64a39b737665b0769e320b *R/write.dna.R
 846c603fdb8bda22e5d3e2c81681221f *R/write.nexus.R
 2ac18a948dfca02a878b4ccf3a07b145 *R/write.nexus.data.R
@@ -136,7 +137,7 @@ e2d1339025ed901009bfed58dc6505ff *data/mat5M3ID.RData
 828290996b613493f96e0fab024beebb *inst/CITATION
 3f54f3775bcf382e25df2a12228894f6 *inst/doc/MoranI.R
 abf2e3e84707634e32f3e7cc6a5ee7ae *inst/doc/MoranI.Rnw
-4dfb14a17dec4621f06dd5981acd5925 *inst/doc/MoranI.pdf
+fdb9f105c8a4991d804fb392ee52a197 *inst/doc/MoranI.pdf
 e6876b193a0df06697c788a8e48cf4bc *man/CADM.global.Rd
 060222d269ef45f0c7df76bb723e7d45 *man/DNAbin.Rd
 8b9bc214e32cde4c6e5970e48ff30c5f *man/Initialize.corPhyl.Rd
@@ -199,7 +200,7 @@ c199605f9d353b303acad4896f9b39a5 *man/cynipids.Rd
 34164e368efd0d5d961fe62e9ede75e8 *man/dbd.Rd
 e5fd45ae77e515b42d180a8c5369987d *man/del.gaps.Rd
 fbcd1d4bcf74e21fc93c195c7af3db98 *man/delta.plot.Rd
-d4dafdb3dcabdd4a984cb2bff4d987ad *man/dist.dna.Rd
+e9a4068c29af95a6c2474192b3e1af1b *man/dist.dna.Rd
 38011e81d28a120d88eead09e62c154a *man/dist.gene.Rd
 a93e4fe0f50b5b8ded1b47cb9c76ec1f *man/dist.topo.Rd
 883eb866baf7f1eb68b52ba5aa123c8e *man/diversi.gof.Rd
@@ -214,7 +215,7 @@ eea313e8ee32597b4cec120d23113642 *man/gammaStat.Rd
 3991fa7864e326579f1ab8b671095e4b *man/hivtree.Rd
 18012643a904f657fc5f5896f3d14054 *man/howmanytrees.Rd
 86c49d080fdffd614d8056021e91cc55 *man/identify.phylo.Rd
-1bfeb64b47a8d7ce253d5c6df6c18fc8 *man/image.DNAbin.Rd
+46c7c675e02d355a25d8c1c02deffcd7 *man/image.DNAbin.Rd
 4bb168908d445690105ad4c00661b93b *man/is.binary.tree.Rd
 80a5a228a43679edf75903590253a875 *man/is.compatible.Rd
 d2de8fd9549ef01a1dddeb726dd77fcf *man/is.monophyletic.Rd
@@ -242,7 +243,7 @@ dcee2d8c67b0a19c27aa3d833f33f83b *man/mst.Rd
 3df9e16b8a09df3f1dba5c4327a635fc *man/nj.Rd
 9ea7d5899a190171de4165e3240de62e *man/njs.Rd
 8f30d041ced38534477c2fac72fb1abf *man/node.depth.Rd
-a617a7e7ceacb8b2fd8a697de08b363c *man/nodelabels.Rd
+ba754eba67181a1c39d417ffd9d23b76 *man/nodelabels.Rd
 4f8b4cf2a725a8001e49390056181bef *man/opsin.Rd
 c2e2f35f4e233265c86b7967ec2d0630 *man/parafit.Rd
 89db814a5fc2e9fa5f0b9f4ad2f0d070 *man/pcoa.Rd
@@ -269,6 +270,7 @@ a3cf7db0d79645f61aa15634b21a5c92 *man/rlineage.Rd
 aa7d8a43e8456fe53480c023b7ef1648 *man/root.Rd
 6b97ea2fd96bf948fca764deab3a6e76 *man/rotate.Rd
 1a7314ee0aa76712737e76162df6cc74 *man/rtree.Rd
+e53b4b3f7e009289c628e16143b3e8b4 *man/rtt.Rd
 2b2faabf81e29f320eff5adde7e6d75d *man/seg.sites.Rd
 ce6f293b22e9b0fd36f38c67b5f40e6e *man/skyline.Rd
 74d4e9d6fc374c26807825795dff1e0e *man/skylineplot.Rd
@@ -287,7 +289,7 @@ dbb269e680caf8c722cf53c9b5ce7ace *man/triangMtd.Rd
 904af4ee107d88d1bd1b57bca4a8d535 *man/vcv.phylo.Rd
 a5d3cbf19df84d0f1e4e3a4650945cbf *man/weight.taxo.Rd
 19d511057993a6335549d8e84f6ef86a *man/where.Rd
-54579df63b905cb394dfabc5fc11843a *man/which.edge.Rd
+ef9658f5343bdcbfc3673c7f936934f5 *man/which.edge.Rd
 f569d0058bc598bb92c42ef99a58f272 *man/woodmouse.Rd
 510a3ad17baa847a3f581e9d1babb534 *man/write.dna.Rd
 b9fe1836be61c56a521386b00021fa67 *man/write.nexus.Rd

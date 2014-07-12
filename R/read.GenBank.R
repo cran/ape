@@ -1,4 +1,4 @@
-## read.GenBank.R (2014-04-02)
+## read.GenBank.R (2014-07-03)
 
 ##   Read DNA Sequences from GenBank via Internet
 
@@ -25,7 +25,7 @@ read.GenBank <-
                      "&rettype=gb&retmode=text", sep = "")
         X <- c(X, scan(file = URL, what = "", sep = "\n", quiet = TRUE))
     }
-    FI <- which(X == "ORIGIN      ") + 1 # fix by Sofia Sal Bregua (2014-04-02)
+    FI <- grep("^ORIGIN      ", X) + 1 # fix by Sofia Sal Bregua (2014-04-02) + Ingo Michalak (2014-07-03)
     LA <- which(X == "//") - 1
     obj <- vector("list", N)
     for (i in 1:N) {

@@ -99,6 +99,13 @@ plot(tr)
 nodelabels("7.3 Ma", 4, frame = "r", bg = "yellow", adj = 0)
 nodelabels("5.4 Ma", 5, frame = "c", bg = "tomato", font = 3)
 
+## A trick by Liam Revell when there are many categories:
+plot(tr, x.lim = c(-1, 4))
+nodelabels(node = 4, pie = matrix(rep(1, 100), 1), cex = 5)
+op <- par(fg = "transparent")
+nodelabels(node = 5, pie = matrix(rep(1, 100), 1), cex = 5)
+par(op)
+
 data(bird.orders)
 plot(bird.orders, use.edge.length = FALSE, font = 1)
 bs <- round(runif(22, 90, 100), 0) # some imaginary bootstrap values

@@ -1,8 +1,8 @@
-## nodelabels.R (2013-09-21)
+## nodelabels.R (2014-06-05)
 
 ##   Labelling Trees
 
-## Copyright 2004-2013 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
+## Copyright 2004-2014 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -26,12 +26,12 @@ floating.pie.asp <- function(xpos, ypos, x, edges = 200, radius = 1,
     x <- c(0, cumsum(x)/sum(x))
     dx <- diff(x)
     nx <- length(dx)
-    col <- if (is.null(col)) rainbow(nx) else rep(col, length.out = nx) # rep_len(col, nx) was introduced in R 3.0.0 so we avoid it to keep working with older versions of R
+    col <- if (is.null(col)) rainbow(nx) else rep_len(col, nx)
     ## next a fix from Klaus to avoid a "3-o'clock" segment on pies with
     ## only one proportion equal to 1:
     if (length(i <- which(dx == 1))) {
         symbols(xpos, ypos, circles = radius, inches = FALSE, add = TRUE,
-                fg = 1, bg = col[i])
+                fg = par("fg"), bg = col[i]) # suggested by Liam
     } else {
         bc <- 2 * pi * (x[1:nx] + dx/2) + startpos
         for (i in seq_len(nx)) {

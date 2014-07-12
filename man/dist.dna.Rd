@@ -41,7 +41,7 @@ dist.dna(x, model = "K80", variance = FALSE,
   The molecular evolutionary models available through the option
   \code{model} have been extensively described in the literature. A
   brief description is given below; more details can be found in the
-  References.
+  references.
 
 \itemize{
   \item{\code{raw}, \code{N}: }{This is simply the proportion or the number of
