@@ -1,4 +1,4 @@
-## which.edge.R (2014-06-05)
+## which.edge.R (2014-07-15)
 
 ##   Identifies Edges of a Tree
 
@@ -35,6 +35,8 @@ which.edge <- function(phy, group)
         stop('object "phy" is not of class "phylo"')
     if (is.character(group))
         group <- which(phy$tip.label %in% group)
+    if (length(group) == 1)
+        return(match(group, phy$edge[, 2]))
 
     n <- length(phy$tip.label)
     sn <- .Call(seq_root2tip, phy$edge, n, phy$Nnode)[group]

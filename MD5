@@ -1,7 +1,7 @@
 eb723b61539feef013de476e68b5c50a *COPYING
-2bfd1bb4d4d1c00d776da77748e929d7 *DESCRIPTION
+721805a828f28952c3b025b56cbe1b5c *DESCRIPTION
 1434ba4e31040404e8b049f75a705af5 *NAMESPACE
-dbdd47f2098b6439b7d12e841b6bd14b *NEWS
+854a025cb7e5da3e4fe230c0be950d08 *NEWS
 0c7bc9101516fd26fb3ddbedbe25b6a3 *R/CADM.global.R
 e042efca1d8a00d4178204f5f481b64d *R/CADM.post.R
 5fd68920346c5aca7e7695fd9dbc1c3c *R/CDF.birth.death.R
@@ -106,7 +106,7 @@ b5081fca8758fe4458183c3e25e3e661 *R/triangMtd.R
 6e92716e8004feb088d5c093bad3828f *R/unique.multiPhylo.R
 2937379ad9e91e263b7956c264926466 *R/varcomp.R
 d2fef53445996fca1a2fca2d67f8dbb9 *R/vcv.phylo.R
-e96c64f02ab104073d8b889193ae5152 *R/which.edge.R
+16d5511c871e41b9b2673052e03c8b33 *R/which.edge.R
 aa484437bf64a39b737665b0769e320b *R/write.dna.R
 846c603fdb8bda22e5d3e2c81681221f *R/write.nexus.R
 2ac18a948dfca02a878b4ccf3a07b145 *R/write.nexus.data.R
@@ -137,7 +137,7 @@ e2d1339025ed901009bfed58dc6505ff *data/mat5M3ID.RData
 828290996b613493f96e0fab024beebb *inst/CITATION
 3f54f3775bcf382e25df2a12228894f6 *inst/doc/MoranI.R
 abf2e3e84707634e32f3e7cc6a5ee7ae *inst/doc/MoranI.Rnw
-fdb9f105c8a4991d804fb392ee52a197 *inst/doc/MoranI.pdf
+b922a0a9d3e21916c3b63b59c8c74658 *inst/doc/MoranI.pdf
 e6876b193a0df06697c788a8e48cf4bc *man/CADM.global.Rd
 060222d269ef45f0c7df76bb723e7d45 *man/DNAbin.Rd
 8b9bc214e32cde4c6e5970e48ff30c5f *man/Initialize.corPhyl.Rd
