@@ -22,7 +22,8 @@
   \code{\link[nlme]{corClasses}} and \code{\link[nlme]{gls}} in the
   \pkg{nlme} librarie, \code{\link{corBrownian}},
   \code{\link{corMartins}}, \code{\link{corGrafen}},
-  \code{\link{corPagel}}, \code{\link{corBlomberg}}
+  \code{\link{corPagel}}, \code{\link{corBlomberg}},
+  \code{\link{vcv}}, \code{\link{vcv2phylo}}
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}, Emmanuel
   Paradis}

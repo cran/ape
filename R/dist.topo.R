@@ -224,7 +224,6 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
 
      if (rooted) {
         pp <- prop.part(boot.tree)
-        if (!rooted) pp <- postprocess.prop.part(pp)
         ans <- prop.clades(phy, part = pp, rooted = rooted)
     } else {
         phy <- reorder(phy, "postorder")

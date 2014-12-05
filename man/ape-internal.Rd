@@ -68,6 +68,12 @@
 \alias{CountBipartitionsFromTrees}
 \alias{bitsplits_multiPhylo}
 \alias{bitsplits_phylo}
+\alias{racine}
+\alias{renumeroteArbre}
+\alias{calculeC}
+\alias{getSumSquare}
+\alias{getMLHessian}
+\alias{getREMLHessian}
 \title{Internal Ape Functions}
 \description{
   Internal \pkg{ape} functions.

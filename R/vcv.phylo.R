@@ -24,7 +24,7 @@ vcv.phylo <- function(phy, model = "Brownian", corr = FALSE, ...)
     EL <- phy$edge.length
 
     ## xx: vecteur donnant la distance d'un noeud
-    ##     ou d'un tip à partir de la racine
+    ##     ou d'un tip a partir de la racine
     ## (same than in is.ultrametric)
     xx <- numeric(n + phy$Nnode)
 

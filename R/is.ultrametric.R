@@ -21,7 +21,7 @@ is.ultrametric <- function(phy, tol = .Machine$double.eps^0.5)
     EL <- phy$edge.length
 
     ## xx: vecteur donnant la distance d'un noeud
-    ##     ou d'un tip à partir de la racine
+    ##     ou d'un tip a partir de la racine
     xx <- numeric(n + phy$Nnode)
 
     ## the following must start at the root and follow the

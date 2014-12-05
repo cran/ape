@@ -1,4 +1,4 @@
-## read.nexus.R (2014-04-09)
+## read.nexus.R (2014-10-20)
 
 ##   Read Tree File in Nexus Format
 
@@ -152,11 +152,11 @@ read.nexus <- function(file, tree.names = NULL)
     }
     start <-
         if (translation) semico[semico > i2][1] + 1
-        else semico[semico > i1][1]
+        else i1 + 1 # semico[semico > i1][1] ## fix done on 2014-08-25
     end <- endblock[endblock > i1][1] - 1
     tree <- X[start:end]
     rm(X)
-###    tree <- gsub("^.*= *", "", tree)
+
     ## check whether there are empty lines from the above manips:
     tree <- tree[tree != ""]
     semico <- grep(";", tree)
@@ -183,7 +183,7 @@ read.nexus <- function(file, tree.names = NULL)
     Ntree <- length(STRING) # update Ntree
     ## get the tree names:
     nms.trees <- sub(" *= *.*", "", STRING) # only the first occurence of "="
-    nms.trees <- sub("^ *tree *", "", nms.trees, ignore.case = TRUE)
+    nms.trees <- sub("^[[:blank:]]*tree[[:blank:]\\*]*", "", nms.trees, ignore.case = TRUE) # fix by Graham Gower (2014-10-20)
     STRING <- sub("^.*= *", "", STRING) # delete title and 'TREE' command with 'sub'
     STRING <- gsub(" ", "", STRING) # delete all white spaces
     colon <- grep(":", STRING)

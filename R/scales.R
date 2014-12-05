@@ -1,11 +1,11 @@
-## scales.R (2013-12-20)
+## scales.R (2014-08-21)
 
 ##   Add a Scale Bar or Axis to a Phylogeny Plot
 
 ## add.scale.bar: add a scale bar to a phylogeny plot
 ## axisPhylo: add a scale axis on the side of a phylogeny plot
 
-## Copyright 2002-2013 Emmanuel Paradis
+## Copyright 2002-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -72,7 +72,7 @@ add.scale.bar <- function(x, y, length = NULL, ask = FALSE,
            })
 }
 
-axisPhylo <- function(side = 1, ...)
+axisPhylo <- function(side = 1, root.time = NULL, backward = TRUE, ...)
 {
     lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
     type <- lastPP$type
@@ -82,23 +82,29 @@ axisPhylo <- function(side = 1, ...)
     if (type == "radial")
         stop("axisPhylo() not meaningful for this type of plot")
 
+    if (is.null(root.time)) root.time <- lastPP$root.time
+
     if (type %in% c("phylogram", "cladogram")) {
-        if (lastPP$direction %in% c("rightwards", "leftwards")) {
-            x <- pretty(lastPP$xx)
-            if (lastPP$direction == "rightwards") maxi <- max(lastPP$xx)
-            else {
-                maxi <- min(lastPP$xx)
-                x <- -x
-            }
-        } else {
-            x <- pretty(lastPP$yy)
-            if (lastPP$direction == "upwards") maxi <- max(lastPP$yy)
-            else {
-                maxi <- min(lastPP$yy)
-                x <- -x
-            }
+        xscale <-
+            if (lastPP$direction %in% c("rightwards", "leftwards")) range(lastPP$xx)
+            else range(lastPP$yy)
+
+        tmp <- lastPP$direction %in% c("leftwards", "downwards")
+
+        tscale <- c(0, xscale[2] - xscale[1])
+        if (xor(backward, tmp)) tscale <- tscale[2:1]
+        if (!is.null(root.time)) {
+            tscale <- tscale + root.time
+            if (backward) tscale <- tscale - xscale[2]
         }
-        axis(side = side, at = c(maxi - x), labels = abs(x), ...)
+
+        ## the linear transformation between the x-scale and the time-scale:
+        beta <- diff(xscale) / diff(tscale)
+        alpha <- xscale[1] - beta * tscale[1]
+
+        lab <- pretty(tscale)
+        x <- beta * lab + alpha
+        axis(side = side, at = x, labels = lab, ...)
     } else { # type == "fan"
         n <- lastPP$Ntip
         xx <- lastPP$xx[1:n]; yy <- lastPP$yy[1:n]

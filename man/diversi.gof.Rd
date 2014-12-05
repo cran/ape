@@ -1,4 +1,4 @@
-\encoding{latin1}
+\encoding{utf8}
 \name{diversi.gof}
 \alias{diversi.gof}
 \title{Tests of Constant Diversification Rates}
@@ -15,7 +15,7 @@ diversi.gof(x, null = "exponential", z = NULL)
 }
 \description{
   This function computes two tests of the distribution of branching
-  times using the \enc{Cramér}{Cramer}--von Mises and Anderson--Darling
+  times using the \enc{CramÃ©r}{Cramer}--von Mises and Anderson--Darling
   goodness-of-fit tests. By default, it is assumed that the
   diversification rate is constant, and an exponential distribution is
   assumed for the branching times. In this case, the expected
@@ -26,7 +26,7 @@ diversi.gof(x, null = "exponential", z = NULL)
   from a sample of expected branching times.
 }
 \details{
-  The \enc{Cramér}{Cramer}--von Mises and Anderson--Darling tests
+  The \enc{CramÃ©r}{Cramer}--von Mises and Anderson--Darling tests
   compare the empirical density function (EDF) of the observations to an
   expected cumulative density function. By contrast to the
   Kolmogorov--Smirnov test where the greatest difference between these

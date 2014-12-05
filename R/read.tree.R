@@ -130,7 +130,7 @@ read.tree <- function(file = "", text = NULL, tree.names = NULL, skip = 0,
     y <- which(tree == ";")
     Ntree <- length(y)
     x <- c(1, y[-Ntree] + 1)
-    ## Suggestion from Olivier François (added 2006-07-15):
+    ## Suggestion from Olivier Francois (added 2006-07-15):
     if (is.na(y[1])) return(NULL)
     STRING <- character(Ntree)
     for (i in 1:Ntree)

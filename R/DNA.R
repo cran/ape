@@ -1,4 +1,4 @@
-## DNA.R (2014-03-12)
+## DNA.R (2014-08-05)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -404,7 +404,7 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     d <- .C(dist_dna, x, as.integer(n), as.integer(s), imod,
             double(Ndist), BF, as.integer(pairwise.deletion),
             as.integer(variance), var, as.integer(gamma),
-            alpha, NAOK = TRUE)
+            as.double(alpha), NAOK = TRUE)
     if (variance) var <- d[[9]]
     d <- d[[5]]
     if (imod == 11) {
@@ -500,3 +500,26 @@ where <- function(x, pattern)
     }
     foo(x, pat, p) # if x is a vector
 }
+
+## conversions from BioConductor:
+
+.DNAString2DNAbin <- function(from)
+    as.DNAbin.character(strsplit(tolower(as.character(from)), "")[[1]])
+
+.DNAStringSet2DNAbin <- function(from)
+    structure(lapply(from, .DNAString2DNAbin), class = "DNAbin")
+
+.DNAAlignment2DNAbinMatrix <- function(from)
+    as.matrix(.DNAStringSet2DNAbin(as(from, "DNAStringSet")))
+
+## S3 versions:
+as.DNAbin.DNAString <- function(x, ...) .DNAString2DNAbin(x)
+as.DNAbin.DNAStringSet <- function(x, ...) .DNAStringSet2DNAbin(x)
+as.DNAbin.PairwiseAlignmentsSingleSubject <- function(x, ...) .DNAAlignment2DNAbinMatrix(x)
+as.DNAbin.DNAMultipleAlignment <- function(x, ...) .DNAAlignment2DNAbinMatrix(x)
+
+## S4 versions:
+## setAs("DNAString", "DNAbin", .DNAString2DNAbin)
+## setAs("DNAStringSet", "DNAbin", .DNAStringSet2DNAbin)
+## setAs("PairwiseAlignmentsSingleSubject", "DNAbin", .DNAAlignment2DNAbinMatrix)
+## setAs("DNAMultipleAlignment", "DNAbin", .DNAAlignment2DNAbinMatrix)

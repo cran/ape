@@ -48,7 +48,7 @@ compar.lynch(x, G, eps = 1e-4)
   Lynch, M. (1991) Methods for the analysis of comparative data in
   evolutionary biology. \emph{Evolution}, \bold{45}, 1065--1080.
 }
-\author{Julien Claude \email{claude@isem.univ-montp2.fr}}
+\author{Julien Claude \email{Julien.Claude@univ-montp2.fr}}
 \seealso{
   \code{\link{pic}}, \code{\link{compar.gee}}
 }

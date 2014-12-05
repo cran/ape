@@ -319,7 +319,7 @@ anova.ace <- function(object, ...)
     X <- c(list(object), list(...))
     df <- sapply(lapply(X, "[[", "rates"), length)
     ll <- sapply(X, "[[", "loglik")
-    ## check if models are in correct order?
+    ## check if models are in correct order
     dev <- c(NA, 2*diff(ll))
     ddf <- c(NA, diff(df))
     table <- data.frame(ll, df, ddf, dev,

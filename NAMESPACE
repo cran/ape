@@ -125,7 +125,11 @@ S3method(print, parafit)
 
 S3method(as.DNAbin, alignment)
 S3method(as.DNAbin, character)
+S3method(as.DNAbin, DNAMultipleAlignment)
+S3method(as.DNAbin, DNAString)
+S3method(as.DNAbin, DNAStringSet)
 S3method(as.DNAbin, list)
+S3method(as.DNAbin, PairwiseAlignmentsSingleSubject)
 
 S3method(as.phylo, formula)
 S3method(as.phylo, hclust)

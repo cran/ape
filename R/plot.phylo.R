@@ -1,4 +1,4 @@
-## plot.phylo.R (2014-05-07)
+## plot.phylo.R (2014-08-21)
 
 ##   Plot Phylogenies
 
@@ -436,7 +436,7 @@ if (plot) {
               cex = cex, adj = adj, srt = srt, no.margin = no.margin,
               label.offset = label.offset, x.lim = x.lim, y.lim = y.lim,
               direction = direction, tip.color = tip.color,
-              Ntip = Ntip, Nnode = Nnode)
+              Ntip = Ntip, Nnode = Nnode, root.time = x$root.time)
     assign("last_plot.phylo", c(L, list(edge = xe, xx = xx, yy = yy)),
            envir = .PlotPhyloEnv)
     invisible(L)

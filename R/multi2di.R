@@ -1,8 +1,8 @@
-## multi2di.R (2010-01-23)
+## multi2di.R (2014-10-17)
 
 ##   Collapse and Resolve Multichotomies
 
-## Copyright 2005-2010 Emmanuel Paradis
+## Copyright 2005-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -14,7 +14,7 @@ multi2di <- function(phy, random = TRUE)
     if (!length(target)) return(phy)
     nb.edge <- dim(phy$edge)[1]
     n <- length(phy$tip.label)
-    nextnode <- n + phy$Nnode + 1
+    nextnode <- n + phy$Nnode + 1L
     new.edge <- edge2delete <- NULL
     wbl <- FALSE
     if (!is.null(phy$edge.length)) {
@@ -34,13 +34,13 @@ multi2di <- function(phy, random = TRUE)
             desc <- desc[tmp]
             res <- rtree(N)$edge
         } else {
-            res <- matrix(0, 2*N - 2, 2)
+            res <- matrix(0L, 2*N - 2, 2)
             res[, 1] <- N + rep(1:(N - 1), each = 2)
             res[, 2] <- N + rep(2:N, each = 2)
             res[seq(1, by = 2, length.out = N - 1), 2] <- 1:(N - 1)
             res[length(res)] <- N
         }
-        if (wbl) {
+       if (wbl) {
             ## keep the branch lengths coming from `node'
             el <- numeric(dim(res)[1]) # initialized with 0's
             el[res[, 2] <= N] <-
@@ -49,7 +49,7 @@ multi2di <- function(phy, random = TRUE)
         ## now substitute the nodes in `res'
         ## `node' stays at the "root" of these new
         ## edges whereas their "tips" are `desc'
-        Nodes <- c(node, seq(from = nextnode, length.out = N - 2))
+        Nodes <- c(node, nextnode:(nextnode + N - 3L))
         res[, 1] <- Nodes[res[, 1] - N]
         tmp <- res[, 2] > N
         res[tmp, 2] <- Nodes[res[tmp, 2] - N]
@@ -57,8 +57,8 @@ multi2di <- function(phy, random = TRUE)
         new.edge <- rbind(new.edge, res)
         edge2delete <- c(edge2delete, ind)
         if (wbl) new.edge.length <- c(new.edge.length, el)
-        nextnode <- nextnode + N - 2
-        phy$Nnode <- phy$Nnode + N - 2
+        nextnode <- nextnode + N - 2L
+        phy$Nnode <- phy$Nnode + N - 2L
     }
     phy$edge <- rbind(phy$edge[-edge2delete, ], new.edge)
     if (wbl)

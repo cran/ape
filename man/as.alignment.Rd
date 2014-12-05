@@ -5,6 +5,10 @@
 \alias{as.DNAbin.list}
 \alias{as.DNAbin.alignment}
 \alias{as.character.DNAbin}
+\alias{as.DNAbin.DNAString}
+\alias{as.DNAbin.DNAStringSet}
+\alias{as.DNAbin.PairwiseAlignmentsSingleSubject}
+\alias{as.DNAbin.DNAMultipleAlignment}
 \title{Conversion Among DNA Sequence Internal Formats}
 \description{
   These functions transform a set of DNA sequences among various
@@ -20,6 +24,14 @@ as.DNAbin(x, ...)
 
 \method{as.DNAbin}{alignment}(x, ...)
 
+\method{as.DNAbin}{DNAString}(x, ...)
+
+\method{as.DNAbin}{DNAStringSet}(x, ...)
+
+\method{as.DNAbin}{PairwiseAlignmentsSingleSubject}(x, ...)
+
+\method{as.DNAbin}{DNAMultipleAlignment}(x, ...)
+
 \method{as.character}{DNAbin}(x, ...)
 }
 \arguments{
@@ -34,7 +46,10 @@ as.DNAbin(x, ...)
   format used in the package \pkg{seqinr} to store aligned sequences.
 
   \code{as.DNAbin} is a generic function with methods so that it works
-  with sequences stored into vectors, matrices, or lists.
+  with sequences stored into vectors, matrices, or lists. It can convert
+  some S4 classes from the package \pkg{Biostrings} in BioConductor. For
+  consistency within \pkg{ape}, this uses an S3-style syntax. To convert
+  objects of class \code{"DNAStringSetList"}, see the examples.
 
   \code{as.character} is a generic function: the present method
   converts objects of class \code{"DNAbin"} into the format used
@@ -59,5 +74,20 @@ x <- as.character(woodmouse)
 x[, 1:20]
 str(as.alignment(x))
 identical(as.DNAbin(x), woodmouse)
+### conversion from BioConductor:
+\dontrun{
+if (require(Biostrings)) {
+data(phiX174Phage)
+X <- as.DNAbin(phiX174Phage)
+## base frequencies:
+base.freq(X) # from ape
+alphabetFrequency(phiX174Phage) # from Biostrings
+### for objects of class "DNAStringSetList"
+X <- lapply(x, as.DNAbin) # a list of lists
+### to put all sequences in a single list:
+X <- unlist(X, recursive = FALSE)
+class(X) <- "DNAbin"
+}
+}
 }
 \keyword{manip}

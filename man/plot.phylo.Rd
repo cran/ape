@@ -175,6 +175,7 @@
   \item{tip.color}{}
   \item{Ntip}{}
   \item{Nnode}{}
+  \item{root.time}{}
 }
 \author{Emmanuel Paradis}
 \seealso{

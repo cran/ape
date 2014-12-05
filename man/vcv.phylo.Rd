@@ -43,7 +43,7 @@ vcv(phy, ...)
 \seealso{
   \code{\link{corBrownian}}, \code{\link{corMartins}},
   \code{\link{corGrafen}}, \code{\link{corPagel}},
-  \code{\link{corBlomberg}}
+  \code{\link{corBlomberg}}, \code{\link{vcv2phylo}}
 }
 \examples{
 tr <- rtree(5)

@@ -1,4 +1,4 @@
-## phymltest.R (2014-06-16)
+## phymltest.R (2014-11-07)
 
 ##   Fits a Bunch of Models with PhyML
 
@@ -38,7 +38,7 @@ phymltest <- function(seqfile, format = "interleaved", itree = NULL,
     fmt <- rep("", N)
     if (format != "interleaved") fmt[] <- "-q"
     boot <- rep("-b 0", N) # to avoid any testing
-    mdl <- paste("-m", rep(c("JC69", "K80", "F81", "HKY85", "F84", "TN93", "GTR"), each = 4))
+    mdl <- paste("-m", rep(c("JC69", "K80", "F81", "F84", "HKY85", "TN93", "GTR"), each = 4)) # fix by Luiz Max Fagundes de Carvalho
     tstv <- rep("-t e", N) # ignored by PhyML with JC69 or F81
     inv <- rep(c("", "-v e"), length.out = N)
     ## no need to use the -c option of PhyML (4 categories by default if '-a e' is set):

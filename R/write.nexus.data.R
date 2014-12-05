@@ -1,15 +1,20 @@
-"write.nexus.data" <- function (x, file, format = "dna", datablock = TRUE,
-                                interleaved = TRUE, charsperline = NULL,
-                                gap = NULL, missing = NULL) 
+## write.nexus.data.R (2014-09-24)
+
+##   Write Character Data in NEXUS Format
+
+## Copyright 2006-2014 Johan Nylander, Emmanuel Paradis
+
+## This file is part of the R-package `ape'.
+## See the file ../COPYING for licensing issues.
+
+write.nexus.data <-
+    function(x, file, format = "dna", datablock = TRUE,
+             interleaved = TRUE, charsperline = NULL,
+             gap = NULL, missing = NULL)
 {
-    # Nexus data parser.
-    #
-    # Version: 09/13/2006 09:06:33 AM CEST
-    #
-    # By:      Johan Nylander, nylander @ scs.fsu.edu
-    #
-    # TODO:    Standard data, mixed data, nice indent
-    #------------------------------------------------------------------
+### TODO: Standard data, mixed data, nice indent
+
+    format <- match.arg(toupper(format), c("DNA", "PROTEIN"))
 
     indent          <- "  "  # Two blanks
     maxtax          <- 5     # Max nr of taxon names to be printed on a line
@@ -17,151 +22,118 @@
     defgap          <- "-"   # Default gap character
     defmissing      <- "?"   # Default missing data character
 
+    if (is.matrix(x)) {
+        if (inherits(x, "DNAbin")) x <- as.list(x) else {
+            xbak <- x
+            x <- vector("list", nrow(xbak))
+            for (i in seq_along(x)) x[[i]] <- xbak[i, ]
+            names(x) <- rownames(xbak)
+            rm(xbak)
+        }
+    }
+
     ntax <- length(x)
     nchars <- length(x[[1]])
+
     zz <- file(file, "w")
 
-    if (is.null(names(x))) {
-        names(x) <- as.character(1:ntax)
-    }
+    if (is.null(names(x))) names(x) <- as.character(1:ntax)
 
-    "fcat" <- function (..., file = zz)
-    {
+    fcat <- function(..., file = zz)
         cat(..., file = file, sep = "", append = TRUE)
-    }
 
-    "find.max.length" <- function (x)
-    {
-        max <- 0
-        for (i in 1:length(x)) {
-           val <- length((strsplit(x[i], split = NULL))[[1]])
-           if (val > max) {
-               max <- val
-           }
-        }
-        max
-    }
+    find.max.length <- function(x) max(nchar(x))
 
-    "print.matrix" <- function(x, dindent = "    ")
-    {
+    print.matrix <- function(x, dindent = "    ") {
         Names <- names(x)
         printlength <- find.max.length(Names) + 2
-        if (interleaved == FALSE) {
-            for (i in 1:length(x)) {
+        if (!interleaved) {
+            for (i in seq_along(x)) {
                 sequence <- paste(x[[i]], collapse = "")
                 taxon <- Names[i]
                 thestring <- sprintf("%-*s%s%s", printlength, taxon, dindent, sequence)
                 fcat(indent, indent, thestring, "\n")
             }
-        }
-        else {
+        } else {
             ntimes <- ceiling(nchars/charsperline)
             start <- 1
             end <- charsperline
-            for (j in 1:ntimes) {
-                for (i in 1:length(x)) {
+            for (j in seq_len(ntimes)) {
+                for (i in seq_along(x)) {
                     sequence <- paste(x[[i]][start:end], collapse = "")
                     taxon <- Names[i]
                     thestring <- sprintf("%-*s%s%s", printlength, taxon, dindent, sequence)
                     fcat(indent, indent, thestring, "\n")
                 }
-                if (j < ntimes) {
-                    fcat("\n")
-                }
+                if (j < ntimes) fcat("\n")
                 start <- start + charsperline
                 end <- end + charsperline
-                if (end > nchars) {
-                    end <- nchars
-                }
+                if (end > nchars) end <- nchars
             }
         }
     }
 
-    fcat("#NEXUS\n[Data written by write.nexus.data.R,", " ", date(),"]\n")
+    fcat("#NEXUS\n[Data written by write.nexus.data.R, ", date(), "]\n")
 
     NCHAR <- paste("NCHAR=", nchars, sep = "")
-    NTAX <- paste("NTAX=", ntax, sep = "")
-
-    if (format == "dna") {
-        DATATYPE <- "DATATYPE=DNA"
-    }
-    if (format == "protein") {
-        DATATYPE <- "DATATYPE=PROTEIN"
-    }
+    NTAX <- paste0("NTAX=", ntax)
+    DATATYPE <- paste0("DATATYPE", format)
 
     if (is.null(charsperline)) {
-        if (nchars < defcharsperline) {
+        if (nchars <= defcharsperline) {
             charsperline <- nchars
             interleaved <- FALSE
-        }
-        else {
-            if (nchars > defcharsperline) {
-                charsperline <- defcharsperline
-            }
-        }
+        } else charsperline <- defcharsperline
     }
 
-    if (is.null(missing)) {
-        MISSING <- paste("MISSING=", defmissing, sep = "")
-    }
-    else {
-        MISSING <- paste("MISSING=", missing, sep = "")
-    }
+    if (is.null(missing)) missing <- defmissing
+    MISSING <- paste0("MISSING=", missing)
 
-    if (is.null(gap)) {
-        GAP <- paste("GAP=", defgap, sep = "")
-    }
-    else {
-        GAP <- paste("GAP=", gap, sep = "")
-    }
+    if (is.null(gap)) gap <- defgap
+    GAP <- paste0("GAP=", gap)
 
-    if (interleaved == TRUE) {
-        INTERLEAVE <- "INTERLEAVE=YES"
-    }
-    if (interleaved == FALSE) {
-        INTERLEAVE <- "INTERLEAVE=NO"
-    }
+    INTERLEAVE <- if (interleaved) "INTERLEAVE=YES" else "INTERLEAVE=NO"
 
-    if (datablock == TRUE) {
+    if (datablock) {
         fcat("BEGIN DATA;\n")
-        fcat(indent,"DIMENSIONS", " ", NTAX, " ", NCHAR, ";\n")
-        if (format %in% c("dna", "protein")) {
-            fcat(indent, "FORMAT", " ", DATATYPE, " ", MISSING, " ", GAP, " ", INTERLEAVE, ";\n") # from François Michonneau (2009-10-02)
-        }
-        fcat(indent,"MATRIX\n")
+        fcat(indent, "DIMENSIONS ", NTAX, " ", NCHAR, ";\n")
+
+        ## <FIXME> only DNA and PROTEIN is supported for the moment, so the
+        ## following 'if' is not needed
+        ## if (format %in% c("DNA", "PROTEIN")) # from Francois Michonneau (2009-10-02)
+        fcat(indent, "FORMAT", " ", DATATYPE, " ", MISSING, " ", GAP, " ", INTERLEAVE, ";\n")
+        ## </FIXME>
+
+        fcat(indent, "MATRIX\n")
         print.matrix(x)
-        fcat(indent, ";\n")
-        fcat("END;\n\n")
-    }
-    else {
+        fcat(indent, ";\nEND;\n\n")
+    } else {
         fcat("BEGIN TAXA;\n")
         fcat(indent, "DIMENSIONS", " ", NTAX, ";\n")
         fcat(indent, "TAXLABELS\n")
         fcat(indent, indent)
         j <- 0
-        for (i in 1:ntax) {
+        for (i in seq_len(ntax)) {
             fcat(names(x[i]), " ")
             j <- j + 1
-            if (i == ntax) {
-                fcat("\n", indent, ";\n")
-            }
-            else {
-                if (j == maxtax) {
-                    fcat("\n", indent, indent)
-                    j <- 0
-                }
+            if (j == maxtax) {
+                fcat("\n", indent, indent)
+                j <- 0
             }
         }
-        fcat("END;\n\n")
-        fcat("BEGIN CHARACTERS;\n")
+        fcat("\n", indent, ";\n")
+        fcat("END;\n\nBEGIN CHARACTERS;\n")
         fcat(indent, "DIMENSIONS", " ", NCHAR, ";\n")
-        if (format %in% c("dna", "protein")) {
-            fcat(indent, "FORMAT", " ", MISSING, " ", GAP, " ", DATATYPE, " ", INTERLEAVE, ";\n")
-        }
+
+        ## <FIXME> only DNA and PROTEIN is supported for the moment, so the
+        ## following 'if' is not needed
+        ## if (format %in% c("DNA", "PROTEIN"))
+        fcat(indent, "FORMAT", " ", MISSING, " ", GAP, " ", DATATYPE, " ", INTERLEAVE, ";\n")
+        ## </FIXME>
+
         fcat(indent,"MATRIX\n")
         print.matrix(x)
-        fcat(indent, ";")
-        fcat("\nEND;\n\n")
+        fcat(indent, ";\nEND;\n\n")
     }
     close(zz)
 }

@@ -7,12 +7,8 @@
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-if (getRversion() >= "2.15.1") utils::globalVariables("mclapply")
-
 rtt <- function(t, tip.dates, ncpu = 1, objective = "correlation", opt.tol = .Machine$double.eps^0.25)
 {
-    if (ncpu > 1) library(parallel)
-
     ## These are objective functions which can be used to evaluate the "goodness" of
     ## a regression fit.
     if (objective == "correlation")
@@ -29,7 +25,7 @@ rtt <- function(t, tip.dates, ncpu = 1, objective = "correlation", opt.tol = .Ma
 
     ## Do root-to-tip regressions for every possible choice of root.
     fits <- if (ncpu > 1)
-        unlist(mclapply(1:nrow(dist), function(row) objective(tip.dates, dist[row, ]),
+        unlist(parallel::mclapply(1:nrow(dist), function(row) objective(tip.dates, dist[row, ]),
                                       mc.cores = ncpu))
         else unlist(lapply(1:nrow(dist), function(row) objective(tip.dates, dist[row, ])))
 

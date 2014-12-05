@@ -5,7 +5,7 @@
 }
 \description{
   This function writes in a file a list of sequences in the NEXUS
-  format.The names of the vectors of the list are used as taxon names.
+  format. The names of the vectors of the list are used as taxon names.
 }
 \usage{
 write.nexus.data(x, file, format = "dna", datablock = TRUE,
@@ -13,15 +13,16 @@ write.nexus.data(x, file, format = "dna", datablock = TRUE,
                  gap = NULL, missing = NULL)
 }
 \arguments{
-  \item{x}{a list of sequences each made of a single vector of mode
-    character where each element is a character state (e.g. \dQuote{A},
-    \dQuote{C}, ...).}
+  \item{x}{a matrix or a list of sequences each made of a single vector
+    of mode character where each element is a character state (e.g.,
+    \dQuote{A}, \dQuote{C}, \dots) Objects of class of \dQuote{DNAbin}
+    are accepted.}
   \item{file}{a file name specified by either a variable of mode
     character, or a double-quoted string.}
   \item{format}{a character string specifying the format of the
-    sequences. Two choices are possible: \code{dna}, or \code{protein},
-    or any unambiguous abbreviation of these. Default is
-    \dQuote{\code{dna}}.}
+    sequences. Two choices are possible: \dQuote{dna} (the default) or
+    \dQuote{protein}, or any unambiguous abbreviation of these (case
+    insensitive).}
   \item{datablock}{a logical, if \code{TRUE} the data are written in a
     single DATA block. If \code{FALSE} data is written in TAXA and
     CHARACTER blocks. Default is \code{TRUE}.}
@@ -30,8 +31,7 @@ write.nexus.data(x, file, format = "dna", datablock = TRUE,
     with \code{charsperline = numerical_value}. If \code{FALSE}, data is
     written in sequential format. Default is \code{TRUE}.}
   \item{charsperline}{a numeric specifying the number of characters per
-    line when used with \code{interleaved = TRUE}. Default is
-    \code{80}.}
+    line when used with \code{interleaved = TRUE}. Default is 80.}
   \item{gap}{a character specifying the symbol for gap. Default is
     \dQuote{\code{-}}.}
   \item{missing}{a character specifying the symbol for missing
@@ -41,13 +41,10 @@ write.nexus.data(x, file, format = "dna", datablock = TRUE,
   If the sequences have no names, then they are given \dQuote{1},
   \dQuote{2}, ..., as names in the file.
 
-  Sequences must be all of the same length (i.e., aligned).
+  Sequences must be all of the same length.
 
   Default symbols for missing data and gaps can be changed by using the
   \code{missing} and \code{gap} commands.
-
-  Please see files \file{data.nex} and \file{taxacharacters.nex} for
-  examples of output formats.
 }
 \value{
   None (invisible \sQuote{NULL}).
@@ -57,8 +54,6 @@ write.nexus.data(x, file, format = "dna", datablock = TRUE,
   extensible file format for systematic information. \emph{Systematic
     Biology}, \bold{46}, 590--621.
 }
-\note{...}
-
 \author{Johan Nylander \email{nylander@scs.fsu.edu}}
 \seealso{
   \code{\link{read.nexus}},\code{\link{write.nexus}},
@@ -67,10 +62,10 @@ write.nexus.data(x, file, format = "dna", datablock = TRUE,
 \examples{
 \dontrun{
 ## Write interleaved DNA data with 100 characters per line in a DATA block
-data("woodmouse")
+data(woodmouse)
 write.nexus.data(woodmouse, file= "wood.ex.nex", interleaved = TRUE, charsperline = 100)
 ## Write sequential DNA data in TAXA and CHARACTERS blocks
-data("cynipids")
+data(cynipids)
 write.nexus.data(cynipids, file = "cyn.ex.nex", format = "protein",
                  datablock = FALSE, interleaved = FALSE)
 unlink(c("wood.ex.nex", "cyn.ex.nex"))
