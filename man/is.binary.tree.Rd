@@ -25,7 +25,7 @@ is.binary.tree(phy)
 \seealso{
 \code{\link{is.rooted}}, \code{\link{is.ultrametric}}, \code{\link{multi2di}}
 }
-\author{Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})}
+\author{Korbinian Strimmer}
 \examples{
 data("hivtree.newick") # example tree in NH format
 tree.hiv <- read.tree(text = hivtree.newick)

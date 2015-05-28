@@ -1,8 +1,8 @@
-## root.R (2014-05-28)
+## root.R (2015-04-08)
 
 ##   Root of Phylogenetic Trees
 
-## Copyright 2004-2014 Emmanuel Paradis
+## Copyright 2004-2015 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -144,6 +144,10 @@ root <- function(phy, outgroup, node = NULL,
     if (newroot == ROOT) {
         ## assumes length(outgroup) == 1
         if (resolve.root) {
+            ## add this check 2015-04-08:
+            if (!is.null(node))
+                stop("ambiguous resolution of the root node: please specify an explicit outgroup")
+            ##
             snw <- which(phy$edge[, 1L] == newroot)
             if (length(snw) > 2) {
                 i <- which(phy$edge[, 2L] == outgroup) # see comment above

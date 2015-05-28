@@ -82,7 +82,7 @@ read.tree(file = "", text = NULL, tree.names = NULL, skip = 0,
   \url{http://evolution.genetics.washington.edu/phylip/newick_doc.html}
 
   Paradis, E. (2008) Definition of Formats for Coding Phylogenetic Trees
-  in R. \url{http://ape.mpl.ird.fr/misc/FormatTreeR_28July2008.pdf}
+  in R. \url{http://ape-package.ird.fr/misc/FormatTreeR_24Oct2012.pdf}
 
   Paradis, E. (2012) \emph{Analysis of Phylogenetics and Evolution with
     R (Second Edition).} New York: Springer.

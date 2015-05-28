@@ -22,11 +22,6 @@ seg.sites(x)
   sites.
 }
 \author{Emmanuel Paradis}
-\note{
-  The present version looks for the sites which are ``variable'' in the
-  data in terms of different \emph{letters}. This may give unexpected
-  results if there are ambiguous bases in the data.
-}
 \seealso{
   \code{\link{base.freq}}, \code{\link[pegas]{theta.s}},
   \code{\link[pegas]{nuc.div}}

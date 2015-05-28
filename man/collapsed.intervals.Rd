@@ -1,6 +1,5 @@
 \name{collapsed.intervals}
 \alias{collapsed.intervals}
-
 \title{Collapsed Coalescent Intervals}
 \usage{
 collapsed.intervals(ci, epsilon=0)
@@ -25,7 +24,6 @@ interval is larger than \code{epsilon}. Note that this approach prevents the
 occurrence of zero-length intervals at the present.
 For more details see Strimmer and Pybus (2001).
 }
-
 \value{
 An object of class \code{"collapsedIntervals"} with the following entries:
 
@@ -42,33 +40,24 @@ An object of class \code{"collapsedIntervals"} with the following entries:
     intervals.}
   \item{epsilon}{The value of the underlying smoothing parameter.}
 }
-
-\author{Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})}
-
+\author{Korbinian Strimmer}
 \seealso{
 \code{\link{coalescent.intervals}},\code{\link{skyline}}.
 }
-
-
 \references{
   Strimmer, K. and Pybus, O. G. (2001) Exploring the demographic history
   of DNA sequences using the generalized skyline plot. \emph{Molecular
     Biology and Evolution}, \bold{18}, 2298--2305.
 }
-
 \examples{
 data("hivtree.table") # example tree
-
 # colescent intervals from vector of interval lengths
 ci <- coalescent.intervals(hivtree.table$size)
 ci
-
 # collapsed intervals
 cl1 <- collapsed.intervals(ci,0)
 cl2 <- collapsed.intervals(ci,0.0119)
-
 cl1
 cl2
-
 }
 \keyword{manip}

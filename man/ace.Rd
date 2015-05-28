@@ -127,8 +127,8 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
   discrete characters are computed with a joint estimation procedure
   using a procedure similar to the one described in Pupko et al. (2000).
   If \code{marginal = TRUE}, a marginal estimation procedure is used
-  (this was the only choice until ape 3.1-1). With this second method,
-  the likelihood values at a given node are computed using only the
+  (this was the only choice until ape 3.1-1). With this method, the
+  likelihood values at a given node are computed using only the
   information from the tips (and branches) descending from this node.
   With the joint estimation, all information is used for each node. The
   difference between these two methods is further explained in
@@ -138,7 +138,7 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
   estimates of both methods are very close.
 
   With discrete characters it is necessary to compute the exponential of
-  the rate matrix. The only possibility until \pkg{ape} 3.0-7) was the
+  the rate matrix. The only possibility until \pkg{ape} 3.0-7 was the
   function \code{\link{matexpo}} in \pkg{ape}. If \code{use.expm = TRUE}
   and \code{use.eigen = FALSE}, the function \code{\link[expm]{expm}},
   in the package of the same name, is used. \code{matexpo} is faster but
@@ -147,6 +147,14 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
   an eigen decomposition avoiding the need to compute the matrix
   exponential; see details in Lebl (2013, sect. 3.8.3). This is much
   faster and is now the default.
+}
+\note{
+  Liam Revell points out that for discrete characters the ancestral
+  likelihood values returned with \code{marginal = FALSE} are actually
+  the marginal estimates, while setting \code{marginal = TRUE} returns
+  the conditional (scaled) likelihoods of the subtree:
+
+  \url{http://blog.phytools.org/2015/05/about-how-acemarginaltrue-does-not.html}
 }
 \value{
   an object of class \code{"ace"} with the following elements:

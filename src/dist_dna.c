@@ -1,6 +1,6 @@
-/* dist_dna.c       2013-08-20 */
+/* dist_dna.c       2015-02-25 */
 
-/* Copyright 2005-2013 Emmanuel Paradis */
+/* Copyright 2005-2015 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -1071,20 +1071,18 @@ void BaseProportion(unsigned char *x, int *n, double *BF)
 
 void SegSites(unsigned char *x, int *n, int *s, int *seg)
 {
-    int i, j;
-    unsigned char basis;
+    int i, ib, j;
 
     for (j = 0; j < *s; j++) {
-        i = *n * j;
-	while (!KnownBase(x[i])) i++;
-	basis = x[i];
-	i++;
-	while (i < *n * (j + 1)) {
-	    if (!KnownBase(x[i]) || x[i] == basis) i++;
-	    else {
-	        seg[j] = 1;
-		break;
+        for (i = *n * j; i < *n * (j + 1) - 1; i++) {
+	    if (!KnownBase(x[i])) continue;
+	    for (ib = i + 1; ib < *n * (j + 1); ib++) {
+		if (DifferentBase(x[i], x[ib])) {
+		    seg[j] = 1;
+		    break;
+		}
 	    }
+	    if (seg[j]) break;
 	}
     }
 }

@@ -51,6 +51,17 @@ is.rooted(phy)
   root, or if there is a \code{root.edge} element. In all other cases,
   \code{is.rooted} returns \code{FALSE}.
 }
+\note{
+  The use of \code{resolve.root = TRUE} together with \code{node = }
+  gives an error if the specified node is the current root of the
+  tree. This is because there is an ambiguity when resolving a node in
+  an unrooted tree if no explicit outgroup. If the node is not the
+  current root, the ambiguity is solved arbitrarily by considering the
+  clade on the right of \code{node} (when the tree is plotted by
+  default) as the ingroup. See a detailed explanation there:
+
+  \url{https://stat.ethz.ch/pipermail/r-sig-phylo/2015-April/003979.html}.
+}
 \value{
   an object of class \code{"phylo"} for \code{root} and \code{unroot}; a
   single logical value for \code{is.rooted}.

@@ -135,11 +135,11 @@ if(test.links) {
 			if(!is.na(stat2[k+1])) {
 				p.stat2 <- c(p.stat2, nGT2/(nperm2+1))
 				} else {
-				p.stat2 <- NA
+				p.stat2 <- c(p.stat2, NA) ### Error in previous version, corrected here
 				}
 			} else { 
-			p.stat1 <- NA
-			p.stat2 <- NA
+			p.stat1 <- c(p.stat1, NA)     ### Error in previous version, corrected here
+			p.stat2 <- c(p.stat2, NA)     ### Error in previous version, corrected here
 			}
 		}
 	#

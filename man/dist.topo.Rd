@@ -1,18 +1,20 @@
 \name{dist.topo}
 \alias{dist.topo}
 \title{Topological Distances Between Two Trees}
-\usage{
-dist.topo(x, y, method = "PH85")
-}
-\arguments{
-  \item{x}{an object of class \code{"phylo"}.}
-  \item{y}{an object of class \code{"phylo"}.}
-  \item{method}{a character string giving the method to be used: either
-    \code{"PH85"}, or \code{"score"}.}
-}
 \description{
   This function computes the topological distance between two
-  phylogenetic trees using different methods.
+  phylogenetic trees or among trees in a list (if \code{y = NULL} using
+  different methods.
+}
+\usage{
+dist.topo(x, y = NULL, method = "PH85")
+}
+\arguments{
+  \item{x}{an object of class \code{"phylo"} or of class
+    \code{"multiPhylo"}.}
+  \item{y}{an (optional) object of class \code{"phylo"}.}
+  \item{method}{a character string giving the method to be used: either
+    \code{"PH85"}, or \code{"score"}.}
 }
 \value{
   a single numeric value.
@@ -65,6 +67,6 @@ dist.topo(x, y, method = "PH85")
 ta <- rtree(30)
 tb <- rtree(30)
 dist.topo(ta, ta) # = 0
-dist.topo(ta, tb) # This is unlikely to be 0 !
+dist.topo(ta, tb) # This is unlikely to be 0!
 }
 \keyword{manip}

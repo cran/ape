@@ -60,9 +60,7 @@
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr} and
   Emmanuel Paradis}
-\seealso{
-  \code{\link{weight.taxo}}
-}
+\seealso{\code{\link{weight.taxo}}}
 \examples{
 tr <- rtree(30)
 x <- rnorm(30)

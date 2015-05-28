@@ -1,8 +1,8 @@
-## dbd.R (2012-09-14)
+## dbd.R (2015-02-06)
 
 ##   Probability Density Under Birth--Death Models
 
-## Copyright 2012 Emmanuel Paradis
+## Copyright 2012-2015 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -91,7 +91,10 @@ dbdTime <- function(x, birth, death, t, conditional = FALSE,
         PrNt <- function(t, T, x) {
             tmp <- exp(-RHO(t, T))
             Wt <- tmp * (1 + INT(t))
-            (1/Wt)*(1 - 1/Wt)^(x - 1)
+            out <- (1/Wt)*(1 - 1/Wt)^(x - 1)
+            zero <- x == 0
+            if (length(zero)) out[zero] <- 0
+            out
         }
     } else { # the unconditional case:
         PrNt <- function(t, T, x)

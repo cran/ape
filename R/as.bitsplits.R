@@ -1,4 +1,4 @@
-## as.bitsplits.R (2014-01-02)
+## as.bitsplits.R (2014-12-11)
 
 ##   Conversion Among Split Classes
 
@@ -55,6 +55,14 @@ print.bitsplits <- function(x, ...)
     cat('Object of class "bitsplits"\n')
     cat('   ', length(x$labels), 'tips\n')
     cat('   ', length(x$freq), 'partitions\n')
+}
+
+sort.bitsplits <- function(x, decreasing = FALSE, ...)
+{
+    o <- order(x$freq, decreasing = decreasing)
+    x$matsplit <- x$matsplit[, o]
+    x$freq <- x$freq[o]
+    x
 }
 
 as.prop.part <- function(x) UseMethod("as.prop.part")

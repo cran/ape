@@ -12,8 +12,7 @@
 data(woodmouse)
 }
 \format{
-  The data are stored in an ASCII file using the sequential format for
-  DNA sequences which is read with `read.dna()'.
+  An object of class \code{"DNAbin"}.
 }
 \source{
   Michaux, J. R., Magnanou, E., Paradis, E., Nieberding, C. and Libois,

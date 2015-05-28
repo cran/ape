@@ -1,4 +1,4 @@
-## read.tree.R (2012-09-14)
+## read.tree.R (2015-01-12)
 
 ##   Read Tree Files in Parenthetic Format
 
@@ -133,8 +133,10 @@ read.tree <- function(file = "", text = NULL, tree.names = NULL, skip = 0,
     ## Suggestion from Olivier Francois (added 2006-07-15):
     if (is.na(y[1])) return(NULL)
     STRING <- character(Ntree)
-    for (i in 1:Ntree)
-        STRING[i] <- paste(tree[x[i]:y[i]], sep = "", collapse = "")
+    for (i in 1:Ntree) {
+        tmp <- paste(tree[x[i]:y[i]], sep = "", collapse = "")
+        STRING[i] <- gsub("\\[[^]]*\\]", "", tmp) # delete comments (fix 2015-01-12)
+    }
 
     tmp <- unlist(lapply(STRING, unname))
     tmpnames <- tmp[c(TRUE, FALSE)]

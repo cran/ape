@@ -1,8 +1,8 @@
-## DNA.R (2014-08-05)
+## DNA.R (2015-05-28)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
-## Copyright 2002-2014 Emmanuel Paradis
+## Copyright 2002-2015 Emmanuel Paradis, 2015 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -33,6 +33,17 @@ del.gaps <- function(x)
     if (!is.list(x)) return(deleteGaps(x))
     x <- lapply(x, deleteGaps)
     class(x) <- "DNAbin"
+    x
+}
+
+del.colgapsonly <- function(x)
+{
+    if (!inherits(x, "DNAbin")) x <- as.DNAbin(x)
+    if (!is.matrix(x))
+        stop("DNA sequences not in a matrix")
+    foo <- function(x) all(x == 4)
+    i <- which(apply(x, 2, foo))
+    if (length(i)) x <- x[, -i]
     x
 }
 
@@ -231,14 +242,10 @@ as.DNAbin <- function(x, ...) UseMethod("as.DNAbin")
 ._bs_ <- c(136, 72, 40, 24, 192, 160, 144, 96, 80,
            48, 224, 176, 208, 112, 240, 4, 2)
 
+## by Klaus:
 as.DNAbin.character <- function(x, ...)
 {
-    n <- length(x)
-    ans <- raw(n)
-    for (i in 1:15)
-      ans[which(x == ._cs_[i])] <- as.raw(._bs_[i])
-    ans[which(x == "-")] <- as.raw(4)
-    ans[which(x == "?")] <- as.raw(2)
+    ans <- as.raw(._bs_)[match(x, ._cs_)]
     if (is.matrix(x)) {
         dim(ans) <- dim(x)
         dimnames(ans) <- dimnames(x)
@@ -268,11 +275,7 @@ as.DNAbin.list <- function(x, ...)
 as.character.DNAbin <- function(x, ...)
 {
     f <- function(xx) {
-        ans <- character(length(xx))
-        for (i in 1:15)
-          ans[which(xx == ._bs_[i])] <- ._cs_[i]
-        ans[which(xx == 4)] <- "-"
-        ans[which(xx == 2)] <- "?"
+        ans <- ._cs_[match(as.numeric(xx), ._bs_)]
         if (is.matrix(xx)) {
             dim(ans) <- dim(xx)
             dimnames(ans) <- dimnames(xx)

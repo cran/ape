@@ -21,13 +21,18 @@ S3method(deviance, ace)
 S3method(logLik, ace)
 S3method(print, ace)
 
+S3method(print, binaryPGLMM)
+
 S3method(as.prop.part, bitsplits)
 S3method(is.compatible, bitsplits)
 S3method(print, bitsplits)
+S3method(sort, bitsplits)
 
 S3method(drop1, compar.gee)
 S3method(predict, compar.gee)
 S3method(print, compar.gee)
+
+S3method(print, corphylo)
 
 S3method("[", DNAbin)
 S3method(as.character, DNAbin)

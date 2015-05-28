@@ -39,7 +39,7 @@ given with the \code{\dots} (either "black" or 1).
 If \code{regexp = TRUE} is used, then the names of the statements must be
 quoted, e.g.:
 
-\code{def(tr$tip.label, "^Pan_" = "red")}
+\code{def(tr$tip.label, "^Pan_" = "red", regexp = TRUE)}
 
 will return "red" for all labels starting with "Pan_".
 }

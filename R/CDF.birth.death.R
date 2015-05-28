@@ -1,9 +1,8 @@
-## CDF.birth.death.R (2014-03-03)
+## CDF.birth.death.R (2015-04-10)
 
-##    Functions to Simulate and Fit
-##  Time-Dependent Birth-Death Models
+## Functions to Simulate and Fit Time-Dependent Birth-Death Models
 
-## Copyright 2010-2014 Emmanuel Paradis
+## Copyright 2010-2015 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -232,7 +231,7 @@ rlineage <-
             },{ # case 7:
                 Foo <- function(t, x) {
                     if (t == x) return(0)
-                    1 - exp(-(birth*(x - t) + DEATH(x) - DEATH(t) ))
+                    1 - exp(-(birth*(x - t) + DEATH(x) - DEATH(t)))
                 }
             })
 
@@ -516,4 +515,169 @@ LTT <- function(birth = 0.1, death = 0, N = 100, Tmax = 50, PI = 95,
     if (PI)
         lines(c(Time, NA, Time), c(Flow, NA, Fup),
               col = pi.style[[1]], lwd = pi.style[[2]], lty = pi.style[[3]])
+}
+
+rphylo <-
+    function(n, birth, death, BIRTH = NULL, DEATH = NULL,
+             T0 = 50, fossils = FALSE, eps = 1e-6)
+{
+    case <- .getCase(birth, death, BIRTH, DEATH)
+
+    ## Foo(): CDF of the times to event (speciation or extinction)
+    ## rTimeToEvent(): generate a random time to event by the inverse method
+
+    switch(case, { # case 1:
+        rTimeToEvent <- function(t) t - rexp(1, N * (birth + death)) # much faster than using Foo()
+        speORext <- function(t) birth/(birth + death)
+        ## Foo <- function(t, x)
+        ##     1 - exp(-N*(birth + death)*(x - t))
+    },{ # case 2:
+        Foo <- function(t, x) {
+            if (t == x) return(0)
+            1 - exp(-integrate(function(t) birth(t) + death(t),
+                               t, x)$value * N)
+        }
+        speORext <- function(t) birth(t)/(birth(t) + death(t))
+    },{ # case 3:
+        Foo <- function(t, x) {
+            if (t == x) return(0)
+            1 - exp(-N*(BIRTH(x) - BIRTH(t) + DEATH(x) - DEATH(t)))
+        }
+        speORext <- function(t) birth(t)/(birth(t) + death(t))
+    },{ # case 4:
+        Foo <- function(t, x) {
+            if (t == x) return(0)
+            1 - exp(-N*(integrate(function(t) birth(t), t, x)$value
+                        + death*(x - t)))
+        }
+        speORext <- function(t) birth(t)/(birth(t) + death)
+    },{ # case 5:
+        Foo <- function(t, x) {
+            if (t == x) return(0)
+            1 - exp(-N*(birth*(x - t) +
+                            integrate(function(t) death(t), t, x)$value))
+        }
+        speORext <- function(t) birth/(birth + death(t))
+    },{ # case 6:
+        Foo <- function(t, x) {
+            if (t == x) return(0)
+            1 - exp(-N*(BIRTH(x) - BIRTH(t) + death*(x - t)))
+        }
+        speORext <- function(t) birth(t)/(birth(t) + death)
+    },{ # case 7:
+        Foo <- function(t, x) {
+            if (t == x) return(0)
+            1 - exp(-N*(birth*(x - t) + DEATH(x) - DEATH(t)))
+        }
+        speORext <- function(t) birth/(birth + death(t))
+    })
+
+    if (case != 1) {
+        rTimeToEvent <- function(t)
+        {
+            P <- runif(1)
+            inc <- 10
+            x <- t - inc
+            while (inc > eps) {
+                if (Foo(x, t) > P) {
+                    x <- x + inc
+                    inc <- inc/10
+                }
+                x <- x - inc
+            }
+            x
+        }
+    }
+
+    storage.mode(n) <- "integer"
+    N <- n
+    t <- T0
+    j <- 0L # number of edges already created
+    POOL <- seq_len(N) # initial pool (only tips at start)
+
+if (!fossils) {
+    Nedge <- 2L * N - 2L
+    nextnode <- 2L * N - 1L
+    e1 <- integer(Nedge)
+    e2 <- integer(Nedge)
+    TIME <- numeric(nextnode) # record the times
+    TIME[POOL] <- T0 # the times of the n tips are the present time
+
+    while (j < Nedge) {
+        X <- rTimeToEvent(t)
+        ## is the event a speciation or an extinction?
+        Y <- rbinom(1, size = 1, prob = speORext(X))
+        if (Y) { # speciation
+            i <- sample.int(N, 2)
+            fossil <- POOL[i] == 0
+            if (any(fossil)) {
+                ## we drop the fossil lineage, or the first one if both are fossils
+                POOL <- POOL[-i[which(fossil)[1]]]
+            } else { # create a node and an edge
+                j <- j + 2L
+                k <- c(j - 1, j)
+                e1[k] <- nextnode
+                e2[k] <- POOL[i]
+                TIME[nextnode] <- X
+                POOL <- c(POOL[-i], nextnode)
+                nextnode <- nextnode - 1L
+            }
+            N <- N - 1L
+        } else { # extinction => create a tip, store it in POOL but don't create an edge
+            ## fossil lineages are numbered 0 to find them if Y = 1
+            N <- N + 1L
+            POOL <- c(POOL, 0L)
+        }
+        t <- X
+    }
+
+    Nnode <- n - 1L
+
+} else { # fossils = TRUE
+    nextnode <- -1L # nodes are numbered with negatives
+    nexttip <- N + 1L # tips are numbered with positives
+    e1 <- integer(1e5)
+    e2 <- integer(1e5)
+    time.tips <- numeric(1e5) # accessed with positive indices
+    time.nodes <- numeric(1e5) # accessed with negative indices
+    time.tips[POOL] <- T0 # the times of the n living tips are the present time
+
+    while (N > 1) {
+        X <- rTimeToEvent(t)
+        ## is the event a speciation or an extinction?
+        Y <- rbinom(1, size = 1, prob = speORext(X))
+        if (Y) { # speciation => create a node
+            i <- sample.int(N, 2)
+            j <- j + 2L
+            k <- c(j - 1, j)
+            e1[k] <- nextnode
+            e2[k] <- POOL[i]
+            time.nodes[-nextnode] <- X
+            POOL <- c(POOL[-i], nextnode)
+            nextnode <- nextnode - 1L
+            N <- N - 1L
+        } else { # extinction => create a tip
+            N <- N + 1L
+            time.tips[nexttip] <- X
+            POOL <- c(POOL, nexttip)
+            nexttip <- nexttip + 1L
+        }
+        t <- X
+    }
+
+    n <- nexttip - 1L # update n
+    Nnode <- n - 1L
+    EDGE <- seq_len(j)
+    e1 <- e1[EDGE]
+    e2 <- e2[EDGE]
+    e1 <- e1 + n + Nnode + 1L # e1 has only nodes...
+    NODES <- e2 < 0 # ... so this is needed only on e2
+    e2[NODES] <- e2[NODES] + n + Nnode + 1L
+    ## concatenate the vectors of times after dropping the extra 0's:
+    TIME <- c(time.tips[seq_len(n)], rev(time.nodes[seq_len(Nnode)]))
+}
+    structure(list(edge = cbind(e1, e2, deparse.level = 0),
+                   edge.length = TIME[e2] - TIME[e1],
+                   tip.label = paste0("t", seq_len(n)),
+                   Nnode = Nnode), class = "phylo")
 }

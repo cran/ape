@@ -27,7 +27,7 @@ prop.part(..., check.labels = TRUE)
 prop.clades(phy, ..., part = NULL, rooted = FALSE)
 \method{print}{prop.part}(x, ...)
 \method{summary}{prop.part}(object, ...)
-\method{plot}{prop.part}(x, barcol = "blue", leftmar = 4, ...)
+\method{plot}{prop.part}(x, barcol = "blue", leftmar = 4, col = "red", ...)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -57,6 +57,7 @@ prop.clades(phy, ..., part = NULL, rooted = FALSE)
     partitions in the upper panel.}
   \item{leftmar}{the size of the margin on the left to display the tip
     labels.}
+  \item{col}{the colour used to visualise the bipartitions.}
 }
 \details{
   The argument \code{FUN} in \code{boot.phylo} must be the function used

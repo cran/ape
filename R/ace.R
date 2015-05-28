@@ -1,8 +1,8 @@
-## ace.R (2014-05-27)
+## ace.R (2015-05-01)
 
 ##   Ancestral Character Estimation
 
-## Copyright 2005-2014 Emmanuel Paradis and Ben Bolker
+## Copyright 2005-2015 Emmanuel Paradis and Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -227,10 +227,12 @@ ace <-
                 if (is.na(dev)) Inf else dev
             }
         } else {
-            E <- if (use.expm) {
-                library(expm)
-                get("expm", "package:expm") # to avoid Matrix::expm
-            } else matexpo
+            if (!requireNamespace("expm", quietly = TRUE) && use.expm) {
+                warning("package 'expm' not available; using function 'matexpo' from 'ape'")
+                use.expm <- FALSE
+            }
+            E <- if (use.expm) expm::expm # to avoid Matrix::expm
+                 else matexpo
             dev <- function(p, output.liks = FALSE) {
                 if (any(is.nan(p)) || any(is.infinite(p))) return(1e50)
                 comp <- numeric(nb.tip + nb.node) # from Rich FitzJohn

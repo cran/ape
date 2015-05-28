@@ -1,8 +1,8 @@
-## as.phylo.R (2013-08-13)
+## as.phylo.R (2015-02-06)
 
 ##     Conversion Among Tree Objects
 
-## Copyright 2005-2013 Emmanuel Paradis
+## Copyright 2005-2015 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -29,8 +29,7 @@ new2old.phylo <- function(phy)
 
 as.phylo <- function (x, ...)
 {
-    if (length(class(x)) == 1 && class(x) == "phylo")
-        return(x)
+    if (identical(class(x), "phylo")) return(x)
     UseMethod("as.phylo")
 }
 

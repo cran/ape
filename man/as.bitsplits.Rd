@@ -2,6 +2,7 @@
 \alias{as.bitsplits}
 \alias{as.bitsplits.prop.part}
 \alias{print.bitsplits}
+\alias{sort.bitsplits}
 \alias{bitsplits}
 \alias{countBipartitions}
 \alias{as.prop.part}
@@ -24,6 +25,7 @@ countBipartitions(phy, X)
 as.bitsplits(x)
 \method{as.bitsplits}{prop.part}(x)
 \method{print}{bitsplits}(x, ...)
+\method{sort}{bitsplits}(x, decreasing = FALSE, ...)
 as.prop.part(x)
 \method{as.prop.part}{bitsplits}(x)
 }
@@ -31,6 +33,8 @@ as.prop.part(x)
   \item{x}{an object of the appropriate class.}
   \item{phy}{an object of class \code{"phylo"}.}
   \item{X}{an object of class \code{"multiPhylo"}.}
+  \item{decreasing}{a logical value to sort the bipartitions in
+    increasing (the default) or decreasing order of their frequency.}
   \item{\dots}{further arguments passed to or from other methods.}
 }
 \details{
@@ -40,8 +44,8 @@ as.prop.part(x)
   on ape's web site.
 }
 \value{
-  \code{bitsplits} and \code{as.bitsplits} return an object of class
-  \code{"bitsplits"}.
+  \code{bitsplits}, \code{as.bitsplits}, and \code{sort} return an object
+  of class \code{"bitsplits"}.
 
   \code{countBipartitions} returns a vector of integers.
 

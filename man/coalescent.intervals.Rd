@@ -2,7 +2,6 @@
 \alias{coalescent.intervals}
 \alias{coalescent.intervals.phylo}
 \alias{coalescent.intervals.default}
-
 \title{Coalescent Intervals}
 \usage{
 coalescent.intervals(x)
@@ -33,16 +32,12 @@ An object of class \code{"coalescentIntervals"} with the following entries:
 \code{\link{branching.times}}, \code{\link{collapsed.intervals}},
 \code{\link{read.tree}}.
 }
-
-\author{Korbinian Strimmer (\url{http://www.stat.uni-muenchen.de/~strimmer/})}
-
+\author{Korbinian Strimmer}
 \examples{
 data("hivtree.newick") # example tree in NH format
 tree.hiv <- read.tree(text = hivtree.newick) # load tree
-
 ci <- coalescent.intervals(tree.hiv) # from tree
 ci
-
 data("hivtree.table") # same tree, but in table format
 ci <- coalescent.intervals(hivtree.table$size) # from vector of interval lengths
 ci

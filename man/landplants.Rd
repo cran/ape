@@ -14,8 +14,7 @@ data(landplants.newick)
 }
 \source{
   This tree is described in Sanderson (1997) and is also  a
-  data example in the software package r8s
-  (\url{http://ginger.ucdavis.edu/r8s/}).
+  data example in the software package r8s.
 }
 \references{
   Sanderson, M. J. (1997) A nonparametric approach to estimating

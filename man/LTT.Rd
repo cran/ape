@@ -38,9 +38,13 @@ LTT(birth = 0.1, death = 0, N = 100, Tmax = 50, PI = 95,
 \details{
   For the moment, this works well when \code{birth} and \code{death} are
   constant. Some improvements are under progress for time-dependent
-  rates (but see below for and example).
+  rates (but see below for an example).
 }
 \references{
+  Hallinan, N. (2012) The generalized time variable reconstructed
+  birth--death process. \emph{Journal of Theoretical Biology},
+  \bold{300}, 265--276.
+
   Paradis, E. (2011) Time-dependent speciation and extinction from
   phylogenies: a least squares approach. \emph{Evolution}, \bold{65},
   661--672.

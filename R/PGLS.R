@@ -1,8 +1,8 @@
-## PGLS.R (2012-02-09)
+## PGLS.R (2014-12-11)
 
 ##   Phylogenetic Generalized Least Squares
 
-## Copyright 2004 Julien Dutheil, and 2006-2012 Emmanuel Paradis
+## Copyright 2004 Julien Dutheil, and 2006-2014 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -92,7 +92,6 @@ corMatrix.corBrownian <-
         stop("object has not been initialized.")
     tree <- attr(object, "tree")
     mat <- vcv.phylo(tree, corr = corr)
-    n <- dim(mat)[1]
     ## reorder matrix:
     index <- attr(object, "index")
     mat[index, index]
@@ -109,7 +108,6 @@ corMatrix.corMartins <-
     dist <- cophenetic.phylo(tree)
     mat <- exp(-object[1] * dist)
     if (corr) mat <- cov2cor(mat)
-    n <- dim(mat)[1]
     ## reorder matrix:
     index <- attr(object, "index")
     mat[index, index]
@@ -125,7 +123,6 @@ corMatrix.corGrafen <-
     tree <- compute.brlen(attr(object, "tree"),
                           method = "Grafen", power = exp(object[1]))
     mat <- vcv.phylo(tree, corr = corr)
-    n <- dim(mat)[1]
     ## reorder matrix:
     index <- attr(object, "index")
     mat[index, index]

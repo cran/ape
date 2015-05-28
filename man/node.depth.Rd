@@ -2,7 +2,6 @@
 \alias{node.depth}
 \alias{node.depth.edgelength}
 \alias{node.height}
-\alias{node.height.clado}
 \title{Depth and Heights of Nodes and Tips}
 \description{
   These functions return the depths or heights of nodes and tips.
@@ -11,7 +10,6 @@
 node.depth(phy, method = 1)
 node.depth.edgelength(phy)
 node.height(phy, clado.style = FALSE)
-node.height.clado(phy)
 }
 \arguments{
   \item{phy}{an object of class "phylo".}
@@ -30,17 +28,11 @@ node.height.clado(phy)
 
   \code{node.height} computes the heights of nodes and tips as plotted
   by a phylogram or a cladogram.
-
-  \code{node.height.clado} does the same but for a cladogram (this
-  function will be removed soon as \code{node.height(phy, clado.style =
-  TRUE)} does the same thing).
 }
 \value{
   A numeric vector indexed with the node numbers of the matrix `edge' of
   \code{phy}.
 }
 \author{Emmanuel Paradis}
-\seealso{
-  \code{\link{plot.phylo}}
-}
+\seealso{\code{\link{plot.phylo}}}
 \keyword{manip}

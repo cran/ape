@@ -1,14 +1,46 @@
-## dist.topo.R (2014-05-16)
+## dist.topo.R (2015-04-24)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
 
-## Copyright 2005-2014 Emmanuel Paradis
+## Copyright 2005-2015 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-dist.topo <- function(x, y, method = "PH85")
+.getTreesFromDotdotdot <- function(...)
+{
+    obj <- list(...)
+    if (length(obj) == 1 && !inherits(obj[[1]], "phylo")) obj <- obj[[1]]
+    obj
+}
+
+dist.topo <- function(x, y = NULL, method = "PH85")
+{
+    if (!is.null(y)) {
+        res <- .dist.topo(x, y, method = method)
+    } else {
+        n <- length(x) # number of trees
+        res <- numeric(n * (n - 1) /2)
+        nms <- names(x)
+        if (is.null(nms)) nms <- paste0("tree", 1:n)
+        k <- 0L
+        for (i in 1:(n - 1)) {
+            for (j in (i + 1):n) {
+                k <- k + 1L
+                res[k] <- .dist.topo(x[[i]], x[[j]], method = method)
+            }
+        }
+        attr(res, "Size") <- n
+        attr(res, "Labels") <- nms
+        attr(res, "Diag") <- attr(res, "Upper") <- FALSE
+        attr(res, "method") <- method
+        class(res) <- "dist"
+    }
+    res
+}
+
+.dist.topo <- function(x, y, method = "PH85")
 {
     if (method == "score" && (is.null(x$edge.length) || is.null(y$edge.length)))
         stop("trees must have branch lengths for branch score distance.")
@@ -96,9 +128,7 @@ dist.topo <- function(x, y, method = "PH85")
 
 prop.part <- function(..., check.labels = TRUE)
 {
-    obj <- list(...)
-    if (length(obj) == 1 && !inherits(obj[[1]], "phylo")) # fix by Steve Walker (2014-03-31)
-        obj <- obj[[1]]
+    obj <- .getTreesFromDotdotdot(...)
     ntree <- length(obj)
     if (ntree == 1) check.labels <- FALSE
     if (check.labels) obj <- .compressTipLabel(obj) # fix by Klaus Schliep (2011-02-21)
@@ -133,7 +163,7 @@ print.prop.part <- function(x, ...)
 
 summary.prop.part <- function(object, ...) attr(object, "number")
 
-plot.prop.part <- function(x, barcol = "blue", leftmar = 4, ...)
+plot.prop.part <- function(x, barcol = "blue", leftmar = 4, col = "red", ...)
 {
     if (is.null(attr(x, "labels")))
       stop("cannot plot this partition object; see ?prop.part for details.")
@@ -141,23 +171,19 @@ plot.prop.part <- function(x, barcol = "blue", leftmar = 4, ...)
     n <- length(attr(x, "labels"))
     layout(matrix(1:2, 2, 1), heights = c(1, 3))
     par(mar = c(0.1, leftmar, 0.1, 0.1))
-    plot(1:L, attr(x, "number"), type = "h", col = barcol, xlim = c(1, L),
-         xlab = "", ylab = "Frequency", xaxt = "n", bty = "n")
-    plot(0, type = "n", xlim = c(1, L), ylim = c(1, n),
-         xlab = "", ylab = "", xaxt = "n", yaxt = "n")
-    for (i in 1:L) points(rep(i, length(x[[i]])), x[[i]], ...)
+    one2L <- seq_len(L)
+    plot(one2L, attr(x, "number"), type = "h", col = barcol, xlim = c(0.5, L),
+         xaxs = "i", xlab = "", ylab = "Frequency", xaxt = "n", bty = "n", ...)
+    M <- matrix(0L, L, n)
+    for (i in one2L) M[i, x[[i]]] <- 1L
+    image.default(one2L, 1:n, M, col = c("white", col), xlab = "", ylab = "", yaxt = "n")
     mtext(attr(x, "labels"), side = 2, at = 1:n, las = 1)
 }
 
 prop.clades <- function(phy, ..., part = NULL, rooted = FALSE)
 {
     if (is.null(part)) {
-        ## <FIXME>
-        ## Are we going to keep the '...' way of passing trees?
-        obj <- list(...)
-        if (length(obj) == 1 && class(obj[[1]]) != "phylo")
-            obj <- unlist(obj, recursive = FALSE)
-        ## </FIXME>
+        obj <- .getTreesFromDotdotdot(...)
         part <- prop.part(obj, check.labels = TRUE)
     }
 
@@ -321,13 +347,9 @@ consensus <- function(..., p = 1, check.labels = TRUE)
             pos <<- pos + size
         }
     }
-    obj <- list(...)
-    if (length(obj) == 1) {
-        ## better than unlist(obj, recursive = FALSE)
-        ## because "[[" keeps the class of 'obj':
-        obj <- obj[[1]]
-        if (class(obj) == "phylo") return(obj)
-    }
+
+    obj <- .getTreesFromDotdotdot(...)
+
     if (!is.null(attr(obj, "TipLabel")))
         labels <- attr(obj, "TipLabel")
     else {

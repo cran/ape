@@ -1,8 +1,8 @@
-## plot.phylo.R (2014-08-21)
+## plot.phylo.R (2015-02-25)
 
 ##   Plot Phylogenies
 
-## Copyright 2002-2014 Emmanuel Paradis
+## Copyright 2002-2015 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -56,10 +56,6 @@ plot.phylo <-
     ## the order of the last two conditions is important:
     if (type %in% c("unrooted", "radial") || !use.edge.length ||
         is.null(x$root.edge) || !x$root.edge) root.edge <- FALSE
-    if (type == "fan" && root.edge) {
-        warning("drawing root edge with type = 'fan' is not yet supported")
-        root.edge <- FALSE
-    }
 
     phyloORclado <- type %in% c("phylogram", "cladogram")
     horizontal <- direction %in% c("rightwards", "leftwards")
@@ -145,6 +141,7 @@ if (phyloORclado) {
             r <- 1/r
         }
         theta <- theta + rotate.tree
+        if (root.edge) r <- r + x$root.edge
         xx <- r * cos(theta)
         yy <- r * sin(theta)
     }, "unrooted" = {
@@ -334,12 +331,19 @@ if (plot) {
         } else
         cladogram.plot(x$edge, xx, yy, edge.color, edge.width, edge.lty)
     }
-    if (root.edge)
-        switch(direction,
-               "rightwards" = segments(0, yy[ROOT], x$root.edge, yy[ROOT]),
-               "leftwards" = segments(xx[ROOT], yy[ROOT], xx[ROOT] + x$root.edge, yy[ROOT]),
-               "upwards" = segments(xx[ROOT], 0, xx[ROOT], x$root.edge),
-               "downwards" = segments(xx[ROOT], yy[ROOT], xx[ROOT], yy[ROOT] + x$root.edge))
+    if (root.edge) {
+        rootcol <- if (length(edge.color) == 1) edge.color else "black"
+        if (type == "fan") {
+            tmp <- polar2rect(x$root.edge, theta[ROOT])
+            segments(0, 0, tmp$x, tmp$y, col = rootcol)
+        } else {
+            switch(direction,
+                   "rightwards" = segments(0, yy[ROOT], x$root.edge, yy[ROOT], col = rootcol),
+                   "leftwards" = segments(xx[ROOT], yy[ROOT], xx[ROOT] + x$root.edge, yy[ROOT], col = rootcol),
+                   "upwards" = segments(xx[ROOT], 0, xx[ROOT], x$root.edge, col = rootcol),
+                   "downwards" = segments(xx[ROOT], yy[ROOT], xx[ROOT], yy[ROOT] + x$root.edge, col = rootcol))
+        }
+    }
     if (show.tip.label) {
         if (is.expression(x$tip.label)) underscore <- TRUE
         if (!underscore) x$tip.label <- gsub("_", " ", x$tip.label)
@@ -670,20 +674,14 @@ node.height <- function(phy, clado.style = FALSE)
            as.double(yy))[[6]]
 }
 
-node.height.clado <- function(phy)
-{
-    warning("the function 'node.height.clado' will be removed soon.\nUse node.height(phy, clado.style = TRUE) instead.")
-    node.height(phy, TRUE)
-}
-
 plot.multiPhylo <- function(x, layout = 1, ...)
 {
     layout(matrix(1:layout, ceiling(sqrt(layout)), byrow = TRUE))
-    if (!devAskNewPage() && interactive()) {
+    if (!devAskNewPage() && !names(dev.cur()) %in% c("pdf", "postscript")) {
         devAskNewPage(TRUE)
         on.exit(devAskNewPage(FALSE))
     }
-    for (i in 1:length(x)) plot(x[[i]], ...)
+    for (i in seq_along(x)) plot(x[[i]], ...)
 }
 
 trex <- function(phy, title = TRUE, subbg = "lightyellow3",

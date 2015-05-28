@@ -1,8 +1,8 @@
-## compar.gee.R (2013-12-19)
+## compar.gee.R (2015-05-01)
 
 ##   Comparative Analysis with GEEs
 
-## Copyright 2002-2013 Emmanuel Paradis
+## Copyright 2002-2015 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -11,7 +11,8 @@ compar.gee <-
     function(formula, data = NULL, family = gaussian, phy,
              corStruct, scale.fix = FALSE, scale.value = 1)
 {
-    library(gee)
+    if (requireNamespace("gee", quietly = TRUE)) gee <- gee::gee
+    else stop("package 'gee' not available")
 
     if (!missing(corStruct)) {
         if (!missing(phy))

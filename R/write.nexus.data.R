@@ -1,8 +1,8 @@
-## write.nexus.data.R (2014-09-24)
+## write.nexus.data.R (2015-02-04)
 
 ##   Write Character Data in NEXUS Format
 
-## Copyright 2006-2014 Johan Nylander, Emmanuel Paradis
+## Copyright 2006-2015 Johan Nylander, Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -77,7 +77,7 @@ write.nexus.data <-
 
     NCHAR <- paste("NCHAR=", nchars, sep = "")
     NTAX <- paste0("NTAX=", ntax)
-    DATATYPE <- paste0("DATATYPE", format)
+    DATATYPE <- paste0("DATATYPE=", format) # fix by Robin Cristofari (2015-02-04)
 
     if (is.null(charsperline)) {
         if (nchars <= defcharsperline) {

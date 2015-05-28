@@ -18,8 +18,7 @@ where(x, pattern)
   each sequence.
 
   Patterns may be overlapping. For instance, if \code{pattern = "tata"}
-  and the sequence starts with `tatata', then the vector returned will
-  be c(1, 3).
+  and the sequence starts with `tatata', then the output will be c(1, 3).
 }
 \value{
   a vector of integers or a list of such vectors.
