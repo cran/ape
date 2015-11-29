@@ -13,6 +13,7 @@ if(is.null(seed)) {
 	runif(1)
 	seed <- .Random.seed[trunc(runif(1,1,626))]
 	}
+HP <- as.matrix(HP)
 
 host.D <- as.matrix(host.D)
 host.pc <- pcoa(host.D, correction=correction)

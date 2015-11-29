@@ -1,52 +1,73 @@
-## collapse.singles.R (2010-07-23)
+## collapse.singles.R (2015-06-22)
 
 ##    Collapse "Single" Nodes
 
-## Copyright 2006 Ben Bolker
+## Copyright 2015 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-collapse.singles <- function(tree)
+collapse.singles <- function(tree, root.edge = FALSE)
 {
-    elen <- tree$edge.length
-    xmat <- tree$edge
-    ## added by Elizabeth Purdom (2008-06-19):
-    node.lab <- tree$node.label
-    nnode <- tree$Nnode
-    ntip <- length(tree$tip.label)
-    ## end
-    singles <- NA
-    while (length(singles) > 0) {
-        ## changed by EP to make it slightly more efficient:
-        ## tx <- table(xmat[xmat < 0])
-        ## singles <- as.numeric(names(tx)[tx < 3])
-        tx <- tabulate(xmat[, 1])
-        singles <- which(tx == 1)
-        ## END
-        if (length(singles) > 0) {
-            i <- singles[1]
-            prev.node <- which(xmat[, 2] == i)
-            next.node <- which(xmat[, 1] == i)
-            xmat[prev.node, 2] <- xmat[next.node, 2]
-            xmat <- xmat[xmat[, 1] != i, ] # drop
-            ## changed by EP for the new coding of "phylo" (2006-10-05):
-            ## xmat[xmat < i] <- xmat[xmat < i] + 1 ## adjust indices
-            xmat[xmat > i] <- xmat[xmat > i] - 1L ## adjust indices # changed '1' by '1L' (2010-07-23)
-            ## END
-            elen[prev.node] <- elen[prev.node] + elen[next.node]
-            ## added by Elizabeth Purdom (2008-06-19):
-            if (!is.null(node.lab)) node.lab <- node.lab[-c(i - ntip)]
-            nnode <- nnode - 1L
-            ## end
-            elen <- elen[-next.node]
-        }
+    n <- length(tree$tip.label)
+    e1 <- tree$edge[, 1]
+    e2 <- tree$edge[, 2]
+
+    tab <- tabulate(e1)
+    if (all(tab > 1)) return(tree)
+
+    if (is.null(tree$edge.length)) {
+        root.edge <- FALSE
+        wbl <- FALSE
+    } else {
+        wbl <- TRUE
+        el <- tree$edge.length
     }
-    tree$edge <- xmat
-    tree$edge.length <- elen
-    ## added by Elizabeth Purdom (2008-06-19):
-    tree$node.label <- node.lab
-    tree$Nnode <- nnode
-    ## end
+
+    if (root.edge) ROOTEDGE <- 0
+
+    ## start with the root node:
+    ROOT <- n + 1L
+    while (tab[ROOT] == 1) {
+        i <- which(e1 == ROOT)
+        ROOT <- e2[i]
+        if (wbl) {
+            if (root.edge) ROOTEDGE <- ROOTEDGE + el[i]
+            el <- el[-i]
+        }
+        e1 <- e1[-i]
+        e2 <- e2[-i]
+    }
+
+    singles <- which(tabulate(e1) == 1)
+    while (length(singles)) {
+        i <- which(e1 == singles[1])
+        j <- which(e2 == e1[i])
+        e2[j] <- e2[i]
+        if (wbl) {
+            el[j] <- el[j] + el[i]
+            el <- el[-i]
+        }
+        e1 <- e1[-i]
+        e2 <- e2[-i]
+        singles <- which(tabulate(e1) == 1)
+    }
+
+    Nnode <- length(e1) - n + 1L
+
+    oldnodes <- unique(e1)
+    if (!is.null(tree$node.label))
+        tree$node.label <- tree$node.label[oldnodes - n]
+    newNb <- integer(max(oldnodes))
+    newNb[ROOT] <- n + 1L
+    sndcol <- e2 > n
+    e2[sndcol] <- newNb[e2[sndcol]] <- n + 2:Nnode
+    e1 <- newNb[e1]
+    tree$edge <- cbind(e1, e2, deparse.level = 0)
+    tree$Nnode <- Nnode
+    if (wbl) {
+        if (root.edge) tree$root.edge <- ROOTEDGE
+        tree$edge.length <- el
+    }
     tree
 }

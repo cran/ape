@@ -45,6 +45,7 @@
 \alias{C_ultrametric}
 \alias{C_where}
 \alias{GlobalDeletionDNA}
+\alias{DNAbin2indelblock}
 \alias{SegSites}
 \alias{bipartition}
 \alias{delta_plot}

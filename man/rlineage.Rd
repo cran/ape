@@ -85,6 +85,7 @@ drop.fossil(phy, tol = 1e-8)
   \code{\link{rtree}}, \code{\link{stree}}
 }
 \examples{
+set.seed(10)
 plot(rlineage(0.1, 0)) # Yule process with lambda = 0.1
 plot(rlineage(0.1, 0.05)) # simple birth-death process
 b <- function(t) 1/(1 + exp(0.2*t - 1)) # logistic

@@ -33,7 +33,7 @@ alex(x, ...)
 \value{NULL}
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{image.DNAbin}}, \code{\link{trex}}
+  \code{\link{image.DNAbin}}, \code{\link{trex}}, \code{\link{alview}}
 }
 \examples{
 \dontrun{

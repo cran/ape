@@ -1,4 +1,4 @@
-## plot.phylo.R (2015-02-25)
+## plot.phylo.R (2015-09-20)
 
 ##   Plot Phylogenies
 
@@ -16,7 +16,7 @@ plot.phylo <-
              label.offset = 0, underscore = FALSE, x.lim = NULL,
              y.lim = NULL, direction = "rightwards", lab4ut = NULL,
              tip.color = "black", plot = TRUE, rotate.tree = 0,
-             open.angle = 0, node.depth = 1, ...)
+             open.angle = 0, node.depth = 1, align.tip.label = FALSE, ...)
 {
     Ntip <- length(x$tip.label)
     if (Ntip < 2) {
@@ -52,6 +52,18 @@ plot.phylo <-
     direction <- match.arg(direction, c("rightwards", "leftwards",
                                         "upwards", "downwards"))
     if (is.null(x$edge.length)) use.edge.length <- FALSE
+
+    if (is.numeric(align.tip.label)) {
+        align.tip.label.lty <- align.tip.label
+        align.tip.label <- TRUE
+    } else { # assumes is.logical(align.tip.labels) == TRUE
+        if (align.tip.label) align.tip.label.lty <- 3
+    }
+
+    if (align.tip.label) {
+        if (type %in% c("unrooted", "radial") || !use.edge.length || is.ultrametric(x))
+            align.tip.label <- FALSE
+    }
 
     ## the order of the last two conditions is important:
     if (type %in% c("unrooted", "radial") || !use.edge.length ||
@@ -194,7 +206,10 @@ if (phyloORclado) {
                 alp <- try(uniroot(function(a) max(a*xx.tips + strWi) - pin1,
                                    c(0, 1e6))$root, silent = TRUE)
                 ## if the above fails, give 1/3 of the plot for the tip labels:
-                if (is.character(alp)) tmp <- max(xx.tips)*1.5 else {
+                if (is.character(alp)) {
+                    tmp <- max(xx.tips)
+                    if (show.tip.label) tmp <- tmp * 1.5 # fix by Liam Revell (2015-06-22)
+                } else {
                     tmp <- if (show.tip.label) max(xx.tips + strWi/alp) else max(xx.tips)
                 }
                 if (show.tip.label) tmp <- tmp + label.offset
@@ -220,11 +235,11 @@ if (phyloORclado) {
         x.lim <- c(0, x.lim)
         if (phyloORclado && !horizontal) x.lim[1] <- 1
         if (type %in% c("fan", "unrooted") && show.tip.label)
-          x.lim[1] <- -max(nchar.tip.label * 0.018 * max.yy * cex)
+            x.lim[1] <- -max(nchar.tip.label * 0.018 * max.yy * cex)
         if (type == "radial")
-          x.lim[1] <-
-            if (show.tip.label) -1 - max(nchar.tip.label * 0.03 * cex)
-            else -1
+            x.lim[1] <-
+                if (show.tip.label) -1 - max(nchar.tip.label * 0.03 * cex)
+                else -1
     }
     ## mirror the xx:
     if (phyloORclado && direction == "leftwards") xx <- x.lim[2] - xx
@@ -242,7 +257,10 @@ if (phyloORclado) {
                 alp <- try(uniroot(function(a) max(a*yy.tips + strWi) - pin2,
                                    c(0, 1e6))$root, silent = TRUE)
                 ## if the above fails, give 1/3 of the device for the tip labels:
-                if (is.character(alp)) tmp <- max(yy.tips)*1.5 else {
+                if (is.character(alp)) {
+                    tmp <- max(yy.tips)
+                    if (show.tip.label) tmp <- tmp * 1.5
+                } else {
                     tmp <- if (show.tip.label) max(yy.tips + strWi/alp) else max(yy.tips)
                 }
                 if (show.tip.label) tmp <- tmp + label.offset
@@ -348,10 +366,26 @@ if (plot) {
         if (is.expression(x$tip.label)) underscore <- TRUE
         if (!underscore) x$tip.label <- gsub("_", " ", x$tip.label)
 
-        if (phyloORclado)
-            text(xx[1:Ntip] + lox, yy[1:Ntip] + loy, x$tip.label, adj = adj,
+        if (phyloORclado) {
+            if (align.tip.label) {
+                xx.tmp <- switch(direction,
+                                 "rightwards" = max(xx[1:Ntip]),
+                                 "leftwards" = min(xx[1:Ntip]),
+                                 "upwards" = xx[1:Ntip],
+                                 "downwards" = xx[1:Ntip])
+                yy.tmp <- switch(direction,
+                                 "rightwards" = yy[1:Ntip],
+                                 "leftwards" = yy[1:Ntip],
+                                 "upwards" = max(yy[1:Ntip]),
+                                 "downwards" = min(yy[1:Ntip]))
+                segments(xx[1:Ntip], yy[1:Ntip], xx.tmp, yy.tmp, lty = align.tip.label.lty)
+            } else {
+                xx.tmp <- xx[1:Ntip]
+                yy.tmp <- yy[1:Ntip]
+            }
+            text(xx.tmp + lox, yy.tmp + loy, x$tip.label, adj = adj,
                  font = font, srt = srt, cex = cex, col = tip.color)
-        else {
+        } else {
             angle <- if (type == "unrooted") XY$axe else atan2(yy[1:Ntip], xx[1:Ntip]) # in radians
 
             lab4ut <-
@@ -373,40 +407,21 @@ if (plot) {
                      x$tip.label, adj = c(adj, 0), font = font,
                      srt = srt, cex = cex, col = tip.color)
             } else { # if lab4ut == "axial"
-###                adj <- abs(XY$axe) > pi/2
-###                srt <- 180 * XY$axe / pi
-###                srt[adj] <- srt[adj] - 180
-###                adj <- as.numeric(adj)
-###                xx.tips <- xx[1:Ntip]
-###                yy.tips <- yy[1:Ntip]
-###                if (label.offset) {
-###                    xx.tips <- xx.tips + label.offset * cos(XY$axe)
-###                    yy.tips <- yy.tips + label.offset * sin(XY$axe)
-###                }
-###                ## `srt' takes only a single value, so can't vectorize this:
-###                ## (and need to 'elongate' these vectors:)
-###                font <- rep(font, length.out = Ntip)
-###                tip.color <- rep(tip.color, length.out = Ntip)
-###                cex <- rep(cex, length.out = Ntip)
-###                for (i in 1:Ntip)
-###                    text(xx.tips[i], yy.tips[i], cex = cex[i],
-###                         x$tip.label[i], adj = adj[i], font = font[i],
-###                         srt = srt[i], col = tip.color[i])
-###            }
-###        }
-###        if (type %in% c("fan", "radial")) {
                 xx.tips <- xx[1:Ntip]
                 yy.tips <- yy[1:Ntip]
-###            angle <- atan2(yy.tips, xx.tips) # in radians
+                if (align.tip.label) {
+                    POL <- rect2polar(xx.tips, yy.tips)
+                    POL$r[] <- max(POL$r)
+                    REC <- polar2rect(POL$r, POL$angle)
+                    xx.tips <- REC$x
+                    yy.tips <- REC$y
+                    segments(xx[1:Ntip], yy[1:Ntip], xx.tips, yy.tips, lty = align.tip.label.lty)
+                }
                 if (label.offset) {
                     xx.tips <- xx.tips + label.offset * cos(angle)
                     yy.tips <- yy.tips + label.offset * sin(angle)
                 }
-###            s <- xx.tips < 0
-###            angle <- angle * 180/pi # switch to degrees
-###            angle[s] <- angle[s] + 180
-###            adj <- as.numeric(s)
-                if (type == "unrooted"){
+                if (type == "unrooted") {
                     adj <- abs(angle) > pi/2
                     angle <- angle * 180/pi # switch to degrees
                     angle[adj] <- angle[adj] - 180
@@ -440,7 +455,8 @@ if (plot) {
               cex = cex, adj = adj, srt = srt, no.margin = no.margin,
               label.offset = label.offset, x.lim = x.lim, y.lim = y.lim,
               direction = direction, tip.color = tip.color,
-              Ntip = Ntip, Nnode = Nnode, root.time = x$root.time)
+              Ntip = Ntip, Nnode = Nnode, root.time = x$root.time,
+              align.tip.label = align.tip.label)
     assign("last_plot.phylo", c(L, list(edge = xe, xx = xx, yy = yy)),
            envir = .PlotPhyloEnv)
     invisible(L)
@@ -572,10 +588,12 @@ circular.plot <- function(edge, Ntip, Nnode, xx, yy, theta,
         feat.arc <- as.list(rep(default, Nnode))
         for (k in 1:Nnode) {
             tmp <- edge.feat[start[k]]
-            feat.arc[[k]] <-
-                if (tmp == edge.feat[end[k]]) tmp
-                else if (nodedegree[k] == 2)
-                    rep(c(tmp, edge.feat[end[k]]), each = 50)
+            if (tmp == edge.feat[end[k]]) { # fix by Francois Michonneau (2015-07-24)
+                feat.arc[[k]] <- tmp
+            } else {
+                if (nodedegree[k] == 2)
+                    feat.arc[[k]] <- rep(c(tmp, edge.feat[end[k]]), each = 50)
+            }
         }
         feat.arc
     }

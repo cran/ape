@@ -14,7 +14,8 @@
     root.edge = FALSE, label.offset = 0, underscore = FALSE,
     x.lim = NULL, y.lim = NULL, direction = "rightwards",
     lab4ut = NULL, tip.color = "black", plot = TRUE,
-    rotate.tree = 0, open.angle = 0, node.depth = 1, ...)
+    rotate.tree = 0, open.angle = 0, node.depth = 1,
+    align.tip.label = FALSE, ...)
 \method{plot}{multiPhylo}(x, layout = 1, ...)
 }
 \arguments{
@@ -109,6 +110,10 @@
     not used to plot the tree; 1: the node depths are proportional to
     the number of tips descending from each node (the default and was the
     only possibility previously), 2: they are evenly spaced.}
+  \item{align.tip.label}{a logical value or an integer. If \code{TRUE},
+    the tips are aligned and dotted lines are drawn between the tips of
+    the tree and the labels. If an integer, the tips are aligned and
+    this gives the type of the lines (\code{lty}).}
   \item{layout}{the number of trees to be plotted simultaneously.}
   \item{\dots}{further arguments to be passed to \code{plot} or to
     \code{plot.phylo}.}
@@ -147,6 +152,9 @@
   give a nice result: the user may check these values with the
   (invisibly) returned list (see ``Value:'').
 
+  If you use \code{align.tip.label = TRUE} with \code{type = "fan"}, you
+  will have certainly to set  \code{x.lim} and \code{y.lim} manually.
+
   If you resize manually the graphical device (windows or X11) you may
   need to replot the tree.
 }
@@ -176,6 +184,7 @@
   \item{Ntip}{}
   \item{Nnode}{}
   \item{root.time}{}
+  \item{align.tip.label}{}
 }
 \author{Emmanuel Paradis}
 \seealso{

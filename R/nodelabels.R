@@ -1,4 +1,4 @@
-## nodelabels.R (2014-06-05)
+## nodelabels.R (2014-07-31)
 
 ##   Labelling Trees
 
@@ -187,22 +187,32 @@ edgelabels <-
         sel <- edge
         subedge <- lastPP$edge[sel, , drop = FALSE]
     }
+
+    xx <- lastPP$xx
+    yy <- lastPP$yy
+
     if (lastPP$type == "phylogram") {
         if (lastPP$direction %in% c("rightwards", "leftwards")) {
-            XX <- (lastPP$xx[subedge[, 1]] + lastPP$xx[subedge[, 2]]) / 2
-            YY <- lastPP$yy[subedge[, 2]]
+            XX <- (xx[subedge[, 1]] + xx[subedge[, 2]]) / 2
+            YY <- yy[subedge[, 2]]
         } else {
-            XX <- lastPP$xx[subedge[, 2]]
-            YY <- (lastPP$yy[subedge[, 1]] + lastPP$yy[subedge[, 2]]) / 2
+            XX <- xx[subedge[, 2]]
+            YY <- (yy[subedge[, 1]] + yy[subedge[, 2]]) / 2
         }
     } else {
-        XX <- (lastPP$xx[subedge[, 1]] + lastPP$xx[subedge[, 2]]) / 2
-        YY <- (lastPP$yy[subedge[, 1]] + lastPP$yy[subedge[, 2]]) / 2
+        if (lastPP$type == "fan") { # fix by Klaus Schliep (2015-07-31)
+            r <- sqrt(xx^2 + yy^2)
+            tmp <- (r[subedge[, 2]] + r[subedge[, 1]]) / (r[subedge[, 2]] * 2)
+            XX <- xx[subedge[, 2]] * tmp
+            YY <- yy[subedge[, 2]] * tmp
+        } else {
+            XX <- (xx[subedge[, 1]] + xx[subedge[, 2]]) / 2
+            YY <- (yy[subedge[, 1]] + yy[subedge[, 2]]) / 2
+        }
     }
 
     ## suggestion by Rob Lanfear:
-    if (!is.null(date))
-        XX[] <- max(lastPP$xx) - date
+    if (!is.null(date)) XX[] <- max(lastPP$xx) - date
 
     BOTHlabels(text, sel, XX, YY, adj, frame, pch, thermo,
                pie, piecol, col, bg, horiz, width, height, ...)

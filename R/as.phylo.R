@@ -1,4 +1,4 @@
-## as.phylo.R (2015-02-06)
+## as.phylo.R (2015-10-16)
 
 ##     Conversion Among Tree Objects
 
@@ -91,21 +91,26 @@ as.hclust.phylo <- function(x, ...)
     if (!is.rooted(x)) stop("the tree is not rooted")
     n <- length(x$tip.label)
     x$node.label <- NULL # by Jinlong Zhang (2010-12-15)
-    bt <- sort(branching.times(x))
-    inode <- as.numeric(names(bt))
+    bt <- branching.times(x)
     N <- n - 1L
-    nm <- numeric(N + n) # hash table
-    nm[inode] <- 1:N
-    merge <- matrix(NA, N, 2)
-    for (i in 1:N) {
-        ind <- which(x$edge[, 1] == inode[i])
-        for (k in 1:2) {
-            tmp <- x$edge[ind[k], 2]
-            merge[i, k] <- if (tmp <= n) -tmp else nm[tmp]
-        }
-    }
+
+    x <- reorder(x, "postorder")
+    m <- matrix(x$edge[, 2], N, 2, byrow = TRUE)
+    anc <- x$edge[c(TRUE, FALSE), 1]
+    bt <- sort(bt[as.character(anc)])
+    o <- match(names(bt), anc)
+    m <- m[o, ]
+
+    ## first renumber the tips:
+    TIPS <- m <= n
+    m[TIPS] <- -m[TIPS]
+
+    ## then renumber the nodes:
+    oldnodes <- as.numeric(names(bt))[-N]
+    m[match(oldnodes, m)] <- 1:(N - 1)
+
     names(bt) <- NULL
-    obj <- list(merge = merge, height = bt, order = 1:n, labels = x$tip.label,
+    obj <- list(merge = m, height = 2*bt, order = 1:n, labels = x$tip.label,
                 call = match.call(), method = "unknown")
     class(obj) <- "hclust"
     obj

@@ -9,7 +9,9 @@
   Both functions match the data with the labels of the tree.
 }
 \usage{
-phydataplot(x, phy, style = "bars", offset = 1, ...)
+phydataplot(x, phy, style = "bars", offset = 1, scaling = 1,
+            continuous = FALSE, width = NULL, legend = "below",
+            funcol = rainbow, ...)
 ring(x, phy, style = "ring", offset = 1, ...)
 }
 \arguments{
@@ -18,12 +20,33 @@ ring(x, phy, style = "ring", offset = 1, ...)
   \item{style}{a character string specifying the type of graphics; can
     be abbreviated (see details).}
   \item{offset}{the space between the tips of the tree and the plot.}
+  \item{scaling}{the scaling factor to apply to the data.}
+  \item{continuous}{(used if style="mosaic") a logical specifying
+    whether to treat the values in \code{x} as continuous or not; can be
+    an integer value giving the number of categories.}
+  \item{width}{(used if style = "mosaic") the width of the cells; by
+    default, all the available space is used.}
+  \item{legend}{(used if style = "mosaic") the place where to draw the
+    legend; if not the default, the legend is drawn besides the mosaic.}
+  \item{funcol}{(used if style = "mosaic") the function used to generate
+    the colours (see details and examples).}
   \item{\dots}{further arguments passed to the graphical functions.}
 }
 \details{
   The possible values for \code{style} are ``bars'', ``segments'',
-  ``image'', or ``arrows'' for \code{phydataplot}, and ``ring'',
-  ``segments'', or ``arrows'' for \code{ring}.
+  ``image'', ``arrows'', ``boxplot'', ``dotchart'', or ``mosaic'' for
+  \code{phydataplot}, and ``ring'', ``segments'', or ``arrows'' for
+  \code{ring}.
+
+  \code{style = "image"} works only with square matrices (e.g.,
+  similarities). If you want to plot a DNA alignment in the same way
+  than \code{\link{image.DNAbin}}, try \code{style = "mosaic"}.
+
+  \code{style = "mosaic"} can plot any kind of matrices, possibly after
+  discretizing its values (using \code{continuous}). The default colour
+  palette is taken from the function \code{\link[grDevices]{rainbow}}.
+  If you want to use specified colours, a function simply returning the
+  vector of colours must be used (see examples).
 }
 \note{
   For the moment, only rightwards trees are supported (does not apply to
@@ -48,10 +71,10 @@ phydataplot(sample(x), tr, "s", lwd = 3, lty = 3)
 plot(tr, "f", x.l = c(-11, 11), y.l = c(-11, 11))
 phydataplot(x, tr, "s")
 
-## leave more space with x.lim to show 2 barplots:
+## leave more space with x.lim to show a barplot and a dotchart:
 plot(tr, x.lim = 22)
-phydataplot(x, tr, "b")
-phydataplot(x, tr, "b", offset = 12, col = "yellow")
+phydataplot(x, tr, col = "yellow")
+phydataplot(x, tr, "d", offset = 13)
 
 ts <- rcoal(N <- 100)
 X <- rTraitCont(ts) # names are set
@@ -112,5 +135,40 @@ phydataplot(X, tx, col = co, offset = 0.05, border = NA)
 
 plot(tx, "f", show.tip.label = FALSE, open.angle = 180)
 ring(X, tx, col = co, offset = 0.05)
+
+Z <- matrix(rnorm(m * 5), m)
+rownames(Z) <- rownames(X)
+plot(tx, x.lim = 5)
+phydataplot(Z, tx, "bo", scaling = .5, offset = 0.5,
+            boxfill = c("gold", "skyblue"))
+
+## plot an alignment with a NJ tree:
+data(woodmouse)
+trw <- nj(dist.dna(woodmouse))
+plot(trw, x.lim = 0.1, align.tip = TRUE, font = 1)
+phydataplot(woodmouse[, 1:50], trw, "m", 0.02, border = NA)
+
+## use type = "mosaic" on a 30x5 matrix:
+tr <- rtree(n <- 30)
+p <- 5
+x <- matrix(sample(3, size = n*p, replace = TRUE), n, p)
+dimnames(x) <- list(paste0("t", 1:n), LETTERS[1:p])
+plot(tr, x.lim = 35, align.tip = TRUE, adj = 1)
+phydataplot(x, tr, "m", 2)
+## change the aspect:
+plot(tr, x.lim = 35, align.tip = TRUE, adj = 1)
+phydataplot(x, tr, "m", 2, width = 2, border = "white", lwd = 3, legend = "side")
+## user-defined colour:
+f <- function(n) c("yellow", "blue", "red")
+phydataplot(x, tr, "m", 18, width = 2, border = "white", lwd = 3,
+            legend = "side", funcol = f)
+
+## use continuous = TRUE with two different scales:
+x[] <- 1:(n*p)
+plot(tr, x.lim = 35, align.tip = TRUE, adj = 1)
+phydataplot(x, tr, "m", 2, width = 1.5, continuous = TRUE, legend = "side",
+            funcol = colorRampPalette(c("white", "darkgreen")))
+phydataplot(x, tr, "m", 18, width = 1.5, continuous = 5, legend = "side",
+            funcol = topo.colors)
 }
 \keyword{aplot}

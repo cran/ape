@@ -48,6 +48,9 @@ LTT(birth = 0.1, death = 0, N = 100, Tmax = 50, PI = 95,
   Paradis, E. (2011) Time-dependent speciation and extinction from
   phylogenies: a least squares approach. \emph{Evolution}, \bold{65},
   661--672.
+
+  Paradis, E. (2015) Random phylogenies and the distribution of
+  branching times. In revision.
 }
 \author{Emmanuel Paradis}
 \seealso{

@@ -1,4 +1,4 @@
-## CDF.birth.death.R (2015-04-10)
+## CDF.birth.death.R (2015-07-28)
 
 ## Functions to Simulate and Fit Time-Dependent Birth-Death Models
 
@@ -676,8 +676,9 @@ if (!fossils) {
     ## concatenate the vectors of times after dropping the extra 0's:
     TIME <- c(time.tips[seq_len(n)], rev(time.nodes[seq_len(Nnode)]))
 }
-    structure(list(edge = cbind(e1, e2, deparse.level = 0),
-                   edge.length = TIME[e2] - TIME[e1],
-                   tip.label = paste0("t", seq_len(n)),
-                   Nnode = Nnode), class = "phylo")
+    obj <- list(edge = cbind(e1, e2, deparse.level = 0),
+                edge.length = TIME[e2] - TIME[e1],
+                tip.label = paste0("t", seq_len(n)), Nnode = Nnode)
+    class(obj) <- "phylo"
+    reorder(obj)
 }

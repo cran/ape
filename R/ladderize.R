@@ -1,8 +1,8 @@
-## ladderize.R (2007-01-04)
+## ladderize.R (2015-10-04)
 
 ##   Ladderize a Tree
 
-## Copyright 2007 Emmanuel Paradis
+## Copyright 2007-2015 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -25,6 +25,7 @@ ladderize <- function(phy, right = TRUE)
         for (i in 1:Nclade)
             if (desc[i] > nb.tip) foo(desc[i], end[i], newpos[i] + 1)
     }
+    phy <- reorder(phy) # fix by Klaus (2015-10-04)
     nb.tip <- length(phy$tip.label)
     nb.node <- phy$Nnode
     nb.edge <- dim(phy$edge)[1]

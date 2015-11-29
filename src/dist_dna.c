@@ -1,4 +1,4 @@
-/* dist_dna.c       2015-02-25 */
+/* dist_dna.c       2015-10-15 */
 
 /* Copyright 2005-2015 Emmanuel Paradis */
 
@@ -91,57 +91,55 @@ void distDNA_indel(unsigned char *x, int *n, int *s, double *d)
 	}
 }
 
-#define X(i, j) i - 1 + *n * (j - 1)
+void DNAbin2indelblock(unsigned char *x, int *n, int *s, int *y)
+{
+    int i, j, k, pos, ngap, indel = 0;
+
+    for (i = 0; i < *n; i++) {
+	j = i;
+	k = 0;
+	while (k < *s) {
+	    if (x[j] == 4) {
+		if (!indel) {
+		    pos = j;
+		    indel = 1;
+		    ngap = 1;
+		} else ngap++;
+	    } else {
+		if (indel) {
+		    y[pos] = ngap;
+		    indel = 0;
+		}
+	    }
+	    j += *n;
+	    k++;
+	}
+	if (indel) {
+	    y[pos] = ngap;
+	    indel = 0;
+	}
+    }
+}
 
 void distDNA_indelblock(unsigned char *x, int *n, int *s, double *d)
 {
-	int i1, i2, s1, s2, target, start_block, end_block;
+    int *y, i1, i2, s1, s2, target, Nd;
 
-	for (i1 = 1; i1 <= *n; i1++) {
+    y = (int*)R_alloc(*n * *s, sizeof(int));
+    memset(y, 0, *n * *s * sizeof(int));
+    DNAbin2indelblock(x, n, s, y);
 
-/* find a block of one or more '-' */
-
-		s1 = 1;
-		while (s1 < *s) {
-			if (x[X(i1, s1)] == 4) {
-				start_block = s1;
-				while (x[X(i1, s1)] == 4) s1++;
-				end_block = s1 - 1;
-
-/* then look if the same block is present in all the other sequences */
-
-				for (i2 = 1; i2 <= *n; i2++) {
-					if (i2 == i1) continue;
-
-					target = give_index(i1, i2, *n);
-
-					if (start_block > 1) {
-						if (x[X(i2, start_block - 1)] == 4) {
-							d[target]++;
-							continue;
-						}
-					}
-					if (end_block < *s) {
-						if (x[X(i2, end_block + 1)] == 4) {
-							d[target]++;
-							continue;
-						}
-					}
-					for (s2 = start_block; s2 <= end_block; s2++) {
-						if (x[X(i2, s2)] != 4) {
-							d[target]++;
-							continue;
-						}
-					}
-				}
-				s1 = end_block + 1;
-			}
-			s1++;
-		}
+    target = 0;
+    for (i1 = 1; i1 < *n; i1++) {
+	for (i2 = i1 + 1; i2 <= *n; i2++) {
+	    Nd = 0;
+	    for (s1 = i1 - 1, s2 = i2 - 1; s1 < i1 + *n*(*s - 1); s1 += *n, s2 += *n)
+		if (y[s1] != y[s2]) Nd++;
+	    d[target] = ((double) Nd);
+	    target++;
 	}
+    }
 }
-
-#undef X
 
 void distDNA_TsTv(unsigned char *x, int *n, int *s, double *d, int Ts, int pairdel)
 {
@@ -1069,20 +1067,61 @@ void BaseProportion(unsigned char *x, int *n, double *BF)
 	BF[16] = count[2];
 }
 
+#define SEGCOL seg[j] = 1; done = 1; break
+
 void SegSites(unsigned char *x, int *n, int *s, int *seg)
 {
-    int i, ib, j;
+    int i, j, done, end;
+    unsigned char base;
 
     for (j = 0; j < *s; j++) {
-        for (i = *n * j; i < *n * (j + 1) - 1; i++) {
-	    if (!KnownBase(x[i])) continue;
-	    for (ib = i + 1; ib < *n * (j + 1); ib++) {
-		if (DifferentBase(x[i], x[ib])) {
-		    seg[j] = 1;
-		    break;
+
+        i = *n * j; /* start */
+	end = i + *n - 1;
+
+        base = x[i];
+	done = 0;
+
+	while (!KnownBase(base)) {
+	    /* in this while-loop, we are not yet sure that 'base' is known,
+	       so we must be careful with the comparisons */
+	    i++;
+	    if (i > end) {
+		done = 1;
+		break;
+	    }
+	    if (base != x[i]) {
+		if (base != 2 && x[i] != 2) { /* both should not be "?" */
+		    if (base > 4) {
+			if (x[i] == 4) { /* 'base' is not a gap but x[i] is one => this is a segregating site */
+			    SEGCOL;
+			} else { /* both are an ambiguous base */
+			    if (DifferentBase(x[i], base)) {
+				SEGCOL;
+			    }
+			}
+		    } else { /* 'base' is a gap but x[i] is different => this is a segregating site */
+			SEGCOL;
+		    }
+		}
+		base = x[i];
+	    }
+	}
+
+	if (done) continue;
+
+	i++;
+	while (i <= end) {
+	    if (x[i] != base) {
+		if (x[i] == 4) {
+		    SEGCOL;
+		} else {
+		    if (DifferentBase(x[i], base)) {
+			SEGCOL;
+		    }
 		}
 	    }
-	    if (seg[j]) break;
+	    i++;
 	}
     }
 }

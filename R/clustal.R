@@ -1,11 +1,35 @@
-## clustal.R (2012-11-28)
+## clustal.R (2015-07-06)
 
 ##   Multiple Sequence Alignment with External Applications
 
-## Copyright 2011-2012 Emmanuel Paradis
+## Copyright 2011-2015 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
+
+clustalomega <- function(x, exec = NULL, MoreArgs = "", quiet = TRUE)
+{
+    os <- Sys.info()[1]
+    if (is.null(exec)) {
+        exec <- switch(os, "Linux" = "clustalo", "Darwin" = "clustalo",
+                       "Windows" = "clustalo.exe")
+    }
+
+    if (missing(x)) {
+        system(paste(exec, "-h"))
+        return(invisible(NULL))
+    }
+
+    d <- tempdir()
+    inf <- paste(d, "input_clustalo.fas", sep = "/")
+    outf <- paste(d, "output_clustalo.fas", sep = "/")
+    write.dna(x, inf, "fasta")
+    opts <- paste("-i", inf, "-o", outf, "--force")
+    if (!quiet) opts <- paste(opts, "-v")
+    opts <- paste(opts, MoreArgs)
+    system(paste(exec, opts), ignore.stdout = quiet)
+    read.dna(outf, "fasta")
+}
 
 clustal <- function(x, pw.gapopen = 10, pw.gapext = 0.1,
                     gapopen = 10, gapext = 0.2, exec = NULL,
@@ -13,9 +37,8 @@ clustal <- function(x, pw.gapopen = 10, pw.gapext = 0.1,
 {
     os <- Sys.info()[1]
     if (is.null(exec)) {
-        if (os == "Linux") exec <- "clustalw"
-        if (os == "Darwin") exec <- "clustalw2"
-        if (os == "Windows") shortPathName("C:/Program Files/ClustalW2/clustalw2.exe")
+        exec <- switch(os, "Linux" = "clustalw", "Darwin" = "clustalw2",
+                       "Windows" = "clustalw2.exe")
     }
 
     if (missing(x)) {

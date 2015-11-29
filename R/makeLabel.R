@@ -1,8 +1,8 @@
-## makeLabel.R (2013-06-04)
+## makeLabel.R (2015-11-18)
 
 ##   Label Management
 
-## Copyright 2010-2013 Emmanuel Paradis
+## Copyright 2010-2015 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -114,4 +114,44 @@ mixedFontLabel <-
             res <- paste(res, "*\"", sep[i - 1L], "\"*", x[[i]], sep = "")
     }
     parse(text = res)
+}
+
+.getSeparatorTaxaLabels <- function(x)
+{
+    if (length(grep("_", x))) "_" else " "
+}
+
+label2table <- function(x, sep = NULL, as.is = FALSE)
+{
+    n <- length(x)
+    if (is.null(sep)) sep <- .getSeparatorTaxaLabels(x)
+    x <- strsplit(x, sep)
+    x <- unlist(lapply(x, "[", 1:3))
+    x <- matrix(x, n, 3, byrow = TRUE)
+    x <- as.data.frame(x, as.is = as.is)
+    names(x) <- c("genus", "species", "subspecies")
+    x
+}
+
+stripLabel <- function(x, species = FALSE, subsp = TRUE, sep = NULL)
+{
+    if (is.null(sep)) sep <- .getSeparatorTaxaLabels(x)
+    n <- 0
+    if (species) n <- 1 else if (subsp) n <- 2
+    if (!n) return(x)
+    x <- strsplit(x, sep)
+    x <- lapply(x, "[", 1:n)
+    sapply(x, paste, collapse = sep)
+}
+
+abbreviateGenus <- function(x, genus = TRUE, species = FALSE, sep = NULL)
+{
+    if (is.null(sep)) sep <- .getSeparatorTaxaLabels(x)
+    if (genus) x <- sub(paste0("[[:lower:]]{1,}", sep), paste0(".", sep), x)
+    if (!species) return(x)
+    x <- strsplit(x, sep)
+    k <- which(sapply(x, length) > 1)
+    for (i in k)
+        x[[i]][2] <- paste0(substr(x[[i]][2], 1, 1), ".")
+    sapply(x, paste, collapse = sep)
 }

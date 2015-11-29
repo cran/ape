@@ -1,5 +1,6 @@
 \name{clustal}
 \alias{clustal}
+\alias{clustalomega}
 \alias{muscle}
 \alias{tcoffee}
 \title{Multiple Sequence Alignment with External Applications}
@@ -11,6 +12,7 @@
 clustal(x, pw.gapopen = 10, pw.gapext = 0.1,
         gapopen = 10, gapext = 0.2, exec = NULL,
         MoreArgs = "", quiet = TRUE, original.ordering = TRUE)
+clustalomega(x, exec = NULL, MoreArgs = "", quiet = TRUE)
 muscle(x, exec = "muscle", MoreArgs = "", quiet = TRUE,
        original.ordering = TRUE)
 tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE,
@@ -34,7 +36,10 @@ tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE,
   \code{clustal} tries to guess the name of the executable program
   depending on the operating system. Specifically, the followings are
   used: ``clustalw'' under Linux, ``clustalw2'' under MacOS, or
-  ``C:/Program Files/ClustalW2/clustalw2'' under Windows.
+  ``clustalw2.exe'' under Windows.
+
+  For \code{clustalomega}, ``clustalo'' is the default on all systems
+  (with no specific path) since it seems there is no Windows installer.
 
   The calculations are done in a temporary directory which is deleted
   when \R is quit. So it is possible to find the files created by the
@@ -63,13 +68,20 @@ tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE,
   method for multiple sequence alignments. \emph{Journal of Molecular
   Biology}, \bold{302}, 205--217.
   \url{http://www.tcoffee.org/Documentation/t_coffee/t_coffee_technical.htm}
+
+  Sievers, F., Wilm, A., Dineen, D., Gibson, T. J., Karplus, K., Li, W.,
+  Lopez, R., McWilliam, H., Remmert, M., S\"oding, J., Thompson,
+  J. D. and Higgins, D. G. (2011) Fast, scalable generation of
+  high-quality protein multiple sequence alignments using Clustal
+  Omega. \emph{Molecular Systems Biology}, \bold{7}, 539.
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{image.DNAbin}}, \code{\link{del.gaps}}, \code{\link{alex}}
+  \code{\link{image.DNAbin}}, \code{\link{del.gaps}},
+  \code{\link{alex}}, \code{\link{alview}}
 
-  The package \pkg{phyloch} which has similar functions for the MAFFT
-  and Prank.
+  The package \pkg{ips} which has similar functions for MAFFT and
+  Prank.
 }
 \examples{
 \dontrun{

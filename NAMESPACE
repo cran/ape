@@ -3,14 +3,27 @@ useDynLib(ape, .registration = TRUE)
 exportPattern("^[^\\.]")
 export(.compressTipLabel, .uncompressTipLabel, .PlotPhyloEnv)
 
-importFrom(graphics, arrows, identify, image.default, lines, plot,
-           plot.default, segments)
+importFrom(graphics, abline, arrows, axTicks, axis, barplot, boxplot, bxp,
+           close.screen, identify, image, image.default, layout, lines,
+           locator, mtext, par, plot, plot.default, points, polygon, rect,
+           screen, segments, split.screen, strheight, strwidth, symbols,
+           text, title, xinch, yinch)
+importFrom(grDevices, col2rgb, dev.cur, dev.new, dev.off, dev.set,
+           devAskNewPage, grey, rainbow, rgb, topo.colors)
 importFrom(lattice, xyplot, panel.lines, panel.points)
+importFrom(methods, as, show)
 importFrom(nlme, corMatrix, Dim, getCovariate, getGroups,
            getGroupsFormula, gls, Initialize)
-importFrom(stats, as.hclust, biplot, coef, cophenetic, drop1, hclust,
-           mahalanobis, reorder)
-importFrom(utils, setTxtProgressBar, txtProgressBar)
+importFrom(stats, as.dist, as.hclust, biplot, coef, complete.cases,
+           cophenetic, cor, cor.test, cov, cov2cor, density, dgamma,
+           dpois, drop1, formula, gaussian, glm, hclust, integrate,
+           lm, mahalanobis, median, model.frame, model.matrix,
+           model.response, na.fail, nlm, nlminb, optim, optimize, p.adjust,
+           pchisq, pf, pgamma, pnorm, ppois, printCoefmat, pt, qbinom, qnorm,
+           qt, quantile, quasibinomial, rbinom, reorder, resid, rexp, rgamma,
+           rnorm, runif, sd, terms, uniroot, var, wilcox.test)
+importFrom(utils, download.file, read.table, setTxtProgressBar, str,
+           txtProgressBar)
 
 ## Methods for the classes defined in ape, including for the generics
 ## defined in ape (see also below). Some methods are exported above.

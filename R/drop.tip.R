@@ -1,8 +1,8 @@
-## drop.tip.R (2013-05-17)
+## drop.tip.R (2015-07-28)
 
 ##   Remove Tips in a Phylogenetic Tree
 
-## Copyright 2003-2013 Emmanuel Paradis
+## Copyright 2003-2015 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -222,13 +222,12 @@ drop.tip <-
     phy$Nnode <- dim(phy$edge)[1] - n + 1L # update phy$Nnode
 
     ## The block below renumbers the nodes so that they conform
-    ## to the "phylo" format, same as in root()
+    ## to the "phylo" format
     newNb <- integer(Ntip + Nnode)
     newNb[NEWROOT] <- n + 1L
     sndcol <- phy$edge[, 2] > n
-    ## executed from right to left, so newNb is modified before phy$edge:
-    phy$edge[sndcol, 2] <- newNb[phy$edge[sndcol, 2]] <-
-        (n + 2):(n + phy$Nnode)
+    newNb[sort(phy$edge[sndcol, 2])] <- (n + 2):(n + phy$Nnode)
+    phy$edge[sndcol, 2] <- newNb[phy$edge[sndcol, 2]]
     phy$edge[, 1] <- newNb[phy$edge[, 1]]
     storage.mode(phy$edge) <- "integer"
     if (!is.null(phy$node.label)) # update node.label if needed

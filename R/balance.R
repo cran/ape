@@ -1,17 +1,17 @@
-## balance.R (2009-05-10)
+## balance.R (2015-07-08)
 
 ##   Balance of a Dichotomous Phylogenetic Tree
 
-## Copyright 2002-2009 Emmanuel Paradis
+## Copyright 2002-2015 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 balance <- function(phy)
 {
-### the tree must be in cladewise order
     if (!inherits(phy, "phylo"))
       stop('object "phy" is not of class "phylo"')
+    phy <- reorder(phy) # fix a bug reported by G. Valiente in January 2009 (2015-07-08)
     N <- length(phy$tip.label)
     nb.node <- phy$Nnode
     if (nb.node != N - 1)

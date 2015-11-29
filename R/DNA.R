@@ -1,4 +1,4 @@
-## DNA.R (2015-05-28)
+## DNA.R (2015-11-18)
 
 ##   Manipulations and Comparisons of DNA Sequences
 
@@ -6,6 +6,18 @@
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
+
+DNAbin2indel <- function(x)
+{
+    if (is.list(x)) x <- as.matrix(x)
+    d <- dim(x)
+    s <- as.integer(d[2])
+    n <- as.integer(d[1])
+    res <- .C(DNAbin2indelblock, x, n, s, integer(n*s), NAOK = TRUE)[[4]]
+    dim(res) <- d
+    rownames(res) <- rownames(x)
+    res
+}
 
 labels.DNAbin <- function(object, ...)
 {
@@ -477,6 +489,26 @@ image.DNAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
                pt.cex = 2, bty = "n", xjust = 0.5, yjust = 0.5,
                horiz = TRUE, xpd = TRUE)
     }
+}
+
+alview <- function(x, file = "", uppercase = TRUE)
+{
+    if (is.list(x)) x <- as.matrix(x)
+    taxa <- formatC(labels(x), width = -1)
+    x <- as.character(x)
+    s <- ncol(x)
+    if (nrow(x) > 1) {
+        for (j in seq_len(s)) {
+            q <- which(x[-1L, j] == x[1L, j]) + 1L
+            x[q, j] <- "."
+        }
+    }
+    x <- apply(x, 1L, paste, collapse = "")
+    if (uppercase) x <- toupper(x)
+    res <- paste(taxa, x)
+    hdr <- formatC(s, width = nchar(res[1]))
+    cat(hdr, file = file, sep = "\n")
+    cat(res, file = file, sep = "\n", append = TRUE)
 }
 
 where <- function(x, pattern)

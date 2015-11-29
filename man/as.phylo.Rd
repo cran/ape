@@ -70,9 +70,7 @@ new2old.phylo(phy)
 data(bird.orders)
 hc <- as.hclust(bird.orders)
 tr <- as.phylo(hc)
-all.equal(bird.orders, tr) # FALSE, but...
-tr$edge.length <- 2 * tr$edge.length
-all.equal(bird.orders, tr) # ... TRUE
+all.equal(bird.orders, tr) # TRUE
 
 ### shows the three plots for tree objects:
 dend <- as.dendrogram(hc)
@@ -82,13 +80,13 @@ plot(hc)
 par(mar = c(8, 0, 0, 0)) # leave space for the labels
 plot(dend)
 
-### how to get (nearly) identical plots with
+### how to get identical plots with
 ### plot.phylo and plot.dendrogram:
 layout(matrix(1:2, 2, 1))
-plot(bird.orders, font = 1, no.margin = TRUE)
+plot(bird.orders, font = 1, no.margin = TRUE, label.offset = 0.4)
 par(mar = c(0, 0, 0, 8))
 plot(dend, horiz = TRUE)
-layout(matrix(1))
+layout(1)
 
 \dontrun{
 ### convert into networks:
