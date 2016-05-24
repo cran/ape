@@ -1,6 +1,6 @@
 Package: ape
-Version: 3.4
-Date: 2015-11-29
+Version: 3.5
+Date: 2016-05-23
 Title: Analyses of Phylogenetics and Evolution
 Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email = "Emmanuel.Paradis@ird.fr"),
   person("Simon", "Blomberg", role = c("aut", "cph")),
@@ -35,7 +35,7 @@ Description: Functions for reading, writing, plotting, and manipulating phylogen
 License: GPL (>= 2)
 URL: http://ape-package.ird.fr/
 NeedsCompilation: yes
-Packaged: 2015-11-29 08:54:16 UTC; paradis
+Packaged: 2016-05-23 07:32:24 UTC; paradis
 Author: Emmanuel Paradis [aut, cre, cph],
   Simon Blomberg [aut, cph],
   Ben Bolker [aut, cph],
@@ -62,4 +62,4 @@ Author: Emmanuel Paradis [aut, cre, cph],
   Damien de Vienne [aut, cph]
 Maintainer: Emmanuel Paradis <Emmanuel.Paradis@ird.fr>
 Repository: CRAN
-Date/Publication: 2015-11-29 19:14:31
+Date/Publication: 2016-05-24 05:38:54

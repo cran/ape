@@ -20,7 +20,6 @@ ultrametric(X)
   Makarenkov, V. and Lapointe, F.-J. (2004) A weighted least-squares
   approach for inferring phylogenies from incomplete distance
   matrices. \emph{Bioinformatics}, \bold{20}, 2113--2121.
-  \url{http://dx.doi.org/10.1093/bioinformatics/bth211}
 }
 \author{Andrei Popescu \email{niteloserpopescu@gmail.com}}
 \keyword{manip}

@@ -130,6 +130,12 @@ dist.dna(x, model = "K80", variance = FALSE,
     \code{A--} is 3 because there are three different blocks of gaps, whereas
     the ``indel'' distance will be 2.}
 }}
+\note{
+  If the sequences are very different, most evolutionary distances are
+  undefined and a non-finite value (Inf or NaN) is returned. You may do
+  \code{dist.dna(, model = "raw")} to check whether some values are
+  higher than 0.75.
+}
 \value{
   an object of class \link[stats]{dist} (by default), or a numeric
   matrix if \code{as.matrix = TRUE}. If \code{model = "BH87"}, a numeric

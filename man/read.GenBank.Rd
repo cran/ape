@@ -46,7 +46,7 @@ read.GenBank(access.nb, seq.names = access.nb, species.names = TRUE,
 \author{Emmanuel Paradis}
 \examples{
 ### This won't work if your computer is not connected
-### to the Internet!!!
+### to the Internet
 ###
 ### Get the 8 sequences of tanagers (Ramphocelus)
 ### as used in Paradis (1997)

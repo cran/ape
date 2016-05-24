@@ -95,7 +95,7 @@ clado.build <- function(tp)
     obj <- list(edge = edge, tip.label = tip.label,
                 Nnode = nb.node, node.label = node.label)
     obj$node.label <-
-        if (all(obj$node.label == "NA")) NULL
+        if (all(obj$node.label == "NA", na.rm = TRUE)) NULL
         else gsub("^NA", "", obj$node.label)
     class(obj) <- "phylo"
     attr(obj, "order") <- "cladewise"

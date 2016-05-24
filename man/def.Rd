@@ -18,7 +18,7 @@ def(x, ..., default = NULL, regexp = FALSE)
 }
 \details{
 The idea of this function is to make the definition of colours, etc.,
-simpler than what is done usually. A typical use will:
+simpler than what is done usually. A typical use is:
 
 \code{def(tr$tip.label, Homo_sapiens = "blue")}
 

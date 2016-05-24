@@ -1,9 +1,9 @@
-## dist.topo.R (2015-04-24)
+## dist.topo.R (2016-03-23)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
 
-## Copyright 2005-2015 Emmanuel Paradis
+## Copyright 2005-2016 Emmanuel Paradis, 2016 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -180,45 +180,37 @@ plot.prop.part <- function(x, barcol = "blue", leftmar = 4, col = "red", ...)
     mtext(attr(x, "labels"), side = 2, at = 1:n, las = 1)
 }
 
+### by Klaus (2016-03-23):
 prop.clades <- function(phy, ..., part = NULL, rooted = FALSE)
 {
     if (is.null(part)) {
         obj <- .getTreesFromDotdotdot(...)
+        ## avoid double counting of edges if trees are rooted
+        if (!rooted) obj <- lapply(obj, unroot)
         part <- prop.part(obj, check.labels = TRUE)
     }
-
-    ## until ape 3.0-7 it was assumed implicitly that the labels in phy
-    ## are in the same order than in 'part' (bug report by Rupert Collins)
-    if (!identical(phy$tip.label, attr(part, "labels"))) {
-        i <- match(phy$tip.label, attr(part, "labels"))
+    LABS <- attr(part, "labels")
+    if (!identical(phy$tip.label, LABS)) {
+        i <- match(phy$tip.label, LABS)
         j <- match(seq_len(Ntip(phy)), phy$edge[, 2])
         phy$edge[j, 2] <- i
-        phy$tip.label <- attr(part, "labels")
+        phy$tip.label <- LABS
     }
     bp <- prop.part(phy)
     if (!rooted) {
-        bp <- postprocess.prop.part(bp)
-        part <- postprocess.prop.part(part) # fix by Klaus Schliep
-        ## actually the above line in not needed if called from boot.phylo()
+        ## avoid messing up the order and length if phy is rooted in some cases
+        bp <- ONEwise(bp)
+        part <- postprocess.prop.part(part)
     }
-
-    n <- numeric(phy$Nnode)
-    for (i in seq_along(bp)) {
-        for (j in seq_along(part)) {
-            ## we rely on the fact the values returned by prop.part are
-            ## sorted and without attributes, so identical can be used:
-            if (identical(bp[[i]], part[[j]])) {
-                n[i] <- attr(part, "number")[j]
-                done <-  TRUE
-                break
-            }
-        }
-    }
+    pos <- match(bp, part)
+    tmp <- which(!is.na(pos))
+    n <- rep(NA_real_, phy$Nnode)
+    n[tmp] <- attr(part, "number")[pos[tmp]]
     n
 }
 
 boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
-                       trees = FALSE, quiet = FALSE, rooted = FALSE)
+                       trees = FALSE, quiet = FALSE, rooted = is.rooted(phy))
 {
     if (is.null(dim(x)) || length(dim(x)) != 2)
         stop("the data 'x' must have two dimensions (e.g., a matrix or a data frame)")
@@ -241,12 +233,14 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
         boot.tree[[i]] <- FUN(x[, boot.samp])
         if (!quiet) setTxtProgressBar(progbar, i/B)
     }
-    if (!quiet) close(progbar)
 
     ## for (i in 1:B) storage.mode(boot.tree[[i]]$Nnode) <- "integer"
     ## storage.mode(phy$Nnode) <- "integer"
 
-    if (!quiet) cat("Calculating bootstrap values...")
+    if (!quiet) {
+        close(progbar)
+        cat("Calculating bootstrap values...")
+    }
 
      if (rooted) {
         pp <- prop.part(boot.tree)
@@ -272,39 +266,27 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
 ### split though they are different clades. The aggregation is done
 ### arbitrarily. The call to ONEwise() insures that all splits include
 ### the first tip.
+### (rewritten by Klaus)
 postprocess.prop.part <- function(x)
 {
-    n <- length(x[[1]])
-    N <- length(x)
     w <- attr(x, "number")
+    labels <- attr(x, "labels")
 
-    drop <- logical(N)
-    V <- numeric(n)
-    for (i in 2:(N - 1)) {
-        if (drop[i]) next
-        A <- x[[i]]
-        for (j in (i + 1):N) {
-            if (drop[j]) next
-            B <- x[[j]]
-            if (length(A) + length(B) != n) next
-            V[] <- 0L
-            V[A] <- 1L
-            V[B] <- 1L
-            if (all(V == 1L)) {
-                drop[j] <- TRUE
-                w[i] <- w[i] + w[j]
-            }
-        }
-    }
+    x <- ONEwise(x)
+    drop <- duplicated(x)
+
     if (any(drop)) {
-        labels <- attr(x, "labels")
+        ind1 <- match(x[drop], x)
+        ind2 <- which(drop)
+        for (i in seq_along(ind2))
+            w[ind1[i]] <- w[ind1[i]] + w[ind2[i]]
         x <- x[!drop]
         w <- w[!drop]
-        attr(x, "number") <- w
-        attr(x, "labels") <- labels
-        class(x) <- "prop.part"
     }
-    ONEwise(x)
+    attr(x, "number") <- w
+    attr(x, "labels") <- labels
+    class(x) <- "prop.part"
+    x
 }
 
 ### This function changes an object of class "prop.part" so that they
@@ -312,8 +294,7 @@ postprocess.prop.part <- function(x)
 ### changed to 1:2.
 ONEwise <- function(x)
 {
-    n <- length(x[[1L]])
-    v <- 1:n
+    v <- seq_along(x[[1L]])
     for (i in 2:length(x)) {
         y <- x[[i]]
         if (y[1] != 1) x[[i]] <- v[-y]

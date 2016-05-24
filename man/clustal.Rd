@@ -78,7 +78,7 @@ tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE,
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{image.DNAbin}}, \code{\link{del.gaps}},
-  \code{\link{alex}}, \code{\link{alview}}
+  \code{\link{alex}}, \code{\link{alview}}, \code{\link{checkAlignment}}
 
   The package \pkg{ips} which has similar functions for MAFFT and
   Prank.

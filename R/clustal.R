@@ -1,8 +1,8 @@
-## clustal.R (2015-07-06)
+## clustal.R (2016-01-26)
 
 ##   Multiple Sequence Alignment with External Applications
 
-## Copyright 2011-2015 Emmanuel Paradis
+## Copyright 2011-2016 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -20,6 +20,10 @@ clustalomega <- function(x, exec = NULL, MoreArgs = "", quiet = TRUE)
         return(invisible(NULL))
     }
 
+    x <- as.list(x)
+    labels.bak <- names(x)
+    names(x) <- paste0("Id", 1:length(x))
+
     d <- tempdir()
     inf <- paste(d, "input_clustalo.fas", sep = "/")
     outf <- paste(d, "output_clustalo.fas", sep = "/")
@@ -28,7 +32,9 @@ clustalomega <- function(x, exec = NULL, MoreArgs = "", quiet = TRUE)
     if (!quiet) opts <- paste(opts, "-v")
     opts <- paste(opts, MoreArgs)
     system(paste(exec, opts), ignore.stdout = quiet)
-    read.dna(outf, "fasta")
+    res <- read.dna(outf, "fasta")
+    rownames(res) <- labels.bak
+    res
 }
 
 clustal <- function(x, pw.gapopen = 10, pw.gapext = 0.1,
@@ -46,6 +52,10 @@ clustal <- function(x, pw.gapopen = 10, pw.gapext = 0.1,
         return(invisible(NULL))
     }
 
+    x <- as.list(x)
+    labels.bak <- names(x)
+    names(x) <- paste0("Id", 1:length(x))
+
     d <- tempdir()
     inf <- paste(d, "input_clustal.fas", sep = "/")
     outf <- paste(d, "input_clustal.aln", sep = "/")
@@ -57,6 +67,7 @@ clustal <- function(x, pw.gapopen = 10, pw.gapext = 0.1,
     system(paste(exec, opts), ignore.stdout = quiet)
     res <- read.dna(outf, "clustal")
     if (original.ordering) res <- res[labels(x), ]
+    rownames(res) <- labels.bak
     res
 }
 
@@ -66,6 +77,10 @@ muscle <- function(x, exec = "muscle", MoreArgs = "", quiet = TRUE, original.ord
         system(exec)
         return(invisible(NULL))
     }
+
+    x <- as.list(x)
+    labels.bak <- names(x)
+    names(x) <- paste0("Id", 1:length(x))
 
     d <- tempdir()
     inf <- paste(d, "input_muscle.fas", sep = "/")
@@ -77,6 +92,7 @@ muscle <- function(x, exec = "muscle", MoreArgs = "", quiet = TRUE, original.ord
     system(paste(exec, opts))
     res <- read.dna(outf, "fasta")
     if (original.ordering) res <- res[labels(x), ]
+    rownames(res) <- labels.bak
     res
 }
 
@@ -86,6 +102,10 @@ tcoffee <- function(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE, original.
         system(exec)
         return(invisible(NULL))
     }
+
+    x <- as.list(x)
+    labels.bak <- names(x)
+    names(x) <- paste0("Id", 1:length(x))
 
     d <- tempdir()
     od <- setwd(d)
@@ -97,5 +117,6 @@ tcoffee <- function(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE, original.
     system(paste(exec, opts))
     res <- read.dna("input_tcoffee.aln", "clustal")
     if (original.ordering) res <- res[labels(x), ]
+    rownames(res) <- labels.bak
     res
 }

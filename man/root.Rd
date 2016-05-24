@@ -60,7 +60,7 @@ is.rooted(phy)
   clade on the right of \code{node} (when the tree is plotted by
   default) as the ingroup. See a detailed explanation there:
 
-  \url{https://stat.ethz.ch/pipermail/r-sig-phylo/2015-April/003979.html}.
+  \url{http://www.mail-archive.com/r-sig-phylo@r-project.org/msg03805.html}.
 }
 \value{
   an object of class \code{"phylo"} for \code{root} and \code{unroot}; a

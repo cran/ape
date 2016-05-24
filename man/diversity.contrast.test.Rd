@@ -20,7 +20,7 @@ diversity.contrast.test(x, method = "ratiolog",
     \code{"difference"}, \code{"logratio"}, or any unambiguous
     abbreviation of these.}
   \item{alternative}{a character string defining the alternative
-    hypothesis:  \code{"two.sided"} (default),  \code{"less"},
+    hypothesis:  \code{"two.sided"} (default), \code{"less"},
     \code{"greater"}, or any unambiguous abbreviation of these.}
   \item{nrep}{the number of replications of the randomization test; by
     default, a Wilcoxon test is done.}

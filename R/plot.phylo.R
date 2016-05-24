@@ -1,8 +1,8 @@
-## plot.phylo.R (2015-09-20)
+## plot.phylo.R (2016-02-09)
 
 ##   Plot Phylogenies
 
-## Copyright 2002-2015 Emmanuel Paradis
+## Copyright 2002-2016 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -351,15 +351,21 @@ if (plot) {
     }
     if (root.edge) {
         rootcol <- if (length(edge.color) == 1) edge.color else "black"
+        rootw <- if (length(edge.width) == 1) edge.width else 1
+        rootlty <- if (length(edge.lty) == 1) edge.lty else 1
         if (type == "fan") {
             tmp <- polar2rect(x$root.edge, theta[ROOT])
-            segments(0, 0, tmp$x, tmp$y, col = rootcol)
+            segments(0, 0, tmp$x, tmp$y, col = rootcol, lwd = rootw, lty = rootlty)
         } else {
             switch(direction,
-                   "rightwards" = segments(0, yy[ROOT], x$root.edge, yy[ROOT], col = rootcol),
-                   "leftwards" = segments(xx[ROOT], yy[ROOT], xx[ROOT] + x$root.edge, yy[ROOT], col = rootcol),
-                   "upwards" = segments(xx[ROOT], 0, xx[ROOT], x$root.edge, col = rootcol),
-                   "downwards" = segments(xx[ROOT], yy[ROOT], xx[ROOT], yy[ROOT] + x$root.edge, col = rootcol))
+                   "rightwards" = segments(0, yy[ROOT], x$root.edge, yy[ROOT],
+                                           col = rootcol, lwd = rootw, lty = rootlty),
+                   "leftwards" = segments(xx[ROOT], yy[ROOT], xx[ROOT] + x$root.edge, yy[ROOT],
+                                          col = rootcol, lwd = rootw, lty = rootlty),
+                   "upwards" = segments(xx[ROOT], 0, xx[ROOT], x$root.edge,
+                                        col = rootcol, lwd = rootw, lty = rootlty),
+                   "downwards" = segments(xx[ROOT], yy[ROOT], xx[ROOT], yy[ROOT] + x$root.edge,
+                                          col = rootcol, lwd = rootw, lty = rootlty))
         }
     }
     if (show.tip.label) {

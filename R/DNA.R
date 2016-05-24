@@ -1,8 +1,8 @@
-## DNA.R (2015-11-18)
+## DNA.R (2016-02-18)
 
-##   Manipulations and Comparisons of DNA Sequences
+##   Manipulations and Comparisons of DNA and AA Sequences
 
-## Copyright 2002-2015 Emmanuel Paradis, 2015 Klaus Schliep
+## Copyright 2002-2016 Emmanuel Paradis, 2015 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -48,13 +48,26 @@ del.gaps <- function(x)
     x
 }
 
-del.colgapsonly <- function(x)
+del.rowgapsonly <- function(x, threshold = 1, freq.only = FALSE)
 {
     if (!inherits(x, "DNAbin")) x <- as.DNAbin(x)
-    if (!is.matrix(x))
-        stop("DNA sequences not in a matrix")
-    foo <- function(x) all(x == 4)
-    i <- which(apply(x, 2, foo))
+    if (!is.matrix(x)) stop("DNA sequences not in a matrix")
+    foo <- function(x) sum(x == 4)
+    g <- apply(x, 1, foo)
+    if (freq.only) return(g)
+    i <- which(g / ncol(x) >= threshold)
+    if (length(i)) x <- x[-i, ]
+    x
+}
+
+del.colgapsonly <- function(x, threshold = 1, freq.only = FALSE)
+{
+    if (!inherits(x, "DNAbin")) x <- as.DNAbin(x)
+    if (!is.matrix(x)) stop("DNA sequences not in a matrix")
+    foo <- function(x) sum(x == 4)
+    g <- apply(x, 2, foo)
+    if (freq.only) return(g)
+    i <- which(g / nrow(x) >= threshold)
     if (length(i)) x <- x[, -i]
     x
 }
@@ -257,7 +270,7 @@ as.DNAbin <- function(x, ...) UseMethod("as.DNAbin")
 ## by Klaus:
 as.DNAbin.character <- function(x, ...)
 {
-    ans <- as.raw(._bs_)[match(x, ._cs_)]
+    ans <- as.raw(._bs_)[match(tolower(x), ._cs_)]
     if (is.matrix(x)) {
         dim(ans) <- dim(x)
         dimnames(ans) <- dimnames(x)
@@ -558,3 +571,318 @@ as.DNAbin.DNAMultipleAlignment <- function(x, ...) .DNAAlignment2DNAbinMatrix(x)
 ## setAs("DNAStringSet", "DNAbin", .DNAStringSet2DNAbin)
 ## setAs("PairwiseAlignmentsSingleSubject", "DNAbin", .DNAAlignment2DNAbinMatrix)
 ## setAs("DNAMultipleAlignment", "DNAbin", .DNAAlignment2DNAbinMatrix)
+
+complement <- function(x)
+{
+    f <- function(x) {
+        ## reorder the vector of raws to match the complement:
+        comp <- as.raw(._bs_[c(4:1, 10:9, 7:8, 6:5, 14:11, 15:17)])
+        ans <- comp[match(as.integer(x), ._bs_)]
+        rev(ans) # reverse before returning
+    }
+    if (is.matrix(x)) {
+        for (i in 1:nrow(x)) x[i, ] <- f(x[i, ])
+        return(x)
+    } else if (is.list(x)) {
+        x <- lapply(x, f)
+    } else x <- f(x)
+    class(x) <- "DNAbin"
+    x
+}
+
+trans <- function(x, code = 1, codonstart = 1)
+{
+    f <- function(x, s, code)
+        .C(trans_DNA2AA, x, as.integer(s), raw(s/3), as.integer(code),
+           NAOK = TRUE)[[3]]
+    if (code > 2)
+        stop("only the standard and the vertebrate mitochondrial codes are available for now")
+
+    if (codonstart > 1) {
+        del <- -(1:(codonstart - 1))
+        if (is.list(x)) {
+            for (i in seq_along(x)) x[[i]] <- x[[i]][del]
+        } else {
+            x <- if (is.matrix(x)) x[, del] else x[del]
+        }
+    }
+
+    if (is.list(x)) {
+        res <- lapply(x, trans, code = code)
+    } else {
+        s <- if (is.matrix(x)) ncol(x) else length(x)
+        rest <- s %% 3
+        if (rest != 0) {
+            s <- s - rest
+            x <- if (is.matrix(x)) x[, 1:s] else x[1:s]
+            msg <- paste("sequence length not a multiple of 3:", rest, "nucleotide")
+            if (rest == 2) msg <- paste0(msg, "s")
+            warning(paste(msg, "dropped"))
+        }
+        res <- if (is.matrix(x)) t(apply(x, 1, f, s = s, code = code)) else f(x, s, code)
+    }
+    class(res) <- "AAbin"
+    res
+}
+
+print.AAbin <- function(x, ...)
+{
+    if (is.list(x)) {
+        n <- length(x)
+        cat(n, "amino acid sequence")
+        if (n > 1) cat("s")
+        cat(" in a list\n\n")
+        tmp <- unlist(lapply(x, length))
+        maxi <- max(tmp)
+        mini <- min(tmp)
+        if (mini == maxi)
+            cat("All sequences of the same length:", maxi, "\n")
+        else {
+            cat("Mean sequence length:", round(mean(tmp), 3),
+                "\n   Shortest sequence:", mini,
+                "\n    Longest sequence:", maxi, "\n")
+        }
+    } else if (is.matrix(x)) {
+        n <- nrow(x)
+        cat(n, "amino acid sequence")
+        if (n > 1) cat("s")
+        cat(" in a matrix\n")
+        if (n == 1) cat("Sequence length: ")
+        else cat("All sequences of the same length: ")
+        cat(ncol(x), "\n")
+    } else {
+        cat("1 amino acid sequence in a vector:\n\n",
+            rawToChar(x))
+    }
+    cat("\n")
+}
+
+"[.AAbin" <- function (x, i, j, drop = FALSE)
+{
+    ans <- NextMethod("[", drop = drop)
+    class(ans) <- "AAbin"
+    ans
+}
+
+as.character.AAbin <- function(x, ...)
+{
+    f <- function(x) strsplit(rawToChar(x), "")[[1]]
+    if (is.list(x)) return(lapply(x, f))
+    if (is.matrix(x)) return(apply(t(x), 1, f))
+    f(x)
+}
+
+as.AAbin <- function(x, ...) UseMethod("as.AAbin")
+
+as.AAbin.character <- function(x, ...)
+{
+    f <- function(x) charToRaw(paste(x, collapse = ""))
+    res <- if (is.vector(x)) f(x) else t(apply(x, 1, f))
+    class(res) <- "AAbin"
+    res
+}
+
+labels.AAbin <- function(object, ...) labels.DNAbin(object, ...)
+
+if (getRversion() >= "2.15.1") utils::globalVariables("phyDat")
+as.phyDat.AAbin <- function(x, ...) phyDat(as.character(x), type = "AA")
+
+dist.aa <- function(x, pairwise.deletion = FALSE, scaled = FALSE)
+{
+    n <- nrow(x)
+    d <- numeric(n*(n - 1)/2)
+    X <- charToRaw("X")
+    k <- 0L
+    if (!pairwise.deletion) {
+        del <- apply(x, 2, function(y) any(y == X))
+        if (any(del)) x <- x[, !del]
+        for (i in 1:(n - 1)) {
+            for (j in (i + 1):n) {
+                k <- k + 1L
+                d[k] <- sum(x[i, ] != x[j, ])
+            }
+        }
+        if (scaled) d <- d/ncol(x)
+    } else {
+        for (i in 1:(n - 1)) {
+            a <- x[i, ]
+            for (j in (i + 1):n) {
+                b <- x[j, ]
+                del <- a == X | b == X
+                p <- length(b <- b[!del])
+                tmp <- sum(a[!del] != b)
+                k <- k + 1L
+                d[k] <- if (scaled) tmp else tmp/p
+            }
+        }
+    }
+    attr(d, "Size") <- n
+    attr(d, "Labels") <- rownames(x)
+    attr(d, "Diag") <- attr(d, "Upper") <- FALSE
+    attr(d, "call") <- match.call()
+    class(d) <- "dist"
+    d
+}
+
+AAsubst <- function(x)
+{
+    X <- charToRaw("X")
+    f <- function(y) length(unique.default(y[y != X]))
+    which(apply(x, 2, f) > 1)
+}
+
+.AA_3letter <- c("Ala", "Cys", "Asp", "Glu", "Phe", "Gly", "His", "Ile",  "Lys", "Leu",
+                 "Met", "Asn", "Pro", "Gln", "Arg", "Ser", "Thr",  "Val", "Trp", "Tyr",
+                 "Xaa", "Stp")
+
+.AA_1letter <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L",
+                 "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y", "X", "*")
+
+.AA_raw <- sapply(.AA_1letter, charToRaw)
+
+.AA_3cat <- list(Hydrophobic = .AA_raw[c("V", "I", "L", "F", "W", "Y", "M")],
+                 Small = .AA_raw[c("P", "G", "A", "C")],
+                 Hydrophilic = .AA_raw[c("S", "T", "H", "N", "Q", "D", "E", "K", "R")])
+
+image.AAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
+                        show.labels = TRUE, cex.lab = 1, legend = TRUE, ...)
+{
+    if (missing(what))
+        what <- c("Hydrophobic", "Small", "Hydrophilic")
+    if (missing(col)) col <- c("red", "yellow", "blue")
+    n <- (dx <- dim(x))[1]
+    s <- dx[2]
+    y <- integer(N <- length(x))
+    ncl <- length(what)
+    col <- rep(col, length.out = ncl)
+    brks <- 0.5:(ncl + 0.5)
+    sm <- 0L
+    for (i in ncl:1) {
+        k <- .AA_3cat[[i]]
+        sel <- which(x %in% k)
+        if (L <- length(sel)) {
+            y[sel] <- i
+            sm <- sm + L
+        }
+        else {
+            what <- what[-i]
+            col <- col[-i]
+            brks <- brks[-i]
+        }
+    }
+    dim(y) <- dx
+    if (sm == N) {
+        leg.co <- co <- col
+        leg.txt <- what
+    }
+    else {
+        co <- c(bg, col)
+        leg.txt <- c(what, "Unknown")
+        leg.co <- c(col, bg)
+        brks <- c(-0.5, brks)
+    }
+    yaxt <- if (show.labels) "n" else "s"
+    image.default(1:s, 1:n, t(y), col = co, xlab = xlab, ylab = ylab,
+                  yaxt = yaxt, breaks = brks, ...)
+    if (show.labels)
+        mtext(rownames(x), side = 2, line = 0.1, at = 1:n, cex = cex.lab,
+              adj = 1, las = 1)
+    if (legend) {
+        psr <- par("usr")
+        xx <- psr[2]/2
+        yy <- psr[4] * (0.5 + 0.5/par("plt")[4])
+        legend(xx, yy, legend = leg.txt, pch = 22, pt.bg = leg.co,
+               pt.cex = 2, bty = "n", xjust = 0.5, yjust = 0.5,
+               horiz = TRUE, xpd = TRUE)
+    }
+}
+
+checkAlignment <- function(x, check.gaps = TRUE, plot = TRUE, what = 1:4)
+{
+    cat("\nNumber of sequences:", n <- nrow(x),
+        "\nNumber of sites:", s <- ncol(x), "\n")
+if (check.gaps) {
+    cat("\n")
+    y <- DNAbin2indel(x)
+    gap.length <- sort(unique.default(y))[-1]
+    if (!length(gap.length)) cat("No gap in alignment.\n")
+    else {
+        rest <- gap.length %% 3
+        if (any(cond <- rest > 0)) {
+            cat("Some gap length are not multiple of 3:", gap.length[cond])
+        } else cat("All gap lengths are multiple of 3.")
+
+        tab <- tabulate(y, gap.length[length(gap.length)])
+        tab <- tab[gap.length]
+        cat("\n\nFrequencies of gap lengths:\n")
+        names(tab) <- gap.length
+        print(tab)
+
+        ## find base segments:
+        A <- B <- numeric()
+        for (i in seq_len(n)) {
+            j <- which(y[i, ] != 0) # j: start of each gap in the i-th sequence
+            if (!length(j)) next
+            k <- j + y[i, j] # k: start of each base segment in the i-th sequence
+            if (j[1] != 1) k <- c(1, k) else j <- j[-1]
+            if (k[length(k)] > s) k <- k[-length(k)] else j <- c(j, s)
+            A <- c(A, j)
+            B <- c(B, k)
+        }
+        AB <- unique(cbind(A, B))
+        not.multiple.of.3 <- (AB[, 1] - AB[, 2]) %% 3 != 0
+        left.border <- AB[, 2] == 1
+        right.border <- AB[, 1] == s
+        Nnot.mult3 <- sum(not.multiple.of.3)
+        cat("\nNumber of unique contiguous base segments:", nrow(AB), "\n")
+        if (!Nnot.mult3) cat("All segment lengths multiple of 3")
+        else {
+            Nleft <- sum(not.multiple.of.3 & left.border)
+            Nright <- sum(not.multiple.of.3 & right.border)
+            cat("Number of segment lengths not multiple of 3:", Nnot.mult3, "\n",
+                "   => on the left border of the alignement:", Nleft, "\n",
+                "   => on the right border                 :", Nright, "\n")
+            if (Nright + Nleft < Nnot.mult3) {
+                cat("    => positions of these segments inside the alignment: ")
+                sel <- not.multiple.of.3 & !left.border & !right.border
+                cat(paste(AB[sel, 2], AB[sel, 1] - 1, sep = "--"), "\n")
+            }
+        }
+    }
+} else gap.length <- numeric()
+    ss <- seg.sites(x)
+    cat("\nNumber of segregating sites (including gaps):", length(ss))
+    BF.col <- matrix(NA_real_, length(ss), 4)
+    for (i in seq_along(ss))
+        BF.col[i, ] <- base.freq(x[, ss[i]])#, freq = TRUE)
+    tmp <- apply(BF.col, 1, function(x) sum(x > 0))
+    cat("\nNumber of sites with at least one substitution:", sum(tmp > 1))
+    cat("\nNumber of sites with 1, 2, 3 or 4 observed bases:\n")
+    tab2 <- tabulate(tmp, 4L)
+    tab2[1] <- s - sum(tab2)
+    names(tab2) <- 1:4
+    print(tab2)
+    cat("\n")
+    H <- numeric(s)
+    H[ss] <- apply(BF.col, 1, function(x) {x <- x[x > 0]; -sum(x * log(x))})
+
+    G <- rep(1, s)
+    G[ss] <- tmp
+    if (plot) {
+        if (length(what) == 4) {
+            mat <- if (length(gap.length)) 1:4 else c(1, 0, 2, 3)
+            layout(matrix(mat, 2, 2))
+        } else {
+            if (length(what) != 1) {
+                what <- what[1]
+                warning("argument 'what' has length > 1: the first value is taken")
+            }
+        }
+        if (1 %in% what) image(x)
+        if (2 %in% what && length(gap.length)) barplot(tab, xlab = "Gap length")
+        if (3 %in% what)
+            plot(1:s, H, "h", xlab = "Sequence position", ylab = "Shannon index (H)")
+        if (4 %in% what)
+            plot(1:s, G, "h", xlab = "Sequence position", ylab = "Number of observed bases")
+    }
+}

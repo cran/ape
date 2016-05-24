@@ -48,7 +48,7 @@ makeNodeLabel(phy, method = "number", prefix = "Node", nodeList = list(), ...)
 \value{
   an object of class \code{"phylo"}.
 }
-\author{Emmanuel Paradis \email{Emmanuel.Paradis@mpl.ird.fr}}
+\author{Emmanuel Paradis}
 \seealso{
   \code{\link{makeLabel}}, \code{\link[base]{grep}},
   \code{\link{mixedFontLabel}}, \code{\link{label2table}}

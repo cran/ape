@@ -50,7 +50,8 @@ LTT(birth = 0.1, death = 0, N = 100, Tmax = 50, PI = 95,
   661--672.
 
   Paradis, E. (2015) Random phylogenies and the distribution of
-  branching times. In revision.
+  branching times. \emph{Journal of Theoretical Biology}, \bold{387},
+  39--45.
 }
 \author{Emmanuel Paradis}
 \seealso{

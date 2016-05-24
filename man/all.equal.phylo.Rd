@@ -40,7 +40,7 @@
   topologies (i.e., ignoring tip labels) of unrooted trees. This also
   affects \code{\link{unique.multiPhylo}} which calls the present function. See:
 
-  \url{https://stat.ethz.ch/pipermail/r-sig-phylo/2011-August/001562.html}
+  \url{http://www.mail-archive.com/r-sig-phylo@r-project.org/msg01445.html}.
 }
 \value{
   A logical value, or a two-column matrix.

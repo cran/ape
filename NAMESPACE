@@ -28,6 +28,12 @@ importFrom(utils, download.file, read.table, setTxtProgressBar, str,
 ## Methods for the classes defined in ape, including for the generics
 ## defined in ape (see also below). Some methods are exported above.
 
+S3method("[", AAbin)
+S3method(as.character, AAbin)
+S3method(image, AAbin)
+S3method(labels, AAbin)
+S3method(print, AAbin)
+
 S3method(AIC, ace)
 S3method(anova, ace)
 S3method(deviance, ace)
@@ -140,6 +146,8 @@ S3method(print, lmorigin)
 S3method(print, parafit)
 
 ## Other methods of the generics defined in ape:
+
+S3method(as.AAbin, character)
 
 S3method(as.DNAbin, alignment)
 S3method(as.DNAbin, character)

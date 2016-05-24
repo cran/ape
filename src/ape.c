@@ -1,6 +1,6 @@
-/* ape.c    2015-10-15 */
+/* ape.c    2016-02-18 */
 
-/* Copyright 2011-2015 Emmanuel Paradis, and 2007 R Development Core Team */
+/* Copyright 2011-2016 Emmanuel Paradis, and 2007 R Development Core Team */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -79,6 +79,7 @@ void bitsplits_phylo(int *n, int *m, int *e, int *N, int *nr, unsigned char *mat
 void CountBipartitionsFromTrees(int *n, int *m, int *e, int *N, int *nr, int *nc,
 				unsigned char *mat, double *freq);
 void DNAbin2indelblock(unsigned char *x, int *n, int *s, int *y);
+void trans_DNA2AA(unsigned char *x, int *s, unsigned char *res, int *code);
 
 SEXP bipartition(SEXP edge, SEXP nbtip, SEXP nbnode);
 SEXP prop_part(SEXP TREES, SEXP nbtree, SEXP keep_partitions);
@@ -121,6 +122,7 @@ static R_CMethodDef C_entries[] = {
     {"bitsplits_phylo", (DL_FUNC) &bitsplits_phylo, 6},
     {"CountBipartitionsFromTrees", (DL_FUNC) &CountBipartitionsFromTrees, 8},
     {"DNAbin2indelblock", (DL_FUNC) &DNAbin2indelblock, 4},
+    {"trans_DNA2AA", (DL_FUNC) &trans_DNA2AA, 4},
     {NULL, NULL, 0}
 };
 

@@ -23,6 +23,7 @@ DNAbin2indel(x)
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{DNAbin}}, \code{\link{as.DNAbin}}, \code{\link{del.gaps}},
-  \code{\link{seg.sites}}, \code{\link{image.DNAbin}}
+  \code{\link{seg.sites}}, \code{\link{image.DNAbin}},
+  \code{\link{checkAlignment}}
 }
 \keyword{manip}

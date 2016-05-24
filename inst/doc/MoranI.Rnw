@@ -201,7 +201,7 @@ have been changed for the end-user at this level:
   order of the taxonomic hierarchy: e.g.,
   \code{Order/SuperFamily/Family/Genus}. Not respecting this order
   resulted in an error. In the new version, any order is accepted, but
-  the order given it is then respected when plotted the correlogram.
+  the order given is then respected when plotted the correlogram.
 \item Variable transformations (e.g., log) were allowed on the lhs of
   the formula. Because of the simplification of the code, this is no
   more possible. So it is the responsibility of the user to apply any

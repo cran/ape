@@ -75,6 +75,7 @@
 \alias{getSumSquare}
 \alias{getMLHessian}
 \alias{getREMLHessian}
+\alias{trans_DNA2AA}
 \title{Internal Ape Functions}
 \description{
   Internal \pkg{ape} functions.

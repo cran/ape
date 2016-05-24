@@ -22,7 +22,7 @@
 }
 \usage{
 boot.phylo(phy, x, FUN, B = 100, block = 1,
-           trees = FALSE, quiet = FALSE, rooted = FALSE)
+           trees = FALSE, quiet = FALSE, rooted = is.rooted(phy))
 prop.part(..., check.labels = TRUE)
 prop.clades(phy, ..., part = NULL, rooted = FALSE)
 \method{print}{prop.part}(x, ...)
@@ -42,7 +42,7 @@ prop.clades(phy, ..., part = NULL, rooted = FALSE)
     trees (\code{FALSE} by default).}
   \item{quiet}{a logical: a progress bar is displayed by default.}
   \item{rooted}{a logical specifying whether the trees should be treated
-    as rooted or not (the default).}
+    as rooted or not.}
   \item{\dots}{either (i) a single object of class \code{"phylo"}, (ii) a
     series of such objects separated by commas, or (iii) a list
     containing such objects. In the case of \code{plot} further
@@ -92,9 +92,10 @@ prop.clades(phy, ..., part = NULL, rooted = FALSE)
   might be faster to first call, e.g., \code{pp <- prop.part(...)}, then
   use the option \code{part}: \code{prop.clades(phy, part = pp)}.
 
-  You have to be careful that by default \code{prop.clades} considers
-  the trees as unrooted and this may result in spurious results if the
-  trees are rooted (see examples).
+  Since \pkg{ape} 3.5, \code{prop.clades} should return sensible results
+  for all values of \code{rooted}: if \code{FALSE}, the numbers of
+  bipartitions (or splits); if \code{TRUE}, the number of clades (of
+  hopefully rooted trees).
 }
 \value{
   \code{prop.part} returns an object of class \code{"prop.part"} which
@@ -146,11 +147,44 @@ plot(pp10, pch = "x", col = 2)
 plot(pp20, pch = "x", col = 2)
 
 set.seed(1)
-tr <- rtree(10) # rooted by default
-prop.clades(tr, tr) # clearly wrong
+tr <- rtree(10) # rooted
+## the following used to return a wrong result with ape <= 3.4:
+prop.clades(tr, tr)
 prop.clades(tr, tr, rooted = TRUE)
 tr <- rtree(10, rooted = FALSE)
 prop.clades(tr, tr) # correct
+
+### an illustration of the use of prop.clades with bootstrap trees:
+
+fun <- function(x) as.phylo(hclust(dist.dna(x), "average")) # upgma() in phangorn
+tree <- fun(woodmouse)
+## get 100 bootstrap trees:
+bstrees <- boot.phylo(tree, woodmouse, fun, trees = TRUE)$trees
+## get proportions of each clade:
+clad <- prop.clades(tree, bstrees, rooted = TRUE)
+## get proportions of each bipartition:
+boot <- prop.clades(tree, bstrees)
+plot(tree, main = "Bipartitions vs. Clades Support Values")
+drawSupportOnEdges(boot)
+nodelabels(clad)
+legend("bottomleft", legend = c("Bipartitions", "Clades"), pch = 22,
+       pt.bg = c("green", "lightblue"), pt.cex = 2.5)
+
+\dontrun{
+## an example of double bootstrap:
+nrep1 <- 100
+nrep2 <- 100
+p <- ncol(woodmouse)
+DB <- 0
+
+for (b in 1:nrep1) {
+    X <- woodmouse[, sample(p, p, TRUE)]
+    DB <- DB + boot.phylo(tr, X, f, nrep2, quiet = TRUE)
+}
+DB
+## to compare with:
+boot.phylo(tr, woodmouse, f, 1e4)
+}
 }
 \keyword{manip}
 \keyword{htest}

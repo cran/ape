@@ -1,8 +1,6 @@
 \name{write.nexus.data}
 \alias{write.nexus.data}
-\title{
-  Write Character Data in NEXUS Format
-}
+\title{Write Character Data in NEXUS Format}
 \description{
   This function writes in a file a list of sequences in the NEXUS
   format. The names of the vectors of the list are used as taxon names.

@@ -89,7 +89,7 @@
 \seealso{
   \code{\link{as.DNAbin}}, \code{\link{read.dna}},
   \code{\link{read.GenBank}}, \code{\link{write.dna}},
-  \code{\link{image.DNAbin}}
+  \code{\link{image.DNAbin}},\code{\link{AAbin}}
 
   The corresponding generic functions are documented in the package
   \pkg{base}.

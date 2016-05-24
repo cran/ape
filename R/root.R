@@ -1,8 +1,8 @@
-## root.R (2015-11-29)
+## root.R (2016-04-05)
 
 ##   Root of Phylogenetic Trees
 
-## Copyright 2004-2015 Emmanuel Paradis
+## Copyright 2004-2016 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -152,6 +152,10 @@ root <- function(phy, outgroup, node = NULL,
     N <- Nedge(phy)
     oldNnode <- phy$Nnode
 
+    Nclade <- tabulate(e1)[ROOT] # degree of the root node
+    ## if only 2 edges connect to the root, we have to fuse them:
+    fuseRoot <- Nclade == 2
+
     if (newroot == ROOT) {
         if (!resolve.root) return(phy) # else (resolve.root == TRUE)
         if (length(outgroup) > 1) outgroup <- MRCA.outgroup
@@ -172,10 +176,6 @@ root <- function(phy, outgroup, node = NULL,
         }
     } else {
         phy$root.edge <- NULL # just in case
-        Nclade <- tabulate(e1)[ROOT] # degree of the root node
-
-        ## if only 2 edges connect to the root, we have to fuse them:
-        fuseRoot <- Nclade == 2
 
         INV <- logical(N)
         w <- which(e2 == newroot)
@@ -201,16 +201,15 @@ root <- function(phy, outgroup, node = NULL,
         if (!fuseRoot) INV[i] <- TRUE
 
         ## bind the other clades...
-        for (j in 1:Nclade) {
-            ## do we have to fuse the two basal edges?
-            if (fuseRoot) {
-                k <- which(e1 == ROOT)
-                k <- if (k[2] > w) k[2] else k[1]
-                phy$edge[k, 1] <- phy$edge[i, 2]
-                if (wbl)
-                    phy$edge.length[k] <- phy$edge.length[k] + phy$edge.length[i]
-            }
+#        for (j in 1:Nclade) { # fix by EP (2016-01-04)
+        if (fuseRoot) { # do we have to fuse the two basal edges?
+            k <- which(e1 == ROOT)
+            k <- if (k[2] > w) k[2] else k[1]
+            phy$edge[k, 1] <- phy$edge[i, 2]
+            if (wbl)
+                phy$edge.length[k] <- phy$edge.length[k] + phy$edge.length[i]
         }
+#        }
 
         if (fuseRoot) phy$Nnode <- oldNnode - 1L
 
