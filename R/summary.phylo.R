@@ -1,33 +1,43 @@
-## summary.phylo.R (2011-08-04)
+## summary.phylo.R (2016-11-24)
 
 ##   Print Summary of a Phylogeny and "multiPhylo" operators
 
-## Copyright 2003-2011 Emmanuel Paradis, and 2006 Ben Bolker
+## Copyright 2003-2016 Emmanuel Paradis, 2006 Ben Bolker, and Klaus Schliep 2016
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-Ntip <- function(phy)
+Ntip <- function(phy) UseMethod("Ntip")
+
+Ntip.phylo <- function(phy) length(phy$tip.label)
+
+Ntip.multiPhylo <- function(phy)
 {
-    if (!inherits(phy, "phylo"))
-        stop('object "phy" is not of class "phylo"')
-    length(phy$tip.label)
+    labs <- attr(phy, "TipLabel")
+    if (is.null(labs)) sapply(unclass(phy), Ntip.phylo)
+    else setNames(rep(length(labs), length(phy)), names(phy))
 }
 
-Nnode <- function(phy, internal.only = TRUE)
+Nnode <- function(phy, ...) UseMethod("Nnode")
+
+Nnode.phylo <- function(phy, internal.only = TRUE, ...)
 {
-    if (!inherits(phy, "phylo"))
-        stop('object "phy" is not of class "phylo"')
     if (internal.only) return(phy$Nnode)
     phy$Nnode + length(phy$tip.label)
 }
 
-Nedge <- function(phy)
+Nnode.multiPhylo <- function(phy, internal.only = TRUE, ...)
 {
-    if (!inherits(phy, "phylo"))
-        stop('object "phy" is not of class "phylo"')
-    dim(phy$edge)[1]
+    res <- sapply(unclass(phy), "[[", "Nnode")
+    if (internal.only) return(res)
+    res + Ntip.multiPhylo(phy)
 }
+
+Nedge <- function(phy) UseMethod("Nedge")
+
+Nedge.phylo <- function(phy) dim(phy$edge)[1]
+
+Nedge.multiPhylo <- function(phy) sapply(unclass(phy), Nedge.phylo)
 
 summary.phylo <- function(object, ...)
 {
@@ -134,26 +144,78 @@ str.multiPhylo <- function(object, ...)
     str(object, ...)
 }
 
-c.phylo <- function(..., recursive = FALSE)
-    structure(list(...), class = "multiPhylo")
-## only the first object in '...' is checked for its class,
-## but that should be OK for the moment
+.c_phylo_single <- function(phy) structure(list(phy), class = "multiPhylo")
 
-c.multiPhylo <- function(..., recursive = FALSE)
+c.phylo <- function(..., recursive = TRUE)
 {
     obj <- list(...)
-    n <- length(obj)
-    x <- obj[[1L]]
-    N <- length(x)
-    i <- 2L
-    while (i <= n) {
-        a <- N + 1L
-        N <- N + length(obj[[i]])
-        ## x is of class "multiPhylo", so this uses the operator below:
-        x[a:N] <- obj[[i]]
-        i <- i + 1L
+    classes <- lapply(obj, class)
+    isphylo <- sapply(classes, function(x) "phylo" %in% x)
+    if (all(isphylo)) {
+        class(obj) <- "multiPhylo"
+        return(obj)
     }
+    if (!recursive) return(obj)
+    ismulti <- sapply(classes, function(x) "multiPhylo" %in% x)
+    if (all(isphylo | ismulti)) {
+        for (i in which(isphylo)) obj[[i]] <- .c_phylo_single(obj[[i]])
+        ## added by Klaus:
+        for (i in which(ismulti)) obj[[i]] <- .uncompressTipLabel(obj[[i]])
+        obj <- .makeMultiPhyloFromObj(obj)
+    } else {
+        warning('some objects not of class "phylo" or "multiPhylo": argument recursive=TRUE ignored')
+    }
+    obj
+}
+
+# this is an option to avoid growing the list, better check it also
+# not really as important as long the list of trees is short (by Klaus)
+.makeMultiPhyloFromObj <- function(obj)
+{
+    n <- length(obj)
+    N <- lengths(obj, FALSE)
+    cs <- c(0, cumsum(N))
+    x <- vector("list", cs[length(cs)])
+    for (i in 1:n) {
+        a <- cs[i] + 1L
+        b <- cs[i + 1L]
+        x[a:b] <- obj[[i]]
+    }
+    class(x) <- "multiPhylo"
     x
+}
+## the original code:
+##.makeMultiPhyloFromObj <- function(obj)
+##{
+##    n <- length(obj)
+##    x <- obj[[1L]]
+##    N <- length(x)
+##    i <- 2L
+##    while (i <= n) {
+##        a <- N + 1L
+##        N <- N + length(obj[[i]])
+##        ## x is of class "multiPhylo", so this uses the operator below:
+##        x[a:N] <- obj[[i]]
+##        i <- i + 1L
+##    }
+##    x
+##}
+
+c.multiPhylo <- function(..., recursive = TRUE)
+{
+    obj <- list(...)
+    if (!recursive) return(obj)
+    classes <- lapply(obj, class)
+    isphylo <- sapply(classes, function(x) "phylo" %in% x)
+    ismulti <- sapply(classes, function(x) "multiPhylo" %in% x)
+    if (!all(isphylo | ismulti)) {
+        warning('some objects not of class "phylo" or "multiPhylo": argument recursive=TRUE ignored')
+        return(obj)
+    }
+    for (i in which(isphylo)) obj[[i]] <- .c_phylo_single(obj[[i]])
+    ## added by Klaus
+    for (i in which(ismulti)) obj[[i]] <- .uncompressTipLabel(obj[[i]])
+    .makeMultiPhyloFromObj(obj)
 }
 
 .uncompressTipLabel <- function(x)

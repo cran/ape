@@ -34,5 +34,9 @@ Analyses of Phylogenetics and Evolution
   Paradis, E., Claude, J. and Strimmer, K. (2004) APE: analyses of
   phylogenetics and evolution in R language. \emph{Bioinformatics},
   \bold{20}, 289--290.
+
+  Popescu, A.-A., Huber, K. T. and Paradis, E. (2012) ape 3.0: new tools
+  for distance based phylogenetics and evolutionary analysis in
+  R. \emph{Bioinformatics}, \bold{28}, 1536-1537.
 }
 \keyword{package}

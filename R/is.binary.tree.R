@@ -1,26 +1,29 @@
-## is.binary.tree.R (2002-09-12) [modified by EP 2005-05-31, 2005-08-18,
-##                                2006-10-04, 2009-05-10]
+## is.binary.tree.R (2016-11-03)
 
-##    Tests whether a given phylogenetic tree is binary
+##    Test for Binary Tree
 
-## Copyright 2002 Korbinian Strimmer
+## Copyright 2016 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
+is.binary <- function(phy) UseMethod("is.binary")
+
+is.binary.phylo <- function(phy)
+    length(phy$tip.label) - phy$Nnode + is.rooted.phylo(phy) == 2
+
 is.binary.tree <- function(phy)
 {
-    if (!inherits(phy, "phylo")) stop('object "phy" is not of class "phylo"')
-    ## modified by EP so that it works without edge lengths too (2005-05-31):
-    nb.tip <- length(phy$tip.label)
-    nb.node <- phy$Nnode
-    ## modified by EP so that it works with both rooted and unrooted
-    ## trees (2005-08-18):
-    if (is.rooted(phy)) {
-        if (nb.tip - 1 ==  nb.node) return(TRUE)
-        else return(FALSE)
-    } else {
-        if (nb.tip - 2 ==  nb.node) return(TRUE)
-        else return(FALSE)
-    }
+    ##warning("is.binary.tree() is deprecated; using is.binary() instead.\n\nis.binary.tree() will be removed soon: see ?is.binary and update your code.")
+    is.binary(phy)
+}
+
+is.binary.multiPhylo <- function(phy)
+{
+    phy <- unclass(phy)
+    n <- length(attr(phy, "TipLabel"))
+    if (n)
+        n - sapply(phy, "[[", "Nnode") + is.rooted.multiPhylo(phy) == 2
+    else
+        sapply(phy, is.binary.phylo)
 }

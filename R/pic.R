@@ -66,7 +66,7 @@ pic.ortho <- function(x, phy, var.contrasts = FALSE, intra = FALSE)
     xx <- unlist(lapply(x, mean)) # 'x' in Felsenstein's paper
     xx <- c(xx, numeric(m))
     delta.v <- numeric(n + m)
-    s <- 1/unlist(lapply(x, length))
+    s <- 1/lengths(x)
     s <- c(s, numeric(m))
     contrast <- var.cont <- numeric(m)
 

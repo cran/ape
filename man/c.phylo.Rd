@@ -8,21 +8,26 @@
   These functions help to build lists of trees of class \code{"multiPhylo"}.
 }
 \usage{
-\method{c}{phylo}(..., recursive = FALSE)
-\method{c}{multiPhylo}(..., recursive = FALSE)
-.compressTipLabel(x)
+\method{c}{phylo}(..., recursive = TRUE)
+\method{c}{multiPhylo}(..., recursive = TRUE)
+.compressTipLabel(x, ref = NULL)
 .uncompressTipLabel(x)
 }
 \arguments{
-  \item{\dots}{one or several objects of class \code{"phylo"} or
+  \item{\dots}{one or several objects of class \code{"phylo"} and/or
     \code{"multiPhylo"}.}
   \item{recursive}{for compatibily with the generic (do not change).}
   \item{x}{an object of class \code{"phylo"} or \code{"multiPhylo"}.}
+  \item{ref}{an optional vector of mode character to constrain the order
+    of the tips. By default, the order from the first tree is used.}
 }
 \details{
-  These \code{c} methods do not check all the arguments, so it is the
-  user's responsibility to make sure that only objects of the same class
-  (either \code{"phylo"} or \code{"multiPhylo"}) are used.
+  These \code{c} methods check all the arguments, and return by default
+  a list of single trees unless some objects are not trees or lists of
+  trees, in which case \code{recursive} is switched to FALSE and a
+  warning message is given. If \code{recursive = FALSE}, the objects are
+  simply concatenated into a list. Before \pkg{ape} 4.0, \code{recursive}
+  was always set to FALSE.
 
   \code{.compressTipLabel} transforms an object of class
   \code{"multiPhylo"} by checking that all trees have the same tip
@@ -37,9 +42,7 @@
   An object of class \code{"multiPhylo"}.
 }
 \author{Emmanuel Paradis}
-\seealso{
-  \code{\link{summary.phylo}}, \code{\link{multiphylo}}
-}
+\seealso{\code{\link{summary.phylo}}, \code{\link{multiphylo}}}
 \examples{
 x <- c(rtree(4), rtree(2))
 x

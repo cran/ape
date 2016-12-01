@@ -28,7 +28,7 @@ drawSupportOnEdges(value, ...)
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{plot.phylo}}, \code{\link{edgelabels}},
-  \code{\link{boot.phylo}}
+  \code{\link{boot.phylo}}, \code{\link{plotTreeTime}}
 }
 \examples{
 tr <- rtree(10)

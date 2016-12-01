@@ -22,7 +22,9 @@
 }
 \usage{
 boot.phylo(phy, x, FUN, B = 100, block = 1,
-           trees = FALSE, quiet = FALSE, rooted = is.rooted(phy))
+           trees = FALSE, quiet = FALSE,
+           rooted = is.rooted(phy), jumble = TRUE,
+            mc.cores = 1)
 prop.part(..., check.labels = TRUE)
 prop.clades(phy, ..., part = NULL, rooted = FALSE)
 \method{print}{prop.part}(x, ...)
@@ -43,6 +45,11 @@ prop.clades(phy, ..., part = NULL, rooted = FALSE)
   \item{quiet}{a logical: a progress bar is displayed by default.}
   \item{rooted}{a logical specifying whether the trees should be treated
     as rooted or not.}
+  \item{jumble}{a logical value. By default, the rows of \code{x} are
+    randomized to avoid artificially too large bootstrap values
+    associated with very short branches.}
+  \item{mc.cores}{the number of cores (CPUs) to be used (passed to
+    \pkg{parallel}).}
   \item{\dots}{either (i) a single object of class \code{"phylo"}, (ii) a
     series of such objects separated by commas, or (iii) a list
     containing such objects. In the case of \code{plot} further

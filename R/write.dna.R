@@ -26,7 +26,7 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
         rm(xx)
     } else {
         N <- length(x)
-        S <- unique(unlist(lapply(x, length)))
+        S <- unique(lengths(x, use.names = FALSE))
         if (length(S) > 1) aligned <- FALSE
     }
     if (is.null(names(x))) names(x) <- as.character(1:N)

@@ -10,7 +10,7 @@
 ltt.plot.coords <- function(phy, backward = TRUE, tol = 1e-6)
 {
     if (is.ultrametric(phy, tol)) {
-        if (is.binary.tree(phy)) {
+        if (is.binary.phylo(phy)) {
             N <- numeric(phy$Nnode + 1)
             N[] <- 1
         } else {
@@ -21,9 +21,9 @@ ltt.plot.coords <- function(phy, backward = TRUE, tol = 1e-6)
         names(bt) <- NULL
         o <- order(bt, decreasing = TRUE)
         time <- c(-bt[o], 0)
-        if (!is.binary.tree(phy)) N <- c(1, N[o])
+        if (!is.binary.phylo(phy)) N <- c(1, N[o])
     } else {
-        if (!is.binary.tree(phy)) phy <- multi2di(phy)
+        if (!is.binary.phylo(phy)) phy <- multi2di(phy)
         n <- Ntip(phy)
         m <- phy$Nnode
         ROOT <- n + 1L

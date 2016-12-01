@@ -1,18 +1,14 @@
-## reorder.phylo.R (2015-08-24)
+## reorder.phylo.R (2016-10-04)
 
 ##   Internal Reordering of Trees
 
-## Copyright 2006-2015 Emmanuel Paradis
+## Copyright 2006-2016 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-reorder.phylo <- function(x, order = "cladewise", index.only = FALSE, ...)
+.reorder_ape <- function(x, order, index.only, nb.tip, io)
 {
-    ORDER <- c("cladewise", "postorder", "pruningwise")
-    io <- pmatch(order, ORDER)
-    if (is.na(io)) stop("ambiguous order")
-    order <- ORDER[io]
     nb.edge <- dim(x$edge)[1]
     if (!is.null(attr(x, "order")))
         if (attr(x, "order") == order)
@@ -20,8 +16,6 @@ reorder.phylo <- function(x, order = "cladewise", index.only = FALSE, ...)
     nb.node <- x$Nnode
     if (nb.node == 1)
         if (index.only) return(1:nb.edge) else return(x)
-
-    nb.tip <- length(x$tip.label)
 
     ## I'm adding the next check for badly conformed trees to avoid R
     ## crashing (2013-05-17):
@@ -47,6 +41,31 @@ reorder.phylo <- function(x, order = "cladewise", index.only = FALSE, ...)
     if (!is.null(x$edge.length))
         x$edge.length <- x$edge.length[neworder]
     attr(x, "order") <- order
+    x
+}
+
+reorder.phylo <- function(x, order = "cladewise", index.only = FALSE, ...)
+{
+    ORDER <- c("cladewise", "postorder", "pruningwise")
+    io <- pmatch(order, ORDER)
+    if (is.na(io)) stop("ambiguous order")
+    order <- ORDER[io]
+    .reorder_ape(x, order, index.only, length(x$tip.label), io)
+}
+
+reorder.multiPhylo <- function(x, order = "cladewise", ...)
+{
+    ORDER <- c("cladewise", "postorder", "pruningwise")
+    io <- pmatch(order, ORDER)
+    if (is.na(io)) stop("ambiguous order")
+    order <- ORDER[io]
+    oc <- oldClass(x)
+    class(x) <- NULL
+    labs <- attr(x, "TipLabel")
+    x <-
+        if (is.null(labs)) lapply(x, reorder.phylo, order = order)
+        else lapply(x, .reorder_ape, order = order, nb.tip = length(labs), io = io)
+    class(x) <- oc
     x
 }
 

@@ -1,4 +1,4 @@
-## DNA.R (2016-02-18)
+## DNA.R (2016-11-26)
 
 ##   Manipulations and Comparisons of DNA and AA Sequences
 
@@ -13,6 +13,8 @@ DNAbin2indel <- function(x)
     d <- dim(x)
     s <- as.integer(d[2])
     n <- as.integer(d[1])
+    if (s * n > 2^31 - 1)
+        stop("DNAbin2indel() cannot handle more than 2^31 - 1 bases")
     res <- .C(DNAbin2indelblock, x, n, s, integer(n*s), NAOK = TRUE)[[4]]
     dim(res) <- d
     rownames(res) <- rownames(x)
@@ -106,14 +108,13 @@ as.matrix.DNAbin <- function(x, ...)
         dim(x) <- c(1, length(x))
         return(x)
     }
-    s <- unique(unlist(lapply(x, length)))
+    s <- unique(lengths(x, use.names = FALSE))
     if (length(s) != 1)
         stop("DNA sequences in list not of the same length.")
-    nms <- names(x)
     n <- length(x)
-    y <- matrix(as.raw(0), n, s)
+    y <- matrix(raw(), n, s)
     for (i in seq_len(n)) y[i, ] <- x[[i]]
-    rownames(y) <- nms
+    rownames(y) <- names(x)
     class(y) <- "DNAbin"
     y
 }
@@ -125,7 +126,7 @@ as.list.DNAbin <- function(x, ...)
     else { # matrix
         n <- nrow(x)
         obj <- vector("list", n)
-        for (i in 1:n) obj[[i]] <- x[i, ]
+        for (i in seq_len(n)) obj[[i]] <- x[i, , drop = TRUE]
         names(obj) <- rownames(x)
     }
     class(obj) <- "DNAbin"
@@ -216,8 +217,8 @@ print.DNAbin <- function(x, printlen = 6, digits = 3, ...)
             cat("Label:", nms, "\n\n")
         } else {
             cat(n, "DNA sequences in binary format stored in a list.\n\n")
-            tmp <- unlist(lapply(x, length))
-            nTot <- sum(tmp)
+            tmp <- lengths(x, use.names = FALSE)
+            nTot <- sum(as.numeric(tmp))
             mini <- range(tmp)
             maxi <- mini[2]
             mini <- mini[1]
@@ -312,19 +313,17 @@ as.character.DNAbin <- function(x, ...)
 
 base.freq <- function(x, freq = FALSE, all = FALSE)
 {
-    if (!inherits(x, "DNAbin")) stop('base.freq requires an object of class "DNAbin"')
+    if (!inherits(x, "DNAbin"))
+        stop('base.freq requires an object of class "DNAbin"')
 
-    f <- function(x)
-        .C(BaseProportion, x, as.integer(length(x)), double(17),
-           NAOK = TRUE)[[3]]
+    f <- function(x) .Call(BaseProportion, x)
 
     if (is.list(x)) {
         BF <- rowSums(sapply(x, f))
-        n <- sum(sapply(x, length))
+        n <- sum(as.double(lengths(x, use.names = FALSE)))
     } else {
         n <- length(x)
-        BF <- .C(BaseProportion, x, as.integer(n), double(17),
-                 NAOK = TRUE)[[3]]
+        BF <- f(x)
     }
 
     names(BF) <- c("a", "c", "g", "t", "r", "m", "w", "s",
@@ -374,16 +373,10 @@ GC.content <- function(x) sum(base.freq(x)[2:3])
 seg.sites <- function(x)
 {
     if (is.list(x)) x <- as.matrix(x)
-    if (is.vector(x)) n <- 1
-    else { # 'x' is a matrix
-        n <- dim(x)
-        s <- n[2]
-        n <- n[1]
-    }
-    if (n == 1) return(integer(0))
-    ans <- .C(SegSites, x, as.integer(n), as.integer(s),
-              integer(s), NAOK = TRUE)
-    which(as.logical(ans[[4]]))
+    if (is.vector(x)) return(integer(0))
+    if (nrow(x) == 1) return(integer(0))
+    ans <- .Call(SegSites, x)
+    which(as.logical(ans))
 }
 
 dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
@@ -410,6 +403,9 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     n <- dim(x)
     s <- n[2]
     n <- n[1]
+
+    if (s * n > 2^31 - 1)
+        stop("dist.dna() cannot handle more than 2^31 - 1 bases")
 
     if (imod %in% c(4, 6:8)) {
         BF <- if (is.null(base.freq)) base.freq(x) else base.freq
@@ -458,6 +454,7 @@ image.DNAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
         if (missing(what)) c("a", "g", "c", "t", "n", "-") else tolower(what)
     if (missing(col))
         col <- c("red", "yellow", "green", "blue", "grey", "black")
+    x <- as.matrix(x) # tests if all sequences have the same length
     n <- (dx <- dim(x))[1] # number of sequences
     s <- dx[2] # number of sites
     y <- integer(N <- length(x))
@@ -489,10 +486,10 @@ image.DNAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
         brks <- c(-0.5, brks)
     }
     yaxt <- if (show.labels) "n" else "s"
-    image.default(1:s, 1:n, t(y), col = co, xlab = xlab,
+    image.default(1:s, 1:n, t(y[n:1, ]), col = co, xlab = xlab,
                   ylab = ylab, yaxt = yaxt, breaks = brks, ...)
     if (show.labels)
-        mtext(rownames(x), side = 2, line = 0.1, at = 1:n,
+        mtext(rownames(x), side = 2, line = 0.1, at = n:1,
               cex = cex.lab, adj = 1, las = 1)
     if (legend) {
         psr <- par("usr")
@@ -527,26 +524,24 @@ alview <- function(x, file = "", uppercase = TRUE)
 where <- function(x, pattern)
 {
     pat <- as.DNAbin(strsplit(pattern, NULL)[[1]])
-    p <- as.integer(length(pat))
+    p <- length(pat)
 
-    foo <- function(x, pat, p) {
-        s <- as.integer(length(x))
+    f <- function(x, pat, p) {
+        s <- length(x)
         if (s < p) stop("sequence shorter than the pattern")
-        ans <- .C(C_where, x, pat, s, p, integer(s), 0L, NAOK = TRUE)
-        n <- ans[[6]]
-        if (n) ans[[5]][seq_len(n)] - p + 2L else integer()
+        .Call(C_where, x, pat)
     }
 
-    if (is.list(x)) return(lapply(x, foo, pat = pat, p = p))
+    if (is.list(x)) return(lapply(x, f, pat = pat, p = p))
     if (is.matrix(x)) {
         n <- nrow(x)
         res <- vector("list", n)
         for (i in seq_len(n))
-            res[[i]] <- foo(x[i, , drop = TRUE], pat, p)
+            res[[i]] <- f(x[i, , drop = TRUE], pat, p)
         names(res) <- rownames(x)
         return(res)
     }
-    foo(x, pat, p) # if x is a vector
+    f(x, pat, p) # if x is a vector
 }
 
 ## conversions from BioConductor:
@@ -632,7 +627,7 @@ print.AAbin <- function(x, ...)
         cat(n, "amino acid sequence")
         if (n > 1) cat("s")
         cat(" in a list\n\n")
-        tmp <- unlist(lapply(x, length))
+        tmp <- lengths(x, use.names = FALSE)
         maxi <- max(tmp)
         mini <- min(tmp)
         if (mini == maxi)
@@ -668,7 +663,7 @@ as.character.AAbin <- function(x, ...)
 {
     f <- function(x) strsplit(rawToChar(x), "")[[1]]
     if (is.list(x)) return(lapply(x, f))
-    if (is.matrix(x)) return(apply(t(x), 1, f))
+    if (is.matrix(x)) return(t(apply(x, 1, f)))
     f(x)
 }
 
@@ -712,7 +707,7 @@ dist.aa <- function(x, pairwise.deletion = FALSE, scaled = FALSE)
                 p <- length(b <- b[!del])
                 tmp <- sum(a[!del] != b)
                 k <- k + 1L
-                d[k] <- if (scaled) tmp else tmp/p
+                d[k] <- if (scaled) tmp/p else tmp
             }
         }
     }
@@ -774,18 +769,17 @@ image.AAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
     if (sm == N) {
         leg.co <- co <- col
         leg.txt <- what
-    }
-    else {
+    } else {
         co <- c(bg, col)
         leg.txt <- c(what, "Unknown")
         leg.co <- c(col, bg)
         brks <- c(-0.5, brks)
     }
     yaxt <- if (show.labels) "n" else "s"
-    image.default(1:s, 1:n, t(y), col = co, xlab = xlab, ylab = ylab,
+    image.default(1:s, 1:n, t(y[n:1, ]), col = co, xlab = xlab, ylab = ylab,
                   yaxt = yaxt, breaks = brks, ...)
     if (show.labels)
-        mtext(rownames(x), side = 2, line = 0.1, at = 1:n, cex = cex.lab,
+        mtext(rownames(x), side = 2, line = 0.1, at = n:1, cex = cex.lab,
               adj = 1, las = 1)
     if (legend) {
         psr <- par("usr")
@@ -809,7 +803,7 @@ if (check.gaps) {
     else {
         rest <- gap.length %% 3
         if (any(cond <- rest > 0)) {
-            cat("Some gap length are not multiple of 3:", gap.length[cond])
+            cat("Some gap lengths are not multiple of 3:", gap.length[cond])
         } else cat("All gap lengths are multiple of 3.")
 
         tab <- tabulate(y, gap.length[length(gap.length)])
@@ -818,6 +812,20 @@ if (check.gaps) {
         names(tab) <- gap.length
         print(tab)
 
+        ## find gaps on the borders:
+        col1 <- unique(y[, 1])
+        if (!col1[1]) col1 <- col1[-1]
+        if (length(col1))
+            cat("   => length of gaps on the left border of the alignment:", unique(col1), "\n")
+        else cat("   => no gap on the left border of the alignment\n")
+        i <- which(y != 0, useNames = FALSE)
+        jcol <- i %/% nrow(y) + 1
+        yi <- y[i]
+        j <- yi == s - jcol + 1
+        if (any(j))
+            cat("   => length of gaps on the right border of the alignment:", yi[j], "\n")
+        else cat("   => no gap on the right border of the alignment\n")
+
         ## find base segments:
         A <- B <- numeric()
         for (i in seq_len(n)) {
@@ -825,17 +833,17 @@ if (check.gaps) {
             if (!length(j)) next
             k <- j + y[i, j] # k: start of each base segment in the i-th sequence
             if (j[1] != 1) k <- c(1, k) else j <- j[-1]
-            if (k[length(k)] > s) k <- k[-length(k)] else j <- c(j, s)
+            if (k[length(k)] > s) k <- k[-length(k)] else j <- c(j, s + 1)
             A <- c(A, j)
             B <- c(B, k)
         }
         AB <- unique(cbind(A, B))
         not.multiple.of.3 <- (AB[, 1] - AB[, 2]) %% 3 != 0
         left.border <- AB[, 2] == 1
-        right.border <- AB[, 1] == s
+        right.border <- AB[, 1] == s + 1
         Nnot.mult3 <- sum(not.multiple.of.3)
-        cat("\nNumber of unique contiguous base segments:", nrow(AB), "\n")
-        if (!Nnot.mult3) cat("All segment lengths multiple of 3")
+        cat("\nNumber of unique contiguous base segments defined by gaps:", nrow(AB), "\n")
+        if (!Nnot.mult3) cat("All segment lengths multiple of 3.\n")
         else {
             Nleft <- sum(not.multiple.of.3 & left.border)
             Nright <- sum(not.multiple.of.3 & right.border)
@@ -845,7 +853,7 @@ if (check.gaps) {
             if (Nright + Nleft < Nnot.mult3) {
                 cat("    => positions of these segments inside the alignment: ")
                 sel <- not.multiple.of.3 & !left.border & !right.border
-                cat(paste(AB[sel, 2], AB[sel, 1] - 1, sep = "--"), "\n")
+                cat(paste(AB[sel, 2], AB[sel, 1] - 1, sep = ".."), "\n")
             }
         }
     }
@@ -885,4 +893,100 @@ if (check.gaps) {
         if (4 %in% what)
             plot(1:s, G, "h", xlab = "Sequence position", ylab = "Number of observed bases")
     }
+}
+
+all.equal.DNAbin <- function(target, current, plot = FALSE, ...)
+{
+    if (identical(target, current)) return(TRUE)
+    name.target <- deparse(substitute(target))
+    name.current <- deparse(substitute(current))
+    st1 <- "convert list as matrix for further comparison."
+#    st2 <- ""
+    st3 <- "Subset your data for further comparison."
+    isali1 <- is.matrix(target)
+    isali2 <- is.matrix(current)
+    if (isali1 && !isali2)
+        return(c("1st object is a matrix, 2nd object is a list:", st1))
+    if (!isali1 && isali2)
+        return(c("1st object is a list, 2nd object is a matrix:", st1))
+    if (!isali1 && !isali2)
+        return(c("Both objects are lists:",
+                 "convert them as matrices for further comparison."))
+#    n1 <- if (isali1) nrow(target) else length(target)
+#    n2 <- if (isali2) nrow(current) else length(current)
+    if (ncol(target) != ncol(current))
+        return("Numbers of columns different: comparison stopped here.")
+
+    foo <- function(n) ifelse(n == 1, "sequence", "sequences")
+    doComparison <- function(target, current)
+        which(target != current, arr.ind = TRUE, useNames = FALSE)
+
+    n1 <- nrow(target)
+    n2 <- nrow(current)
+    labs1 <- labels(target)
+    labs2 <- labels(current)
+    if (identical(labs1, labs2)) {
+        res <- "Labels in both objects identical."
+        res <- list(messages = res,
+                    different.sites = doComparison(target, current))
+    } else {
+        in12 <- labs1 %in% labs2
+        in21 <- labs2 %in% labs1
+        if (n1 != n2) {
+            res <- c("Number of sequences different:",
+                     paste(n1, foo(n1), "in 1st object;", n2,
+                           foo(n2), "in 2nd object."),
+                     st3)
+            plot <- FALSE
+        } else { # n1 == n2
+            if (any(!in12)) {
+                res <- c("X: 1st object (target), Y: 2nd object (current).",
+                         paste("labels in X not in Y:",
+                               paste(labs1[!in12], collapse = ", ")),
+                         paste("labels in X not in Y:",
+                               paste(labs2[!in21], collapse = ", ")),
+                         st3)
+                plot <- FALSE
+            } else {
+                res <- c("Labels in both objects identical but not in the same order.",
+                         "Comparing sequences after reordering rows of the second matrix.")
+                current <- current[labs1, ]
+                if (identical(target, current)) {
+                    res <- c(res, "Sequences are identical.")
+                    plot <- FALSE
+                } else {
+                    res <- list(messages = res,
+                                different.sites = doComparison(target, current))
+                }
+            }
+	}
+    }
+    if (plot) {
+        cols <- unique(res$different.sites[, 2])
+        diff.cols <- diff(cols)
+        j <- which(diff.cols != 1)
+        end <- c(cols[j], cols[length(cols)])
+        start <- c(cols[1], cols[j + 1])
+        v <- cumsum(end - start + 1) + 0.5
+        f <- function(lab) {
+            axis(2, at = seq_len(n1), labels = FALSE)
+            axis(1, at = seq_along(cols), labels = cols)
+            mtext(lab, line = 1, adj = 0, font = 2)
+        }
+        layout(matrix(1:2, 2))
+        par(xpd = TRUE)
+        image(target[, cols], show.labels = FALSE, axes = FALSE, ...)
+        f(name.target)
+        xx <- c(0.5, v)
+        segments(xx, 0.5, xx, n1, lty = 2, col = "white", lwd = 2)
+        segments(xx, 0.5, xx, -1e5, lty = 2, lwd = 2)
+        image(current[, cols], show.labels = FALSE, axes = FALSE, ...)
+        f(name.current)
+        segments(xx, 0.5, xx, n2, lty = 2, col = "white", lwd = 2)
+        segments(xx, 1e5, xx, n2, lty = 2, lwd = 2)
+        #segments(0.5, -5, length(cols) + 0.5, -5, lwd = 5, col = "grey")
+        #rect(0.5, -4, length(cols) + 0.5, -3, col = "grey")
+        #segments(0.5, 0.5, 10, -3)
+    }
+    res
 }

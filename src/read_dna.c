@@ -1,6 +1,6 @@
-/* read_dna.c       2014-03-05 */
+/* read_dna.c       2016-06-21 */
 
-/* Copyright 2013-2014 Emmanuel Paradis */
+/* Copyright 2013-2016 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -81,12 +81,14 @@ static const unsigned char lineFeed = 0x0a;
 
 SEXP rawStreamToDNAbin(SEXP x)
 {
-	int N, i, j, k, n, startOfSeq;
+	int k, startOfSeq;
+	long i, j, n;
+	double N;
 	unsigned char *xr, *rseq, *buffer, tmp;
 	SEXP obj, nms, seq;
 
 	PROTECT(x = coerceVector(x, RAWSXP));
-	N = LENGTH(x);
+	N = XLENGTH(x);
 	xr = RAW(x);
 
 /* do a 1st pass to find the number of sequences
@@ -94,19 +96,19 @@ SEXP rawStreamToDNAbin(SEXP x)
    this code should be robust to '>' present inside
    a label or in the header text before the sequences */
 
-	n = j = 0; /* use j as a flag */
+	n = 0;
+	k = 0; /* use k as a flag */
 	if (xr[0] == hook) {
-		j = 1;
+		k = 1;
 		startOfSeq = 0;
 	}
-	i = 1;
 	for (i = 1; i < N; i++) {
-		if (j && xr[i] == lineFeed) {
+		if (k && xr[i] == lineFeed) {
 			n++;
-			j = 0;
+			k = 0;
 		} else if (xr[i] == hook) {
 			if (!n) startOfSeq = i;
-			j = 1;
+			k = 1;
 		}
 	}
 
@@ -114,9 +116,9 @@ SEXP rawStreamToDNAbin(SEXP x)
 	PROTECT(nms = allocVector(STRSXP, n));
 
 /* Refine the way the size of the buffer is set? */
-	buffer = (unsigned char *)R_alloc(N, sizeof(unsigned char *));
+	buffer = (unsigned char *)R_alloc(N, sizeof(unsigned char));
 
-	i = startOfSeq;
+	i = (long) startOfSeq;
 	j = 0; /* gives the index of the sequence */
 	while (i < N) {
 		/* 1st read the label... */

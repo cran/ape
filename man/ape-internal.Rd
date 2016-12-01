@@ -72,6 +72,12 @@
 \alias{racine}
 \alias{renumeroteArbre}
 \alias{calculeC}
+\alias{calculeC_ABM}
+\alias{calculeC_OU}
+\alias{glsABM}
+\alias{glsBM}
+\alias{glsOUv1}
+\alias{glsOUv2}
 \alias{getSumSquare}
 \alias{getMLHessian}
 \alias{getREMLHessian}

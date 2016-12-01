@@ -6,7 +6,7 @@
   These functions read DNA sequences in a file, and returns a matrix or a
   list of DNA sequences with the names of the taxa read in the file as
   rownames or names, respectively. By default, the sequences are stored
-  in binary format, otherwise (if \code{as.character = "TRUE"}) in lower
+  in binary format, otherwise (if \code{as.character = TRUE}) in lower
   case.
 }
 \usage{
@@ -133,7 +133,7 @@ cat(">No305",
 "ATTCGAAAAACACACCCACTACTAAAAATTATCAATCACT",
 file = "exdna.txt", sep = "\n")
 ex.dna4 <- read.dna("exdna.txt", format = "fasta")
-### The first three are the same!
+### They are the same!
 identical(ex.dna, ex.dna2)
 identical(ex.dna, ex.dna3)
 identical(ex.dna, ex.dna4)

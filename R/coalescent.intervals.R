@@ -15,7 +15,7 @@ coalescent.intervals.phylo <- function(x)
     if (class(x) != "phylo") stop("object \"x\" is not of class \"phylo\"")
 
     # ensure we have a BINARY tree
-    if (!is.binary.tree(x)) stop("object \"x\" is not a binary tree")
+    if (!is.binary.phylo(x)) stop("object \"x\" is not a binary tree")
     # ordered branching times
     t <- sort(branching.times(x))
     lt <- length(t)

@@ -1,4 +1,4 @@
-/* ape.c    2016-02-18 */
+/* ape.c    2016-06-21 */
 
 /* Copyright 2011-2016 Emmanuel Paradis, and 2007 R Development Core Team */
 
@@ -90,7 +90,6 @@ SEXP bitsplits_multiPhylo(SEXP x, SEXP n, SEXP nr);
 
 static R_CMethodDef C_entries[] = {
     {"C_additive", (DL_FUNC) &C_additive, 4},
-    {"BaseProportion", (DL_FUNC) &BaseProportion, 3},
     {"C_bionj", (DL_FUNC) &C_bionj, 5},
     {"C_bionjs", (DL_FUNC) &C_bionjs, 6},
     {"delta_plot", (DL_FUNC) &delta_plot, 5},
@@ -113,12 +112,10 @@ static R_CMethodDef C_entries[] = {
     {"node_height_clado", (DL_FUNC) &node_height_clado, 7},
     {"C_pic", (DL_FUNC) &C_pic, 10},
     {"C_rTraitCont", (DL_FUNC) &C_rTraitCont, 9},
-    {"SegSites", (DL_FUNC) &SegSites, 4},
     {"C_treePop", (DL_FUNC) &C_treePop, 7},
     {"C_triangMtd", (DL_FUNC) &C_triangMtd, 5},
     {"C_triangMtds", (DL_FUNC) &C_triangMtds, 5},
     {"C_ultrametric", (DL_FUNC) &C_ultrametric, 4},
-    {"C_where", (DL_FUNC) &C_where, 6},
     {"bitsplits_phylo", (DL_FUNC) &bitsplits_phylo, 6},
     {"CountBipartitionsFromTrees", (DL_FUNC) &CountBipartitionsFromTrees, 8},
     {"DNAbin2indelblock", (DL_FUNC) &DNAbin2indelblock, 4},
@@ -133,6 +130,9 @@ static R_CallMethodDef Call_entries[] = {
     {"seq_root2tip", (DL_FUNC) &seq_root2tip, 3},
     {"treeBuildWithTokens", (DL_FUNC) &treeBuildWithTokens, 1},
     {"bitsplits_multiPhylo", (DL_FUNC) &bitsplits_multiPhylo, 3},
+    {"BaseProportion", (DL_FUNC) &BaseProportion, 1},
+    {"SegSites", (DL_FUNC) &SegSites, 1},
+    {"C_where", (DL_FUNC) &C_where, 2},
     {NULL, NULL, 0}
 };
 

@@ -5,39 +5,41 @@
 read.GenBank(access.nb, seq.names = access.nb, species.names = TRUE,
              gene.names = FALSE, as.character = FALSE)
 }
+\description{
+  This function connects to the GenBank database, and reads nucleotide
+  sequences using accession numbers given as arguments.
+}
 \arguments{
   \item{access.nb}{a vector of mode character giving the accession numbers.}
   \item{seq.names}{the names to give to each sequence; by default the
     accession numbers are used.}
   \item{species.names}{a logical indicating whether to attribute the
     species names to the returned object.}
-  \item{gene.names}{a logical indicating whether to attribute the
-    gene names to the returned object. It is \code{FALSE} by default
-    because this will work correctly only when reading sequences with a
-    single gene.}
+  \item{gene.names}{obsolete (will be removed soon).}
   \item{as.character}{a logical controlling whether to return the
     sequences as an object of class \code{"DNAbin"} (the default).}
 }
-\description{
-  This function connects to the GenBank database, and reads nucleotide
-  sequences using accession numbers given as arguments.
-}
-\value{
-  A list of DNA sequences made of vectors of class \code{"DNAbin"}, or
-  of single characters (if \code{as.character = "TRUE"}).
-}
 \details{
   The function uses the site \url{http://www.ncbi.nlm.nih.gov/} from
-  where the sequences are downloaded.
+  where the sequences are retrieved.
 
   If \code{species.names = TRUE}, the returned list has an attribute
   \code{"species"} containing the names of the species taken from the
   field ``ORGANISM'' in GenBank.
 
-  If \code{gene.names = TRUE}, the returned list has an attribute
-  \code{"gene"} containing the names of the gene. This will not work
-  correctly if reading a sequence with multiple genes (e.g., a
-  mitochondrial genome).
+  Since ape 3.6, this function retrieves the sequences in FASTA format:
+  this is more efficient and more flexible (scaffolds and contigs can be
+  read). The option \code{gene.names} is obsolete and will be removed;
+  this information is also present in the description.
+
+  Setting \code{species.names = FALSE} is quite faster (could be useful
+  if you read a series of scaffolds or contigs, or if you already have
+  the species names).
+}
+\value{
+  A list of DNA sequences made of vectors of class \code{"DNAbin"}, or
+  of single characters (if \code{as.character = TRUE}) with two
+  attributes (species and description).
 }
 \seealso{
   \code{\link{read.dna}}, \code{\link{write.dna}},
@@ -45,26 +47,26 @@ read.GenBank(access.nb, seq.names = access.nb, species.names = TRUE,
 }
 \author{Emmanuel Paradis}
 \examples{
-### This won't work if your computer is not connected
-### to the Internet
-###
-### Get the 8 sequences of tanagers (Ramphocelus)
-### as used in Paradis (1997)
+## This won't work if your computer is not connected
+## to the Internet
+
+## Get the 8 sequences of tanagers (Ramphocelus)
+## as used in Paradis (1997)
 ref <- c("U15717", "U15718", "U15719", "U15720",
          "U15721", "U15722", "U15723", "U15724")
-### Copy/paste or type the following commands if you
-### want to try them.
+## Copy/paste or type the following commands if you
+## want to try them.
 \dontrun{
 Rampho <- read.GenBank(ref)
-### get the species names:
+## get the species names:
 attr(Rampho, "species")
-### build a matrix with the species names and the accession numbers:
+## build a matrix with the species names and the accession numbers:
 cbind(attr(Rampho, "species"), names(Rampho))
-### print the first sequence
-### (can be done with `Rampho$U15717' as well)
+## print the first sequence
+## (can be done with `Rampho$U15717' as well)
 Rampho[[1]]
-### print the first sequence in a cleaner way
-cat(Rampho[[1]], "\n", sep = "")
+## the description from each FASTA sequence:
+attr(Rampho, "description")
 }
 }
 \keyword{IO}

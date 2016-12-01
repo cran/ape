@@ -1,8 +1,8 @@
-## ace.R (2015-05-01)
+## ace.R (2016-06-08)
 
 ##   Ancestral Character Estimation
 
-## Copyright 2005-2015 Emmanuel Paradis and Ben Bolker
+## Copyright 2005-2016 Emmanuel Paradis and Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -319,7 +319,7 @@ AIC.ace <- function(object, ..., k = 2)
 anova.ace <- function(object, ...)
 {
     X <- c(list(object), list(...))
-    df <- sapply(lapply(X, "[[", "rates"), length)
+    df <- lengths(lapply(X, "[[", "rates"))
     ll <- sapply(X, "[[", "loglik")
     ## check if models are in correct order
     dev <- c(NA, 2*diff(ll))

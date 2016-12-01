@@ -1,4 +1,4 @@
-## plot.phyloExtra.R (2016-02-18)
+## plot.phyloExtra.R (2016-08-09)
 
 ##   Extra Functions for Plotting and Annotating
 
@@ -27,4 +27,34 @@ drawSupportOnEdges <- function(value, ...)
     nodes <- 2:m + n
     i <- match(nodes, lastPP$edge[, 2])
     edgelabels(value, i, ...)
+}
+
+plotTreeTime <- function(phy, tip.dates, show.tip.label = FALSE, y.lim = NULL, ...)
+{
+    n <- Ntip(phy)
+    if (length(tip.dates) != n)
+        stop("number of dates does not match number of tips of the tree")
+    if (is.null(y.lim)) y.lim <- c(-n/4, n)
+    plot(phy, show.tip.label = show.tip.label, y.lim = y.lim, ...)
+    psr <- par("usr")
+
+    if (anyNA(tip.dates)) {
+        s <- which(!is.na(tip.dates))
+        tip.dates <- tip.dates[s]
+    } else s <- 1:n
+    range.dates <- range(as.numeric(tip.dates))
+
+    diff.range <- range.dates[2] - range.dates[1]
+    footrans <- function(x)
+        psr[2] * (as.numeric(x) - range.dates[1]) / diff.range
+
+    x1 <- footrans(tip.dates)
+    y1 <- psr[3]
+    lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
+    x2 <- lastPP$xx[s]
+    y2 <- lastPP$yy[s]
+    x1.scaled <- x1 / max(x1)
+    segments(x1, y1, x2, y2, col = rgb(x1.scaled, 0, 1 - x1.scaled, alpha = .5))
+    at <- pretty(tip.dates)
+    axis(1, at = footrans(at), labels = at)
 }

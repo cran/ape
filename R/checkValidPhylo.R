@@ -1,8 +1,8 @@
-## checkValidPhylo.R (2015-11-17)
+## checkValidPhylo.R (2016-07-26)
 
 ##   Check the Structure of a "phylo" Object
 
-## Copyright 2015 Emmanuel Paradis
+## Copyright 2015-2016 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -76,8 +76,9 @@ checkValidPhylo <- function(phy)
                             cat("  FATAL: each tip must appear once in 'edge'\n")
                         if (any(tab[n + 1:m] < 2))
                             cat("  FATAL: all nodes should appear at least twice in 'edge'\n")
-                        if (any(tab[n + 2:m] < 3))
-                            cat("  MODERATE: only the root can be of degree 2, all other nodes should be of degree 3 or higher\n")
+                        if (m > 1)
+                            if (any(tab[n + 2:m] < 3))
+                                cat("  MODERATE: only the root can be of degree 2, all other nodes should be of degree 3 or higher\n")
                         if (any(phy$edge[, 1] <= n & phy$edge[, 1] > 0))
                             cat("  FATAL: tips should not appear in the 1st column of 'edge'\n")
                         if (any(table(phy$edge[, 2]) > 1))

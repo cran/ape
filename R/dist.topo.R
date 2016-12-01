@@ -1,4 +1,4 @@
-## dist.topo.R (2016-03-23)
+## dist.topo.R (2016-11-24)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
@@ -42,7 +42,13 @@ dist.topo <- function(x, y = NULL, method = "PH85")
 
 .dist.topo <- function(x, y, method = "PH85")
 {
-    if (method == "score" && (is.null(x$edge.length) || is.null(y$edge.length)))
+    if (method == "PH85") {
+        bs <- bitsplits(unroot.multiPhylo(c(x, y)))
+        return(sum(bs$freq == 1))
+    }
+
+    ## method == "score":
+    if (is.null(x$edge.length) || is.null(y$edge.length))
         stop("trees must have branch lengths for branch score distance.")
     nx <- length(x$tip.label)
     x <- unroot(x)
@@ -58,48 +64,33 @@ dist.topo <- function(x, y = NULL, method = "PH85")
     ## End
     q1 <- length(bp1)
     q2 <- length(bp2)
-    if (method == "PH85") {
-        p <- 0
-        for (i in 1:q1) {
-            for (j in 1:q2) {
-                if (identical(bp1[[i]], bp2[[j]]) | identical(bp1[[i]], bp2.comp[[j]])) {
-                    p <- p + 1
-                    break
-                }
+
+    dT <- 0
+    found1 <- FALSE
+    found2 <- logical(q2)
+    found2[1] <- TRUE
+    for (i in 2:q1) {
+        for (j in 2:q2) {
+            if (identical(bp1[[i]], bp2[[j]]) | identical(bp1[[i]], bp2.comp[[j]])) {
+                dT <- dT + (x$edge.length[which(x$edge[, 2] == nx + i)] -
+                            y$edge.length[which(y$edge[, 2] == ny + j)])^2
+                found1 <- found2[j] <- TRUE
+                break
             }
         }
-        dT <- q1 + q2 - 2 * p # same than:
-        ##dT <- if (q1 == q2) 2*(q1 - p) else 2*(min(q1, q2) - p) + abs(q1 - q2)
+        if (found1) found1 <- FALSE
+        else dT <- dT + (x$edge.length[which(x$edge[, 2] == nx + i)])^2
     }
-    if (method == "score") {
-        dT <- 0
-        found1 <- FALSE
-        found2 <- logical(q2)
-        found2[1] <- TRUE
-        for (i in 2:q1) {
-            for (j in 2:q2) {
-                if (identical(bp1[[i]], bp2[[j]]) | identical(bp1[[i]], bp2.comp[[j]])) {
-                    dT <- dT + (x$edge.length[which(x$edge[, 2] == nx + i)] -
-                                y$edge.length[which(y$edge[, 2] == ny + j)])^2
-                    found1 <- found2[j] <- TRUE
-                    break
-                }
-            }
-            if (found1) found1 <- FALSE
-            else dT <- dT + (x$edge.length[which(x$edge[, 2] == nx + i)])^2
-        }
-        if (!all(found2))
-            dT <- dT + sum((y$edge.length[y$edge[, 2] %in% (ny + which(!found2))])^2)
-        dT <- sqrt(dT)
-    }
-    dT
+    if (!all(found2))
+        dT <- dT + sum((y$edge.length[y$edge[, 2] %in% (ny + which(!found2))])^2)
+    sqrt(dT)
 }
 
-.compressTipLabel <- function(x)
+.compressTipLabel <- function(x, ref = NULL)
 {
     ## 'x' is a list of objects of class "phylo" possibly with no class
     if (!is.null(attr(x, "TipLabel"))) return(x)
-    ref <- x[[1]]$tip.label
+    if (is.null(ref)) ref <- x[[1]]$tip.label
     n <- length(ref)
     if (length(unique(ref)) != n)
         stop("some tip labels are duplicated in tree no. 1")
@@ -209,40 +200,63 @@ prop.clades <- function(phy, ..., part = NULL, rooted = FALSE)
     n
 }
 
-boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
-                       trees = FALSE, quiet = FALSE, rooted = is.rooted(phy))
+boot.phylo <-
+    function(phy, x, FUN, B = 100, block = 1,
+             trees = FALSE, quiet = FALSE,
+             rooted = is.rooted(phy), jumble = TRUE,
+             mc.cores = 1)
 {
     if (is.null(dim(x)) || length(dim(x)) != 2)
         stop("the data 'x' must have two dimensions (e.g., a matrix or a data frame)")
 
+    if (anyDuplicated(rownames(x)))
+        stop("some labels are duplicated in the data: you won't be able to analyse tree bipartitions")
+
     boot.tree <- vector("list", B)
-
-    if (!quiet) # suggestion by Alastair Potts
-        progbar <- txtProgressBar(style = 3)
-
     y <- nc <- ncol(x)
+    nr <- nrow(x)
 
     if (block > 1) {
         a <- seq(1, nc - 1, block)
         b <- seq(block, nc, block)
         y <- mapply(":", a, b, SIMPLIFY = FALSE)
-    }
-
-    for (i in 1:B) {
-        boot.samp <- unlist(sample(y, replace = TRUE))
-        boot.tree[[i]] <- FUN(x[, boot.samp])
-        if (!quiet) setTxtProgressBar(progbar, i/B)
-    }
-
-    ## for (i in 1:B) storage.mode(boot.tree[[i]]$Nnode) <- "integer"
-    ## storage.mode(phy$Nnode) <- "integer"
+        getBootstrapIndices <- function() unlist(sample(y, replace = TRUE))
+    } else getBootstrapIndices <- function() sample.int(y, replace = TRUE)
 
     if (!quiet) {
-        close(progbar)
-        cat("Calculating bootstrap values...")
+        prefix <- "\rRunning bootstraps:      "
+        suffix <- paste("/", B)
+        updateProgress <- function(i) cat(prefix, i, suffix)
     }
 
-     if (rooted) {
+    if (mc.cores == 1) {
+        for (i in 1:B) {
+            boot.samp <- x[, getBootstrapIndices()]
+            if (jumble) boot.samp <- boot.samp[sample.int(nr), ]
+            boot.tree[[i]] <- FUN(boot.samp)
+            if (!quiet && !(i %% 100)) updateProgress(i)
+        }
+    } else {
+        if (!quiet) cat("Running parallel bootstraps...")
+        foo <- function(i) {
+            boot.samp <- x[, getBootstrapIndices()]
+            if (jumble) boot.samp <- boot.samp[sample.int(nr), ]
+            FUN(boot.samp)
+        }
+        boot.tree <- mclapply(1:B, foo, mc.cores = mc.cores)
+        if (!quiet) cat(" done.")
+    }
+
+    if (!quiet) cat("\nCalculating bootstrap values...")
+
+    ## sort labels after mixed them up
+    if (jumble) {
+        boot.tree <- .compressTipLabel(boot.tree, ref = phy$tip.label)
+        boot.tree <- .uncompressTipLabel(boot.tree)
+        boot.tree <- unclass(boot.tree) # otherwise countBipartitions crashes
+    }
+
+    if (rooted) {
         pp <- prop.part(boot.tree)
         ans <- prop.clades(phy, part = pp, rooted = rooted)
     } else {
@@ -252,11 +266,12 @@ boot.phylo <- function(phy, x, FUN, B = 100, block = 1,
         ans <- c(B, ans[order(phy$edge[ints, 2])])
     }
 
+    if (!quiet) cat(" done.\n")
+
     if (trees) {
         class(boot.tree) <- "multiPhylo"
         ans <- list(BP = ans, trees = boot.tree)
     }
-    if (!quiet) cat(" done.\n")
     ans
 }
 
@@ -344,8 +359,7 @@ consensus <- function(..., p = 1, check.labels = TRUE)
     if (p == 0.5) p <- 0.5000001 # avoid incompatible splits
     pp <- pp[attr(pp, "number") >= p * ntree]
     ## Get the order of the remaining partitions by decreasing size:
-    ind <- sort(unlist(lapply(pp, length)), decreasing = TRUE,
-                index.return = TRUE)$ix
+    ind <- order(lengths(pp), decreasing = TRUE)
     pp <- pp[ind]
     n <- length(labels)
     m <- length(pp)

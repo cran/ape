@@ -22,7 +22,7 @@ The first line of the output shows the position of the last column of the printe
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{DNAbin}}, \code{\link{image.DNAbin}}, \code{\link{alex}},
-  \code{\link{clustal}}, \code{\link{checkAlignment}}
+  \code{\link{clustal}}, \code{\link{checkAlignment}}, \code{\link{all.equal.DNAbin}}
 }
 \examples{
 data(woodmouse)

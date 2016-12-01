@@ -1,17 +1,33 @@
 \name{summary.phylo}
 \alias{summary.phylo}
 \alias{Ntip}
+\alias{Ntip.phylo}
+\alias{Ntip.multiPhylo}
 \alias{Nnode}
+\alias{Nnode.phylo}
+\alias{Nnode.multiPhylo}
 \alias{Nedge}
+\alias{Nedge.phylo}
+\alias{Nedge.multiPhylo}
 \title{Print Summary of a Phylogeny}
 \usage{
 \method{summary}{phylo}(object, \dots)
+
 Ntip(phy)
-Nnode(phy, internal.only = TRUE)
+\method{Ntip}{phylo}(phy)
+\method{Ntip}{multiPhylo}(phy)
+
+Nnode(phy, ...)
+\method{Nnode}{phylo}(phy, internal.only = TRUE, ...)
+\method{Nnode}{multiPhylo}(phy, internal.only = TRUE, ...)
+
 Nedge(phy)
+\method{Nedge}{phylo}(phy)
+\method{Nedge}{multiPhylo}(phy)
 }
 \arguments{
-  \item{object, phy}{an object of class \code{"phylo"}.}
+  \item{object, phy}{an object of class \code{"phylo"} or
+    \code{"multiPhylo"}.}
   \item{\dots}{further arguments passed to or from other methods.}
   \item{internal.only}{a logical indicating whether to return the number
     of internal nodes only (the default), or of internal and terminal

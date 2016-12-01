@@ -44,8 +44,9 @@
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{DNAbin}}, \code{\link{del.gaps}}, \code{\link{alex}},
-  \code{\link{alview}}, \code{\link{clustal}},
-  \code{\link[graphics]{grid}}, \code{\link{image.AAbin}}
+  \code{\link{alview}}, \code{\link{all.equal.DNAbin}},
+  \code{\link{clustal}}, \code{\link[graphics]{grid}},
+  \code{\link{image.AAbin}}
 }
 \examples{
 data(woodmouse)

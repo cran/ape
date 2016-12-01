@@ -20,7 +20,7 @@ SDM <- function(...)
     ROWNAMES <- lapply(st[ONEtoK], rownames)
 
     ## the number of rows of each matrix:
-    NROWS <- sapply(ROWNAMES, length)
+    NROWS <- lengths(ROWNAMES)
     tot <- sum(NROWS)
 
     labels <- unique(unlist(ROWNAMES))

@@ -12,7 +12,7 @@
 
 yule <- function(phy, use.root.edge = FALSE)
 {
-    if (!is.binary.tree(phy))
+    if (!is.binary.phylo(phy))
         stop("tree must be dichotomous to fit the Yule model.")
 
     X <- sum(phy$edge.length)

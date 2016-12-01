@@ -11,7 +11,7 @@ MPR <- function(x, phy, outgroup)
 {
     if (is.rooted(phy))
         stop("the tree must be unrooted")
-    if (!is.binary.tree(phy))
+    if (!is.binary.phylo(phy))
         stop("the tree must be fully dichotomous")
     if (length(outgroup) > 1L)
         stop("outgroup must be a single tip")

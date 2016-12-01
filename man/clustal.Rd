@@ -6,7 +6,10 @@
 \title{Multiple Sequence Alignment with External Applications}
 \description{
   These functions call their respective program from \R to align a set of
-  nucleotide sequences of class \code{"DNAbin"}.
+  nucleotide sequences of class \code{"DNAbin"}. The application(s) must
+  be installed seperately and it is highly recommended to do this so
+  that the executables are in a directory located on the PATH of the
+  system.
 }
 \usage{
 clustal(x, pw.gapopen = 10, pw.gapext = 0.1,
@@ -33,21 +36,33 @@ tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE,
     aligned sequences in the same order than in \code{x}.}
 }
 \details{
+  It is highly recommended to install the executables properly so that
+  they are in a directory located on the PATH (i.e., accessible from any
+  other directory). Alternatively, the full path to the executable
+  may be given (e.g., \code{exec = "~/muscle/muscle"}), or a (symbolic)
+  link may be copied in the working directory. For Debian and its
+  derivatives (e.g., Ubuntu), it is recommended to use the binaries
+  distributed by Debian.
+
   \code{clustal} tries to guess the name of the executable program
   depending on the operating system. Specifically, the followings are
   used: ``clustalw'' under Linux, ``clustalw2'' under MacOS, or
   ``clustalw2.exe'' under Windows.
 
-  For \code{clustalomega}, ``clustalo'' is the default on all systems
-  (with no specific path) since it seems there is no Windows installer.
+  For \code{clustalomega}, ``clustalo[.exe]'' is the default on all
+  systems (with no specific path) since it seems there is no Windows
+  installer.
 
-  The calculations are done in a temporary directory which is deleted
+  The computations are done in a temporary directory which is deleted
   when \R is quit. So it is possible to find the files created by the
   last call in the directory printed by \code{tempdir()}.
 
   When called without arguments (i.e., \code{clustal()}, \dots), the
   function prints the options of the program which may be passed to
   \code{MoreArgs}.
+}
+\note{
+  \code{clustalomega} is actually for AA sequences only.
 }
 \value{
   an object of class \code{"DNAbin"} with the aligned sequences.
@@ -67,7 +82,7 @@ tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE,
   Notredame, C., Higgins, D. and Heringa, J. (2000) T-Coffee: A novel
   method for multiple sequence alignments. \emph{Journal of Molecular
   Biology}, \bold{302}, 205--217.
-  \url{http://www.tcoffee.org/Documentation/t_coffee/t_coffee_technical.htm}
+  \url{http://www.tcoffee.org/}
 
   Sievers, F., Wilm, A., Dineen, D., Gibson, T. J., Karplus, K., Li, W.,
   Lopez, R., McWilliam, H., Remmert, M., S\"oding, J., Thompson,
@@ -78,10 +93,8 @@ tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE,
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{image.DNAbin}}, \code{\link{del.gaps}},
-  \code{\link{alex}}, \code{\link{alview}}, \code{\link{checkAlignment}}
-
-  The package \pkg{ips} which has similar functions for MAFFT and
-  Prank.
+  \code{\link{all.equal.DNAbin}}, \code{\link{alex}},
+  \code{\link{alview}}, \code{\link{checkAlignment}}
 }
 \examples{
 \dontrun{

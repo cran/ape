@@ -1,26 +1,36 @@
-## root.R (2016-04-05)
+## root.R (2016-11-16)
 
-##   Root of Phylogenetic Trees
+##   Roots Phylogenetic Trees
 
 ## Copyright 2004-2016 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-is.rooted <- function(phy)
+is.rooted <- function(phy) UseMethod("is.rooted")
+
+.is.rooted_ape <- function(phy, ntips)
 {
-    if (!inherits(phy, "phylo"))
-        stop('object "phy" is not of class "phylo"')
-    if (!is.null(phy$root.edge)) TRUE
-    else
-        if (tabulate(phy$edge[, 1])[length(phy$tip.label) + 1] > 2)
-            FALSE else TRUE
+    if (!is.null(phy$root.edge)) return(TRUE)
+    if (tabulate(phy$edge[, 1])[ntips + 1] > 2) FALSE else TRUE
 }
 
-unroot <- function(phy)
+is.rooted.phylo <- function (phy)
+    .is.rooted_ape(phy, length(phy$tip.label))
+
+is.rooted.multiPhylo <- function(phy)
 {
-    if (!inherits(phy, "phylo"))
-        stop('object "phy" is not of class "phylo"')
+    phy <- unclass(phy)
+    labs <- attr(phy, "TipLabel")
+    if (is.null(labs)) sapply(phy, is.rooted.phylo)
+    else sapply(phy, .is.rooted_ape, ntips = length(labs))
+}
+
+unroot <- function(phy) UseMethod("unroot")
+
+.unroot_ape <- function(phy, n)
+{
+    ## n: number of tips of phy
     N <- dim(phy$edge)[1]
     if (N < 3)
         stop("cannot unroot a tree with less than three edges.")
@@ -28,13 +38,12 @@ unroot <- function(phy)
     ## delete FIRST the root.edge (in case this is sufficient to
     ## unroot the tree, i.e. there is a multichotomy at the root)
     if (!is.null(phy$root.edge)) phy$root.edge <- NULL
-    if (!is.rooted(phy)) return(phy)
+    if (!.is.rooted_ape(phy, n)) return(phy)
 
-    n <- length(phy$tip.label)
     ROOT <- n + 1L
 
-### EDGEROOT[1]: the edge to delete
-### EDGEROOT[2]: the target where to stick the edge to delete
+### EDGEROOT[1]: the edge to be deleted
+### EDGEROOT[2]: the target where to stick the edge to be deleted
 
 ### If the tree is in pruningwise (or postorder) order, then
 ### the last two edges are those connected to the root; the node
@@ -44,6 +53,9 @@ unroot <- function(phy)
     if (!is.null(ophy) && ophy != "cladewise") {
         NEWROOT <- phy$edge[N - 2L, 1L]
         EDGEROOT <- c(N, N - 1L)
+        ## make sure EDGEROOT is ordered as described above:
+        if (phy$edge[EDGEROOT[1L], 2L] != NEWROOT)
+            EDGEROOT <- EDGEROOT[2:1]
     } else {
 
 ### ... otherwise, we remove one of the edges coming from
@@ -55,12 +67,12 @@ unroot <- function(phy)
 ### origin of the tree).
 
         EDGEROOT <- which(phy$edge[, 1L] == ROOT)
-        NEWROOT <- ROOT + 1L
+#####        NEWROOT <- ROOT + 1L
+        ## make sure EDGEROOT is ordered as described above:
+        if (phy$edge[EDGEROOT[1L], 2L] <= n)
+            EDGEROOT <- EDGEROOT[2:1]
+        NEWROOT <- phy$edge[EDGEROOT[1L], 2L]
     }
-
-    ## make sure EDGEROOT is ordered as described above:
-    if (phy$edge[EDGEROOT[1L], 2L] != NEWROOT)
-        EDGEROOT <- EDGEROOT[2:1]
 
     phy$edge <- phy$edge[-EDGEROOT[1L], ]
 
@@ -91,8 +103,27 @@ unroot <- function(phy)
     phy
 }
 
-root <- function(phy, outgroup, node = NULL,
-                 resolve.root = FALSE, interactive = FALSE)
+unroot.phylo <- function(phy)
+    .unroot_ape(phy, length(phy$tip.label))
+
+unroot.multiPhylo <- function(phy)
+{
+    oc <- oldClass(phy)
+    class(phy) <- NULL
+    labs <- attr(phy, "TipLabel")
+    if (is.null(labs)) phy <- lapply(phy, unroot.phylo)
+    else {
+        phy <- lapply(phy, .unroot_ape, n = length(labs))
+        attr(phy, "TipLabel") <- labs
+    }
+    class(phy) <- oc
+    phy
+}
+
+root <- function(phy, ...) UseMethod("root")
+
+root.phylo <- function(phy, outgroup, node = NULL, resolve.root = FALSE,
+                       interactive = FALSE, edgelabel = FALSE, ...)
 {
     if (!inherits(phy, "phylo"))
         stop('object not of class "phylo"')
@@ -201,7 +232,7 @@ root <- function(phy, outgroup, node = NULL,
         if (!fuseRoot) INV[i] <- TRUE
 
         ## bind the other clades...
-#        for (j in 1:Nclade) { # fix by EP (2016-01-04)
+
         if (fuseRoot) { # do we have to fuse the two basal edges?
             k <- which(e1 == ROOT)
             k <- if (k[2] > w) k[2] else k[1]
@@ -209,11 +240,17 @@ root <- function(phy, outgroup, node = NULL,
             if (wbl)
                 phy$edge.length[k] <- phy$edge.length[k] + phy$edge.length[i]
         }
-#        }
 
         if (fuseRoot) phy$Nnode <- oldNnode - 1L
 
+        ## added after discussion with Jaime Huerta Cepas (2016-07-30):
+        if (edgelabel) {
+            phy$node.label[e1[INV] - n] <- phy$node.label[e2[INV] - n]
+            phy$node.label[newroot - n] <- ""
+        }
+
         phy$edge[INV, ] <- phy$edge[INV, 2:1]
+
         if (fuseRoot) {
             phy$edge <- phy$edge[-i, ]
             if (wbl) phy$edge.length <- phy$edge.length[-i]
@@ -267,4 +304,20 @@ root <- function(phy, outgroup, node = NULL,
     }
     attr(phy, "order") <- NULL
     reorder.phylo(phy)
+}
+
+root.multiPhylo <- function(phy, outgroup, ...)
+{
+    oc <- oldClass(phy)
+    class(phy) <- NULL
+    labs <- attr(phy, "TipLabel")
+    if (!is.null(labs))
+        for (i in seq_along(phy)) phy[[i]]$tip.label <- labs
+    phy <- lapply(phy, root.phylo, outgroup = outgroup, ...)
+    if (!is.null(labs)) {
+        for (i in seq_along(phy)) phy[[i]]$tip.label <- NULL
+        attr(phy, "TipLabel") <- labs
+    }
+    class(phy) <- oc
+    phy
 }

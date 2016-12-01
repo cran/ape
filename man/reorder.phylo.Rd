@@ -1,5 +1,6 @@
 \name{reorder.phylo}
 \alias{reorder.phylo}
+\alias{reorder.multiPhylo}
 \title{Internal Reordering of Trees}
 \description{
   This function changes the internal structure of a phylogeny stored as
@@ -8,9 +9,10 @@
 }
 \usage{
 \method{reorder}{phylo}(x, order = "cladewise", index.only = FALSE, ...)
+\method{reorder}{multiPhylo}(x, order = "cladewise", ...)
 }
 \arguments{
-  \item{x}{an object of class \code{"phylo"}.}
+  \item{x}{an object of class \code{"phylo"} or \code{"multiPhylo"}.}
   \item{order}{a character string: either \code{"cladewise"} (the
     default), \code{"postorder"}, \code{"pruningwise"}, or any
     unambiguous abbreviation of these.}
@@ -39,7 +41,9 @@
 }
 \value{
   an object of class \code{"phylo"} (with the attribute \code{"order"}
-  set accordingly), or a numeric vector if \code{index.only = TRUE}.
+  set accordingly), or a numeric vector if \code{index.only = TRUE}; if
+  \code{x} is of class \code{"multiPhylo"}, then an object of the same
+  class.
 }
 \references{
   Valiente, G. (2002) \emph{Algorithms on Trees and Graphs.} New York:

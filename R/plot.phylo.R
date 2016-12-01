@@ -1,4 +1,4 @@
-## plot.phylo.R (2016-02-09)
+## plot.phylo.R (2016-07-01)
 
 ##   Plot Phylogenies
 
@@ -51,7 +51,17 @@ plot.phylo <-
                               "unrooted", "radial"))
     direction <- match.arg(direction, c("rightwards", "leftwards",
                                         "upwards", "downwards"))
-    if (is.null(x$edge.length)) use.edge.length <- FALSE
+    if (is.null(x$edge.length)) {
+        use.edge.length <- FALSE
+    } else {
+        if (use.edge.length && type != "radial") {
+            tmp <- sum(is.na(x$edge.length))
+            if (tmp) {
+                warning(paste(tmp, "branch length(s) NA(s): branch lengths ignored in the plot"))
+                use.edge.length <- FALSE
+            }
+        }
+    }
 
     if (is.numeric(align.tip.label)) {
         align.tip.label.lty <- align.tip.label
@@ -399,6 +409,13 @@ if (plot) {
                     if (type == "unrooted") "horizontal" else "axial"
                 } else match.arg(lab4ut, c("horizontal", "axial"))
 
+            xx.tips <- xx[1:Ntip]
+            yy.tips <- yy[1:Ntip]
+            if (label.offset) {
+                xx.tips <- xx.tips + label.offset * cos(angle)
+                yy.tips <- yy.tips + label.offset * sin(angle)
+            }
+
             if (lab4ut == "horizontal") {
                 y.adj <- x.adj <- numeric(Ntip)
                 sel <- abs(angle) > 0.75 * pi
@@ -409,12 +426,10 @@ if (plot) {
                 y.adj[sel] <- strheight(x$tip.label)[sel] / 2
                 sel <- angle < -pi / 4 & angle > -0.75 * pi
                 y.adj[sel] <- -strheight(x$tip.label)[sel] * 0.75
-                text(xx[1:Ntip] + x.adj * cex, yy[1:Ntip] + y.adj * cex,
+                text(xx.tips + x.adj * cex, yy.tips + y.adj * cex,
                      x$tip.label, adj = c(adj, 0), font = font,
                      srt = srt, cex = cex, col = tip.color)
             } else { # if lab4ut == "axial"
-                xx.tips <- xx[1:Ntip]
-                yy.tips <- yy[1:Ntip]
                 if (align.tip.label) {
                     POL <- rect2polar(xx.tips, yy.tips)
                     POL$r[] <- max(POL$r)
@@ -422,10 +437,6 @@ if (plot) {
                     xx.tips <- REC$x
                     yy.tips <- REC$y
                     segments(xx[1:Ntip], yy[1:Ntip], xx.tips, yy.tips, lty = align.tip.label.lty)
-                }
-                if (label.offset) {
-                    xx.tips <- xx.tips + label.offset * cos(angle)
-                    yy.tips <- yy.tips + label.offset * sin(angle)
                 }
                 if (type == "unrooted") {
                     adj <- abs(angle) > pi/2

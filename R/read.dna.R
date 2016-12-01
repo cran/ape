@@ -1,8 +1,8 @@
-## read.dna.R (2014-05-29)
+## read.dna.R (2016-06-21)
 
 ##   Read DNA Sequences in a File
 
-## Copyright 2003-2014 Emmanuel Paradis
+## Copyright 2003-2016 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -14,10 +14,14 @@ read.FASTA <- function(file)
         file <- tempfile()
         download.file(url, file)
     }
-    sz <- file.info(file)$size
+    sz <- file.size(file)
     x <- readBin(file, "raw", sz)
-    icr <- which(x == as.raw(0x0d)) # CR
-    if (length(icr)) x <- x[-icr]
+    ## if the file is larger than 2 Gb we assume that it is UNIX-encoded
+    ## and skip the search-replacement of carriage returns
+    if (sz < 1e9) {
+        icr <- which(x == as.raw(0x0d)) # CR
+        if (length(icr)) x <- x[-icr]
+    }
     res <- .Call(rawStreamToDNAbin, x)
     names(res) <- sub("^ +", "", names(res)) # to permit phylosim
     class(res) <- "DNAbin"
@@ -114,7 +118,7 @@ read.dna <- function(file, format = "interleaved", skip = 0,
         rownames(obj) <- taxa
         if (!as.character) obj <- as.DNAbin(obj)
     } else {
-        LENGTHS <- unique(unlist(lapply(obj, length)))
+        LENGTHS <- unique(lengths(obj, use.names = FALSE))
         allSameLength <- length(LENGTHS) == 1
         if (is.logical(as.matrix)) {
             if (as.matrix && !allSameLength)

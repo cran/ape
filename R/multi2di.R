@@ -1,19 +1,21 @@
-## multi2di.R (2014-10-17)
+## multi2di.R (2016-10-16)
 
-##   Collapse and Resolve Multichotomies
+##   Collapse or Resolve Multichotomies
 
-## Copyright 2005-2014 Emmanuel Paradis
+## Copyright 2005-2016 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-multi2di <- function(phy, random = TRUE)
+multi2di <- function(phy, ...) UseMethod("multi2di")
+
+.multi2di_ape <- function(phy, random, n)
 {
+    ## n: number of tips of phy
     degree <- tabulate(phy$edge[, 1])
     target <- which(degree > 2)
     if (!length(target)) return(phy)
     nb.edge <- dim(phy$edge)[1]
-    n <- length(phy$tip.label)
     nextnode <- n + phy$Nnode + 1L
     new.edge <- edge2delete <- NULL
     wbl <- FALSE
@@ -89,12 +91,31 @@ multi2di <- function(phy, random = TRUE)
     phy
 }
 
-di2multi <- function(phy, tol = 1e-8)
+multi2di.phylo <- function (phy, random = TRUE, ...)
+    .multi2di_ape(phy, random, length(phy$tip.label))
+
+multi2di.multiPhylo <- function(phy, random = TRUE, ...)
+{
+    labs <- attr(phy, "TipLabel")
+    oc <- oldClass(phy)
+    class(phy) <- NULL
+    if (is.null(labs)) phy <- lapply(phy, multi2di.phylo, random = random)
+    else {
+        phy <- lapply(phy, .multi2di_ape, random = random, n = length(labs))
+        attr(phy, "TipLabel") <- labs
+    }
+    class(phy) <- oc
+    phy
+}
+
+di2multi <- function(phy, ...) UseMethod("di2multi")
+
+.di2multi_ape <- function(phy, tol = 1e-8, ntips)
 {
     if (is.null(phy$edge.length)) stop("the tree has no branch length")
     ## We select only the internal branches which are
     ## significantly small:
-    ind <- which(phy$edge.length < tol & phy$edge[, 2] > length(phy$tip.label))
+    ind <- which(phy$edge.length < tol & phy$edge[, 2] > ntips)
     n <- length(ind)
     if (!n) return(phy)
     ## recursive function to `propagate' node #'s in case
@@ -120,6 +141,23 @@ di2multi <- function(phy, tol = 1e-8)
     for (i in which(sel))
       phy$edge[i] <- phy$edge[i] - sum(node2del < phy$edge[i])
     if (!is.null(phy$node.label))
-        phy$node.label <- phy$node.label[-(node2del - length(phy$tip.label))]
+        phy$node.label <- phy$node.label[-(node2del - ntips)]
+    phy
+}
+
+di2multi.phylo <- function (phy, tol = 1e-08, ...)
+    .di2multi_ape(phy, tol, length(phy$tip.label))
+
+di2multi.multiPhylo <- function(phy, tol = 1e-08, ...)
+{
+    labs <- attr(phy, "TipLabel")
+    oc <- oldClass(phy)
+    class(phy) <- NULL
+    if (is.null(labs)) phy <- lapply(phy, di2multi.phylo, tol = tol)
+    else {
+        phy <- lapply(phy, .di2multi_ape, tol = tol, ntips = length(labs))
+        attr(phy, "TipLabel") <- labs
+    }
+    class(phy) <- oc
     phy
 }

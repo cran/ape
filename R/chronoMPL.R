@@ -9,7 +9,7 @@
 
 chronoMPL <- function(phy, se = TRUE, test = TRUE)
 {
-    if (!is.binary.tree(phy)) stop("the tree is not dichotomous.")
+    if (!is.binary.phylo(phy)) stop("the tree is not dichotomous.")
     n <- length(phy$tip.label)
     m <- phy$Nnode
     N <- dim(phy$edge)[1]

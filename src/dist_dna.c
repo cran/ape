@@ -1,4 +1,4 @@
-/* dist_dna.c       2016-02-18 */
+/* dist_dna.c       2016-11-28 */
 
 /* Copyright 2005-2016 Emmanuel Paradis */
 
@@ -1039,45 +1039,65 @@ void distDNA_ParaLin_pairdel(unsigned char *x, int *n, int *s, double *d,
 }
 
 /* a hash table is much faster than switch (2012-01-10) */
-void BaseProportion(unsigned char *x, int *n, double *BF)
+SEXP BaseProportion(SEXP x)
 {
-	int i;
-	double count[256];
+    long i;
+    unsigned char *p;
+    double n, count[256], *BF;
+    SEXP res;
 
-	memset(count, 0, 256*sizeof(double));
+    PROTECT(x = coerceVector(x, RAWSXP));
+    memset(count, 0, 256*sizeof(double));
+    n = XLENGTH(x);
+    p = RAW(x);
 
-	for (i = 0; i < *n; i++) count[x[i]]++;
+    for (i = 0; i < n; i++) count[p[i]]++;
 
-	BF[0] = count[136];
-	BF[1] = count[40];
-	BF[2] = count[72];
-	BF[3] = count[24];
-	BF[4] = count[192];
-	BF[5] = count[160];
-	BF[6] = count[144];
-	BF[7] = count[96];
-	BF[8] = count[80];
-	BF[9] = count[48];
-	BF[10] = count[224];
-	BF[11] = count[176];
-	BF[12] = count[208];
-	BF[13] = count[112];
-	BF[14] = count[240];
-	BF[15] = count[4];
-	BF[16] = count[2];
+    PROTECT(res = allocVector(REALSXP, 17));
+    BF = REAL(res);
+    BF[0] = count[136];
+    BF[1] = count[40];
+    BF[2] = count[72];
+    BF[3] = count[24];
+    BF[4] = count[192];
+    BF[5] = count[160];
+    BF[6] = count[144];
+    BF[7] = count[96];
+    BF[8] = count[80];
+    BF[9] = count[48];
+    BF[10] = count[224];
+    BF[11] = count[176];
+    BF[12] = count[208];
+    BF[13] = count[112];
+    BF[14] = count[240];
+    BF[15] = count[4];
+    BF[16] = count[2];
+    UNPROTECT(2);
+    return res;
 }
 
 #define SEGCOL seg[j] = 1; done = 1; break
 
-void SegSites(unsigned char *x, int *n, int *s, int *seg)
+SEXP SegSites(SEXP DNASEQ)
 {
-    int i, j, done, end;
-    unsigned char base;
+    int n, s, j, done, *seg;
+    long i, end;
+    unsigned char base, *x;
+    SEXP ans;
 
-    for (j = 0; j < *s; j++) {
+    PROTECT(DNASEQ = coerceVector(DNASEQ, RAWSXP));
+    x = RAW(DNASEQ);
+    n = nrows(DNASEQ);
+    s = ncols(DNASEQ);
 
-        i = *n * j; /* start */
-	end = i + *n - 1;
+    PROTECT(ans = allocVector(INTSXP, s));
+    seg = INTEGER(ans);
+    memset(seg, 0, s*sizeof(int));
+
+    for (j = 0; j < s; j++) {
+
+        i = (long) n * j; /* start */
+	end = (long) i + n - 1;
 
         base = x[i];
 	done = 0;
@@ -1124,6 +1144,9 @@ void SegSites(unsigned char *x, int *n, int *s, int *seg)
 	    i++;
 	}
     }
+
+    UNPROTECT(2);
+    return ans;
 }
 
 void GlobalDeletionDNA(unsigned char *x, int *n, int *s, int *keep)
@@ -1181,25 +1204,44 @@ void dist_dna(unsigned char *x, int *n, int *s, int *model, double *d,
     }
 }
 
-void C_where(unsigned char *x, unsigned char *pat, int *s, int *p,
-	   int *ans, int *n)
+SEXP C_where(SEXP DNASEQ, SEXP PAT)
 {
-	int i, j, k, ln;
+	int p, j, nans;
+	double s, *buf, *a;
+	long i, k;
+	unsigned char *x, *pat;
+	SEXP ans;
 
-	ln = 0; /* local n */
+	PROTECT(DNASEQ = coerceVector(DNASEQ, RAWSXP));
+	PROTECT(PAT = coerceVector(PAT, RAWSXP));
+	x = RAW(DNASEQ);
+	pat = RAW(PAT);
+	s = XLENGTH(DNASEQ);
+	p = LENGTH(PAT);
+	nans = 0;
 
-	for (i = 0; i <= *s - *p; i++) {
+	buf = (double *)R_alloc(s, sizeof(double));
+
+	for (i = 0; i <= s - p; i++) {
 		k = i; j = 0;
 		while (1) {
 			if (x[k] != pat[j]) break;
 			j++; k++;
-			if (j == *p) {
-				ans[ln++] = k - 1;
+			if (j == p) {
+				buf[nans++] = i + 1;
 				break;
 			}
 		}
 	}
-	*n = ln;
+
+	PROTECT(ans = allocVector(REALSXP, nans));
+	if (nans) {
+	    a = REAL(ans);
+	    for (i = 0; i < nans; i++) a[i] = buf[i];
+	}
+
+	UNPROTECT(3);
+	return ans;
 }
 
 unsigned char codon2aa_Code1(unsigned char x, unsigned char y, unsigned char z)

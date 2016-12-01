@@ -1,24 +1,14 @@
 \name{root}
 \alias{root}
+\alias{root.phylo}
+\alias{root.multiPhylo}
 \alias{unroot}
+\alias{unroot.phylo}
+\alias{unroot.multiPhylo}
 \alias{is.rooted}
+\alias{is.rooted.phylo}
+\alias{is.rooted.multiPhylo}
 \title{Roots Phylogenetic Trees}
-\usage{
-root(phy, outgroup, node = NULL, resolve.root = FALSE, interactive = FALSE)
-unroot(phy)
-is.rooted(phy)
-}
-\arguments{
-  \item{phy}{an object of class \code{"phylo"}.}
-  \item{outgroup}{a vector of mode numeric or character specifying the
-    new outgroup.}
-  \item{node}{alternatively, a node number where to root the tree (this
-    should give the MRCA of the ingroup).}
-  \item{resolve.root}{a logical specifying whether to resolve the new
-    root as a bifurcating node.}
-  \item{interactive}{if \code{TRUE} the user is asked to select the node
-    by clicking on the tree which must be plotted.}
-}
 \description{
   \code{root} reroots a phylogenetic tree with respect to the specified
   outgroup or at the node specified in \code{node}.
@@ -27,6 +17,36 @@ is.rooted(phy)
   it is already unrooted.
 
   \code{is.rooted} tests whether a tree is rooted.
+}
+\usage{
+root(phy, ...)
+\method{root}{phylo}(phy, outgroup, node = NULL, resolve.root = FALSE,
+     interactive = FALSE, edgelabel = FALSE, ...)
+\method{root}{multiPhylo}(phy, outgroup, ...)
+
+unroot(phy)
+\method{unroot}{phylo}(phy)
+\method{unroot}{multiPhylo}(phy)
+
+is.rooted(phy)
+\method{is.rooted}{phylo}(phy)
+\method{is.rooted}{multiPhylo}(phy)
+}
+\arguments{
+  \item{phy}{an object of class \code{"phylo"} or \code{"multiPhylo"}.}
+  \item{outgroup}{a vector of mode numeric or character specifying the
+    new outgroup.}
+  \item{node}{alternatively, a node number where to root the tree.}
+  \item{resolve.root}{a logical specifying whether to resolve the new
+    root as a bifurcating node.}
+  \item{interactive}{if \code{TRUE} the user is asked to select the node
+    by clicking on the tree which must be plotted.}
+  \item{edgelabel}{a logical value specifying whether to treat node
+    labels as edge labels and thus eventually switching them so that
+    they are associated with the correct edges when using
+    \code{\link{drawSupportOnEdges}} (see Czech et al. 2016).}
+  \item{\dots}{arguments passed among methods (e.g., when rooting lists
+    of trees).}
 }
 \details{
   The argument \code{outgroup} can be either character or numeric. In
@@ -55,7 +75,7 @@ is.rooted(phy)
   The use of \code{resolve.root = TRUE} together with \code{node = }
   gives an error if the specified node is the current root of the
   tree. This is because there is an ambiguity when resolving a node in
-  an unrooted tree if no explicit outgroup. If the node is not the
+  an unrooted tree with no explicit outgroup. If the node is not the
   current root, the ambiguity is solved arbitrarily by considering the
   clade on the right of \code{node} (when the tree is plotted by
   default) as the ingroup. See a detailed explanation there:
@@ -63,8 +83,13 @@ is.rooted(phy)
   \url{http://www.mail-archive.com/r-sig-phylo@r-project.org/msg03805.html}.
 }
 \value{
-  an object of class \code{"phylo"} for \code{root} and \code{unroot}; a
-  single logical value for \code{is.rooted}.
+  an object of class \code{"phylo"} or \code{"multiPhylo"} for
+  \code{root} and \code{unroot}; a logical vector for \code{is.rooted}.
+}
+\references{
+  Czech, L., Huerta-Cepas, J. and Stamatakis, A. (2016) A critical
+  review on the use of support values in tree viewers and bioinformatics
+  toolkits. \url{http://dx.doi.org/10.1101/035360}
 }
 \author{Emmanuel Paradis}
 \seealso{
@@ -77,8 +102,8 @@ plot(root(bird.orders, 1))
 plot(root(bird.orders, 1:5))
 
 tr <- root(bird.orders, 1)
-is.rooted(bird.orders) # yes!
-is.rooted(tr)          # no!
+is.rooted(bird.orders) # yes
+is.rooted(tr)          # no
 ### This is because the tree has been unrooted first before rerooting.
 ### You can delete the outgroup...
 is.rooted(drop.tip(tr, "Struthioniformes"))
@@ -88,5 +113,8 @@ is.rooted(root(bird.orders, 1, r = TRUE))
 ### To keep the basal trichotomy but forcing the tree as rooted:
 tr$root.edge <- 0
 is.rooted(tr)
+
+x <- setNames(rmtree(10, 10), LETTERS[1:10])
+is.rooted(x)
 }
 \keyword{manip}

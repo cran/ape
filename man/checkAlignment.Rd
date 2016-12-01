@@ -34,7 +34,7 @@ checkAlignment(x, check.gaps = TRUE, plot = TRUE, what = 1:4)
 \value{NULL}
 \author{Emmanuel Paradis}
 \seealso{
-\code{\link{alview}}, \code{\link{image.DNAbin}}
+\code{\link{alview}}, \code{\link{image.DNAbin}}, \code{\link{all.equal.DNAbin}}
 }
 \examples{
 data(woodmouse)

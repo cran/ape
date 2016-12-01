@@ -1,8 +1,8 @@
-## SlowinskiGuyer.R (2011-05-05)
+## SlowinskiGuyer.R (2016-10-23)
 
 ##   Tests of Diversification Shifts with Sister-Clades
 
-## Copyright 2011 Emmanuel Paradis
+## Copyright 2011-2016 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -43,22 +43,23 @@ richness.yule.test <- function(x, t)
     tb <- c(t, t)
 
     .PrNt.Yule <- function(N, age, birth) {
-        tmp <- exp(-birth * age)
-        tmp * (1 - tmp)^(N - 1)
+        tmp <- -birth * age
+        tmp + (N - 1) * log(1 - exp(tmp)) # on a log-scale
     }
 
-    minusloglik0 <- function(l)
-        -sum(log(.PrNt.Yule(n, tb, l)))
+    ## the functions to minimize:
+    minusloglik0 <- function(l) -sum(.PrNt.Yule(n, tb, l))
+    minusloglika <- function(l) -sum(.PrNt.Yule(n1, t, l[1])) - sum(.PrNt.Yule(n2, t, l[2]))
 
-    minusloglika <- function(l)
-        -sum(log(.PrNt.Yule(n1, t, l[1]))) - sum(log(.PrNt.Yule(n2, t, l[2])))
+    ## initial values (moment estimators):
+    ipa <- c(mean(log(n1)/t), mean(log(n2)/t))
+    ip0 <- mean(ipa)
 
-    out0 <- nlminb(0.01, minusloglik0, lower = 0, upper = 1)
-    outa <- nlminb(rep(out0$par, 2), minusloglika,
-                   lower = c(0, 0), upper = c(1, 1))
+    out0 <- nlminb(ip0, minusloglik0, lower = 0, upper = 1)
+    outa <- nlminb(ipa, minusloglika, lower = c(0, 0), upper = c(1, 1))
     chi <- 2 * (out0$objective - outa$objective)
     pval <- pchisq(chi, 1, lower.tail = FALSE)
-    data.frame("chisq" = chi, "df" = 1, "P.val" = pval, row.names = "")
+    data.frame(chisq = chi, df = 1, P.val = pval, row.names = "")
 }
 
 diversity.contrast.test <-
