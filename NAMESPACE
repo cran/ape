@@ -23,7 +23,7 @@ importFrom(stats, AIC, as.dist, as.hclust, biplot, coef, complete.cases,
            qbinom, qnorm, qt, quantile, quasibinomial, rbinom, reorder, resid,
            rexp, rgamma, rnorm, runif, sd, setNames, terms, uniroot, var,
            wilcox.test)
-importFrom(utils, download.file, read.table, str)
+importFrom(utils, download.file, edit, read.table, str)
 importFrom(parallel, mclapply)
 
 ## Methods for the classes defined in ape, including for the generics

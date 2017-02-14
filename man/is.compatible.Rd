@@ -22,4 +22,5 @@ arecompatible(x, y, n)
   \code{TRUE} if the splits are compatible, \code{FALSE} otherwise.
 }
 \author{Andrei Popescu \email{niteloserpopescu@gmail.com}}
+\seealso{\code{\link{as.bitsplits}}}
 \keyword{manip}

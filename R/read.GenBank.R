@@ -1,8 +1,8 @@
-## read.GenBank.R (2016-07-27)
+## read.GenBank.R (2017-01-18)
 
 ##   Read DNA Sequences from GenBank via Internet
 
-## Copyright 2002-2016 Emmanuel Paradis
+## Copyright 2002-2017 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -26,8 +26,13 @@ read.GenBank <- function(access.nb, seq.names = access.nb, species.names = TRUE,
         if (b > N) b <- N
     }
     res <- read.FASTA(fl)
+    if (is.null(res)) return(NULL)
     attr(res, "description") <- names(res)
-    names(res) <- access.nb
+    if (length(access.nb) != length(res)) {
+        names(res) <- gsub("\\..*$", "", names(res))
+        failed <- paste(access.nb[! access.nb %in% names(res)], collapse = ", ")
+        warning(paste0("cannot get the following sequences:\n", failed))
+    } else names(res) <- access.nb
 
     if (as.character) res <- as.character(res)
 

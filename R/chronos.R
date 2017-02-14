@@ -1,8 +1,8 @@
-## chronos.R (2014-05-15)
+## chronos.R (2016-12-7)
 
 ##   Molecular Dating With Penalized and Maximum Likelihood
 
-## Copyright 2013-2014 Emmanuel Paradis
+## Copyright 2013-2016 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -79,6 +79,7 @@ chronos <-
     ROOT <- n + 1L
     m <- phy$Nnode
     el <- phy$edge.length
+    if (is.null(el)) stop("the tree has no branch lengths")
     if (any(el < 0)) stop("some branch lengths are negative")
     e1 <- phy$edge[, 1L]
     e2 <- phy$edge[, 2L]
@@ -436,8 +437,6 @@ maybe you need to adjust the calibration dates")
     }
 
     if (!quiet) cat("\nDone.\n")
-
-#    browser()
 
     if (model == "discrete") {
         rate.freq <-

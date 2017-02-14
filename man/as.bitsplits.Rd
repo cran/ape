@@ -52,7 +52,7 @@ as.prop.part(x)
   \code{as.prop.part} returns an object of class \code{"prop.part"}.
 }
 \author{Emmanuel Paradis}
-\seealso{\code{\link{prop.part}}}
+\seealso{\code{\link{prop.part}}, \code{\link{is.compatible}}}
 \examples{
 tr <- rtree(20)
 pp <- prop.part(tr)

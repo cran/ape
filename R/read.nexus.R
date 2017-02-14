@@ -1,8 +1,8 @@
-## read.nexus.R (2014-10-20)
+## read.nexus.R (2017-01-10)
 
 ##   Read Tree File in Nexus Format
 
-## Copyright 2003-2014 Emmanuel Paradis and 2010 Klaus Schliep
+## Copyright 2003-2017 Emmanuel Paradis and 2010 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -102,7 +102,7 @@ clado.build <- function(tp)
     obj
 }
 
-read.nexus <- function(file, tree.names = NULL)
+read.nexus <- function(file, tree.names = NULL, force.multi = FALSE)
 {
     X <- scan(file = file, what = "", sep = "\n", quiet = TRUE)
     ## remove all comments
@@ -227,7 +227,7 @@ read.nexus <- function(file, tree.names = NULL)
             stop(paste("The tree has apparently singleton node(s): cannot read tree file.\n  Reading NEXUS file aborted at tree no.", i, sep = ""))
         }
     }
-    if (Ntree == 1) {
+    if (Ntree == 1 && !force.multi) {
         trees <- trees[[1]]
         if (translation) {
             trees$tip.label <-

@@ -1,6 +1,6 @@
-/* read_dna.c       2016-06-21 */
+/* read_dna.c       2017-01-04 */
 
-/* Copyright 2013-2016 Emmanuel Paradis */
+/* Copyright 2013-2017 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -110,6 +110,13 @@ SEXP rawStreamToDNAbin(SEXP x)
 			if (!n) startOfSeq = i;
 			k = 1;
 		}
+	}
+
+	if (n == 0) {
+	    PROTECT(obj = allocVector(INTSXP, 1));
+	    INTEGER(obj)[0] = 0;
+	    UNPROTECT(2);
+	    return obj;
 	}
 
 	PROTECT(obj = allocVector(VECSXP, n));

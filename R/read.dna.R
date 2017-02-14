@@ -1,28 +1,42 @@
-## read.dna.R (2016-06-21)
+## read.dna.R (2017-02-03)
 
 ##   Read DNA Sequences in a File
 
-## Copyright 2003-2016 Emmanuel Paradis
+## Copyright 2003-2017 Emmanuel Paradis, 2017 RJ Ewing
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 read.FASTA <- function(file)
 {
-    if (length(grep("^(ht|f)tp:", file))) {
+    if (length(grep("^(ht|f)tp(s|):", file))) {
         url <- file
         file <- tempfile()
         download.file(url, file)
     }
-    sz <- file.size(file)
-    x <- readBin(file, "raw", sz)
-    ## if the file is larger than 2 Gb we assume that it is UNIX-encoded
-    ## and skip the search-replacement of carriage returns
+    if (inherits(file, "connection")) {
+        if (!isOpen(file, "rt")) {
+            open(file, "rt")
+            on.exit(close(file))
+        }
+        x <- scan(file, what = character(), sep = "\n", quiet = TRUE)
+        x <- charToRaw(paste(x, collapse = "\n"))
+        sz <- length(x)
+    } else {
+        sz <- file.size(file)
+        x <- readBin(file, "raw", sz)
+    }
+    ## if the file is larger than 1 Gb we assume that it is
+    ## UNIX-encoded and skip the search-replace of carriage returns
     if (sz < 1e9) {
         icr <- which(x == as.raw(0x0d)) # CR
         if (length(icr)) x <- x[-icr]
     }
-    res <- .Call(rawStreamToDNAbin, x)
+    res <- .Call("rawStreamToDNAbin", x)
+    if (identical(res, 0L)) {
+        warning("failed to read sequences, returns NULL")
+        return(NULL)
+    }
     names(res) <- sub("^ +", "", names(res)) # to permit phylosim
     class(res) <- "DNAbin"
     res
@@ -138,4 +152,23 @@ read.dna <- function(file, format = "interleaved", skip = 0,
         if (as.character) obj <- as.character(obj)
     }
     obj
+}
+
+read.fastq <- function(file, offset = -33)
+{
+    Z <- scan(file, "", sep="\n", quiet = TRUE)
+    tmp <- Z[c(TRUE, TRUE, FALSE, FALSE)]
+    sel <- c(TRUE, FALSE)
+    tmp[sel] <- gsub("^@", ">", tmp[sel])
+    fl <- tempfile()
+    cat(tmp, file = fl, sep = "\n")
+    DNA <- read.FASTA(fl)
+
+    ## get the qualities:
+    tmp <- Z[c(FALSE, FALSE, FALSE, TRUE)]
+    QUAL <- lapply(tmp, function(x) as.integer(charToRaw(x)))
+    if (offset) QUAL <- lapply(QUAL, "+", offset)
+    names(QUAL) <- names(DNA)
+    attr(DNA, "QUAL") <- QUAL
+    DNA
 }

@@ -1,8 +1,8 @@
-## DNA.R (2016-11-26)
+## DNA.R (2017-01-12)
 
 ##   Manipulations and Comparisons of DNA and AA Sequences
 
-## Copyright 2002-2016 Emmanuel Paradis, 2015 Klaus Schliep
+## Copyright 2002-2017 Emmanuel Paradis, 2015 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -213,15 +213,13 @@ print.DNAbin <- function(x, printlen = 6, digits = 3, ...)
         if (n == 1) {
             cat("1 DNA sequence in binary format stored in a list.\n\n")
             nTot <- length(x[[1]])
-            cat("Sequence length:", nTot, "\n\n")
-            cat("Label:", nms, "\n\n")
+            cat("Sequence length:", nTot, "\n")
         } else {
             cat(n, "DNA sequences in binary format stored in a list.\n\n")
             tmp <- lengths(x, use.names = FALSE)
             nTot <- sum(as.numeric(tmp))
-            mini <- range(tmp)
-            maxi <- mini[2]
-            mini <- mini[1]
+            mini <- min(tmp)
+            maxi <- max(tmp)
             if (mini == maxi)
                 cat("All sequences of same length:", maxi, "\n")
             else {
@@ -229,35 +227,40 @@ print.DNAbin <- function(x, printlen = 6, digits = 3, ...)
                 cat("   Shortest sequence:", mini, "\n")
                 cat("    Longest sequence:", maxi, "\n")
             }
-            TAIL <- "\n\n"
-            if (printlen < n) {
-                nms <- nms[1:printlen]
-                TAIL <- "...\n\n"
-            }
-            cat("\nLabels:", paste(nms, collapse = " "), TAIL)
         }
     } else {
         nTot <- length(x)
         if (is.matrix(x)) {
             nd <- dim(x)
+            n <- nd[1]
             nms <- rownames(x)
-            cat(nd[1], "DNA sequences in binary format stored in a matrix.\n\n")
-            cat("All sequences of same length:", nd[2], "\n")
-            TAIL <- "\n\n"
-            if (printlen < nd[1]) {
-                nms <- nms[1:printlen]
-                TAIL <- "...\n\n"
+            if (n == 1) {
+                cat("1 DNA sequence in binary format stored in a matrix.\n\n")
+                cat("Sequence length:", nd[2], "\n")
+            } else {
+                cat(n, "DNA sequences in binary format stored in a matrix.\n\n")
+                cat("All sequences of same length:", nd[2], "\n")
             }
-            cat("\nLabels:", paste(nms, collapse = " "), TAIL)
         } else {
             cat("1 DNA sequence in binary format stored in a vector.\n\n")
             cat("Sequence length:", nTot, "\n\n")
         }
     }
-    if (nTot <= 1e6) {
+    if (exists("nms")) {
+        HEAD <- if (n == 1) "\nLabel:" else "\nLabels:"
+        TAIL <- ""
+        if (printlen < n) {
+            nms <- nms[1:printlen]
+            TAIL <- "...\n"
+        }
+        if (any(longs <- nchar(nms) > 60))
+            nms[longs] <- paste0(substr(nms[longs], 1, 60), "...")
+        cat(HEAD, nms, TAIL, sep = "\n")
+    }
+    if (nTot <= 1e7) {
         cat("Base composition:\n")
         print(round(base.freq(x), digits))
-    } else cat("More than 1 million nucleotides: not printing base composition\n")
+    } else cat("More than 10 million nucleotides: not printing base composition\n")
 }
 
 as.DNAbin <- function(x, ...) UseMethod("as.DNAbin")

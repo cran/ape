@@ -1,19 +1,19 @@
-## drop.tip.R (2015-07-28)
+## drop.tip.R (2017-02-14)
 
 ##   Remove Tips in a Phylogenetic Tree
 
-## Copyright 2003-2015 Emmanuel Paradis
+## Copyright 2003-2017 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 extract.clade <- function(phy, node, root.edge = 0, interactive = FALSE)
 {
-    Ntip <- length(phy$tip.label)
-    ROOT <- Ntip + 1
-    Nedge <- dim(phy$edge)[1]
-    wbl <- !is.null(phy$edge.length)
-    if (interactive) node <- identify(phy)$nodes else {
+    n <- length(phy$tip.label)
+    if (interactive) {
+        cat("Click close to the node...\n")
+        node <- identify(phy)$nodes
+    } else {
         if (length(node) > 1) {
             node <- node[1]
             warning("only the first value of 'node' has been considered")
@@ -21,60 +21,15 @@ extract.clade <- function(phy, node, root.edge = 0, interactive = FALSE)
         if (is.character(node)) {
             if (is.null(phy$node.label))
                 stop("the tree has no node labels")
-            node <- which(phy$node.label %in% node) + Ntip
+            node <- match(node, phy$node.label) + n
+            if (is.na(node)) stop("'node' not among the node labels.")
         }
-        if (node <= Ntip)
+        if (node <= n)
             stop("node number must be greater than the number of tips")
     }
-    if (node == ROOT) return(phy)
-    phy <- reorder(phy) # insure it is in cladewise order
-    root.node <- which(phy$edge[, 2] == node)
-    start <- root.node + 1 # start of the clade looked for
-    anc <- phy$edge[root.node, 1] # the ancestor of 'node'
-    next.anc <- which(phy$edge[-(1:start), 1] <= anc) # find the next occurence of 'anc' or an 'older' node
-
-    keep <- if (length(next.anc)) start + 0:(next.anc[1] - 1) else start:Nedge
-
-    if (root.edge) {
-        NewRootEdge <- phy$edge.length[root.node]
-        root.edge <- root.edge - 1
-        while (root.edge) {
-            if (anc == ROOT) break
-            i <- which(phy$edge[, 2] ==  anc)
-            NewRootEdge <- NewRootEdge + phy$edge.length[i]
-            root.edge <- root.edge - 1
-            anc <- phy$edge[i, 1]
-        }
-        if (root.edge && !is.null(phy$root.edge))
-            NewRootEdge <- NewRootEdge + phy$root.edge
-        phy$root.edge <- NewRootEdge
-    }
-
-    phy$edge <- phy$edge[keep, ]
-    if (wbl) phy$edge.length <- phy$edge.length[keep]
-    TIPS <- phy$edge[, 2] <= Ntip
-    tip <- phy$edge[TIPS, 2]
-    ## Fix by Ludovic Mallet and Mahendra Mariadassou (2011-11-21):
-    name <- vector("character", length(tip))
-    name[order(tip)] <- phy$tip.label[tip]
-    phy$tip.label <- name
-    ## End of fix
-    ## keep the ordering so no need to reorder tip.label:
-    phy$edge[TIPS, 2] <- order(tip)
-    if (!is.null(phy$node.label))
-        phy$node.label <- phy$node.label[sort(unique(phy$edge[, 1])) - Ntip]
-    Ntip <- length(phy$tip.label)
-    phy$Nnode <- dim(phy$edge)[1] - Ntip + 1L
-    ## The block below renumbers the nodes so that they conform
-    ## to the "phylo" format -- same as in root()
-    newNb <- integer(Ntip + phy$Nnode)
-    newNb[node] <- Ntip + 1L
-    sndcol <- phy$edge[, 2] > Ntip
-    ## executed from right to left, so newNb is modified before phy$edge:
-    phy$edge[sndcol, 2] <- newNb[phy$edge[sndcol, 2]] <-
-        (Ntip + 2):(Ntip + phy$Nnode)
-    phy$edge[, 1] <- newNb[phy$edge[, 1]]
-    phy
+    if (node == n + 1L) return(phy)
+    keep <- prop.part(phy)[[node - n]]
+    drop.tip(phy, (1:n)[-keep], root.edge = root.edge, rooted = TRUE)
 }
 
 drop.tip <-
@@ -115,6 +70,18 @@ drop.tip <-
     }
 
     wbl <- !is.null(phy$edge.length)
+
+    if (length(tip) == Ntip - 1 && trim.internal) {
+        i <- which(phy$edge[, 2] == (1:Ntip)[-tip])
+        res <- list(edge = matrix(2:1, 1, 2),
+                    tip.label = phy$tip.label[phy$edge[i, 2]],
+                    Nnode = 1L)
+        class(res) <- "phylo"
+        if (wbl) res$edge.length <- phy$edge.length[i]
+        if (!is.null(phy$node.label))
+            res$node.label <- phy$node.label[phy$edge[i, 1] - Ntip]
+        return(res)
+    }
 
     if (!rooted && subtree) {
         phy <- root(phy, (1:Ntip)[-tip][1])

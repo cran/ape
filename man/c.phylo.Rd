@@ -16,7 +16,7 @@
 \arguments{
   \item{\dots}{one or several objects of class \code{"phylo"} and/or
     \code{"multiPhylo"}.}
-  \item{recursive}{for compatibily with the generic (do not change).}
+  \item{recursive}{see details.}
   \item{x}{an object of class \code{"phylo"} or \code{"multiPhylo"}.}
   \item{ref}{an optional vector of mode character to constrain the order
     of the tips. By default, the order from the first tree is used.}

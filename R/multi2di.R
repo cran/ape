@@ -1,8 +1,8 @@
-## multi2di.R (2016-10-16)
+## multi2di.R (2017-01-16)
 
 ##   Collapse or Resolve Multichotomies
 
-## Copyright 2005-2016 Emmanuel Paradis
+## Copyright 2005-2017 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -69,7 +69,7 @@ multi2di <- function(phy, ...) UseMethod("multi2di")
     if (!is.null(phy$node.label))
         phy$node.label <-
             c(phy$node.label, rep("", phy$Nnode - length(phy$node.label)))
-    phy <- reorder(phy)
+    phy <- .reorder_ape(phy, "cladewise", FALSE, n, 1L) # fix by Klaus (2017-01-16)
 
     ## the node numbers are not in increasing order in edge[, 2]: this
     ## will confuse drop.tip and other functions (root), so renumber them
