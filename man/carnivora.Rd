@@ -35,15 +35,16 @@
   \bold{127}: 744--771.
 }
 \examples{
-  data(carnivora);
-  # This is figure 1 of Gittleman 1986:
-  library(lattice)
-  trellis.device(color=FALSE)
-  xyplot(BW ~ FW, groups=Family, data=carnivora, auto.key=TRUE, xlog=TRUE,
-      scale=list(log=TRUE), ylim=c(1, 2000))
-  trellis.device(color=FALSE)
-  xyplot(BW ~ FB, groups=Family, data=carnivora, auto.key=TRUE, xlog=TRUE,
-      scale=list(log=TRUE), ylim=c(1, 2000))
+data(carnivora)
+## Fig. 1 in Gittleman (1986):
+plot(carnivora$BW ~ carnivora$FW, pch = (1:8)[carnivora$Family], log = "xy",
+     xlab = "Female body weight (kg)", ylab = "Birth weigth (g)",
+     ylim = c(1, 2000))
+legend("bottomright", legend = levels(carnivora$Family), pch = 1:8)
+plot(carnivora$BW ~ carnivora$FB, pch = (1:8)[carnivora$Family], log = "xy",
+     xlab = "Female brain weight (g)", ylab = "Birth weigth (g)",
+     ylim = c(1, 2000))
+legend("bottomright", legend = levels(carnivora$Family), pch = 1:8)
 }
 \keyword{datasets}
 

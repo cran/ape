@@ -40,7 +40,8 @@ integrateTrapeze <- function(FUN, from, to, nint = 10)
     }
 }
 
-if(getRversion() >= "2.15.1")  utils::globalVariables("Tmax")
+## if (getRversion() >= "2.15.1") -- R 3.2.0 is required for ape
+utils::globalVariables("Tmax")
 
 .getRHOetINT <- function(birth, death, BIRTH = NULL, DEATH = NULL, case, fast)
 {
@@ -489,7 +490,7 @@ bd.time <- function(phy, birth, death, BIRTH = NULL, DEATH = NULL,
 LTT <- function(birth = 0.1, death = 0, N = 100, Tmax = 50, PI = 95,
                 scaled = TRUE, eps = 0.1, add = FALSE, backward = TRUE,
                 ltt.style = list("black", 1, 1),
-                pi.style = list("blue", 1, 2))
+                pi.style = list("blue", 1, 2), ...)
 {
     case <- .getCase(birth, death, NULL, NULL)
     Time <- seq(0, Tmax, eps)
@@ -511,7 +512,7 @@ LTT <- function(birth = 0.1, death = 0, N = 100, Tmax = 50, PI = 95,
               lty = ltt.style[[3]])
     else
         plot(Time, F, "l", col = ltt.style[[1]], lwd = ltt.style[[2]],
-             lty = ltt.style[[3]], ylab = "Number of lineages")
+             lty = ltt.style[[3]], ylab = "Number of lineages", ...)
     if (PI)
         lines(c(Time, NA, Time), c(Flow, NA, Fup),
               col = pi.style[[1]], lwd = pi.style[[2]], lty = pi.style[[3]])

@@ -1,8 +1,8 @@
-## phydataplot.R (2015-07-16)
+## phydataplot.R (2017-10-04)
 
 ##   Annotate Phylogenies
 
-## Copyright 2014-2015 Emmanuel Paradis
+## Copyright 2014-2017 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -157,6 +157,7 @@ phydataplot <- function(x, phy, style = "bars", offset = 1, scaling = 1,
         axis(1, px + x0, labels = px / scaling, line = 1)
     }, mosaic = {
         p <- ncol(x)
+        if (is.null(p)) p <- 1L
         if (is.null(width)) {
             x1 <- lastPP$x.lim[2]
             width <- (x1 - x0)/p
@@ -177,17 +178,22 @@ phydataplot <- function(x, phy, style = "bars", offset = 1, scaling = 1,
             lgd <- paste0("[", sq[-length(sq)], "-", sq[-1], ")")
         } else {
             if (is.raw(x)) x <- toupper(as.character(x)) # for DNAbin objects
-            nux <- length(ux <- unique.default(x))
+            nux <- length(ux <- sort(unique.default(x)))
             x <- match(x, ux)
             lgd <- as.character(ux)
         }
         co <- funcol(nux)
+        conames <- names(co)
+        if (!is.null(conames)) co <- co[lgd]
         rect(xl, yb, xr, yt, col = co[x], xpd = TRUE, ...)
-        if (legend == "below")
-            legend((x0 + x1)/2, -yinch(0.1), lgd, pch = 22, pt.bg = co,
-                   pt.cex = 2, bty = "n", xjust = 0.5, yjust = 0.5,
-                   horiz = TRUE, xpd = TRUE)
-        else legend(x1, n, lgd, pch = 22, pt.bg = co,
-                   pt.cex = 2, bty = "n", yjust = 1, xpd = TRUE)
+        legend <- match.arg(legend, c("below", "side", "none"))
+        if (legend != "none") {
+            if (legend == "below")
+                legend((x0 + x1)/2, -yinch(0.1), lgd, pch = 22, pt.bg = co,
+                       pt.cex = 2, bty = "n", xjust = 0.5, yjust = 0.5,
+                       horiz = TRUE, xpd = TRUE)
+            else legend(x1, n, lgd, pch = 22, pt.bg = co,
+                        pt.cex = 2, bty = "n", yjust = 1, xpd = TRUE)
+        }
     })
 }

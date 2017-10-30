@@ -32,6 +32,6 @@ richness.yule.test(x, t)
   \code{\link{diversity.contrast.test}}
 }
 \examples{
-### see examples(mcconwaysims.test)
+### see example(mcconwaysims.test)
 }
 \keyword{htest}

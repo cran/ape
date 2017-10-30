@@ -1,12 +1,16 @@
 \name{collapse.singles}
 \alias{collapse.singles}
+\alias{has.singles}
 \title{Collapse Single Nodes}
 \description{
-  This function deletes the single nodes (i.e., with a single
+  \code{collapse.singles} deletes the single nodes (i.e., with a single
   descendant) in a tree.
+
+  \code{has.singles} tests for the presence of single node(s) in a tree.
 }
 \usage{
 collapse.singles(tree, root.edge = FALSE)
+has.singles(tree)
 }
 \arguments{
   \item{tree}{an object of class \code{"phylo"}.}
@@ -18,7 +22,7 @@ collapse.singles(tree, root.edge = FALSE)
 \value{
   an object of class \code{"phylo"}.
 }
-\author{Emmanuel Paradis}
+\author{Emmanuel Paradis, Klaus Schliep}
 \seealso{
   \code{\link{plot.phylo}}, \code{\link{read.tree}}
 }
@@ -29,14 +33,13 @@ dim(e) <- c(5, 2)
 tr <- structure(list(edge = e, tip.label = LETTERS[1:3], Nnode = 3L),
                 class = "phylo")
 tr
+has.singles(tr)
 ## the following shows that node #4 (ie, the root) is a singleton
 ## and node #6 is the first bifurcating node
 tr$edge
-## Normally, a tree has less nodes than it has tips:
-## > plot(tr)
-## Error in plot.phylo(tr) :
-##   there are single (non-splitting) nodes in your tree;
-##   you may need to use collapse.singles()
+## A bifurcating tree has less nodes than it has tips:
+## the following used to fail with ape 4.1 or lower:
+plot(tr)
 collapse.singles(tr) # only 2 nodes
 ## give branch lengths to use the 'root.edge' option:
 tr$edge.length <- runif(5)

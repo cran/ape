@@ -17,7 +17,8 @@ dist.topo(x, y = NULL, method = "PH85")
     \code{"PH85"}, or \code{"score"}.}
 }
 \value{
-  a single numeric value.
+  a single numeric value if both \code{x} and \code{y} are used, an
+  object of class \code{"dist"} otherwise.
 }
 \details{
   Two methods are available: the one by Penny and Hendy (1985,

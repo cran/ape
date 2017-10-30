@@ -1,8 +1,8 @@
-## DNA.R (2017-01-12)
+## DNA.R (2017-08-28)
 
 ##   Manipulations and Comparisons of DNA and AA Sequences
 
-## Copyright 2002-2017 Emmanuel Paradis, 2015 Klaus Schliep
+## Copyright 2002-2017 Emmanuel Paradis, 2015 Klaus Schliep, 2017 Franz Krah
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -104,7 +104,7 @@ as.alignment <- function(x)
 as.matrix.DNAbin <- function(x, ...)
 {
     if (is.matrix(x)) return(x)
-    if (is.vector(x)) {
+    if (!is.list(x)) { # vector
         dim(x) <- c(1, length(x))
         return(x)
     }
@@ -376,8 +376,11 @@ GC.content <- function(x) sum(base.freq(x)[2:3])
 seg.sites <- function(x)
 {
     if (is.list(x)) x <- as.matrix(x)
-    if (is.vector(x)) return(integer(0))
-    if (nrow(x) == 1) return(integer(0))
+    ## is.vector() returns FALSE because of the class,
+    ## so we use a different test
+    dx <- dim(x)
+    if (is.null(dx)) return(integer(0))
+    if (dx[1] == 1) return(integer(0))
     ans <- .Call(SegSites, x)
     which(as.logical(ans))
 }
@@ -450,8 +453,11 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     d
 }
 
-image.DNAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
-                         show.labels = TRUE, cex.lab = 1, legend = TRUE, ...)
+image.DNAbin <-
+    function(x, what, col, bg = "white", xlab = "", ylab = "",
+             show.labels = TRUE, cex.lab = 1, legend = TRUE,
+             grid = FALSE, show.bases = FALSE, base.cex = 1,
+             base.font = 1, base.col = "black", ...)
 {
     what <-
         if (missing(what)) c("a", "g", "c", "t", "n", "-") else tolower(what)
@@ -501,6 +507,17 @@ image.DNAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
         legend(xx, yy, legend = leg.txt, pch = 22, pt.bg = leg.co,
                pt.cex = 2, bty = "n", xjust = 0.5, yjust = 0.5,
                horiz = TRUE, xpd = TRUE)
+    }
+    if (grid) {
+        if (is.logical(grid)) grid <- 3L
+        if (grid %in% 2:3) abline(v = seq(1.5, s - 0.5, 1), lwd = 0.33, xpd = FALSE)
+        if (grid %in% c(1, 3)) abline(h = seq(1.5, n - 0.5, 1), lwd = 0.33, xpd = FALSE)
+    }
+    if (show.bases) {
+        x <- toupper(as.character(x))
+        xx <- rep(1:s, each = n)
+        yy <- rep(n:1, s)
+        text(xx, yy, x, cex = base.cex, font = base.font, col = base.col)
     }
 }
 
@@ -742,8 +759,11 @@ AAsubst <- function(x)
                  Small = .AA_raw[c("P", "G", "A", "C")],
                  Hydrophilic = .AA_raw[c("S", "T", "H", "N", "Q", "D", "E", "K", "R")])
 
-image.AAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
-                        show.labels = TRUE, cex.lab = 1, legend = TRUE, ...)
+image.AAbin <-
+    function(x, what, col, bg = "white", xlab = "", ylab = "",
+             show.labels = TRUE, cex.lab = 1, legend = TRUE,
+             grid = FALSE, show.aa = FALSE, aa.cex = 1,
+             aa.font = 1, aa.col = "black", ...)
 {
     if (missing(what))
         what <- c("Hydrophobic", "Small", "Hydrophilic")
@@ -781,6 +801,11 @@ image.AAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
     yaxt <- if (show.labels) "n" else "s"
     image.default(1:s, 1:n, t(y[n:1, ]), col = co, xlab = xlab, ylab = ylab,
                   yaxt = yaxt, breaks = brks, ...)
+    if (length(poly <- AAsubst(x))) {
+        rect(poly - 0.5, n + 0.5, poly + 0.5, n + 0.5 + yinch(0.2),
+             col = "slategrey", border = NA, xpd = TRUE)
+        ##rect(0.5, n + 0.5, s + 0.5, n + 0.5 + yinch(0.2), lwd = 0.5)
+    }
     if (show.labels)
         mtext(rownames(x), side = 2, line = 0.1, at = n:1, cex = cex.lab,
               adj = 1, las = 1)
@@ -791,6 +816,17 @@ image.AAbin <- function(x, what, col, bg = "white", xlab = "", ylab = "",
         legend(xx, yy, legend = leg.txt, pch = 22, pt.bg = leg.co,
                pt.cex = 2, bty = "n", xjust = 0.5, yjust = 0.5,
                horiz = TRUE, xpd = TRUE)
+    }
+    if (grid) {
+        if (is.logical(grid)) grid <- 3L
+        if (grid %in% 2:3) abline(v = seq(1.5, s - 0.5, 1), lwd = 0.33, xpd = FALSE)
+        if (grid %in% c(1, 3)) abline(h = seq(1.5, n - 0.5, 1), lwd = 0.33, xpd = FALSE)
+    }
+    if (show.aa) {
+        x <- toupper(as.character(x))
+        xx <- rep(1:s, each = n)
+        yy <- rep(n:1, s)
+        text(xx, yy, x, cex = aa.cex, font = aa.font, col = aa.col)
     }
 }
 
@@ -992,4 +1028,54 @@ all.equal.DNAbin <- function(target, current, plot = FALSE, ...)
         #segments(0.5, 0.5, 10, -3)
     }
     res
+}
+
+## From Franz Krah <f.krah@mailbox.org>:
+
+## estensions of the AAbin class to complement the DNAbin class funcitons
+
+c.AAbin <- function(..., recursive = FALSE)
+{
+  if (!all(unlist(lapply(list(...), is.list))))
+    stop("the 'c' method for \"AAbin\" accepts only lists")
+  structure(NextMethod("c"), class = "AAbin")
+}
+
+as.AAbin.list <- function(x, ...)
+{
+  obj <- lapply(x, as.AAbin)
+  class(obj) <- "AAbin"
+  obj
+}
+
+as.list.AAbin <- function(x, ...)
+{
+  if (is.list(x)) return(x)
+  if (is.null(dim(x))) obj <- list(x) # cause is.vector() doesn't work
+  else { # matrix
+    n <- nrow(x)
+    obj <- vector("list", n)
+    for (i in seq_len(n)) obj[[i]] <- x[i, , drop = TRUE]
+    names(obj) <- rownames(x)
+  }
+  class(obj) <- "AAbin"
+  obj
+}
+
+as.matrix.AAbin <- function(x, ...)
+{
+  if (is.matrix(x)) return(x)
+  if (!is.list(x)) { # vector
+    dim(x) <- c(1, length(x))
+    return(x)
+  }
+  s <- unique(lengths(x, use.names = FALSE))
+  if (length(s) != 1)
+    stop("AA sequences in list not of the same length.")
+  n <- length(x)
+  y <- matrix(raw(), n, s)
+  for (i in seq_len(n)) y[i, ] <- x[[i]]
+  rownames(y) <- names(x)
+  class(y) <- "AAbin"
+  y
 }

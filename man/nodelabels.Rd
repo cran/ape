@@ -16,7 +16,7 @@ nodelabels(text, node, adj = c(0.5, 0.5), frame = "rect",
 tiplabels(text, tip, adj = c(0.5, 0.5), frame = "rect",
           pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
           col = "black", bg = "yellow", horiz = FALSE,
-          width = NULL, height = NULL, ...)
+          width = NULL, height = NULL, offset = 0, ...)
 edgelabels(text, edge, adj = c(0.5, 0.5), frame = "rect",
            pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
            col = "black", bg = "lightgreen", horiz = FALSE,
@@ -63,6 +63,7 @@ edgelabels(text, edge, adj = c(0.5, 0.5), frame = "rect",
   \item{horiz, width, height}{parameters controlling the aspect of
     thermometers; by default, their width and height are determined
     automatically.}
+  \item{offset}{offset of the tip labels (can be negative).}
   \item{date}{specifies the positions of labels on edges of chronograms
     with respect to the time scale.}
 }
@@ -159,7 +160,7 @@ plot(tr, "c", FALSE, no.margin = TRUE)
 nodelabels(thermo = x, col = rainbow(4), cex = 1.3)
 plot(tr, "c", FALSE, no.margin = TRUE)
 nodelabels(thermo = x, col = rainbow(4), width = 3, horiz = TRUE)
-layout(matrix(1))
+layout(1)
 plot(tr, main = "Showing Edge Lengths")
 edgelabels(round(tr$edge.length, 3), srt = 90)
 plot(tr, "p", FALSE)

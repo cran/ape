@@ -1,13 +1,13 @@
-/* pic.c       2006-11-13 */
+/* pic.c       2017-04-25 */
 
-/* Copyright 2006 Emmanuel Paradis */
+/* Copyright 2006-2017 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
 
 #include <R.h>
 
-void C_pic(int *ntip, int *nnode, int *edge1, int *edge2,
+void C_pic(int *ntip, int *edge1, int *edge2,
 	   double *edge_len, double *phe, double *contr,
 	   double *var_contr, int *var, int *scaled)
 {

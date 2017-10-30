@@ -6,11 +6,12 @@
 Analyses of Phylogenetics and Evolution
 }
 \description{
-  \pkg{ape} provides functions for reading and manipulating phylogenetic
-  trees and DNA sequences, computing DNA distances, estimating trees
-  with distance-based methods, and a range of methods for comparative
-  analyses and analysis of diversification. Functionalities are also
-  provided for programming new phylogenetic methods.
+  \pkg{ape} provides functions for reading, writing, manipulating,
+  analysing, and simulating phylogenetic trees and DNA sequences,
+  computing DNA distances, translating into AA sequences, estimating
+  trees with distance-based methods, and a range of methods for
+  comparative analyses and analysis of diversification. Functionalities
+  are also provided for programming new phylogenetic methods.
 
   The complete list of functions can be displayed with
   \code{library(help = ape)}.

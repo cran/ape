@@ -1,13 +1,13 @@
-## write.tree.R (2010-12-07)
+## write.tree.R (2017-09-08)
 
 ##   Write Tree File in Parenthetic Format
 
-## Copyright 2002-2010 Emmanuel Paradis, Daniel Lawson, and Klaus Schliep
+## Copyright 2002-2017 Emmanuel Paradis, Daniel Lawson, and Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-checkLabel <- function(x, ...)
+checkLabel <- function(x)
 {
     ## delete all leading and trailing spaces and tabs, and
     ## the leading left and trailing right parentheses:
@@ -17,13 +17,10 @@ checkLabel <- function(x, ...)
     x <- gsub("[[:space:]\\)]+$", "", x)
     ## replace all spaces and tabs by underscores:
     x <- gsub("[[:space:]]", "_", x)
-    ## remove all commas, colons, and semicolons
-    x <- gsub("[,:;]", "", x)
+    ## replace commas, colons, and semicolons with dashes:
+    x <- gsub("[,:;]", "-", x)
     ## replace left and right parentheses with dashes:
     x <- gsub("[\\(\\)]", "-", x)
-    ## delete extra underscores and extra dashes:
-    x <- gsub("_{2,}", "_", x)
-    x <- gsub("-{2,}", "-", x)
     x
 }
 

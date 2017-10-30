@@ -39,4 +39,5 @@ checkAlignment(x, check.gaps = TRUE, plot = TRUE, what = 1:4)
 \examples{
 data(woodmouse)
 checkAlignment(woodmouse)
+layout(1)
 }

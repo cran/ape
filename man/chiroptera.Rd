@@ -27,6 +27,6 @@ str(chiroptera)
 op <- par()
 par(cex = 0.3)
 plot(chiroptera, type = "c")
-par(op)
+par(cex = op$cex)
 }
 \keyword{datasets}

@@ -870,8 +870,7 @@ void distDNA_LogDet_pairdel(unsigned char *x, int *n, int *s, double *d,
     }
 }
 
-void distDNA_BH87(unsigned char *x, int *n, int *s, double *d,
-		  int *variance, double *var)
+void distDNA_BH87(unsigned char *x, int *n, int *s, double *d)
 /* <FIXME>
    For the moment there is no need to check for pairwise deletions
    since DO_CONTINGENCY_NUCLEOTIDES considers only the known nucleotides.
@@ -1190,7 +1189,7 @@ void dist_dna(unsigned char *x, int *n, int *s, int *model, double *d,
              else distDNA_GG95(x, n, s, d, variance, var); break;
     case 10 : if (pairdel) distDNA_LogDet_pairdel(x, n, s, d, variance, var);
               else distDNA_LogDet(x, n, s, d, variance, var); break;
-    case 11 : distDNA_BH87(x, n, s, d, variance, var); break;
+    case 11 : distDNA_BH87(x, n, s, d); break;
     case 12 : if (pairdel) distDNA_ParaLin_pairdel(x, n, s, d, variance, var);
               else distDNA_ParaLin(x, n, s, d, variance, var); break;
     case 13 : if (pairdel) distDNA_raw_pairdel(x, n, s, d, 0);

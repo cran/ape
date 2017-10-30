@@ -1,8 +1,8 @@
-## ace.R (2016-06-08)
+## ace.R (2017-04-25)
 
 ##   Ancestral Character Estimation
 
-## Copyright 2005-2016 Emmanuel Paradis and Ben Bolker
+## Copyright 2005-2017 Emmanuel Paradis and Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -86,15 +86,15 @@ ace <-
             phenotype <- numeric(nb.tip + nb.node)
             phenotype[1:nb.tip] <- if (is.null(names(x))) x else x[phy$tip.label]
             contr <- var.con <- numeric(nb.node)
-            ans <- .C(C_pic, as.integer(nb.tip), as.integer(nb.node),
+            ans <- .C(C_pic, as.integer(nb.tip),
                       as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
                       as.double(phy$edge.length), as.double(phenotype),
                       as.double(contr), as.double(var.con),
                       as.integer(CI), as.integer(scaled))
-            obj$ace <- ans[[6]][-(1:nb.tip)]
+            obj$ace <- ans[[5]][-(1:nb.tip)]
             names(obj$ace) <- nb.tip + 1:nb.node
             if (CI) {
-                se <- sqrt(ans[[8]])
+                se <- sqrt(ans[[7]])
                 tmp <- se * qnorm(0.025)
                 obj$CI95 <- cbind(obj$ace + tmp, obj$ace - tmp)
             }

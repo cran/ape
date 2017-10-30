@@ -37,6 +37,12 @@ write.tree(phy, file = "", append = FALSE,
   (parentheses are eventually deleted beforehand). The tree names are
   taken from the \code{names} attribute if present (they are ignored if
   \code{tree.names} is a character vector).
+
+  The tip labels (and the node labels if present) are checked before
+  being printed: the leading and trailing spaces, and the leading left
+  and trailing right parentheses are deleted; the other spaces are
+  replaced by underscores; the commas, colons, semicolons, and the other
+  parentheses are replaced with dashes.
 }
 \references{
   Felsenstein, J. The Newick tree format.

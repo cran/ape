@@ -20,7 +20,7 @@
 
 <<echo=false,quiet=true>>=
 options(width=60)
-@ 
+@
 
 This document clarifies the use of Moran's autocorrelation coefficient
 to quantify whether the distribution of a trait among a set of species
@@ -120,7 +120,7 @@ body mass and longevity of five species of primates:
 body <- c(4.09434, 3.61092, 2.37024, 2.02815, -1.46968)
 longevity <- c(4.74493, 3.3322, 3.3673, 2.89037, 2.30259)
 names(body) <- names(longevity) <- c("Homo", "Pongo", "Macaca", "Ateles", "Galago")
-@ 
+@
 
 The tree has branch lengths scaled so that the root age is one. We
 read the tree with \ape, and plot it:
@@ -132,7 +132,7 @@ trnwk[2] <- ":0.38,Galago:1.00);"
 tr <- read.tree(text = trnwk)
 plot(tr)
 axisPhylo()
-@ 
+@
 
 We choose the weights as $w_{ij}=1/d_{ij}$, where the $d$'s is the
 distances measured on the tree:
@@ -150,7 +150,7 @@ We can now perform the analysis with Moran's $I$:
 
 <<>>=
 Moran.I(body, w)
-@ 
+@
 
 Not surprisingly, the results are opposite to those in
 \cite{Paradis2006} since, there, the distances (given by
@@ -171,13 +171,13 @@ be two if we define H$_1$ as $I > I_0$:
 
 <<>>=
 Moran.I(body, w, alt = "greater")
-@ 
+@
 
 The same analysis with \code{longevity} gives:
 
 <<>>=
 Moran.I(longevity, w)
-@ 
+@
 
 As for \code{body}, the results are nearly mirrored compared to
 \cite{Paradis2006} where a non-significant negative phylogenetic
@@ -248,7 +248,7 @@ We first consider a single variable analysis (as in \cite{Paradis2006}):
 fm1.carn <- log10SW ~ Order/SuperFamily/Family/Genus
 co1 <- correlogram.formula(fm1.carn, data = carnivora)
 plot(co1)
-@ 
+@
 
 A legend now appears by default, but can be removed with \code{legend
 = FALSE}. Most of the appearance of the graph can be customized via
@@ -266,7 +266,7 @@ correlograms can be plotted together with the appropriate plot method:
 fm2.carn <- log10SW + log10FW ~ Order/SuperFamily/Family/Genus
 co2 <- correlogram.formula(fm2.carn, data = carnivora)
 print(plot(co2))
-@ 
+@
 
 By default, lattice is used to plot the correlograms on separate
 panels; using \code{lattice = FALSE} (actually the second argument,
@@ -275,7 +275,7 @@ the different correlograms:
 
 <<fig=true>>=
 plot(co2, FALSE)
-@ 
+@
 
 The options are roughly the same than above, but do not have always
 the same effect since lattice and base graphics do not have the same
@@ -294,14 +294,14 @@ done with a distance matrix. So I correct this below:
 > gearymoran(w, data.frame(body, longevity))
 \end{Sinput}
 \begin{Soutput}
-class: krandtest 
+class: krandtest
 Monte-Carlo tests
-Call: as.krandtest(sim = matrix(res$result, ncol = nvar, byr = TRUE), 
+Call: as.krandtest(sim = matrix(res$result, ncol = nvar, byr = TRUE),
     obs = res$obs, alter = alter, names = test.names)
 
-Test number:   2 
-Permutation number:   999 
-Alternative hypothesis: greater 
+Test number:   2
+Permutation number:   999
+Alternative hypothesis: greater
 
        Test         Obs   Std.Obs Pvalue
 1      body -0.06256789 2.1523342  0.001

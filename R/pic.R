@@ -1,8 +1,8 @@
-## pic.R (2013-02-18)
+## pic.R (2017-08-22)
 
 ##   Phylogenetically Independent Contrasts
 
-## Copyright 2002-2013 Emmanuel Paradis
+## Copyright 2002-2017 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -37,22 +37,22 @@ pic <- function(x, phy, scaled = TRUE, var.contrasts = FALSE, rescaled.tree = FA
     ## No need to copy the branch lengths: they are rescaled
     ## in the C code, so it's important to leave the default
     ## `DUP = TRUE' of .C.
-    ans <- .C(C_pic, as.integer(nb.tip), as.integer(nb.node),
+    ans <- .C(C_pic, as.integer(nb.tip),
               as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
               as.double(phy$edge.length), as.double(phenotype),
               double(nb.node), double(nb.node),
               as.integer(var.contrasts), as.integer(scaled))
 
-    contr <- ans[[7]]
+    contr <- ans[[6]]
     lbls <-
         if (is.null(phy$node.label)) as.character(1:nb.node + nb.tip)
         else phy$node.label
     if (var.contrasts) {
-        contr <- cbind(contr, ans[[8]])
+        contr <- cbind(contr, ans[[7]])
         dimnames(contr) <- list(lbls, c("contrasts", "variance"))
     } else names(contr) <- lbls
     if (rescaled.tree) {
-        phy$edge.length <- ans[[5]]
+        phy$edge.length <- ans[[4]]
         contr <- list(contr = contr, rescaled.tree = phy)
     }
     contr

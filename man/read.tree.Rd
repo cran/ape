@@ -4,7 +4,7 @@
 \title{Read Tree File in Parenthetic Format}
 \usage{
 read.tree(file = "", text = NULL, tree.names = NULL, skip = 0,
-    comment.char = "#", keep.multi = FALSE, ...)
+    comment.char = "", keep.multi = FALSE, ...)
 }
 \arguments{
   \item{file}{a file name specified by either a variable of mode character,
@@ -50,6 +50,10 @@ read.tree(file = "", text = NULL, tree.names = NULL, skip = 0,
   If there are any characters preceding the first "(" in a line then
   this is assigned to the name. This is returned when a "multiPhylo"
   object is returned and \code{tree.names = NULL}.
+
+  Until \pkg{ape} 4.1, the default of \code{comment.char} was \code{"#"}
+  (as in \code{scan}). This has been changed so that extended Newick
+  files can be read.
 }
 \value{
   an object of class \code{"phylo"} with the following components:
@@ -111,6 +115,21 @@ TREE
 tree.owls.bis <- read.tree(text = TREE)
 str(tree.owls.bis)
 tree.owls.bis
+
+## tree with singleton nodes:
+ts <- read.tree(text="((((a))),d);")
+plot(ts, node.depth = 2) # the default will overlap the singleton node with the tip
+nodelabels()
+
+## skeleton tree with a singleton node:
+tx <- read.tree(text = "(((,)),);")
+plot(tx, node.depth = 2)
+nodelabels()
+
+## a tree with single quoted labels (the 2nd label is not quoted):
+z <- "(('a: France, Spain (Europe)',b),'c: Australia [Outgroup]');"
+tz <- read.tree(text = z)
+plot(tz, font = 1)
 }
 \keyword{manip}
 \keyword{IO}

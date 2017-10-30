@@ -1,8 +1,8 @@
-## reorder.phylo.R (2016-10-04)
+## reorder.phylo.R (2017-07-28)
 
 ##   Internal Reordering of Trees
 
-## Copyright 2006-2016 Emmanuel Paradis
+## Copyright 2006-2017 Emmanuel Paradis, 2017 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -17,11 +17,6 @@
     if (nb.node == 1)
         if (index.only) return(1:nb.edge) else return(x)
 
-    ## I'm adding the next check for badly conformed trees to avoid R
-    ## crashing (2013-05-17):
-    if (nb.node >= nb.tip)
-        stop("tree apparently badly conformed")
-
     if (io == 3) {
         x <- reorder(x)
         neworder <-
@@ -30,11 +25,8 @@
                as.integer(x$edge[, 2]), as.integer(nb.edge),
                integer(nb.edge))[[6]]
     } else {
-        neworder <-
-            .C(neworder_phylo, as.integer(nb.tip),
-               as.integer(x$edge[, 1]), as.integer(x$edge[, 2]),
-               as.integer(nb.edge), integer(nb.edge), io,
-               NAOK = TRUE)[[5]]
+        neworder <- reorderRcpp(x$edge, as.integer(nb.tip),
+                                as.integer(nb.tip + 1L), io)
     }
     if (index.only) return(neworder)
     x$edge <- x$edge[neworder, ]
@@ -64,10 +56,16 @@ reorder.multiPhylo <- function(x, order = "cladewise", ...)
     labs <- attr(x, "TipLabel")
     x <-
         if (is.null(labs)) lapply(x, reorder.phylo, order = order)
-        else lapply(x, .reorder_ape, order = order, nb.tip = length(labs), io = io)
+        else lapply(x, .reorder_ape, order = order, index.only = FALSE,
+                    nb.tip = length(labs), io = io)
+    if (!is.null(labs)) attr(x, "TipLabel") <- labs
     class(x) <- oc
     x
 }
+
+cladewise <- function(x) reorder(x, "cladewise", index.only = TRUE)
+
+postorder <- function(x) reorder(x, "postorder", index.only = TRUE)
 
 rotateConstr <- function(phy, constraint)
 {

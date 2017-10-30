@@ -1,4 +1,4 @@
-## makeLabel.R (2016-06-08)
+## makeLabel.R (2017-05-06)
 
 ##   Label Management
 
@@ -64,7 +64,7 @@ makeLabel.multiPhylo <- function(x, tips = TRUE, nodes = TRUE, ...)
 
 makeLabel.DNAbin <- function(x, ...)
 {
-    if (is.vector(x) || is.list(x))
+    if (is.list(x))
         names(x) <- makeLabel.character(names(x), ...)
     else rownames(x) <- makeLabel.character(rownames(x), ...)
     x

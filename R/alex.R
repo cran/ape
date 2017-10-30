@@ -1,8 +1,8 @@
-## alex.R (2012-03-27)
+## alex.R (2017-04-18)
 
 ##   Alignment Explorer With Multiple Devices
 
-## Copyright 2012 Emmanuel Paradis
+## Copyright 2012-2017 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -19,6 +19,7 @@ Right-click to exit.\n")
     repeat {
         xy <- locator(2)
         if (is.null(xy)) break
+        xy$y <- n - xy$y + 1
         xy <- lapply(xy, function(x) sort(round(x)))
         i1 <- xy$y[1L]; i2 <- xy$y[2L]
         j1 <- xy$x[1L]; j2 <- xy$x[2L]

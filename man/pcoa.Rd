@@ -8,7 +8,8 @@ Function \code{\link{pcoa}} computes principal coordinate decomposition (also ca
 \usage{
 pcoa(D, correction="none", rn=NULL)
 
-\method{biplot}{pcoa}(x, Y=NULL, plot.axes = c(1,2), dir.axis1=1, dir.axis2=1, rn=NULL, ...)
+\method{biplot}{pcoa}(x, Y=NULL, plot.axes = c(1,2), dir.axis1=1,
+       dir.axis2=1, rn=NULL, main=NULL, ...)
 }
 
 \arguments{
@@ -19,7 +20,9 @@ pcoa(D, correction="none", rn=NULL)
   \item{Y}{ Any rectangular data table containing explanatory variables to be projected onto the ordination plot. That table may contain, for example, the community composition data used to compute D, or any transformation of these data; see examples. }
   \item{plot.axes}{ The two PCoA axes to plot. }
   \item{dir.axis1}{ = -1 to revert axis 1 for the projection of points and variables. Default value: +1. }
-  \item{dir.axis2}{ = -1 to revert axis 2 for the projection of points and variables. Default value: +1. }
+  \item{dir.axis2}{ = -1 to revert axis 2 for the projection of points
+    and variables. Default value: +1. }
+  \item{main}{An optional title.}
   \item{...}{ Other graphical arguments passed to function. }
 }
 

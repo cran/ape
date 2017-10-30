@@ -1,8 +1,8 @@
-## plot.phylo.R (2016-07-01)
+## plot.phylo.R (2017-07-27)
 
 ##   Plot Phylogenies
 
-## Copyright 2002-2016 Emmanuel Paradis
+## Copyright 2002-2017 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -23,24 +23,22 @@ plot.phylo <-
         warning("found less than 2 tips in the tree")
         return(NULL)
     }
-    if (any(tabulate(x$edge[, 1]) == 1))
-      stop("there are single (non-splitting) nodes in your tree; you may need to use collapse.singles()")
+#    if (any(tabulate(x$edge[, 1]) == 1))
+#      stop("there are single (non-splitting) nodes in your tree; you may need to use collapse.singles()")
 
-    .nodeHeight <- function(Ntip, Nnode, edge, Nedge, yy)
-        .C(node_height, as.integer(Ntip), as.integer(Nnode),
-           as.integer(edge[, 1]), as.integer(edge[, 2]),
-           as.integer(Nedge), as.double(yy))[[6]]
+    .nodeHeight <- function(edge, Nedge, yy)
+        .C(node_height, as.integer(edge[, 1]), as.integer(edge[, 2]),
+           as.integer(Nedge), as.double(yy))[[4]]
 
     .nodeDepth <- function(Ntip, Nnode, edge, Nedge, node.depth)
-        .C(node_depth, as.integer(Ntip), as.integer(Nnode),
+        .C(node_depth, as.integer(Ntip),
            as.integer(edge[, 1]), as.integer(edge[, 2]),
-           as.integer(Nedge), double(Ntip + Nnode), as.integer(node.depth))[[6]]
+           as.integer(Nedge), double(Ntip + Nnode), as.integer(node.depth))[[5]]
 
     .nodeDepthEdgelength <- function(Ntip, Nnode, edge, Nedge, edge.length)
-        .C(node_depth_edgelength, as.integer(Ntip),
-           as.integer(Nnode), as.integer(edge[, 1]),
+        .C(node_depth_edgelength, as.integer(edge[, 1]),
            as.integer(edge[, 2]), as.integer(Nedge),
-           as.double(edge.length), double(Ntip + Nnode))[[7]]
+           as.double(edge.length), double(Ntip + Nnode))[[5]]
 
     Nedge <- dim(x$edge)[1]
     Nnode <- x$Nnode
@@ -121,16 +119,15 @@ if (phyloORclado) {
                 if (type == "cladogram" && !use.edge.length) 2 else 1
 
         if (node.pos == 1)
-            yy <- .nodeHeight(Ntip, Nnode, z$edge, Nedge, yy)
+            yy <- .nodeHeight(z$edge, Nedge, yy)
         else {
           ## node_height_clado requires the number of descendants
           ## for each node, so we compute `xx' at the same time
           ans <- .C(node_height_clado, as.integer(Ntip),
-                    as.integer(Nnode), as.integer(z$edge[, 1]),
-                    as.integer(z$edge[, 2]), as.integer(Nedge),
-                    double(Ntip + Nnode), as.double(yy))
-          xx <- ans[[6]] - 1
-          yy <- ans[[7]]
+                    as.integer(z$edge[, 1]), as.integer(z$edge[, 2]),
+                    as.integer(Nedge), double(Ntip + Nnode), as.double(yy))
+          xx <- ans[[5]] - 1
+          yy <- ans[[6]]
         }
         if (!use.edge.length) {
             if (node.pos != 2) xx <- .nodeDepth(Ntip, Nnode, z$edge, Nedge, node.depth) - 1
@@ -155,7 +152,7 @@ if (phyloORclado) {
     }
 
     switch(type, "fan" = {
-        theta <- .nodeHeight(Ntip, Nnode, z$edge, Nedge, theta)
+        theta <- .nodeHeight(z$edge, Nedge, theta)
         if (use.edge.length) {
             r <- .nodeDepthEdgelength(Ntip, Nnode, z$edge, Nedge, z$edge.length)
         } else {
@@ -179,7 +176,7 @@ if (phyloORclado) {
         r <- .nodeDepth(Ntip, Nnode, z$edge, Nedge, node.depth)
         r[r == 1] <- 0
         r <- 1 - r/Ntip
-        theta <- .nodeHeight(Ntip, Nnode, z$edge, Nedge, theta) + rotate.tree
+        theta <- .nodeHeight(z$edge, Nedge, theta) + rotate.tree
         xx <- r * cos(theta)
         yy <- r * sin(theta)
     })
@@ -202,28 +199,39 @@ if (phyloORclado) {
     if (show.tip.label) nchar.tip.label <- nchar(x$tip.label)
     max.yy <- max(yy)
 
+    ## Function to compute the axis limit
+    ## x: vector of coordinates, must be positive (or at least the largest value)
+    ## lab: vector of labels, length(x) == length(lab)
+    ## sin: size of the device in inches
+    getLimit <- function(x, lab, sin, cex) {
+        s <- strwidth(lab, "inches", cex = cex) # width of the tip labels
+        ## if at least one string is larger than the device,
+        ## give 1/3 of the plot for the tip labels:
+        if (any(s > sin)) return(1.5 * max(x))
+        Limit <- 0
+        while (any(x > Limit)) {
+            i <- which.max(x)
+            ## 'alp' is the conversion coeff from inches to user coordinates:
+            alp <- x[i]/(sin - s[i])
+            Limit <- x[i] + alp*s[i]
+            x <- x + alp*s
+        }
+        Limit
+    }
+
     if (is.null(x.lim)) {
         if (phyloORclado) {
             if (horizontal) {
-                x.lim <- c(0, NA)
-                pin1 <- par("pin")[1] # width of the device in inches
-                strWi <- strwidth(x$tip.label, "inches", cex = cex) # id. for the tip labels
                 ## 1.04 comes from that we are using a regular axis system
                 ## with 4% on both sides of the range of x:
-                xx.tips <- xx[1:Ntip] * 1.04
-                ## 'alp' is the conversion coefficient from
-                ## user coordinates to inches:
-                alp <- try(uniroot(function(a) max(a*xx.tips + strWi) - pin1,
-                                   c(0, 1e6))$root, silent = TRUE)
-                ## if the above fails, give 1/3 of the plot for the tip labels:
-                if (is.character(alp)) {
-                    tmp <- max(xx.tips)
-                    if (show.tip.label) tmp <- tmp * 1.5 # fix by Liam Revell (2015-06-22)
-                } else {
-                    tmp <- if (show.tip.label) max(xx.tips + strWi/alp) else max(xx.tips)
-                }
-                if (show.tip.label) tmp <- tmp + label.offset
-                x.lim[2] <- tmp
+                ## REMOVED (2017-06-14)
+                xx.tips <- xx[1:Ntip]# * 1.04
+                if (show.tip.label) {
+                    pin1 <- par("pin")[1] # width of the device in inches
+                    tmp <- getLimit(xx.tips, x$tip.label, pin1, cex)
+                    tmp <- tmp + label.offset
+                } else tmp <- max(xx.tips)
+                x.lim <- c(0, tmp)
             } else x.lim <- c(1, Ntip)
         } else switch(type, "fan" = {
             if (show.tip.label) {
@@ -256,25 +264,16 @@ if (phyloORclado) {
     if (is.null(y.lim)) {
         if (phyloORclado) {
             if (horizontal) y.lim <- c(1, Ntip) else {
-                y.lim <- c(0, NA)
                 pin2 <- par("pin")[2] # height of the device in inches
-                strWi <- strwidth(x$tip.label, "inches", cex = cex)
                 ## 1.04 comes from that we are using a regular axis system
                 ## with 4% on both sides of the range of x:
-                yy.tips <- yy[1:Ntip] * 1.04
-                ## 'alp' is the conversion coefficient from
-                ## user coordinates to inches:
-                alp <- try(uniroot(function(a) max(a*yy.tips + strWi) - pin2,
-                                   c(0, 1e6))$root, silent = TRUE)
-                ## if the above fails, give 1/3 of the device for the tip labels:
-                if (is.character(alp)) {
-                    tmp <- max(yy.tips)
-                    if (show.tip.label) tmp <- tmp * 1.5
-                } else {
-                    tmp <- if (show.tip.label) max(yy.tips + strWi/alp) else max(yy.tips)
-                }
-                if (show.tip.label) tmp <- tmp + label.offset
-                y.lim[2] <- tmp
+                ## REMOVED (2017-06-14)
+                yy.tips <- yy[1:Ntip]# * 1.04
+                if (show.tip.label) {
+                    tmp <- getLimit(yy.tips, x$tip.label, pin2, cex)
+                    tmp <- tmp + label.offset
+                } else tmp <- max(yy.tips)
+                y.lim <- c(0, tmp)
             }
         } else switch(type, "fan" = {
             if (show.tip.label) {
@@ -658,7 +657,7 @@ unrooted.xy <- function(Ntip, Nnode, edge, edge.length, nb.sp, rotate.tree)
     M <- cbind(xx, yy)
     axe <- axis[1:Ntip] # the axis of the terminal branches (for export)
     axeGTpi <- axe > pi
-    ## insures that returned angles are in [-PI, +PI]:
+    ## make sure that the returned angles are in [-PI, +PI]:
     axe[axeGTpi] <- axe[axeGTpi] - 2*pi
     list(M = M, axe = axe)
 }
@@ -669,9 +668,9 @@ node.depth <- function(phy, method = 1)
     m <- phy$Nnode
     N <- dim(phy$edge)[1]
     phy <- reorder(phy, order = "postorder")
-    .C(node_depth, as.integer(n), as.integer(m),
+    .C(node_depth, as.integer(n),
        as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
-       as.integer(N), double(n + m), as.integer(method))[[6]]
+       as.integer(N), double(n + m), as.integer(method))[[5]]
 }
 
 node.depth.edgelength <- function(phy)
@@ -680,13 +679,14 @@ node.depth.edgelength <- function(phy)
     m <- phy$Nnode
     N <- dim(phy$edge)[1]
     phy <- reorder(phy, order = "postorder")
-    .C(node_depth_edgelength, as.integer(n), as.integer(n),
-       as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
-       as.integer(N), as.double(phy$edge.length), double(n + m))[[7]]
+    .C(node_depth_edgelength, as.integer(phy$edge[, 1]),
+       as.integer(phy$edge[, 2]), as.integer(N),
+       as.double(phy$edge.length), double(n + m))[[5]]
 }
 
 node.height <- function(phy, clado.style = FALSE)
-{    n <- length(phy$tip.label)
+{
+    n <- length(phy$tip.label)
     m <- phy$Nnode
     N <- dim(phy$edge)[1]
 
@@ -700,13 +700,11 @@ node.height <- function(phy, clado.style = FALSE)
     e2 <- phy$edge[, 2]
 
     if (clado.style)
-        .C(node_height_clado, as.integer(n), as.integer(m),
-           as.integer(e1), as.integer(e2), as.integer(N),
-           double(n + m), as.double(yy))[[7]]
+        .C(node_height_clado, as.integer(n), as.integer(e1),
+           as.integer(e2), as.integer(N), double(n + m), as.double(yy))[[5]]
     else
-        .C(node_height, as.integer(n), as.integer(m),
-           as.integer(e1), as.integer(e2), as.integer(N),
-           as.double(yy))[[6]]
+        .C(node_height, as.integer(e1), as.integer(e2), as.integer(N),
+           as.double(yy))[[4]]
 }
 
 plot.multiPhylo <- function(x, layout = 1, ...)

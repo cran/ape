@@ -1,8 +1,8 @@
-## as.phylo.R (2015-10-16)
+## as.phylo.R (2017-06-05)
 
 ##     Conversion Among Tree Objects
 
-## Copyright 2005-2015 Emmanuel Paradis
+## Copyright 2005-2017 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -97,7 +97,10 @@ as.hclust.phylo <- function(x, ...)
     x <- reorder(x, "postorder")
     m <- matrix(x$edge[, 2], N, 2, byrow = TRUE)
     anc <- x$edge[c(TRUE, FALSE), 1]
-    bt <- sort(bt[as.character(anc)])
+    bt <- bt[as.character(anc)] # 1st, reorder
+    ## 2nd, sort keeping the root branching time in last (in case of
+    ## rounding error if there zero-lengthed branches nead the root)
+    bt <- c(sort(bt[-N]), bt[N])
     o <- match(names(bt), anc)
     m <- m[o, ]
 
@@ -132,7 +135,10 @@ as.igraph.phylo <- function(x, directed = is.rooted(x), use.labels = TRUE, ...)
     directed <- directed
     if (use.labels) {
         if (is.null(x$node.label)) x <- makeNodeLabel(x)
+        ## check added by Klaus:
+        if(any(duplicated(c(x$tip.label, x$node.label))))
+            stop("Duplicated labels!")
         x$edge <- matrix(c(x$tip.label, x$node.label)[x$edge], ncol = 2)
-    } else x$edge <- x$edge - 1L
+    }# else x$edge <- x$edge - 1L # changed in graph 1.0+, not needed anymore
     graph.edgelist(x$edge, directed = directed, ...)
 }
