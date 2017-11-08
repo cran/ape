@@ -1,4 +1,4 @@
-## is.compatible.R (2011-10-11)
+## is.compatible.R (2017-06-03)
 
 ##   Check Compatibility of Splits
 
@@ -32,5 +32,5 @@ arecompatible <-function(x, y, n)
     }
 
     nE <- foo(x & y) + foo(x & !y) + foo(!x & y) + foo(!x & !y)
-    if (nE == 1) TRUE else FALSE
+    if (nE >= 1) TRUE else FALSE
 }

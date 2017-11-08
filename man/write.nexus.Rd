@@ -23,6 +23,9 @@ write.nexus(..., file = "", translate = TRUE)
 
   If among the objects given some are not trees of class \code{"phylo"},
   they are simply skipped and not written in the file.
+
+  See \code{\link{write.tree}} for details on how tip (and node) labels
+  are checked before being printed.
 }
 \value{
   None (invisible `NULL').

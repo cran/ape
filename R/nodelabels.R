@@ -1,8 +1,8 @@
-## nodelabels.R (2014-07-31)
+## nodelabels.R (2017-03-13)
 
 ##   Labelling Trees
 
-## Copyright 2004-2014 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
+## Copyright 2004-2017 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -50,7 +50,7 @@ BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
     if (missing(text)) text <- NULL
     if (length(adj) == 1) adj <- c(adj, 0.5)
     if (is.null(text) && is.null(pch) && is.null(thermo) && is.null(pie))
-      text <- as.character(sel)
+        text <- as.character(sel)
     frame <- match.arg(frame, c("rect", "circle", "none"))
     args <- list(...)
     CEX <- if ("cex" %in% names(args)) args$cex else par("cex")
@@ -163,12 +163,31 @@ tiplabels <-
     function(text, tip, adj = c(0.5, 0.5), frame = "rect",
              pch = NULL, thermo = NULL, pie = NULL, piecol = NULL,
              col = "black", bg = "yellow", horiz = FALSE,
-             width = NULL, height = NULL, ...)
+             width = NULL, height = NULL, offset = 0, ...)
 {
     lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
     if (missing(tip)) tip <- 1:lastPP$Ntip
     XX <- lastPP$xx[tip]
     YY <- lastPP$yy[tip]
+    if (offset != 0) {
+        if (lastPP$type %in% c("phylogram", "cladogram")) {
+            switch(lastPP$direction,
+                   "rightwards" = {XX <- XX + offset},
+                   "leftwards" = {XX <- XX - offset},
+                   "upwards" = {YY <- YY + offset},
+                   "downwards" = {YY <- YY - offset})
+        } else {
+            if (lastPP$type %in% c("fan", "radial")) {
+                tmp <- rect2polar(XX, YY)
+                tmp <- polar2rect(tmp$r + offset, tmp$angle)
+                XX <- tmp$x
+                YY <- tmp$y
+            } else {
+                if (lastPP$type == "unrooted")
+                    warning("argument 'offset' ignored with unrooted trees")
+            }
+        }
+    }
     BOTHlabels(text, tip, XX, YY, adj, frame, pch, thermo,
                pie, piecol, col, bg, horiz, width, height, ...)
 }

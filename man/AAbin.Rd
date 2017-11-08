@@ -10,6 +10,10 @@
 \alias{as.phyDat.AAbin}
 \alias{dist.aa}
 \alias{AAsubst}
+\alias{c.AAbin}
+\alias{as.AAbin.list}
+\alias{as.list.AAbin}
+\alias{as.matrix.AAbin}
 \title{Amino Acid Sequences}
 \description{
   These functions help to create and manipulate AA sequences.
@@ -19,15 +23,24 @@
 
 \method{[}{AAbin}(x, i, j, drop = FALSE)
 
+\method{c}{AAbin}(..., recursive = FALSE)
+
 \method{as.character}{AAbin}(x, \dots)
 
 \method{labels}{AAbin}(object, \dots)
 
 \method{image}{AAbin}(x, what, col, bg = "white", xlab = "", ylab = "",
-      show.labels = TRUE, cex.lab = 1, legend = TRUE, \dots)
+      show.labels = TRUE, cex.lab = 1, legend = TRUE, grid = FALSE,
+      show.aa = FALSE, aa.cex = 1, aa.font = 1, aa.col = "black",\dots)
 
 as.AAbin(x, \dots)
 \method{as.AAbin}{character}(x, \dots)
+
+\method{as.AAbin}{list}(x, ...)
+
+\method{as.list}{AAbin}(x, ...)
+
+\method{as.matrix}{AAbin}(x, ...)
 
 \method{as.phyDat}{AAbin}(x, \dots)
 
@@ -35,12 +48,15 @@ dist.aa(x, pairwise.deletion = FALSE, scaled = FALSE)
 AAsubst(x)
 }
 \arguments{
-\item{x, object}{an object of class \code{"AAbin"}.}
+\item{x, object}{an object of class \code{"AAbin"} (or else depending on
+the function).}
 \item{i, j}{indices of the rows and/or columns to select or to
 drop. They may be numeric, logical, or character (in the same way than
 for standard \R objects).}
 \item{drop}{logical; if \code{TRUE}, the returned object is of the
 lowest possible dimension.}
+\item{recursive}{logical; whether to go down lists and concatenate its
+elements.}
 \item{what}{a vector of characters specifying the amino acids to
 visualize. Currently, the only possible choice is to show the three
 categories hydrophobic, small, and hydrophilic.}
@@ -58,6 +74,12 @@ labels. Use \code{cex.axis} to control the size of the annotations on
 the \emph{x}-axis.}
 \item{legend}{a logical controlling whether the legend is plotted
 (\code{TRUE} by default).}
+\item{grid}{a logical controlling whether to draw a grid (\code{FALSE} by
+default).}
+\item{show.aa}{a logical controlling whether to show the AA symbols (\code{FALSE} by
+default).}
+\item{aa.cex, aa.font, aa.col}{control the aspect of the AA symbols
+(ignored if the previous is \code{FALSE}).}
 \item{pairwise.deletion}{a logical indicating whether to delete the
 sites with missing data in a pairwise way. The default is to delete the
 sites with at least one missing data for all sequences.}
@@ -89,7 +111,7 @@ acid sequence files in FASTA format.
 an object of class \code{"AAbin"}, \code{"character"}, \code{"phyDat"},
 \code{"dist"}, or \code{"numeric"}, depending on the function.
 }
-\author{Emmanuel Paradis}
+\author{Emmanuel Paradis, Franz Krah}
 \seealso{
 \code{\link{trans}}, \code{\link{alview}}
 }

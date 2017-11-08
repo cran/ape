@@ -1,4 +1,4 @@
-## subtreeplot.R (2008-04-30)
+## subtreeplot.R (2017-05-26)
 
 ##  Zoom on a Portion of a Phylogeny by Successive Clicks
 
@@ -23,13 +23,16 @@ subtreeplot<-function(x, wait=FALSE, ...) {
         N.tip<-Ntip(x)
         N.node<-Nnode(x)
 
-        coor<-plotPhyloCoor(x)
+        # 5/24/17 changed by Klaus
+        # coor<-plotPhyloCoor(x)
+        lastPP <- get("last_plot.phylo", envir = .PlotPhyloEnv)
         tips<-x$tip.label
         nodes<-x$node.label
         if (is.null(x$node.label)) nodes<-(N.tip+1):(N.tip+N.node)
         labs<-c(rep("",N.tip), nodes)
 
-        click<-identify(coor[,1], coor[,2], labels=labs, n=1)
+        #click<-identify(coor[,1], coor[,2], labels=labs, n=1)
+        click<-identify(lastPP$xx, lastPP$yy, labels=labs, n=1)
         if (length(click) == 0) {return(y)}
         if (click > N.tip) {
             close.screen(c(1,2),all.screens = TRUE)

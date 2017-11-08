@@ -23,8 +23,9 @@ importFrom(stats, AIC, as.dist, as.hclust, biplot, coef, complete.cases,
            qbinom, qnorm, qt, quantile, quasibinomial, rbinom, reorder, resid,
            rexp, rgamma, rnorm, runif, sd, setNames, terms, uniroot, var,
            wilcox.test)
-importFrom(utils, download.file, edit, read.table, str)
+importFrom(utils, browseURL, download.file, edit, read.table, str)
 importFrom(parallel, mclapply)
+importFrom(Rcpp,sourceCpp)
 
 ## Methods for the classes defined in ape, including for the generics
 ## defined in ape (see also below). Some methods are exported above.
@@ -33,6 +34,9 @@ S3method(is.binary, tree) # to delete when removing the function
 
 S3method("[", AAbin)
 S3method(as.character, AAbin)
+S3method(as.list, AAbin)
+S3method(as.matrix, AAbin)
+S3method(c, AAbin)
 S3method(image, AAbin)
 S3method(labels, AAbin)
 S3method(print, AAbin)
@@ -70,8 +74,10 @@ S3method(print, DNAbin)
 S3method(rbind, DNAbin)
 
 S3method(as.phylo, evonet)
+S3method(Nedge, evonet)
 S3method(plot, evonet)
 S3method(print, evonet)
+S3method(reorder, evonet)
 
 S3method("[", multiPhylo)
 S3method("[<-", multiPhylo)
@@ -173,6 +179,7 @@ S3method(print, parafit)
 ## Other methods of the generics defined in ape:
 
 S3method(as.AAbin, character)
+S3method(as.AAbin, list)
 
 S3method(as.DNAbin, alignment)
 S3method(as.DNAbin, character)
@@ -181,6 +188,8 @@ S3method(as.DNAbin, DNAString)
 S3method(as.DNAbin, DNAStringSet)
 S3method(as.DNAbin, list)
 S3method(as.DNAbin, PairwiseAlignmentsSingleSubject)
+
+S3method(as.evonet, phylo)
 
 S3method(as.phylo, formula)
 S3method(as.phylo, hclust)

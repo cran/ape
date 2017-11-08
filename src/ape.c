@@ -1,4 +1,4 @@
-/* ape.c    2016-06-21 */
+/* ape.c    2017-07-27 */
 
 /* Copyright 2011-2016 Emmanuel Paradis, and 2007 R Development Core Team */
 
@@ -81,12 +81,18 @@ void CountBipartitionsFromTrees(int *n, int *m, int *e, int *N, int *nr, int *nc
 void DNAbin2indelblock(unsigned char *x, int *n, int *s, int *y);
 void trans_DNA2AA(unsigned char *x, int *s, unsigned char *res, int *code);
 
-SEXP bipartition(SEXP edge, SEXP nbtip, SEXP nbnode);
-SEXP prop_part(SEXP TREES, SEXP nbtree, SEXP keep_partitions);
+//SEXP bipartition(SEXP edge, SEXP nbtip, SEXP nbnode);
+//SEXP prop_part(SEXP TREES, SEXP nbtree, SEXP keep_partitions);
 SEXP rawStreamToDNAbin(SEXP x);
 SEXP seq_root2tip(SEXP edge, SEXP nbtip, SEXP nbnode);
 SEXP treeBuildWithTokens(SEXP nwk);
+SEXP treeBuild(SEXP nwk);
+SEXP cladoBuildWithTokens(SEXP nwk);
+SEXP cladoBuild(SEXP nwk);
 SEXP bitsplits_multiPhylo(SEXP x, SEXP n, SEXP nr);
+SEXP _ape_prop_part2(SEXP trees, SEXP nTips);
+SEXP _ape_bipartition2(SEXP orig, SEXP nTips);
+SEXP _ape_reorderRcpp(SEXP orig, SEXP nTips, SEXP root, SEXP order);
 
 static R_CMethodDef C_entries[] = {
     {"C_additive", (DL_FUNC) &C_additive, 4},
@@ -106,11 +112,11 @@ static R_CMethodDef C_entries[] = {
     {"neworder_pruningwise", (DL_FUNC) &neworder_pruningwise, 6},
     {"C_nj", (DL_FUNC) &C_nj, 5},
     {"C_njs", (DL_FUNC) &C_njs, 6},
-    {"node_depth", (DL_FUNC) &node_depth, 7},
-    {"node_depth_edgelength", (DL_FUNC) &node_depth_edgelength, 7},
-    {"node_height", (DL_FUNC) &node_height, 6},
-    {"node_height_clado", (DL_FUNC) &node_height_clado, 7},
-    {"C_pic", (DL_FUNC) &C_pic, 10},
+    {"node_depth", (DL_FUNC) &node_depth, 6},
+    {"node_depth_edgelength", (DL_FUNC) &node_depth_edgelength, 5},
+    {"node_height", (DL_FUNC) &node_height, 4},
+    {"node_height_clado", (DL_FUNC) &node_height_clado, 6},
+    {"C_pic", (DL_FUNC) &C_pic, 9},
     {"C_rTraitCont", (DL_FUNC) &C_rTraitCont, 9},
     {"C_treePop", (DL_FUNC) &C_treePop, 7},
     {"C_triangMtd", (DL_FUNC) &C_triangMtd, 5},
@@ -124,15 +130,21 @@ static R_CMethodDef C_entries[] = {
 };
 
 static R_CallMethodDef Call_entries[] = {
-    {"bipartition", (DL_FUNC) &bipartition, 3},
-    {"prop_part", (DL_FUNC) &prop_part, 3},
+//    {"bipartition", (DL_FUNC) &bipartition, 3},
+//    {"prop_part", (DL_FUNC) &prop_part, 3},
     {"rawStreamToDNAbin", (DL_FUNC) &rawStreamToDNAbin, 1},
     {"seq_root2tip", (DL_FUNC) &seq_root2tip, 3},
     {"treeBuildWithTokens", (DL_FUNC) &treeBuildWithTokens, 1},
+    {"treeBuild", (DL_FUNC) &treeBuild, 1},
+    {"cladoBuildWithTokens", (DL_FUNC) &cladoBuildWithTokens, 1},
+    {"cladoBuild", (DL_FUNC) &cladoBuild, 1},
     {"bitsplits_multiPhylo", (DL_FUNC) &bitsplits_multiPhylo, 3},
     {"BaseProportion", (DL_FUNC) &BaseProportion, 1},
     {"SegSites", (DL_FUNC) &SegSites, 1},
     {"C_where", (DL_FUNC) &C_where, 2},
+    {"_ape_bipartition2", (DL_FUNC) &_ape_bipartition2, 2},
+    {"_ape_prop_part2", (DL_FUNC) &_ape_prop_part2, 2},
+    {"_ape_reorderRcpp", (DL_FUNC) &_ape_reorderRcpp, 4},
     {NULL, NULL, 0}
 };
 

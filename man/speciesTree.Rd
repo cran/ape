@@ -42,16 +42,11 @@ TR <- c(tr1, tr2)
 TSmax <- speciesTree(TR) # MAXTREE
 TSsha <- speciesTree(TR, mean) # shallowest divergence
 
-layout(matrix(1:4, 1))
-## playing with 'x.lim' is not so complicated
-## but this will be improved someday
-plot(tr1, "c", d = "u", y.lim = c(-0.07, 0.1), font = 1)
-axisPhylo(4); title("Gene tree 1")
-plot(tr2, "c", d = "u", y.lim = c(-0.05, 0.12), font = 1)
-axisPhylo(4); title("Gene tree 2")
-plot(TSmax, "c", d = "u", y.lim = c(-0.1, 0.07), font = 1)
-axisPhylo(4); title("Species tree inferred\nby MAXTREE")
-plot(TSsha, "c", d = "u", y.lim = c(0, 0.17), font = 1)
-axisPhylo(4); title("Species tree inferred\nby Shallowest Divergence")
+kronoviz(c(tr1, tr2, TSmax, TSsha), horiz = FALSE,
+         type = "c", cex = 1.5, font = 1)
+mtext(c("Gene tree 1", "Gene tree 2", "Species tree - MAXTREE"),
+      at = -c(7.5, 4, 1))
+mtext("Species tree - Shallowest Divergence")
+layout(1)
 }
 \keyword{models}

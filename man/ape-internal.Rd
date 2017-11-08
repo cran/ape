@@ -1,5 +1,4 @@
 \name{ape-internal}
-\alias{tree.build}
 \alias{f.cherry.yule}
 \alias{f.cherry.uniform}
 \alias{sortIndex}
@@ -7,7 +6,6 @@
 \alias{perm.rowscols}
 \alias{mant.zstat}
 \alias{lower.triang}
-\alias{clado.build}
 \alias{phylogram.plot}
 \alias{cladogram.plot}
 \alias{circular.plot}
@@ -60,10 +58,19 @@
 \alias{node_depth_edgelength}
 \alias{node_height}
 \alias{node_height_clado}
-\alias{prop_part}
+%\alias{prop_part}
+\alias{_ape_bipartition2}
+\alias{_ape_prop_part2}
+\alias{_ape_reorderRcpp}
+\alias{bipartition2}
+\alias{prop_part2}
+\alias{reorderRcpp}
 \alias{rawStreamToDNAbin}
 \alias{seq_root2tip}
+\alias{treeBuild}
 \alias{treeBuildWithTokens}
+\alias{cladoBuild}
+\alias{cladoBuildWithTokens}
 \alias{polar2rect}
 \alias{rect2polar}
 \alias{CountBipartitionsFromTrees}
@@ -84,6 +91,6 @@
 \alias{trans_DNA2AA}
 \title{Internal Ape Functions}
 \description{
-  Internal \pkg{ape} functions.
+  Internal \pkg{ape} functions. Do not call these from other packages.
 }
 \keyword{internal}

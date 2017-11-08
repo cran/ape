@@ -119,7 +119,8 @@
         		## The two halves are stored as symmetric matrices in D1[[k]] and D2[[k]]
         		vec <- c(vec, as.vector(as.dist(t(D.temp))))
         		diag(D.temp) <- NA
-        		D.temp2 <- rank(D.temp)
+                        D.temp2 <- rank(D.temp)
+                        dim(D.temp2) <- dim(D.temp)   # Correction E. Paradis, 08may17
         		diag(D.temp2) <- 0
         		# cat("nrow =",nrow(D.temp2)," ncol =",ncol(D.temp2),'\n')
 				# cat("Matrix ",k," min =",min(D.temp2)," max =",max(D.temp2),'\n')

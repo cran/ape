@@ -171,7 +171,9 @@ bstrees <- boot.phylo(tree, woodmouse, fun, trees = TRUE)$trees
 clad <- prop.clades(tree, bstrees, rooted = TRUE)
 ## get proportions of each bipartition:
 boot <- prop.clades(tree, bstrees)
-plot(tree, main = "Bipartitions vs. Clades Support Values")
+layout(1)
+par(mar = rep(2, 4))
+plot(tree, main = "Bipartition vs. Clade Support Values")
 drawSupportOnEdges(boot)
 nodelabels(clad)
 legend("bottomleft", legend = c("Bipartitions", "Clades"), pch = 22,

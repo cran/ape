@@ -127,6 +127,8 @@ bstick.def <- function (n, tot.var = 1, ...)   # 'bstick.default' from vegan
 		cum.eig.cor <- cumsum(rel.eig.cor) 
 		k2 <- length(which(eig.cor > epsilon))
 		vectors.cor <- sweep(toto.cor$vectors[,1:k2], 2, sqrt(eig.cor[1:k2]), FUN="*")
+		rownames(vectors.cor) <- names
+		colnames(vectors.cor) <- colnames(vectors.cor, do.NULL = FALSE, prefix = "Axis.")
 		# bs <- broken.stick(k2)[,2]
 		bs <- bstick.def(k2)
 		bs <- c(bs, rep(0,(k-k2)))
@@ -138,6 +140,8 @@ bstick.def <- function (n, tot.var = 1, ...)   # 'bstick.default' from vegan
 		if(correct == 3) cat("Problem! Negative eigenvalues are still present after Cailliez",'\n') 
 		rel.eig.cor <- cum.eig.cor <- bs <- cum.bs <- rep(NA,n)
 		vectors.cor <- matrix(NA,n,2)
+		rownames(vectors.cor) <- names
+		colnames(vectors.cor) <- colnames(vectors.cor, do.NULL = FALSE, prefix = "Axis.")
 		}   # End curly 4
 
 	res <- data.frame(eig[1:k], eig.cor[1:k], rel.eig.cor, bs, cum.eig.cor, cum.bs)

@@ -1,6 +1,7 @@
 \name{apetools}
 \alias{apetools}
 \alias{Xplorefiles}
+\alias{Xplor}
 \alias{editFileExtensions}
 \alias{bydir}
 \title{Tools to Explore Files}
@@ -11,6 +12,7 @@
 Xplorefiles(from = "HOME", recursive = TRUE, ignore.case = TRUE)
 editFileExtensions()
 bydir(x)
+Xplor()
 }
 \arguments{
   \item{from}{the directory where to start the file search; by default,
@@ -30,6 +32,9 @@ bydir(x)
   (.phy). This list can be modified with \code{editFileExtensions}.
 
   \code{bydir} sorts the list of files by directories.
+
+  \code{Xplor} combines the other operations and opens the results in
+  a Web browser with clickable links to the directories and files.
 }
 \value{
   \code{Xplorefiles} returns a list. \code{bydir} prints the file
@@ -43,5 +48,6 @@ x # all data files on your disk
 bydir(x) # sorted by directories
 bydir(x["fasta"]) # only the FASTA files
 Xplorefiles(getwd(), recursive = FALSE) # look only in current dir
+Xplor()
 }}
 \keyword{manip}

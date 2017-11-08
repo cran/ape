@@ -36,8 +36,8 @@ rTraitCont(phy, model = "BM", sigma = 0.1, alpha = 1, theta = 0,
   \code{sigma} has more than one value, its length must be equal to the
   the branches of the tree. This allows to specify a model with variable
   rates of evolution. You must be careful that branch numbering is done
-  with the tree in ``pruningwise'' order: to see the order of the branches
-  you can use: \code{tr <- reorder(tr, "p"); plor(tr); edgelabels()}.
+  with the tree in ``postorder'' order: to see the order of the branches
+  you can use: \code{tr <- reorder(tr, "po"); plor(tr); edgelabels()}.
   The arguments \code{alpha} and \code{theta} are ignored.}
 
   \item{\code{"OU"}:}{an Ornstein-Uhlenbeck model is used. The above

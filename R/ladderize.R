@@ -1,8 +1,8 @@
-## ladderize.R (2015-10-04)
+## ladderize.R (2017-04-25)
 
 ##   Ladderize a Tree
 
-## Copyright 2007-2015 Emmanuel Paradis
+## Copyright 2007-2017 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -30,9 +30,9 @@ ladderize <- function(phy, right = TRUE)
     nb.node <- phy$Nnode
     nb.edge <- dim(phy$edge)[1]
     tmp <- reorder(phy, "postorder")
-    N <- .C(node_depth, as.integer(nb.tip), as.integer(nb.node),
+    N <- .C(node_depth, as.integer(nb.tip),
             as.integer(tmp$edge[, 1]), as.integer(tmp$edge[, 2]),
-            as.integer(nb.edge), double(nb.tip + nb.node), 1L)[[6]]
+            as.integer(nb.edge), double(nb.tip + nb.node), 1L)[[5]]
     neworder <- integer(nb.edge)
     foo(nb.tip + 1, nb.edge, 1)
     phy$edge <- phy$edge[neworder, ]

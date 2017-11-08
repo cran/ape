@@ -1,13 +1,13 @@
-## drop.tip.R (2017-02-14)
+## drop.tip.R (2017-07-27)
 
 ##   Remove Tips in a Phylogenetic Tree
 
-## Copyright 2003-2017 Emmanuel Paradis
+## Copyright 2003-2017 Emmanuel Paradis, 2017 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-extract.clade <- function(phy, node, root.edge = 0, interactive = FALSE)
+extract.clade <- function(phy, node, root.edge = 0, collapse.singles = TRUE, interactive = FALSE)
 {
     n <- length(phy$tip.label)
     if (interactive) {
@@ -29,12 +29,14 @@ extract.clade <- function(phy, node, root.edge = 0, interactive = FALSE)
     }
     if (node == n + 1L) return(phy)
     keep <- prop.part(phy)[[node - n]]
-    drop.tip(phy, (1:n)[-keep], root.edge = root.edge, rooted = TRUE)
+    drop.tip(phy, (1:n)[-keep], root.edge = root.edge, rooted = TRUE,
+             collapse.singles = collapse.singles)
 }
 
 drop.tip <-
     function(phy, tip, trim.internal = TRUE, subtree = FALSE,
-             root.edge = 0, rooted = is.rooted(phy), interactive = FALSE)
+             root.edge = 0, rooted = is.rooted(phy), collapse.singles = TRUE,
+             interactive = FALSE)
 {
     if (!inherits(phy, "phylo"))
         stop('object "phy" is not of class "phylo"')
@@ -95,9 +97,9 @@ drop.tip <-
     if (subtree) {
         trim.internal <- TRUE
         tr <- reorder(phy, "postorder")
-        N <- .C(node_depth, as.integer(Ntip), as.integer(Nnode),
+        N <- .C(node_depth, as.integer(Ntip),
                 as.integer(tr$edge[, 1]), as.integer(tr$edge[, 2]),
-                as.integer(Nedge), double(Ntip + Nnode), 1L)[[6]]
+                as.integer(Nedge), double(Ntip + Nnode), 1L)[[5]]
     }
 
     edge1 <- phy$edge[, 1] # local copies
@@ -199,6 +201,6 @@ drop.tip <-
     storage.mode(phy$edge) <- "integer"
     if (!is.null(phy$node.label)) # update node.label if needed
         phy$node.label <- phy$node.label[which(newNb > 0) - Ntip]
-    collapse.singles(phy)
+    if (collapse.singles) phy <- collapse.singles(phy)
+    phy
 }
-

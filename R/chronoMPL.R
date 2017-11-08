@@ -1,8 +1,8 @@
-## chronoMPL.R (2007-08-29)
+## chronoMPL.R (2017-04-25)
 
 ##   Molecular Dating with Mean Path Lengths
 
-## Copyright 2007 Emmanuel Paradis
+## Copyright 2007-2017 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -14,9 +14,9 @@ chronoMPL <- function(phy, se = TRUE, test = TRUE)
     m <- phy$Nnode
     N <- dim(phy$edge)[1]
     obj <- reorder(phy, "postorder")
-    ndesc <- .C(node_depth, as.integer(n), as.integer(m),
+    ndesc <- .C(node_depth, as.integer(n),
                 as.integer(obj$edge[, 1]), as.integer(obj$edge[, 2]),
-                as.integer(N), double(n + m), 1L)[[6]]
+                as.integer(N), double(n + m), 1L)[[5]]
     s <- numeric(n + m) # sum of path lengths
     if (se) ss <- s
     if (test) Pval <- numeric(m)

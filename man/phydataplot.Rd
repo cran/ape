@@ -27,7 +27,8 @@ ring(x, phy, style = "ring", offset = 1, ...)
   \item{width}{(used if style = "mosaic") the width of the cells; by
     default, all the available space is used.}
   \item{legend}{(used if style = "mosaic") the place where to draw the
-    legend; if not the default, the legend is drawn besides the mosaic.}
+    legend; one of \code{"below"} (the default), \code{"side"}, or
+    \code{"none"}, or an unambiguous abbreviation of these.}
   \item{funcol}{(used if style = "mosaic") the function used to generate
     the colours (see details and examples).}
   \item{\dots}{further arguments passed to the graphical functions.}
@@ -46,7 +47,8 @@ ring(x, phy, style = "ring", offset = 1, ...)
   discretizing its values (using \code{continuous}). The default colour
   palette is taken from the function \code{\link[grDevices]{rainbow}}.
   If you want to use specified colours, a function simply returning the
-  vector of colours must be used (see examples).
+  vector of colours must be used, possibly with names if you want to
+  assign a specific colour to each value (see examples).
 }
 \note{
   For the moment, only rightwards trees are supported (does not apply to
@@ -162,6 +164,11 @@ phydataplot(x, tr, "m", 2, width = 2, border = "white", lwd = 3, legend = "side"
 f <- function(n) c("yellow", "blue", "red")
 phydataplot(x, tr, "m", 18, width = 2, border = "white", lwd = 3,
             legend = "side", funcol = f)
+
+## alternative colour function...:
+## fb <- function(n) c("3" = "red", "2" = "blue", "1" = "yellow")
+## ... but since the values are sorted alphabetically,
+## both f and fb will produce the same plot.
 
 ## use continuous = TRUE with two different scales:
 x[] <- 1:(n*p)

@@ -13,7 +13,7 @@
 \usage{
 LTT(birth = 0.1, death = 0, N = 100, Tmax = 50, PI = 95,
     scaled = TRUE, eps = 0.1, add = FALSE, backward = TRUE,
-    ltt.style = list("black", 1, 1), pi.style = list("blue", 1, 2))
+    ltt.style = list("black", 1, 1), pi.style = list("blue", 1, 2), ...)
 }
 \arguments{
   \item{birth}{the speciation rate, this may be either a numeric value
@@ -34,6 +34,7 @@ LTT(birth = 0.1, death = 0, N = 100, Tmax = 50, PI = 95,
     LTT curve with, respectively, the colour (\code{"col"}), the line
     thickness (\code{"lwd"}), and the line type (\code{"lty"}).}
   \item{pi.style}{id. for the prediction interval.}
+  \item{\dots}{arguments passed to \code{plot} (e.g., \code{log="y"}).}
 }
 \details{
   For the moment, this works well when \code{birth} and \code{death} are

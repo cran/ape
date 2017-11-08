@@ -63,6 +63,7 @@ data(bird.orders)
 layout(matrix(1:4, 2, 2))
 for (i in 1:4)
   plot(rcoal(23, tip.label = bird.orders$tip.label), no.margin = TRUE)
-layout(matrix(1))
+layout(1)
+par(mar = c(5, 4, 4, 2))
 }
 \keyword{datagen}

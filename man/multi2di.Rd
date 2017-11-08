@@ -49,6 +49,6 @@ tr <- read.tree(text = "(a:1,b:1,c:1);")
 layout(matrix(1:4, 2, 2))
 for (i in 1:4)
   plot(multi2di(tr), use.edge.length = FALSE, cex = 1.5)
-layout(matrix(1))
+layout(1)
 }
 \keyword{manip}

@@ -210,7 +210,7 @@ plot(tree.owls, type = "u")
 plot(tree.owls, use.edge.length = FALSE, main = "Without branch lengths")
 plot(tree.owls, type = "c", use.edge.length = FALSE)
 plot(tree.owls, type = "u", use.edge.length = FALSE)
-layout(matrix(1))
+layout(1)
 
 data(bird.orders)
 ### using random colours and thickness

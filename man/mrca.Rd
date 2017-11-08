@@ -17,7 +17,8 @@ getMRCA(phy, tip)
   \item{full}{a logical indicating whether to return the MRCAs among
     all tips and nodes (if \code{TRUE}); the default is to return only
     the MRCAs among tips.}
-  \item{tip}{a vector of mode numeric or character specifying the tips.}
+  \item{tip}{a vector of mode numeric or character specifying the tips;
+    can also be node numbers.}
 }
 \details{
   For \code{mrca}, the diagonal is set to the number of the tips (and
@@ -32,5 +33,5 @@ getMRCA(phy, tip)
   a matrix of mode numeric (\code{mrca}) or a single numeric value
   (\code{getMRCA}).
 }
-\author{Emmanuel Paradis}
+\author{Emmanuel Paradis, Klaus Schliep, Joseph W. Brown}
 \keyword{manip}

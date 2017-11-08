@@ -1,15 +1,22 @@
 \name{reorder.phylo}
 \alias{reorder.phylo}
 \alias{reorder.multiPhylo}
+\alias{cladewise}
+\alias{postorder}
 \title{Internal Reordering of Trees}
 \description{
-  This function changes the internal structure of a phylogeny stored as
+  \code{reorder} changes the internal structure of a phylogeny stored as
   an object of class \code{"phylo"}. The tree returned is the same than
   the one input, but the ordering of the edges could be different.
+
+  \code{cladewise} and \code{postorder} are convenience functions to
+  return only the indices of the reordered edge matrices (see examples).
 }
 \usage{
 \method{reorder}{phylo}(x, order = "cladewise", index.only = FALSE, ...)
 \method{reorder}{multiPhylo}(x, order = "cladewise", ...)
+cladewise(x)
+postorder(x)
 }
 \arguments{
   \item{x}{an object of class \code{"phylo"} or \code{"multiPhylo"}.}
@@ -59,5 +66,22 @@ data(bird.families)
 tr <- reorder(bird.families, "postorder")
 all.equal(bird.families, tr) # uses all.equal.phylo actually
 all.equal.list(bird.families, tr) # bypasses the generic
+
+## get the number of descendants for each tip or node:
+nr_desc <-  function(x) {
+    res <- numeric(max(x$edge))
+    res[1:Ntip(x)] <- 1L
+    for (i in postorder(x)) {
+       tmp <- x$edge[i,1]
+       res[tmp] <- res[tmp] + res[x$edge[i, 2]]
+   }
+   res
+}
+## apply it to a random tree:
+tree <- rtree(10)
+plot(tree, show.tip.label = FALSE)
+tiplabels()
+nodelabels()
+nr_desc(tree)
 }
 \keyword{manip}

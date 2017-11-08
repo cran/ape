@@ -6,7 +6,9 @@
 }
 \usage{
 \method{image}{DNAbin}(x, what, col, bg = "white", xlab = "", ylab = "",
-      show.labels = TRUE, cex.lab = 1, legend = TRUE, ...)
+      show.labels = TRUE, cex.lab = 1, legend = TRUE,
+      grid = FALSE, show.bases = FALSE, base.cex = 1,
+      base.font = 1, base.col = "black", ...)
 }
 \arguments{
   \item{x}{a matrix of DNA sequences (class \code{"DNAbin"}).}
@@ -24,11 +26,19 @@
   \item{show.labels}{a logical controlling whether the sequence labels
     are printed (\code{TRUE} by default).}
   \item{cex.lab}{a single numeric controlling the size of the sequence labels.
-    Use \code{cex.axis} to control the size of the annotations on the \emph{x}-axis.}
+    Use \code{cex.axis} to control the size of the annotations on the
+    \emph{x}-axis.}
   \item{legend}{a logical controlling whether the legend is plotted
     (\code{TRUE} by default).}
+  \item{grid}{a logical controlling whether to draw a grid (\code{FALSE}
+    by default).}
+  \item{show.bases}{a logical controlling whether to show the base symbols
+    (\code{FALSE} by default).}
+  \item{base.cex, base.font, base.col}{control the aspect of the base
+    symbols (ignored if the previous is \code{FALSE}).}
   \item{\dots}{further arguments passed to
-    \code{\link[graphics]{image.default}} (e.g., \code{cex.axis}).}
+    \code{\link[graphics]{image.default}} (e.g., \code{xlab},
+    \code{cex.axis}).}
 }
 \details{
   The idea of this function is to allow flexible plotting and colouring

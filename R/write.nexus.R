@@ -1,8 +1,8 @@
-## write.nexus.R (2014-12-10)
+## write.nexus.R (2017-09-08)
 
 ##   Write Tree File in Nexus Format
 
-## Copyright 2003-2014 Emmanuel Paradis
+## Copyright 2003-2017 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.

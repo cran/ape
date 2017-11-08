@@ -1,14 +1,14 @@
-/* plot_phylo.c (2014-03-05) */
+/* plot_phylo.c (2017-04-25) */
 
-/* Copyright 2004-2014 Emmanuel Paradis */
+/* Copyright 2004-2017 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
 
 #include <R.h>
 
-void node_depth_edgelength(int *ntip, int *nnode, int *edge1, int *edge2,
-			   int *nedge, double *edge_length, double *xx)
+void node_depth_edgelength(int *edge1, int *edge2, int *nedge,
+			   double *edge_length, double *xx)
 {
     int i;
 
@@ -19,7 +19,7 @@ void node_depth_edgelength(int *ntip, int *nnode, int *edge1, int *edge2,
       xx[edge2[i] - 1] = xx[edge1[i] - 1] + edge_length[i];
 }
 
-void node_depth(int *ntip, int *nnode, int *e1, int *e2,
+void node_depth(int *ntip, int *e1, int *e2,
 		int *nedge, double *xx, int *method)
 /* method == 1: the node depths are proportional to the number of tips
    method == 2: the node depths are evenly spaced */
@@ -47,8 +47,7 @@ void node_depth(int *ntip, int *nnode, int *e1, int *e2,
     }
 }
 
-void node_height(int *ntip, int *nnode, int *edge1, int *edge2,
-		 int *nedge, double *yy)
+void node_height(int *edge1, int *edge2, int *nedge, double *yy)
 {
     int i, n;
     double S;
@@ -73,14 +72,14 @@ void node_height(int *ntip, int *nnode, int *edge1, int *edge2,
     yy[edge1[i] - 1] = S/n;
 }
 
-void node_height_clado(int *ntip, int *nnode, int *edge1, int *edge2,
+void node_height_clado(int *ntip, int *edge1, int *edge2,
 		       int *nedge, double *xx, double *yy)
 {
     int i, j, n;
     double S;
 
     i = 1;
-    node_depth(ntip, nnode, edge1, edge2, nedge, xx, &i);
+    node_depth(ntip, edge1, edge2, nedge, xx, &i);
 
     /* The coordinates of the tips have been already computed */
 

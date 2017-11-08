@@ -11,8 +11,10 @@
 }
 \usage{
 drop.tip(phy, tip, trim.internal = TRUE, subtree = FALSE,
-         root.edge = 0, rooted = is.rooted(phy), interactive = FALSE)
-extract.clade(phy, node, root.edge = 0, interactive = FALSE)
+         root.edge = 0, rooted = is.rooted(phy), collapse.singles = TRUE,
+         interactive = FALSE)
+extract.clade(phy, node, root.edge = 0, collapse.singles = TRUE,
+              interactive = FALSE)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -28,6 +30,8 @@ extract.clade(phy, node, root.edge = 0, interactive = FALSE)
   \item{rooted}{a logical indicating whether the tree must be treated as
     rooted or not. This allows to force the tree to be considered as
     unrooted (see examples).}
+  \item{collapse.singles}{a logical specifying whether to delete the
+    internal nodes of degree 2.}
   \item{node}{a node number or label.}
   \item{interactive}{if \code{TRUE} the user is asked to select the tips
     or the node by clicking on the tree which must be plotted.}
@@ -60,7 +64,7 @@ extract.clade(phy, node, root.edge = 0, interactive = FALSE)
 \value{
   an object of class \code{"phylo"}.
 }
-\author{Emmanuel Paradis}
+\author{Emmanuel Paradis, Klaus Schliep}
 \seealso{
   \code{\link{bind.tree}}, \code{\link{root}}
 }

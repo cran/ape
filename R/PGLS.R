@@ -1,8 +1,8 @@
-## PGLS.R (2014-12-11)
+## PGLS.R (2017-04-25)
 
 ##   Phylogenetic Generalized Least Squares
 
-## Copyright 2004 Julien Dutheil, and 2006-2014 Emmanuel Paradis
+## Copyright 2004 Julien Dutheil, and 2006-2017 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -167,9 +167,7 @@ coef.corGrafen <- function(object, unconstrained = TRUE, ...)
     aux
 }
 
-### removed node.sons() and node.leafnumber()  (2006-10-12)
-
-### changed by EP (2006-10-12):
+## changed by EP (2006-10-12):
 
 compute.brlen <- function(phy, method = "Grafen", power = 1, ...)
 {
@@ -188,9 +186,9 @@ compute.brlen <- function(phy, method = "Grafen", power = 1, ...)
     }
     if (is.character(method)) { # == "Grafen"
         tr <- reorder(phy, "postorder")
-        xx <- .C(node_depth, as.integer(Ntip), as.integer(Nnode),
+        xx <- .C(node_depth, as.integer(Ntip),
                  as.integer(tr$edge[, 1]), as.integer(tr$edge[, 2]),
-                 as.integer(Nedge), double(Ntip + Nnode), 1L)[[6]] - 1
+                 as.integer(Nedge), double(Ntip + Nnode), 1L)[[5]] - 1
         m <- Ntip - 1
         phy$edge.length <-
           (xx[phy$edge[, 1]]/m)^power - (xx[phy$edge[, 2]]/m)^power

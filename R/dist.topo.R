@@ -1,9 +1,9 @@
-## dist.topo.R (2016-11-24)
+## dist.topo.R (2017-07-28)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
 
-## Copyright 2005-2016 Emmanuel Paradis, 2016 Klaus Schliep
+## Copyright 2005-2017 Emmanuel Paradis, 2016-2017 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -17,47 +17,73 @@
 
 dist.topo <- function(x, y = NULL, method = "PH85")
 {
-    if (!is.null(y)) {
-        res <- .dist.topo(x, y, method = method)
-    } else {
-        n <- length(x) # number of trees
-        res <- numeric(n * (n - 1) /2)
-        nms <- names(x)
-        if (is.null(nms)) nms <- paste0("tree", 1:n)
+    method <- match.arg(method, c("PH85", "score"))
+    if (!is.null(y)) x <- c(x, y)
+    testroot <- any(is.rooted(x))
+    n <- length(x) # number of trees
+    res <- numeric(n * (n - 1) /2)
+    nms <- names(x)
+    if (is.null(nms)) nms <- paste0("tree", 1:n)
+
+    if (method == "PH85") {
+        if (testroot)
+            warning("Some trees were rooted: topological distances may be spurious.")
+
+        x <- .compressTipLabel(x)
+        ntip <- length(attr(x, "TipLabel"))
+        nnode <- sapply(x, Nnode)
+
+        foo <- function(phy, ntip) {
+            phy <- reorder(phy, "postorder")
+            ans <- ONEwise(bipartition2(phy$edge, ntip))
+            sapply(ans, paste, collapse = "\r")
+        }
+
+        x <- lapply(x, foo, ntip = ntip)
+
+        k <- 0L
+        for (i in 1:(n - 1)) {
+            y <- x[[i]]
+            m1 <- nnode[i]
+            for (j in (i + 1):n) {
+                z <- x[[j]]
+                k <- k + 1L
+                res[k] <- m1 + nnode[j] - 2 * sum(z %in% y)
+            }
+        }
+    } else { # method == "score"
         k <- 0L
         for (i in 1:(n - 1)) {
             for (j in (i + 1):n) {
                 k <- k + 1L
-                res[k] <- .dist.topo(x[[i]], x[[j]], method = method)
+                ## still very slow......
+                res[k] <- .dist.topo.score(x[[i]], x[[j]])
             }
         }
-        attr(res, "Size") <- n
-        attr(res, "Labels") <- nms
-        attr(res, "Diag") <- attr(res, "Upper") <- FALSE
-        attr(res, "method") <- method
-        class(res) <- "dist"
     }
+
+    attr(res, "Size") <- n
+    attr(res, "Labels") <- nms
+    attr(res, "Diag") <- attr(res, "Upper") <- FALSE
+    attr(res, "method") <- method
+    class(res) <- "dist"
     res
 }
 
-.dist.topo <- function(x, y, method = "PH85")
+.dist.topo.score <- function(x, y)
 {
-    if (method == "PH85") {
-        bs <- bitsplits(unroot.multiPhylo(c(x, y)))
-        return(sum(bs$freq == 1))
-    }
-
-    ## method == "score":
     if (is.null(x$edge.length) || is.null(y$edge.length))
         stop("trees must have branch lengths for branch score distance.")
     nx <- length(x$tip.label)
-    x <- unroot(x)
-    y <- unroot(y)
-    bp1 <- .Call(bipartition, x$edge, nx, x$Nnode)
+    x <- reorder.phylo(unroot(x), "postorder")
+    y <- reorder.phylo(unroot(y), "postorder")
+    ##bp1 <- .Call(bipartition, x$edge, nx, x$Nnode)
+    bp1 <- bipartition2(x$edge, nx)
     bp1 <- lapply(bp1, function(xx) sort(x$tip.label[xx]))
     ny <- length(y$tip.label) # fix by Otto Cordero
     ## fix by Tim Wallstrom:
-    bp2.tmp <- .Call(bipartition, y$edge, ny, y$Nnode)
+    bp2.tmp <- bipartition2(y$edge, ny)
+    ##bp2.tmp <- .Call(bipartition, y$edge, ny, y$Nnode)
     bp2 <- lapply(bp2.tmp, function(xx) sort(y$tip.label[xx]))
     bp2.comp <- lapply(bp2.tmp, function(xx) setdiff(1:ny, xx))
     bp2.comp <- lapply(bp2.comp, function(xx) sort(y$tip.label[xx]))
@@ -126,11 +152,12 @@ prop.part <- function(..., check.labels = TRUE)
     class(obj) <- NULL # fix by Klaus Schliep (2014-03-06)
     for (i in 1:ntree) storage.mode(obj[[i]]$Nnode) <- "integer"
     class(obj) <- "multiPhylo"
-    obj <- .uncompressTipLabel(obj) # fix a bug (2010-11-18)
-    clades <- .Call(prop_part, obj, ntree, TRUE)
-    attr(clades, "number") <- attr(clades, "number")[1:length(clades)]
+    obj <- reorder(obj, "postorder")
+# the following line should not be necessary any more
+#    obj <- .uncompressTipLabel(obj) # fix a bug (2010-11-18)
+    nTips <- length(obj[[1]]$tip.label)
+    clades <- prop_part2(obj, nTips)
     attr(clades, "labels") <- obj[[1]]$tip.label
-    class(clades) <- "prop.part"
     clades
 }
 

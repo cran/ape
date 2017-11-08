@@ -1,20 +1,32 @@
-## collapse.singles.R (2015-06-22)
+## collapse.singles.R (2017-07-27)
 
-##    Collapse "Single" Nodes
+## Collapse "Single" Nodes
 
-## Copyright 2015 Emmanuel Paradis
+## Copyright 2015 Emmanuel Paradis, 2017 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
+has.singles <- function(tree)
+{
+    fun <- function(x) {
+        tab <- tabulate(x$edge[, 1])
+        if (any(tab == 1L)) return(TRUE)
+        FALSE
+    }
+    if (inherits(tree, "phylo")) return(fun(tree))
+    if (inherits(tree, "multiPhylo")) return(sapply(tree, fun))
+}
+
 collapse.singles <- function(tree, root.edge = FALSE)
 {
     n <- length(tree$tip.label)
+    tree <- reorder(tree) # this works now
     e1 <- tree$edge[, 1]
     e2 <- tree$edge[, 2]
 
     tab <- tabulate(e1)
-    if (all(tab > 1)) return(tree)
+    if (all(tab[-c(1:n)] > 1)) return(tree) # tips are zero
 
     if (is.null(tree$edge.length)) {
         root.edge <- FALSE
@@ -40,19 +52,17 @@ collapse.singles <- function(tree, root.edge = FALSE)
     }
 
     singles <- which(tabulate(e1) == 1)
-    while (length(singles)) {
-        i <- which(e1 == singles[1])
-        j <- which(e2 == e1[i])
-        e2[j] <- e2[i]
-        if (wbl) {
-            el[j] <- el[j] + el[i]
-            el <- el[-i]
+    if (length(singles) > 0) {
+        ii <- sort(match(singles, e1), decreasing = TRUE)
+        jj <- match(e1[ii], e2)
+        for (i in 1:length(singles)) {
+            e2[jj[i]] <- e2[ii[i]]
+            if (wbl) el[jj[i]] <- el[jj[i]] + el[ii[i]]
         }
-        e1 <- e1[-i]
-        e2 <- e2[-i]
-        singles <- which(tabulate(e1) == 1)
+        e1 <- e1[-ii]
+        e2 <- e2[-ii]
+        if (wbl) el <- el[-ii]
     }
-
     Nnode <- length(e1) - n + 1L
 
     oldnodes <- unique(e1)
@@ -71,3 +81,5 @@ collapse.singles <- function(tree, root.edge = FALSE)
     }
     tree
 }
+
+

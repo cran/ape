@@ -71,5 +71,6 @@ title("The standard-errors")
 plot(tr)
 nodelabels(round(attr(chr, "Pval"), 3))
 title("The tests")
+layout(1)
 }
 \keyword{models}
