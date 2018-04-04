@@ -14,7 +14,7 @@
 read.dna(file, format = "interleaved", skip = 0,
          nlines = 0, comment.char = "#",
          as.character = FALSE, as.matrix = NULL)
-read.FASTA(file)
+read.FASTA(file, type = "DNA")
 read.fastq(file, offset = -33)
 }
 \arguments{
@@ -41,6 +41,8 @@ read.fastq(file, offset = -33)
     returns the sequences in a matrix, or stops with an error if they
     are of different lengths; (iii) \code{FALSE}: always returns the
     sequences in a list.}
+  \item{type}{a character string giving the type of the sequences: one of
+    \code{"DNA"} or \code{"AA"} (case-independent, can be abbreviated).}
   \item{offset}{the value to be added to the quality scores (the default
     applies to the Sanger format and should work for most recent FASTQ
     files).}
@@ -97,7 +99,8 @@ examples).
   stored in binary format, or of mode character (if \code{as.character =
     "TRUE"}).
 
-  \code{read.FASTA} always returns a list of class \code{"DNAbin"}.
+  \code{read.FASTA} always returns a list of class \code{"DNAbin"} or
+  \code{"AAbin"}.
 
   \code{read.fastq} returns a list of class \code{"DNAbin"} with an
   atrribute \code{"QUAL"} (see examples).
@@ -175,8 +178,8 @@ ex.dna6 <- read.dna(gzfile("exdna.fas.gz"), "fasta")
 identical(ex.dna5, ex.dna4)
 identical(ex.dna6, ex.dna4)
 
-unlink("exdna.txt") # clean-up
-unlink("exdna.fas") # clean-up
+unlink("exdna.txt")
+unlink("exdna.fas")
 unlink("exdna.fas.zip")
 unlink("exdna.fas.gz")
 

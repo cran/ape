@@ -5,35 +5,44 @@
 \alias{tcoffee}
 \title{Multiple Sequence Alignment with External Applications}
 \description{
-  These functions call their respective program from \R to align a set of
-  nucleotide sequences of class \code{"DNAbin"}. The application(s) must
-  be installed seperately and it is highly recommended to do this so
-  that the executables are in a directory located on the PATH of the
-  system.
+  These functions call their respective program from \R to align a set
+  of nucleotide sequences of class \code{"DNAbin"} or
+  \code{"AAbin"}. The application(s) must be installed seperately and it
+  is highly recommended to do this so that the executables are in a
+  directory located on the PATH of the system.
 }
 \usage{
-clustal(x, pw.gapopen = 10, pw.gapext = 0.1,
-        gapopen = 10, gapext = 0.2, exec = NULL,
-        MoreArgs = "", quiet = TRUE, original.ordering = TRUE)
-clustalomega(x, exec = NULL, MoreArgs = "", quiet = TRUE)
-muscle(x, exec = "muscle", MoreArgs = "", quiet = TRUE,
-       original.ordering = TRUE)
+clustal(x, y, guide.tree, pw.gapopen = 10, pw.gapext = 0.1,
+        gapopen = 10, gapext = 0.2, exec = NULL, MoreArgs = "",
+        quiet = TRUE, original.ordering = TRUE, file)
+clustalomega(x, y, guide.tree, exec = NULL,MoreArgs = "",
+              quiet = TRUE, original.ordering = TRUE, file)
+muscle(x, y, guide.tree, exec, MoreArgs = "",
+        quiet = TRUE, original.ordering = TRUE, file)
 tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE,
         original.ordering = TRUE)
 }
 \arguments{
-  \item{x}{an object of class \code{"DNAbin"}.}
+  \item{x}{an object of class \code{"DNAbin"} or \code{"AAbin"} (can be
+    missing).}
+  \item{y}{an object of class \code{"DNAbin"} or \code{"AAbin"} used for
+    profile alignment (can be missing).}
+  \item{guide.tree}{guide tree, an object of class \code{"phylo"} (can
+    be missing).}
   \item{pw.gapopen, pw.gapext}{gap opening and gap extension penalties
     used by Clustal during pairwise alignments.}
   \item{gapopen, gapext}{idem for global alignment.}
   \item{exec}{a character string giving the name of the program, with
-    its path if necessary. \code{clustal} tries to guess it depending on
-    the operating system (see details).}
+    its path if necessary. \code{clustal} tries to guess this argument
+    depending on the operating system (see details).}
   \item{MoreArgs}{a character string giving additional options.}
   \item{quiet}{a logical: the default is to not print on \R's console the
     messages from the external program.}
   \item{original.ordering}{a logical specifying whether to return the
-    aligned sequences in the same order than in \code{x}.}
+    aligned sequences in the same order than in \code{x} (\code{TRUE} by
+    default).}
+  \item{file}{a file with its path if results should be stored (can be
+    missing).}
 }
 \details{
   It is highly recommended to install the executables properly so that
@@ -46,33 +55,27 @@ tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE,
 
   \code{clustal} tries to guess the name of the executable program
   depending on the operating system. Specifically, the followings are
-  used: ``clustalw'' under Linux, ``clustalw2'' under MacOS, or
-  ``clustalw2.exe'' under Windows.
-
-  For \code{clustalomega}, ``clustalo[.exe]'' is the default on all
-  systems (with no specific path) since it seems there is no Windows
-  installer.
-
-  The computations are done in a temporary directory which is deleted
-  when \R is quit. So it is possible to find the files created by the
-  last call in the directory printed by \code{tempdir()}.
+  used: ``clustalw'' under Linux, ``clustalw2'' under MacOS, and
+  ``clustalw2.exe'' under Windows. For \code{clustalomega},
+  ``clustalo[.exe]'' is the default on all systems (with no specific
+  path).
 
   When called without arguments (i.e., \code{clustal()}, \dots), the
   function prints the options of the program which may be passed to
   \code{MoreArgs}.
-}
-\note{
-  \code{clustalomega} is actually for AA sequences only.
+
+  Since \pkg{ape} 5.1, \code{clustal}, \code{clustalomega}, and
+  \code{muscle} can align AA sequences as well as DNA sequences.
 }
 \value{
-  an object of class \code{"DNAbin"} with the aligned sequences.
+  an object of class \code{"DNAbin"} or \code{"AAbin"} with the aligned
+  sequences.
 }
 \references{
   Chenna, R., Sugawara, H., Koike, T., Lopez, R., Gibson, T. J.,
   Higgins, D. G. and Thompson, J. D. (2003) Multiple sequence alignment
   with the Clustal series of programs. \emph{Nucleic Acids Research}
-  \bold{31}, 3497--3500.
-  \url{http://www.clustal.org/}
+  \bold{31}, 3497--3500. \url{http://www.clustal.org/}
 
   Edgar, R. C. (2004) MUSCLE: Multiple sequence alignment with high
   accuracy and high throughput. \emph{Nucleic Acids Research},
@@ -89,6 +92,7 @@ tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE,
   J. D. and Higgins, D. G. (2011) Fast, scalable generation of
   high-quality protein multiple sequence alignments using Clustal
   Omega. \emph{Molecular Systems Biology}, \bold{7}, 539.
+  \url{http://www.clustal.org/}
 }
 \author{Emmanuel Paradis}
 \seealso{
@@ -100,13 +104,14 @@ tcoffee(x, exec = "t_coffee", MoreArgs = "", quiet = TRUE,
 \dontrun{
 ### display the options:
 clustal()
+clustalomega()
 muscle()
 tcoffee()
 
 data(woodmouse)
 ### open gaps more easily:
 clustal(woodmouse, pw.gapopen = 1, pw.gapext = 1)
-### T-Coffee requires negative values (quite slow; muscle is much faster):
+### T-Coffee requires negative values (quite slow; muscle() is much faster):
 tcoffee(woodmouse,  MoreArgs = "-gapopen=-10 -gapext=-2")
 }}
 \keyword{manip}

@@ -1,4 +1,4 @@
-## nj.R (2017-01-24)
+## nj.R (2017-11-15)
 
 ##   Neighbor-Joining Tree Estimation
 
@@ -15,6 +15,7 @@ nj <- function(X)
     if (any(is.infinite(X)))
         stop("infinite values are not allowed in the distance matrix")
     N <- attr(X, "Size")
+    if (N < 3) stop("cannot build an unrooted tree with less than 3 observations")
     labels <- attr(X, "Labels")
     if (is.null(labels)) labels <- as.character(1:N)
     ans <- .C(C_nj, as.double(X), as.integer(N), integer(2*N - 3),

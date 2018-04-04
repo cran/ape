@@ -1,7 +1,7 @@
 \name{node.dating}
+\alias{node.dating}
 \alias{estimate.mu}
 \alias{estimate.dates}
-\alias{node.dating}
 \title{node.dating}
 \description{
   Estimate the dates of a rooted phylogenetic tree from the tip dates.
@@ -10,24 +10,24 @@
 estimate.mu(t, node.dates, p.tol = 0.05)
 estimate.dates(t, node.dates, mu = estimate.mu(t, node.dates),
                min.date = -.Machine$double.xmax, show.steps = 0,
-               opt.tol = 1e-8, nsteps = 1000, lik.tol = 0,
-               is.binary = is.binary.phylo(t))
+               opt.tol = 1e-8, nsteps = 1000,
+               lik.tol = 0, is.binary = is.binary.phylo(t))
 }
 \arguments{
-  \item{t}{an object of class '"phylo"'}
-  \item{node.dates}{a numeric vector of dates for the tips, in the same order as
-    't$tip.label' or a vector of dates for all of the nodes.}
+  \item{t}{an object of class "phylo"}
+  \item{node.dates}{a numeric vector of dates for the tips, in the same
+    order as 't$tip.label' or a vector of dates for all of the nodes.}
   \item{p.tol}{p-value cutoff for failed regression.}
-  \item{mu}{mutation rate. Either a numeric vector of size 1 for a strict rate or a
-  numeric vector containing the mutation rate along each edge for a relaxed rate.}
-  \item{min.date}{the minimum bound on the dates of nodes.}
-  \item{show.steps}{print the log likelihood every show.steps.  If 0 will supress
-    output.}
+  \item{mu}{mutation rate.}
+  \item{min.date}{the minimum bound on the dates of nodes}
+  \item{show.steps}{print the log likelihood every show.steps. If 0 will
+    supress output.}
   \item{opt.tol}{tolerance for optimization precision.}
   \item{lik.tol}{tolerance for likelihood comparison.}
   \item{nsteps}{the maximum number of steps to run.}
-  \item{is.binary}{if TRUE, will run a faster optimization method that only works if
-    the tree is binary; otherwise will use optimize() as the optimization method.}
+  \item{is.binary}{if TRUE, will run a faster optimization method that
+    only works if the tree is binary; otherwise will use optimize() as
+    the optimization method.}
 }
 \value{
   The estimated mutation rate as a numeric vector of length one for estimate.mu.
@@ -53,16 +53,12 @@ estimate.dates(t, node.dates, mu = estimate.mu(t, node.dates),
   priors in the inital step.  If all of the dates for nodes are given, then
   'estimate.dates' will not run the inital step.
 
-  'mu' can be either a vector of size 1 to use a strict molecular clock or a vector
-  with a mutation rate for each edge, in the order of t$edge, for a local molecular
-  clock on each edge.
-
-  If 'is.binary' is set to FALSE, 'estimate.dates' uses the '"optimize"' function as
-  the optimization method.  By default, R's '"optimize"' function uses a precision
-  of '".Machine$double.eps^0.25"', which is about 0.0001 on a 64-bit system.  This
+  If 'is.binary' is set to FALSE, 'estimate.dates' uses the "optimize" function as
+  the optimization method.  By default, R's "optimize" function uses a precision
+  of ".Machine$double.eps^0.25", which is about 0.0001 on a 64-bit system.  This
   should be set to a smaller value if the branch lengths of 't' are very short.  If
   'is.binary' is set to TRUE, estimate dates uses calculus to deterimine the maximum
-  likelihood at each step, which is faster. The bounds of permissible values are 
+  likelihood at each step, which is faster. The bounds of permissible values are
   reduced by 'opt.tol'.
 
   'estimate.dates' has several criteria to decide how many steps it will run.  If
@@ -87,11 +83,12 @@ estimate.dates(t, node.dates, mu = estimate.mu(t, node.dates),
   incorporating non-contemporaneous sequences into maximum likelihood
   phylogenies. \emph{Bioinformatics}, \bold{16}, 395--399.
 
-  Jones, Bradley R., and Poon, Art F. Y. (2016) \emph{node.dating:
-  dating ancestors in phylogenetic trees in R}. Preprint.
+  Jones, Bradley R., and Poon, Art F. Y. (2016)
+  node.dating: dating ancestors in phylogenetic trees in R
+  \emph{Bioinformatics}, \bold{33}, 932--934.
 }
 \seealso{
-  \code{\link[stats]{optimize}}, \code{\link{rtt}},
+  \code{\link[stats]{optimize}, \link{rtt}},
   \code{\link{plotTreeTime}}
 }
 \examples{
@@ -110,3 +107,4 @@ node.date <- estimate.dates(t, node.date, mu, nsteps = 0, lik.tol = 1e-4)
 ## To rescale the tree over time
 t$edge.length <- node.date[t$edge[, 2]] - node.date[t$edge[, 1]]
 }
+\keyword{model}

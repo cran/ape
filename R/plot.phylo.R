@@ -1,4 +1,4 @@
-## plot.phylo.R (2017-07-27)
+## plot.phylo.R (2017-12-23)
 
 ##   Plot Phylogenies
 
@@ -530,14 +530,19 @@ phylogram.plot <- function(edge, Ntip, Nnode, xx, yy, horizontal,
         lty.v <- rep(1, Nnode)
         for (i in 1:Nnode) {
             br <- NodeInEdge1[[i]]
-            if (length(br) > 2) {
+            if (length(br) == 1) {
+                A <- br[1]
+                color.v[i] <- edge.color[A]
+                width.v[i] <- edge.width[A]
+                lty.v[i] <- edge.lty[A]
+            } else if (length(br) > 2) {
                 x <- unique(DF[br, 1])
                 if (length(x) == 1) color.v[i] <- x
                 x <- unique(DF[br, 2])
                 if (length(x) == 1) width.v[i] <- x
                 x <- unique(DF[br, 3])
                 if (length(x) == 1) lty.v[i] <- x
-            } else {
+            } else { # length(br) == 2
                 A <- br[1]
                 B <- br[2]
                 if (any(DF[A, ] != DF[B, ])) {

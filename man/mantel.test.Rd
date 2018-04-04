@@ -1,6 +1,11 @@
 \name{mantel.test}
 \alias{mantel.test}
 \title{Mantel Test for Similarity of Two Matrices}
+\description{
+  This function computes Mantel's permutation test for similarity of two
+  matrices. It permutes the rows and columns of the second matrix
+  randomly and calculates a \eqn{Z}-statistic.
+}
 \usage{
 mantel.test(m1, m2, nperm = 999, graph = FALSE,
             alternative = "two.sided",  ...)
@@ -19,17 +24,16 @@ mantel.test(m1, m2, nperm = 999, graph = FALSE,
   \item{\dots}{further arguments to be passed to \code{plot()} (to add a
     title, change the axis labels, and so on).}
 }
-\description{
-  This function computes Mantel's permutation test for similarity of two
-  matrices. It permutes the rows and columns of the two matrices
-  randomly and calculates a \eqn{Z}-statistic.
-}
 \details{
   The function calculates a \eqn{Z}-statistic for the Mantel test, equal to
   the sum of the  pairwise product of the lower triangles of the
   permuted matrices, for each permutation of rows and columns. It
   compares the permuted distribution with the \eqn{Z}-statistic observed
   for the actual data.
+
+  The present implementation can analyse symmetric as well as (since
+  version 5.1 of \pkg{ape}) asymmetric matrices (see Mantel 1967,
+  Sects. 4 and 5). The diagonals of both matrices are ignored.
 
   If \code{graph = TRUE}, the functions plots the density estimate of
   the permutation distribution along with the observed \eqn{Z}-statistic
@@ -60,8 +64,10 @@ mantel.test(m1, m2, nperm = 999, graph = FALSE,
 \examples{
 q1 <- matrix(runif(36), nrow = 6)
 q2 <- matrix(runif(36), nrow = 6)
+diag(q1) <- diag(q2) <- 0
 mantel.test(q1, q2, graph = TRUE,
-            main = "Mantel test: a random example with 6 X 6 matrices",
+            main = "Mantel test: a random example with 6 X 6 matrices
+representing asymmetric relationships",
             xlab = "z-statistic", ylab = "Density",
             sub = "The vertical line shows the observed z-statistic")
 }

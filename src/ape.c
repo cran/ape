@@ -1,6 +1,6 @@
-/* ape.c    2017-07-27 */
+/* ape.c    2018-03-22 */
 
-/* Copyright 2011-2016 Emmanuel Paradis, and 2007 R Development Core Team */
+/* Copyright 2011-2018 Emmanuel Paradis, and 2007 R Development Core Team */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -83,7 +83,7 @@ void trans_DNA2AA(unsigned char *x, int *s, unsigned char *res, int *code);
 
 //SEXP bipartition(SEXP edge, SEXP nbtip, SEXP nbnode);
 //SEXP prop_part(SEXP TREES, SEXP nbtree, SEXP keep_partitions);
-SEXP rawStreamToDNAbin(SEXP x);
+SEXP rawStreamToDNAorAAbin(SEXP x, SEXP DNA);
 SEXP seq_root2tip(SEXP edge, SEXP nbtip, SEXP nbnode);
 SEXP treeBuildWithTokens(SEXP nwk);
 SEXP treeBuild(SEXP nwk);
@@ -93,6 +93,9 @@ SEXP bitsplits_multiPhylo(SEXP x, SEXP n, SEXP nr);
 SEXP _ape_prop_part2(SEXP trees, SEXP nTips);
 SEXP _ape_bipartition2(SEXP orig, SEXP nTips);
 SEXP _ape_reorderRcpp(SEXP orig, SEXP nTips, SEXP root, SEXP order);
+SEXP writeDNAbinToFASTA(SEXP x, SEXP FILENAME, SEXP n, SEXP s, SEXP labels);
+SEXP writeAAbinToFASTA(SEXP x, SEXP FILENAME, SEXP n, SEXP s, SEXP labels);
+SEXP charVectorToDNAbinVector(SEXP x);
 
 static R_CMethodDef C_entries[] = {
     {"C_additive", (DL_FUNC) &C_additive, 4},
@@ -132,7 +135,7 @@ static R_CMethodDef C_entries[] = {
 static R_CallMethodDef Call_entries[] = {
 //    {"bipartition", (DL_FUNC) &bipartition, 3},
 //    {"prop_part", (DL_FUNC) &prop_part, 3},
-    {"rawStreamToDNAbin", (DL_FUNC) &rawStreamToDNAbin, 1},
+    {"rawStreamToDNAorAAbin", (DL_FUNC) &rawStreamToDNAorAAbin, 2},
     {"seq_root2tip", (DL_FUNC) &seq_root2tip, 3},
     {"treeBuildWithTokens", (DL_FUNC) &treeBuildWithTokens, 1},
     {"treeBuild", (DL_FUNC) &treeBuild, 1},
@@ -145,6 +148,9 @@ static R_CallMethodDef Call_entries[] = {
     {"_ape_bipartition2", (DL_FUNC) &_ape_bipartition2, 2},
     {"_ape_prop_part2", (DL_FUNC) &_ape_prop_part2, 2},
     {"_ape_reorderRcpp", (DL_FUNC) &_ape_reorderRcpp, 4},
+    {"writeDNAbinToFASTA", (DL_FUNC) &writeDNAbinToFASTA, 5},
+    {"writeAAbinToFASTA", (DL_FUNC) &writeAAbinToFASTA, 5},
+    {"charVectorToDNAbinVector", (DL_FUNC) &charVectorToDNAbinVector, 1},
     {NULL, NULL, 0}
 };
 

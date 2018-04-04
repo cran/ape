@@ -6,6 +6,9 @@
 \alias{labels.AAbin}
 \alias{image.AAbin}
 \alias{as.AAbin}
+\alias{as.AAbin.AAString}
+\alias{as.AAbin.AAStringSet}
+\alias{as.AAbin.AAMultipleAlignment}
 \alias{as.AAbin.character}
 \alias{as.phyDat.AAbin}
 \alias{dist.aa}
@@ -37,6 +40,12 @@ as.AAbin(x, \dots)
 \method{as.AAbin}{character}(x, \dots)
 
 \method{as.AAbin}{list}(x, ...)
+
+\method{as.AAbin}{AAString}(x, ...)
+
+\method{as.AAbin}{AAStringSet}(x, ...)
+
+\method{as.AAbin}{AAMultipleAlignment}(x, ...)
 
 \method{as.list}{AAbin}(x, ...)
 

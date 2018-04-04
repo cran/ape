@@ -1,8 +1,8 @@
-## write.dna.R (2012-06-22)
+## write.dna.R (2018-03-26)
 
 ##   Write DNA Sequences in a File
 
-## Copyright 2003-2012 Emmanuel Paradis
+## Copyright 2003-2018 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -129,3 +129,41 @@ write.dna <- function(x, file, format = "interleaved", append = FALSE,
         }
     })
 }
+
+write.FASTA <- function(x, file, header = NULL, append = FALSE)
+{
+    dna <- inherits(x, "DNAbin")
+    if (!dna && !inherits(x, "AAbin"))
+        stop("data are apparently neither DNA nor AA sequences")
+    if (!is.null(header)) {
+        header <- as.character(header)
+        if (!length(header) || !sum(nchar(header)) || is.na(header)) {
+            warning("header cannot be coerced as character; was ignored")
+            header <- NULL
+        }
+    }
+    labs <- labels(x)
+    if (is.matrix(x)) {
+        s <- ncol(x) # always integer
+        n <- nrow(x)
+    } else {
+        s <- -1L
+        n <- length(x)
+    }
+    if (is.null(labs)) labs <- as.character(1:n)
+    labs <- lapply(labs, charToRaw)
+    if (!is.null(header)) {
+        cat(header, sep = "\n", file = file, append = append)
+    } else {
+        if (!append) {
+            if (file.exists(file)) file.remove(file)
+            file.create(file)
+        }
+    }
+    ## 'file' should always exist now
+    file <- normalizePath(file)
+    if (dna) .Call(writeDNAbinToFASTA, x, file, n, s, labs)
+    else .Call(writeAAbinToFASTA, x, file, n, s, labs)
+    invisible(NULL)
+}
+

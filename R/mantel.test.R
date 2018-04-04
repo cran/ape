@@ -1,8 +1,8 @@
-## mantel.test.R (2012-03-16)
+## mantel.test.R (2018-02-07)
 
 ##   Mantel Test for Similarity of Two Matrices
 
-## Copyright 2002-2011 Ben Bolker and Julien Claude
+## Copyright 2002-2011 Ben Bolker and Julien Claude, 2018 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -13,8 +13,14 @@ perm.rowscols <- function(m1, n)
     m1[s, s]
 }
 
-### calculate the Mantel z-statistic for two square matrices m1 and m2
-mant.zstat <- function(m1, m2) sum(lower.triang(m1 * m2))
+## calculate the Mantel z-statistic for two square matrices m1 and m2
+## old code:
+## mant.zstat <- function(m1, m2) sum(lower.triang(m1 * m2))
+## modified by EP following suggestion by Andrzej Galecki (2018-02-07)
+mant.zstat <- function(m1, m2) {
+    diag(m1) <- 0 # in case the diagonal is not 0
+    sum(m1 * m2)/2
+}
 
 lower.triang <- function(m)
 {

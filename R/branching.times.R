@@ -1,8 +1,8 @@
-## branching.times.R (2013-09-24)
+## branching.times.R (2018-01-16)
 
 ##    Branching Times of a Phylogenetic Tree
 
-## Copyright 2002-2013 Emmanuel Paradis
+## Copyright 2002-2018 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -16,6 +16,10 @@ branching.times <- function(phy)
     e1 <- phy$edge[, 1]
     e2 <- phy$edge[, 2]
     EL <- phy$edge.length
+    if (is.null(EL)) {
+        warning("no branch length in tree")
+        return(numeric())
+    }
     N <- length(e1)
     xx <- numeric(phy$Nnode)
     interns <- which(e2 > n)

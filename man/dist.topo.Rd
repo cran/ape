@@ -66,7 +66,6 @@ dist.topo(x, y = NULL, method = "PH85")
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{read.tree}} to read tree files in Newick format,
   \code{\link{cophenetic.phylo}}, \code{\link{prop.part}}
 }
 \examples{

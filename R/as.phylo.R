@@ -1,8 +1,8 @@
-## as.phylo.R (2017-06-05)
+## as.phylo.R (2018-02-19)
 
 ##     Conversion Among Tree Objects
 
-## Copyright 2005-2017 Emmanuel Paradis
+## Copyright 2005-2018 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -90,29 +90,31 @@ as.hclust.phylo <- function(x, ...)
     if (!is.binary.phylo(x)) stop("the tree is not binary")
     if (!is.rooted(x)) stop("the tree is not rooted")
     n <- length(x$tip.label)
-    x$node.label <- NULL # by Jinlong Zhang (2010-12-15)
-    bt <- branching.times(x)
-    N <- n - 1L
-
-    x <- reorder(x, "postorder")
-    m <- matrix(x$edge[, 2], N, 2, byrow = TRUE)
-    anc <- x$edge[c(TRUE, FALSE), 1]
-    bt <- bt[as.character(anc)] # 1st, reorder
-    ## 2nd, sort keeping the root branching time in last (in case of
-    ## rounding error if there zero-lengthed branches nead the root)
-    bt <- c(sort(bt[-N]), bt[N])
-    o <- match(names(bt), anc)
-    m <- m[o, ]
-
-    ## first renumber the tips:
-    TIPS <- m <= n
-    m[TIPS] <- -m[TIPS]
-
-    ## then renumber the nodes:
-    oldnodes <- as.numeric(names(bt))[-N]
-    m[match(oldnodes, m)] <- 1:(N - 1)
-
-    names(bt) <- NULL
+    if (n == 1) stop("needs n >= 2 observations for a classification")
+    if (n == 2) {
+        m <- matrix(c(-1L, -2L), 1, 2)
+        bt <- x$edge.length[1]
+    } else {
+        x$node.label <- NULL # by Jinlong Zhang (2010-12-15)
+        bt <- branching.times(x)
+        N <- n - 1L
+        x <- reorder(x, "postorder")
+        m <- matrix(x$edge[, 2], N, 2, byrow = TRUE)
+        anc <- x$edge[c(TRUE, FALSE), 1]
+        bt <- bt[as.character(anc)] # 1st, reorder
+        ## 2nd, sort keeping the root branching time in last (in case of
+        ## rounding error if there zero-lengthed branches nead the root)
+        bt <- c(sort(bt[-N]), bt[N])
+        o <- match(names(bt), anc)
+        m <- m[o, ]
+        ## first renumber the tips:
+        TIPS <- m <= n
+        m[TIPS] <- -m[TIPS]
+        ## then renumber the nodes:
+        oldnodes <- as.numeric(names(bt))[-N]
+        m[match(oldnodes, m)] <- 1:(N - 1)
+        names(bt) <- NULL
+    }
     obj <- list(merge = m, height = 2*bt, order = 1:n, labels = x$tip.label,
                 call = match.call(), method = "unknown")
     class(obj) <- "hclust"
@@ -128,7 +130,6 @@ as.network.phylo <- function(x, directed = is.rooted(x), ...)
     res
 }
 
-if (getRversion() >= "2.15.1") utils::globalVariables("graph.edgelist")
 as.igraph.phylo <- function(x, directed = is.rooted(x), use.labels = TRUE, ...)
 {
     ## local copy because x will be changed before evaluating is.rooted(x):
@@ -136,9 +137,9 @@ as.igraph.phylo <- function(x, directed = is.rooted(x), use.labels = TRUE, ...)
     if (use.labels) {
         if (is.null(x$node.label)) x <- makeNodeLabel(x)
         ## check added by Klaus:
-        if(any(duplicated(c(x$tip.label, x$node.label))))
+        if (anyDuplicated(c(x$tip.label, x$node.label)))
             stop("Duplicated labels!")
         x$edge <- matrix(c(x$tip.label, x$node.label)[x$edge], ncol = 2)
-    }# else x$edge <- x$edge - 1L # changed in graph 1.0+, not needed anymore
-    graph.edgelist(x$edge, directed = directed, ...)
+    }
+    igraph::graph_from_edgelist(x$edge, directed = directed)
 }

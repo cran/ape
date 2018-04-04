@@ -1,8 +1,8 @@
-## bind.tree.R (2012-02-13)
+## bind.tree.R (2018-01-26)
 
 ##    Bind Trees
 
-## Copyright 2003-2012 Emmanuel Paradis
+## Copyright 2003-2018 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -53,6 +53,9 @@ bind.tree <- function(x, y, where = "root", position = 0, interactive = FALSE)
     yHasNoRootEdge <- is.null(y$root.edge)
     xHasNoRootEdge <- is.null(x$root.edge)
 
+    x <- reorder(x) # fix by Veronika Boskova
+    y <- reorder(y)
+
     ## find the row of 'where' before renumbering
     if (where == ROOTx) case <- 1 else {
         i <- which(x$edge[, 2] == where)
@@ -86,9 +89,6 @@ bind.tree <- function(x, y, where = "root", position = 0, interactive = FALSE)
             x$edge.length[i] <- x$edge.length[i] + y$edge.length
         return(x)
     }
-
-    x <- reorder(x)
-    y <- reorder(y)
 
 ### because in all situations internal nodes need to be
 ### renumbered, they are changed to negatives first, and

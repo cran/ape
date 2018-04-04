@@ -212,3 +212,4 @@ dist.dna(x, model = "K80", variance = FALSE,
 }
 \keyword{manip}
 \keyword{multivariate}
+\keyword{cluster}

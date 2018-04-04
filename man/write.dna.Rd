@@ -1,13 +1,16 @@
 \name{write.dna}
 \alias{write.dna}
+\alias{write.FASTA}
 \title{Write DNA Sequences in a File}
 \usage{
 write.dna(x, file, format = "interleaved", append = FALSE,
           nbcol = 6, colsep = " ", colw = 10, indent = NULL,
           blocksep = 1)
+write.FASTA(x, file, header = NULL, append = FALSE)
 }
 \arguments{
-  \item{x}{a list or a matrix of DNA sequences.}
+  \item{x}{a list or a matrix of DNA sequences, or of AA sequences for
+    \code{write.FASTA}.}
   \item{file}{a file name specified by either a variable of mode character,
     or a double-quoted string.}
   \item{format}{a character string specifying the format of the DNA
@@ -30,17 +33,21 @@ write.dna(x, file, format = "interleaved", append = FALSE,
   \item{blocksep}{a numeric specifying the number of lines between the
     blocks of nucleotides (this has an effect only if `format =
     "interleaved"').}
+  \item{header}{a vector of mode character giving the header to be
+    written in the FASTA file before the sequences. By default, there is
+    no header.}
 }
 \description{
-  This function writes in a file a list of DNA sequences in sequential,
-  interleaved, or FASTA format.
+  These functions write in a file a list of DNA sequences in sequential,
+  interleaved, or FASTA format. \code{write.FASTA} can write either DNA
+  or AA sequences.
 }
 \details{
   Three formats are supported in the present function: see the help page
   of \code{\link{read.dna}} and the references below for a description.
 
   If the sequences have no names, then they are given "1", "2", ... as
-  names in the file.
+  labels in the file.
 
   With the interleaved and sequential formats, the sequences must be all
   of the same length. The names of the sequences are not truncated.
@@ -61,13 +68,19 @@ write.dna(x, file, format = "interleaved", append = FALSE,
   judicious to remove all the spaces beween columns (colsep = ""), in
   the margins (indent = 0), and between the blocks (blocksep = 0) to
   produce a smaller file.
+
+  \code{write.dna(, format = "fasta")} can be very slow if the sequences
+  are long (> 10 kb). \code{write.FASTA} is much faster in this
+  situation but the formatting is not flexible: each sequence is printed
+  on a single line, which is OK for big files that are not intended to
+  be open with a text editor.
 }
 \note{
   Specifying a negative value for `nbcol' (meaning that the nucleotides
   are printed on a single line) gives the same output for the
   interleaved and sequential formats.
 
-  The names of the sequences may be truncated with the function
+  The names of the sequences can be truncated with the function
   \code{\link{makeLabel}}. In particular, Clustal is limited to 30
   characters, and PHYML seems limited to 99 characters.
 }

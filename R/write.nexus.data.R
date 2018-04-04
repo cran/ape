@@ -1,8 +1,8 @@
-## write.nexus.data.R (2015-02-04)
+## write.nexus.data.R (2018-02-02)
 
 ##   Write Character Data in NEXUS Format
 
-## Copyright 2006-2015 Johan Nylander, Emmanuel Paradis
+## Copyright 2006-2015 Johan Nylander, Emmanuel Paradis, 2018 Thomas Guillerme
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -14,7 +14,7 @@ write.nexus.data <-
 {
 ### TODO: Standard data, mixed data, nice indent
 
-    format <- match.arg(toupper(format), c("DNA", "PROTEIN"))
+    format <- match.arg(toupper(format), c("DNA", "PROTEIN", "STANDARD", "CONTINUOUS"))
 
     indent          <- "  "  # Two blanks
     maxtax          <- 5     # Max nr of taxon names to be printed on a line
@@ -44,12 +44,12 @@ write.nexus.data <-
 
     find.max.length <- function(x) max(nchar(x))
 
-    print.matrix <- function(x, dindent = "    ") {
+    print.matrix <- function(x, dindent = "    ", collapse = "") {
         Names <- names(x)
         printlength <- find.max.length(Names) + 2
         if (!interleaved) {
             for (i in seq_along(x)) {
-                sequence <- paste(x[[i]], collapse = "")
+                sequence <- paste(x[[i]], collapse = collapse)
                 taxon <- Names[i]
                 thestring <- sprintf("%-*s%s%s", printlength, taxon, dindent, sequence)
                 fcat(indent, indent, thestring, "\n")
@@ -60,7 +60,7 @@ write.nexus.data <-
             end <- charsperline
             for (j in seq_len(ntimes)) {
                 for (i in seq_along(x)) {
-                    sequence <- paste(x[[i]][start:end], collapse = "")
+                    sequence <- paste(x[[i]][start:end], collapse = collapse)
                     taxon <- Names[i]
                     thestring <- sprintf("%-*s%s%s", printlength, taxon, dindent, sequence)
                     fcat(indent, indent, thestring, "\n")
@@ -101,11 +101,19 @@ write.nexus.data <-
         ## <FIXME> only DNA and PROTEIN is supported for the moment, so the
         ## following 'if' is not needed
         ## if (format %in% c("DNA", "PROTEIN")) # from Francois Michonneau (2009-10-02)
-        fcat(indent, "FORMAT", " ", DATATYPE, " ", MISSING, " ", GAP, " ", INTERLEAVE, ";\n")
+        if(format != "STANDARD") {
+            fcat(indent, "FORMAT", " ", DATATYPE, " ", MISSING, " ", GAP, " ", INTERLEAVE, ";\n")
+        } else {
+            fcat(indent, "FORMAT", " ", DATATYPE, " ", MISSING, " ", GAP, " ", INTERLEAVE, " symbols=\"0123456789\";\n")
+        }
         ## </FIXME>
 
         fcat(indent, "MATRIX\n")
-        print.matrix(x)
+        if(format != "CONTINUOUS") {
+            print.matrix(x)
+        } else {
+            print.matrix(x, collapse = "\t")
+        }
         fcat(indent, ";\nEND;\n\n")
     } else {
         fcat("BEGIN TAXA;\n")
@@ -128,13 +136,20 @@ write.nexus.data <-
         ## <FIXME> only DNA and PROTEIN is supported for the moment, so the
         ## following 'if' is not needed
         ## if (format %in% c("DNA", "PROTEIN"))
-        fcat(indent, "FORMAT", " ", MISSING, " ", GAP, " ", DATATYPE, " ", INTERLEAVE, ";\n")
+        if(format != "STANDARD") {
+            fcat(indent, "FORMAT", " ", MISSING, " ", GAP, " ", DATATYPE, " ", INTERLEAVE, ";\n")
+        } else {
+            fcat(indent, "FORMAT", " ", MISSING, " ", GAP, " ", DATATYPE, " ", INTERLEAVE, " symbols=\"0123456789\";\n")
+        }
         ## </FIXME>
 
         fcat(indent,"MATRIX\n")
-        print.matrix(x)
+        if(format != "CONTINUOUS") {
+            print.matrix(x)
+        } else {
+            print.matrix(x, collapse = "\t")
+        }
         fcat(indent, ";\nEND;\n\n")
     }
     close(zz)
 }
-

@@ -10,4 +10,4 @@ citEntry(entry="Article",
 
         textVersion = "Paradis E., Claude J. & Strimmer K. 2004. APE: analyses of phylogenetics and evolution in R language. Bioinformatics 20: 289-290.")
 
-citFooter("As ape is evolving quickly, you may want to cite also its version number (found with 'library(help = ape)').")
+citFooter("As ape is evolving quickly, you may want to cite also its version number (found with 'library(help = ape)' or 'packageVersion(\"ape\")').")

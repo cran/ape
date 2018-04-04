@@ -26,8 +26,8 @@ as.bitsplits(x)
 \method{as.bitsplits}{prop.part}(x)
 \method{print}{bitsplits}(x, ...)
 \method{sort}{bitsplits}(x, decreasing = FALSE, ...)
-as.prop.part(x)
-\method{as.prop.part}{bitsplits}(x)
+as.prop.part(x, ...)
+\method{as.prop.part}{bitsplits}(x, include.trivial = FALSE, ...)
 }
 \arguments{
   \item{x}{an object of the appropriate class.}
@@ -35,6 +35,8 @@ as.prop.part(x)
   \item{X}{an object of class \code{"multiPhylo"}.}
   \item{decreasing}{a logical value to sort the bipartitions in
     increasing (the default) or decreasing order of their frequency.}
+  \item{include.trivial}{a logical value specifying whether to include
+    the trivial split with all tips in the returned object.}
   \item{\dots}{further arguments passed to or from other methods.}
 }
 \details{

@@ -89,6 +89,11 @@
 \alias{getMLHessian}
 \alias{getREMLHessian}
 \alias{trans_DNA2AA}
+\alias{writeFastaDNAbin}
+\alias{charVectorToDNAbinVector}
+\alias{rawStreamToDNAorAAbin}
+\alias{writeAAbinToFASTA}
+\alias{writeDNAbinToFASTA}
 \title{Internal Ape Functions}
 \description{
   Internal \pkg{ape} functions. Do not call these from other packages.

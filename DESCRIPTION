@@ -1,6 +1,6 @@
 Package: ape
-Version: 5.0
-Date: 2017-10-04
+Version: 5.1
+Date: 2018-04-03
 Title: Analyses of Phylogenetics and Evolution
 Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email = "Emmanuel.Paradis@ird.fr"),
   person("Simon", "Blomberg", role = c("aut", "cph")),
@@ -14,6 +14,7 @@ Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email 
   person("Julien", "Dutheil", role = c("aut", "cph")),
   person("RJ", "Ewing", role = c("aut", "cph")),
   person("Olivier", "Gascuel", role = c("aut", "cph")),
+  person("Thomas", "Guillerme", role = c("aut", "cph")),
   person("Christoph", "Heibl", role = c("aut", "cph")),
   person("Anthony", "Ives", role = c("aut", "cph")),
   person("Bradley", "Jones", role = c("aut", "cph")),
@@ -31,7 +32,7 @@ Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email 
   person("Korbinian", "Strimmer", role = c("aut", "cph")),
   person("Damien", "de Vienne", role = c("aut", "cph")))
 Depends: R (>= 3.2.0)
-Suggests: gee, expm
+Suggests: gee, expm, igraph
 Imports: nlme, lattice, graphics, methods, stats, tools, utils,
         parallel, Rcpp (>= 0.12.0)
 LinkingTo: Rcpp
@@ -40,7 +41,7 @@ Description: Functions for reading, writing, plotting, and manipulating phylogen
 License: GPL (>= 2)
 URL: http://ape-package.ird.fr/
 NeedsCompilation: yes
-Packaged: 2017-10-04 16:39:18 UTC; paradis
+Packaged: 2018-04-03 13:27:51 UTC; paradis
 Author: Emmanuel Paradis [aut, cre, cph],
   Simon Blomberg [aut, cph],
   Ben Bolker [aut, cph],
@@ -53,6 +54,7 @@ Author: Emmanuel Paradis [aut, cre, cph],
   Julien Dutheil [aut, cph],
   RJ Ewing [aut, cph],
   Olivier Gascuel [aut, cph],
+  Thomas Guillerme [aut, cph],
   Christoph Heibl [aut, cph],
   Anthony Ives [aut, cph],
   Bradley Jones [aut, cph],
@@ -71,4 +73,4 @@ Author: Emmanuel Paradis [aut, cre, cph],
   Damien de Vienne [aut, cph]
 Maintainer: Emmanuel Paradis <Emmanuel.Paradis@ird.fr>
 Repository: CRAN
-Date/Publication: 2017-10-30 15:36:18 UTC
+Date/Publication: 2018-04-04 22:16:00 UTC

@@ -1,14 +1,18 @@
-## read.dna.R (2017-02-03)
+## read.dna.R (2018-03-28)
 
 ##   Read DNA Sequences in a File
 
-## Copyright 2003-2017 Emmanuel Paradis, 2017 RJ Ewing
+## Copyright 2003-2018 Emmanuel Paradis, 2017 RJ Ewing
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-read.FASTA <- function(file)
+read.FASTA <- function(file, type = "DNA")
 {
+    TYPES <- c("DNA", "AA")
+    itype <- pmatch(toupper(type), TYPES)
+    if (is.na(itype))
+        stop(paste("'type' should be", paste(dQuote(TYPES), collapse = " or ")))
     if (length(grep("^(ht|f)tp(s|):", file))) {
         url <- file
         file <- tempfile()
@@ -32,13 +36,13 @@ read.FASTA <- function(file)
         icr <- which(x == as.raw(0x0d)) # CR
         if (length(icr)) x <- x[-icr]
     }
-    res <- .Call("rawStreamToDNAbin", x)
+    res <- .Call(rawStreamToDNAorAAbin, x, itype)
     if (identical(res, 0L)) {
         warning("failed to read sequences, returns NULL")
         return(NULL)
     }
     names(res) <- sub("^ +", "", names(res)) # to permit phylosim
-    class(res) <- "DNAbin"
+    class(res) <- c("DNAbin", "AAbin")[itype]
     res
 }
 

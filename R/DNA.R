@@ -1,8 +1,8 @@
-## DNA.R (2017-08-28)
+## DNA.R (2018-03-22)
 
 ##   Manipulations and Comparisons of DNA and AA Sequences
 
-## Copyright 2002-2017 Emmanuel Paradis, 2015 Klaus Schliep, 2017 Franz Krah
+## Copyright 2002-2018 Emmanuel Paradis, 2015 Klaus Schliep, 2017 Franz Krah
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -124,6 +124,7 @@ as.list.DNAbin <- function(x, ...)
     if (is.list(x)) return(x)
     if (is.null(dim(x))) obj <- list(x) # cause is.vector() doesn't work
     else { # matrix
+        class(x) <- NULL
         n <- nrow(x)
         obj <- vector("list", n)
         for (i in seq_len(n)) obj[[i]] <- x[i, , drop = TRUE]
@@ -153,7 +154,6 @@ rbind.DNAbin <- function(...)
 cbind.DNAbin <-
     function(..., check.names = TRUE, fill.with.gaps = FALSE,
              quiet = FALSE)
-### works only with matrices for the moment
 {
     obj <- list(...)
     n <- length(obj)
@@ -164,7 +164,11 @@ cbind.DNAbin <-
     NR <- unlist(lapply(obj, nrow))
     for (i in 1:n) class(obj[[i]]) <- NULL
     if (check.names) {
-        nms <- unlist(lapply(obj, rownames))
+        NMS <- lapply(obj, rownames)
+        for (i in 1:n)
+            if (anyDuplicated(NMS[[i]]))
+                stop("Duplicated rownames in matrix ", i, ": see ?cbind.DNAbin")
+        nms <- unlist(NMS)
         if (fill.with.gaps) {
             NC <- unlist(lapply(obj, ncol))
             nms <- unique(nms)
@@ -173,9 +177,8 @@ cbind.DNAbin <-
             from <- 1
             for (i in 1:n) {
                 to <- from + NC[i] - 1
-                tmp <- rownames(obj[[i]])
-                nmsi <- tmp[tmp %in% nms]
-                ans[nmsi, from:to] <- obj[[i]][nmsi, , drop = FALSE]
+                k <- match(NMS[[i]], nms)
+                ans[k, from:to] <- obj[[i]]
                 from <- to + 1
             }
         } else {
@@ -566,26 +569,50 @@ where <- function(x, pattern)
 
 ## conversions from BioConductor:
 
+## DNA:
 .DNAString2DNAbin <- function(from)
-    as.DNAbin.character(strsplit(tolower(as.character(from)), "")[[1]])
+    .Call("charVectorToDNAbinVector", as.character(from))
 
-.DNAStringSet2DNAbin <- function(from)
-    structure(lapply(from, .DNAString2DNAbin), class = "DNAbin")
+as.DNAbin.DNAString <- function(x, ...)
+{
+    res <- list(.DNAString2DNAbin(x))
+    class(res) <- "DNAbin"
+    res
+}
 
-.DNAAlignment2DNAbinMatrix <- function(from)
-    as.matrix(.DNAStringSet2DNAbin(as(from, "DNAStringSet")))
+as.DNAbin.DNAStringSet <- function(x, ...)
+{
+    res <- lapply(x, .DNAString2DNAbin)
+    class(res) <- "DNAbin"
+    res
+}
 
-## S3 versions:
-as.DNAbin.DNAString <- function(x, ...) .DNAString2DNAbin(x)
-as.DNAbin.DNAStringSet <- function(x, ...) .DNAStringSet2DNAbin(x)
-as.DNAbin.PairwiseAlignmentsSingleSubject <- function(x, ...) .DNAAlignment2DNAbinMatrix(x)
-as.DNAbin.DNAMultipleAlignment <- function(x, ...) .DNAAlignment2DNAbinMatrix(x)
+as.DNAbin.DNAMultipleAlignment <- function(x, ...)
+    as.matrix(as.DNAbin.DNAStringSet(as(x, "DNAStringSet")))
 
-## S4 versions:
-## setAs("DNAString", "DNAbin", .DNAString2DNAbin)
-## setAs("DNAStringSet", "DNAbin", .DNAStringSet2DNAbin)
-## setAs("PairwiseAlignmentsSingleSubject", "DNAbin", .DNAAlignment2DNAbinMatrix)
-## setAs("DNAMultipleAlignment", "DNAbin", .DNAAlignment2DNAbinMatrix)
+as.DNAbin.PairwiseAlignmentsSingleSubject <- function(x, ...)
+    as.DNAbin.DNAMultipleAlignment(x)
+
+## AA:
+.AAString2AAbin <- function(from)
+    charToRaw(as.character(from))
+
+as.AAbin.AAString <- function(x, ...)
+{
+    res <- list(.AAString2AAbin(x))
+    class(res) <- "AAbin"
+    res
+}
+
+as.AAbin.AAStringSet <- function(x, ...)
+{
+    res <- lapply(x, .AAString2AAbin)
+    class(res) <- "AAbin"
+    res
+}
+
+as.AAbin.AAMultipleAlignment <- function(x, ...)
+    as.matrix(as.AAbin.AAStringSet(as(x, "AAStringSet")))
 
 complement <- function(x)
 {

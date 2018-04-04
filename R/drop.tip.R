@@ -1,4 +1,4 @@
-## drop.tip.R (2017-07-27)
+## drop.tip.R (2017-10-28)
 
 ##   Remove Tips in a Phylogenetic Tree
 
@@ -171,18 +171,23 @@ drop.tip <-
     ## the tips may not be sorted in increasing order in the
     ## 2nd col of edge, so no need to reorder $tip.label
     phy$edge[TERMS, 2] <- rank(phy$edge[TERMS, 2])
-    phy$tip.label <- phy$tip.label[-tip]
+    ## fix by Thomas Sibley (2017-10-28):
+    if (length(tip)) phy$tip.label <- phy$tip.label[-tip]
 
     ## make new tip labels if necessary:
     if (subtree || !trim.internal) {
         ## get the numbers of the nodes that become tips:
         node2tip <- oldNo.ofNewTips[oldNo.ofNewTips > Ntip]
-        new.tip.label <- if (subtree) {
-            paste("[", N[node2tip], "_tips]", sep = "")
-        } else {
-            if (is.null(phy$node.label)) rep("NA", length(node2tip))
-            else phy$node.label[node2tip - Ntip]
-        }
+        ## fix by Thomas Sibley (2017-10-28):
+        new.tip.label <-
+            if (!length(node2tip)) {
+                character(0)
+            } else if (subtree) {
+                paste("[", N[node2tip], "_tips]", sep = "")
+            } else {
+                if (is.null(phy$node.label)) rep("NA", length(node2tip))
+                else phy$node.label[node2tip - Ntip]
+            }
 #        if (!is.null(phy$node.label))
 #            phy$node.label <- phy$node.label[-(node2tip - Ntip)]
         phy$tip.label <- c(phy$tip.label, new.tip.label)

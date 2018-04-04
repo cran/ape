@@ -1,8 +1,8 @@
-## chronos.R (2016-12-7)
+## chronos.R (2017-11-23)
 
 ##   Molecular Dating With Penalized and Maximum Likelihood
 
-## Copyright 2013-2016 Emmanuel Paradis
+## Copyright 2013-2017 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -120,6 +120,10 @@ chronos <-
     if (!quiet) cat("\nSetting initial dates...\n")
     seq.nod <- .Call(seq_root2tip, phy$edge, n, phy$Nnode)
 
+    ## 'fact.root' is used to approximate the age of the root if it is not given;
+    ## it is multiplied by 1.5 every 100 tries of the initiation loop (see below)
+    ## (added 2017-11-21)
+    fact.root <- 3
     ii <- 1L
     repeat {
         ini.time <- age
@@ -131,7 +135,7 @@ chronos <-
 
         ## if no age given for the root, find one approximately:
         if (is.na(ini.time[ROOT]))
-            ini.time[ROOT] <- if (is.null(age.max)) 3 * max(age.min) else 3 * max(age.max)
+            ini.time[ROOT] <- fact.root * max(if (is.null(age.max)) age.min else age.max)
 
         ISnotNA.ALL <- unlist(lapply(seq.nod, function(x) sum(!is.na(ini.time[x]))))
         o <- order(ISnotNA.ALL, decreasing = TRUE)
@@ -157,6 +161,7 @@ chronos <-
         if (ii > 1000)
             stop("cannot find reasonable starting dates after 1000 tries:
 maybe you need to adjust the calibration dates")
+        if (!(ii %% 100)) fact.root <- fact.root * 1.5
     }
 ### 'ini.time' set
 
@@ -426,7 +431,9 @@ maybe you need to adjust the calibration dates")
 
         if (!quiet) cat("", current.ploglik, "\n")
 
-        if (new.ploglik - current.ploglik > 1e-6 && i <= dual.iter.max) {
+        delta.ploglik <- new.ploglik - current.ploglik
+        if (is.na(delta.ploglik)) break # fix by Daniel Lang
+        if (delta.ploglik > 1e-6 && i <= dual.iter.max) {
             current.ploglik <- new.ploglik
             current.rates <- new.rates
             current.ages <- out.ages$par

@@ -1,4 +1,4 @@
-## node.dating.R (2016-06-21)
+## node.dating.R (2018-02-07)
 ## This file is part of the R-package `ape'.
 ## See the file COPYING in the package ape available at cran.r-project.org for licensing issues.
 
@@ -51,11 +51,11 @@
 estimate.mu <- function(t, node.dates, p.tol=0.05) {
 	# fit linear model
 	g <- glm(node.depth.edgelength(t)[1:length(node.dates)] ~ node.dates, na.action=na.omit)
-	null.g <- glm(node.depth.edgelength(t)[1:length(node.dates)] ~ 1, na.action=na.omit)
+	p <- anova(g, test="Chisq")[2,5]
 	
 	# test fit
-	if ((1 - pchisq(AIC(null.g) - AIC(g) + 2, df=1)) > p.tol) {
-		warning(paste("Cannot reject null hypothesis (p=", (1 - pchisq(AIC(null.g) - AIC(g))), ")"))
+	if (p > p.tol) {
+		warning(paste("Cannot reject null hypothesis (p=", p, ")"))
 	}
 	
 	coef(g)[[2]]
@@ -106,8 +106,10 @@ estimate.dates <- function(t, node.dates, mu = estimate.mu(t, node.dates), min.d
 	n.tips <- length(t$tip.label)
 	dates <- if (length(node.dates) == n.tips) {
 			c(node.dates, rep(NA, t$Nnode))
-		} else {
+		} else if (length(node.dates) == n.tips + t$Nnode) {
 			node.dates
+		} else {
+			stop(paste0("node.dates must be a vector with length equal to the number of tips or equal to the number of nodes plus the number of tips"))
 		}
 		
 	lik.sens <- if (lik.tol == 0) opt.tol else lik.tol
@@ -224,7 +226,7 @@ estimate.dates <- function(t, node.dates, mu = estimate.mu(t, node.dates), min.d
 			x.2 <- Re(-1 / (3 * a) * (b + complex(real=-1/2, imaginary=sqrt(3)/2) * C + delta.0 / (complex(real=-1/2, imaginary=sqrt(3)/2) * C)))
 			x.3 <- Re(-1 / (3 * a) * (b + complex(real=-1/2, imaginary=-sqrt(3)/2) * C + delta.0 / (complex(real=-1/2, imaginary=-sqrt(3)/2) * C)))
 		
-			if (x.1 && bounds[1] < x.1 && x.1 < bounds[2])
+			if (bounds[1] < x.1 && x.1 < bounds[2])
 				x <- c(x, x.1)
 			if (bounds[1] < x.2 && x.2 < bounds[2])
 				x <- c(x, x.2)

@@ -1,8 +1,8 @@
-## as.bitsplits.R (2014-12-11)
+## as.bitsplits.R (2018-03-13)
 
 ##   Conversion Among Split Classes
 
-## Copyright 2011-2014 Emmanuel Paradis
+## Copyright 2011-2018 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -65,16 +65,25 @@ sort.bitsplits <- function(x, decreasing = FALSE, ...)
     x
 }
 
-as.prop.part <- function(x) UseMethod("as.prop.part")
+as.prop.part <- function(x, ...) UseMethod("as.prop.part")
 
-as.prop.part.bitsplits <- function(x)
+as.prop.part.bitsplits <- function(x, include.trivial = FALSE, ...)
 {
     decodeBitsplits <- function(x) {
         f <- function(y) rev(rawToBits(y)) == as.raw(1)
         which(unlist(lapply(x, f)))
     }
-    res <- apply(x$matsplit, 2, decodeBitsplits)
-    attr(res, "number") <- x$freq
+    N <- ncol(x$matsplit) # nb of splits
+    n <- length(x$labels) # nb of tips
+    Nres <- if (include.trivial) N + 1L else N
+    res <- vector("list", Nres)
+    if (include.trivial) res[[1]] <- 1:n
+    j <- if (include.trivial) 2L else 1L
+    for (i in 1:N) {
+        res[[j]] <- decodeBitsplits(x$matsplit[, i])
+        j <- j + 1L
+    }
+    attr(res, "number") <- if (include.trivial) c(N, x$freq) else x$freq
     attr(res, "labels") <- x$labels
     class(res) <- "prop.part"
     res

@@ -190,7 +190,7 @@ plot.prop.part <- function(x, barcol = "blue", leftmar = 4, col = "red", ...)
     layout(matrix(1:2, 2, 1), heights = c(1, 3))
     par(mar = c(0.1, leftmar, 0.1, 0.1))
     one2L <- seq_len(L)
-    plot(one2L, attr(x, "number"), type = "h", col = barcol, xlim = c(0.5, L),
+    plot(one2L - 0.5, attr(x, "number"), type = "h", col = barcol, xlim = c(0, L),
          xaxs = "i", xlab = "", ylab = "Frequency", xaxt = "n", bty = "n", ...)
     M <- matrix(0L, L, n)
     for (i in one2L) M[i, x[[i]]] <- 1L

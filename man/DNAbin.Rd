@@ -66,9 +66,10 @@
   \code{fill.with.gaps = TRUE}, a `complete' matrix is returned,
   enventually with insertion gaps as missing data. If \code{check.names
   = TRUE} (the default), the rownames of each matrix are checked, and
-  the rows are reordered if necessary. If \code{check.names = FALSE},
-  the matrices must all have the same number of rows, and are simply
-  binded; the rownames of the first matrix are used. See the examples.
+  the rows are reordered if necessary (if some rownames are duplicated,
+  an error is returned). If \code{check.names = FALSE}, the matrices
+  must all have the same number of rows, and are simply binded; the
+  rownames of the first matrix are used. See the examples.
 
   \code{as.matrix} may be used to convert DNA sequences (of the same
   length) stored in a list into a matrix while keeping the names and the

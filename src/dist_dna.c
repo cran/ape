@@ -1,6 +1,6 @@
-/* dist_dna.c       2016-11-28 */
+/* dist_dna.c       2018-03-26 */
 
-/* Copyright 2005-2016 Emmanuel Paradis */
+/* Copyright 2005-2018 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -15,28 +15,28 @@
 #define KnownBase(a) (a & 8)
 
 /* returns 1 if the base is adenine surely, 0 otherwise */
-#define IsAdenine(a) a == 136
+#define IsAdenine(a) (a == 136)
 
 /* returns 1 if the base is guanine surely, 0 otherwise */
-#define IsGuanine(a) a == 72
+#define IsGuanine(a) (a == 72)
 
 /* returns 1 if the base is cytosine surely, 0 otherwise */
-#define IsCytosine(a) a == 40
+#define IsCytosine(a) (a == 40)
 
 /* returns 1 if the base is thymine surely, 0 otherwise */
-#define IsThymine(a) a == 24
+#define IsThymine(a) (a == 24)
 
 /* returns 1 if the base is a purine surely, 0 otherwise */
-#define IsPurine(a) a > 63
+#define IsPurine(a) (a > 63)
 
 /* returns 1 if the base is a pyrimidine surely, 0 otherwise */
-#define IsPyrimidine(a) a < 64
+#define IsPyrimidine(a) (a < 64)
 
 /* returns 1 if both bases are different surely, 0 otherwise */
-#define DifferentBase(a, b) (a & b) < 16
+#define DifferentBase(a, b) ((a & b) < 16)
 
 /* returns 1 if both bases are the same surely, 0 otherwise */
-#define SameBase(a, b) KnownBase(a) && a == b
+#define SameBase(a, b) (KnownBase(a) && a == b)
 
 /* computes directly the determinant of a 4x4 matrix */
 double detFourByFour(double *x)
@@ -1336,8 +1336,8 @@ unsigned char codon2aa_Code1(unsigned char x, unsigned char y, unsigned char z)
 	    return 0x58;
 	}
     } else {
-	if (x == 144 & IsThymine(y) & IsPurine(z)) return 0x52; /* codon is MGR => 'R'*/
-	if (x == 48 & IsThymine(y) & IsPurine(z)) return 0x4c; /* codon is YTR => 'L'*/
+	if ((x == 144) && IsThymine(y) && IsPurine(z)) return 0x52; /* codon is MGR => 'R'*/
+	if ((x == 48) && IsThymine(y) && IsPurine(z)) return 0x4c; /* codon is YTR => 'L'*/
     }
     return 0x58;
 }
@@ -1434,7 +1434,7 @@ unsigned char codon2aa_Code2(unsigned char x, unsigned char y, unsigned char z)
 	    return 0x58;
 	}
     } else {
-	if (x == 48 & IsThymine(y) & IsPurine(z)) return 0x4c; /* codon is YTR => 'L'*/
+	if ((x == 48) && IsThymine(y) && IsPurine(z)) return 0x4c; /* codon is YTR => 'L'*/
     }
     return 0x58;
 }

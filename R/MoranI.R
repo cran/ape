@@ -27,12 +27,12 @@ Moran.I <- function(x, weight, scaled = FALSE, na.rm = FALSE,
             n <- length(x)
             weight <- weight[!nas, !nas]
         } else {
-            warning("'x' has missing values: maybe you wanted to set na.rm=TRUE?")
+            warning("'x' has missing values: maybe you wanted to set na.rm = TRUE?")
             return(list(observed = NA, expected = ei, sd = NA, p.value = NA))
         }
     }
 
-    ## normaling the weights:
+    ## normalizing the weights:
     ## Note that we normalize after possibly removing the
     ## missing data.
     ROWSUM <- rowSums(weight)
