@@ -12,7 +12,7 @@
 Xplorefiles(from = "HOME", recursive = TRUE, ignore.case = TRUE)
 editFileExtensions()
 bydir(x)
-Xplor()
+Xplor(from = "HOME")
 }
 \arguments{
   \item{from}{the directory where to start the file search; by default,

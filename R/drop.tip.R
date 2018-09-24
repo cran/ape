@@ -1,11 +1,39 @@
-## drop.tip.R (2017-10-28)
+## drop.tip.R (2018-06-21)
 
 ##   Remove Tips in a Phylogenetic Tree
 
-## Copyright 2003-2017 Emmanuel Paradis, 2017 Klaus Schliep
+## Copyright 2003-2017 Emmanuel Paradis, 2017-2018 Klaus Schliep, 2018 Joseph Brown
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
+
+keep.tip <- function(phy, tip)
+{
+    if (!inherits(phy, "phylo"))
+        stop("object \"phy\" is not of class \"phylo\"")
+    Ntip <- length(phy$tip.label)
+    ## convert to indices if strings passed in
+    if (is.character(tip)) {
+        idx <- match(tip, phy$tip.label)
+        ## stop on bad tip names
+        ## alternative is to warn but proceed. not sure what stance is
+        if (anyNA(idx)) {
+            um <- c("umatched tip labels:\n", paste(tip[is.na(idx)], collapse = " "))
+            stop(um)
+        }
+        tip <- idx
+    } else {
+        # check that passed in indices are all valid
+        out.of.range <- tip > Ntip
+        if (any(out.of.range)) {
+            warning("some tip numbers were larger than the number of tips: they were ignored")
+            tip <- tip[!out.of.range]
+        }
+    }
+    ## get complement tip indices to drop
+    toDrop <- setdiff(1:Ntip, tip)
+    drop.tip(phy, toDrop)
+}
 
 extract.clade <- function(phy, node, root.edge = 0, collapse.singles = TRUE, interactive = FALSE)
 {
@@ -67,8 +95,10 @@ drop.tip <-
     if (!length(tip)) return(phy)
 
     if (length(tip) == Ntip) {
-        warning("drop all tips of the tree: returning NULL")
-        return(NULL)
+        if (Nnode(phy) < 3 || trim.internal) { # by Klaus (2018-06-21)
+            warning("drop all tips of the tree: returning NULL")
+            return(NULL)
+        }
     }
 
     wbl <- !is.null(phy$edge.length)

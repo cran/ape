@@ -74,7 +74,8 @@ drop.fossil(phy, tol = 1e-8)
   661--672.
 
   Paradis, E. (2015) Random phylogenies and the distribution of
-  branching times. Manuscript.
+  branching times. \emph{Journal of Theoretical Biology}, \bold{387},
+  39--45.
 
   Stadler, T. (2011) Simulating trees with a fixed number of extant
   species. \emph{Systematic Biology}, \bold{60}, 676--684.

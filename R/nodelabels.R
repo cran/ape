@@ -1,8 +1,8 @@
-## nodelabels.R (2017-03-13)
+## nodelabels.R (2018-08-25)
 
 ##   Labelling Trees
 
-## Copyright 2004-2017 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
+## Copyright 2004-2018 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -179,6 +179,7 @@ tiplabels <-
         } else {
             if (lastPP$type %in% c("fan", "radial")) {
                 tmp <- rect2polar(XX, YY)
+                if (lastPP$align.tip.label) tmp$r[] <- max(tmp$r)
                 tmp <- polar2rect(tmp$r + offset, tmp$angle)
                 XX <- tmp$x
                 YY <- tmp$y

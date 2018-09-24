@@ -1,8 +1,8 @@
-## ace.R (2017-04-25)
+## ace.R (2018-06-25)
 
 ##   Ancestral Character Estimation
 
-## Copyright 2005-2017 Emmanuel Paradis and Ben Bolker
+## Copyright 2005-2018 Emmanuel Paradis and Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -193,6 +193,7 @@ ace <-
         liks <- matrix(0, nb.tip + nb.node, nl)
         TIPS <- 1:nb.tip
         liks[cbind(TIPS, x)] <- 1
+        if (anyNA(x)) liks[which(is.na(x)), ] <- 1
         phy <- reorder(phy, "postorder")
 
         Q <- matrix(0, nl, nl)

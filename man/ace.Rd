@@ -147,6 +147,12 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
   an eigen decomposition avoiding the need to compute the matrix
   exponential; see details in Lebl (2013, sect. 3.8.3). This is much
   faster and is now the default.
+
+  Since version 5.2 of \pkg{ape}, \code{ace} can take state uncertainty
+  for discrete characters into account: this should be coded with \R's
+  \code{\link[base]{NA}} only. More details:
+
+  \url{https://www.mail-archive.com/r-sig-phylo@r-project.org/msg05286.html}
 }
 \note{
   Liam Revell points out that for discrete characters the ancestral

@@ -1,10 +1,12 @@
 \name{drop.tip}
 \alias{drop.tip}
+\alias{keep.tip}
 \alias{extract.clade}
 \title{Remove Tips in a Phylogenetic Tree}
 \description{
   \code{drop.tip} removes the terminal branches of a phylogenetic tree,
-  possibly removing the corresponding internal branches.
+  possibly removing the corresponding internal branches. \code{keep.tip}
+  does the opposite operation (i.e., returns the induced tree).
 
   \code{extract.clade} does the inverse operation: it keeps all the tips
   from a given node, and deletes all the other tips.
@@ -13,6 +15,7 @@
 drop.tip(phy, tip, trim.internal = TRUE, subtree = FALSE,
          root.edge = 0, rooted = is.rooted(phy), collapse.singles = TRUE,
          interactive = FALSE)
+keep.tip(phy, tip)
 extract.clade(phy, node, root.edge = 0, collapse.singles = TRUE,
               interactive = FALSE)
 }
@@ -64,7 +67,7 @@ extract.clade(phy, node, root.edge = 0, collapse.singles = TRUE,
 \value{
   an object of class \code{"phylo"}.
 }
-\author{Emmanuel Paradis, Klaus Schliep}
+\author{Emmanuel Paradis, Klaus Schliep, Joseph Brown}
 \seealso{
   \code{\link{bind.tree}}, \code{\link{root}}
 }

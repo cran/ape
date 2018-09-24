@@ -45,7 +45,7 @@ mixedFontLabel(..., sep = " ", italic = NULL, bold = NULL,
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{makeLabel}}, \code{\link{makeNodeLabel}},
-  \code{\link{label2table}}
+  \code{\link{label2table}}, \code{\link{updateLabel}}
 }
 \examples{
 tr <- read.tree(text = "((a,(b,c)),d);")

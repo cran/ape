@@ -40,6 +40,7 @@ S3method(c, AAbin)
 S3method(image, AAbin)
 S3method(labels, AAbin)
 S3method(print, AAbin)
+S3method(updateLabel, AAbin)
 
 S3method(AIC, ace)
 S3method(anova, ace)
@@ -72,12 +73,14 @@ S3method(labels, DNAbin)
 S3method(makeLabel, DNAbin)
 S3method(print, DNAbin)
 S3method(rbind, DNAbin)
+S3method(updateLabel, DNAbin)
 
 S3method(as.phylo, evonet)
 S3method(Nedge, evonet)
 S3method(plot, evonet)
 S3method(print, evonet)
 S3method(reorder, evonet)
+S3method(updateLabel, evonet)
 
 S3method("[", multiPhylo)
 S3method("[<-", multiPhylo)
@@ -127,6 +130,7 @@ S3method(root, phylo)
 S3method(skyline, phylo)
 S3method(summary, phylo)
 S3method(unroot, phylo)
+S3method(updateLabel, phylo)
 S3method(vcv, phylo)
 
 S3method(plot, phymltest)
@@ -207,4 +211,17 @@ S3method(makeLabel, character)
 S3method(skyline, coalescentIntervals)
 S3method(skyline, collapsedIntervals)
 
+S3method(updateLabel, character)
+S3method(updateLabel, data.frame)
+S3method(updateLabel, matrix)
+
 S3method(vcv, corPhyl)
+
+if (getRversion() >= "3.6.0") {
+    ##S3method(phangorn::as.phyDat, AAbin)
+    S3method(network::as.network, phylo)
+    S3method(igraph::as.igraph, phylo)
+    ##S3method(phangorn::as.networx, evonet)
+    S3method(network::as.network, evonet)
+    S3method(igraph::as.igraph, evonet)
+}

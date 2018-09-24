@@ -1,8 +1,8 @@
-## makeLabel.R (2017-05-06)
+## makeLabel.R (2018-05-22)
 
 ##   Label Management
 
-## Copyright 2010-2016 Emmanuel Paradis
+## Copyright 2010-2018 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -154,4 +154,55 @@ abbreviateGenus <- function(x, genus = TRUE, species = FALSE, sep = NULL)
     for (i in k)
         x[[i]][2] <- paste0(substr(x[[i]][2], 1, 1), ".")
     sapply(x, paste, collapse = sep)
+}
+
+updateLabel <- function(x, old, new, ...) UseMethod("updateLabel")
+
+updateLabel.character <- function(x, old, new, exact = TRUE, ...)
+{
+    if (length(old) != length(new))
+        stop("'old' and 'new' not of the same length")
+    if (exact) {
+        for (i in seq_along(old))
+            x[x == old[i]] <- new[i]
+    } else {
+        for (i in seq_along(old))
+            x[grep(old[i], x)] <- new[i]
+    }
+    x
+}
+
+updateLabel.DNAbin <- function(x, old, new, exact = TRUE, ...)
+{
+    labs <- labels(x)
+    labs <- updateLabel.character(labs, old, new, exact, ...)
+    if (is.list(x)) names(x) <- labs else rownames(x) <- labs
+    x
+}
+
+updateLabel.AAbin <- function(x, old, new, exact = TRUE, ...)
+    updateLabel.DNAbin(x, old, new, exact, ...)
+
+updateLabel.phylo <- function(x, old, new, exact = TRUE, nodes = FALSE, ...)
+{
+    x$tip.label <- updateLabel.character(x$tip.label, old, new, exact, ...)
+    if (nodes)
+        x$node.label <- updateLabel.character(x$node.label, old, new, exact, ...)
+    x
+}
+
+updateLabel.evonet <- function(x, old, new, exact = TRUE, nodes = FALSE, ...)
+    updateLabel.phylo(x, old, new, exact, nodes, ...)
+
+
+updateLabel.data.frame <- function(x, old, new, exact = TRUE, ...)
+{
+    row.names(x) <- updateLabel.character(row.names(x), old, new, exact, ...)
+    x
+}
+
+updateLabel.matrix <- function(x, old, new, exact = TRUE, ...)
+{
+    rownames(x) <- updateLabel.character(rownames(x), old, new, exact, ...)
+    x
 }

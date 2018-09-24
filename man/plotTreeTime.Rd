@@ -6,7 +6,8 @@
   contemporary together with their dates on the x-axis.
 }
 \usage{
-plotTreeTime(phy, tip.dates, show.tip.label = FALSE, y.lim = NULL, ...)
+plotTreeTime(phy, tip.dates, show.tip.label = FALSE, y.lim = NULL,
+             color = TRUE, ...)
 }
 \arguments{
   \item{phy}{an object of class \code{"phylo"}.}
@@ -15,6 +16,9 @@ plotTreeTime(phy, tip.dates, show.tip.label = FALSE, y.lim = NULL, ...)
   \item{show.tip.label}{a logical value; see \code{\link{plot.phylo}}.}
   \item{y.lim}{by default, one fifth of the plot is left below the tree;
     use this option to change this behaviour.}
+  \item{color}{a logical value specifying whether to use colors for the
+    lines linking the tips to the time axis. If \code{FALSE}, a grey
+    scale is used.}
   \item{\dots}{other arguments to be passed to \code{plot.phylo}.}
 }
 \details{

@@ -27,7 +27,7 @@ read.caic(file, brlen = NULL, skip = 0, comment.char = "#", ...)
   comparative data. \emph{CABIOS}, \bold{11} :241--251.
 }
 \author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
-\section{Warning }{The branch length support is still experimental and was not fully tested.}
+\section{Warning}{The branch length support is still experimental and was not fully tested.}
 \seealso{ \code{\link{read.tree}}, \code{\link{read.nexus}} }
 \examples{
 ### The same example than in read.tree, without branch lengths.

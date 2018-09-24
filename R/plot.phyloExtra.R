@@ -1,8 +1,8 @@
-## plot.phyloExtra.R (2016-08-09)
+## plot.phyloExtra.R (2018-07-28)
 
 ##   Extra Functions for Plotting and Annotating
 
-## Copyright 2016 Emmanuel Paradis
+## Copyright 2016-2018 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -29,7 +29,8 @@ drawSupportOnEdges <- function(value, ...)
     edgelabels(value, i, ...)
 }
 
-plotTreeTime <- function(phy, tip.dates, show.tip.label = FALSE, y.lim = NULL, ...)
+plotTreeTime <- function(phy, tip.dates, show.tip.label = FALSE, y.lim = NULL,
+                         color = TRUE, ...)
 {
     n <- Ntip(phy)
     if (length(tip.dates) != n)
@@ -54,7 +55,10 @@ plotTreeTime <- function(phy, tip.dates, show.tip.label = FALSE, y.lim = NULL, .
     x2 <- lastPP$xx[s]
     y2 <- lastPP$yy[s]
     x1.scaled <- x1 / max(x1)
-    segments(x1, y1, x2, y2, col = rgb(x1.scaled, 0, 1 - x1.scaled, alpha = .5))
+    col <-
+        if (color) rgb(x1.scaled, 0, 1 - x1.scaled, alpha = .5)
+        else grey(x1.scaled, alpha = 0.5)
+    segments(x1, y1, x2, y2, col = col)
     at <- pretty(tip.dates)
     axis(1, at = footrans(at), labels = at)
 }

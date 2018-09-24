@@ -101,8 +101,7 @@ These functions help to manipulate amino acid sequences of class
 \code{"AAbin"}. These objects are stored in vectors, matrices, or lists
 which can be manipulated with the usual \code{[} operator.
 
-There are conversion functions to and from characters, and to
-\code{"phyDat"}.
+There is a conversion function to and from characters.
 
 The function \code{dist.aa} computes the number of AA differences
 between each pair of sequences in a matrix; this can be scaled by the
@@ -112,17 +111,13 @@ sequence length. See the function \code{\link[phangorn]{dist.ml}} in
 The function \code{AAsubst} returns the indices of the polymorphic sites
 (similar to \code{\link{seg.sites}} for DNA sequences; see examples below).
 }
-\note{
-Package \pkg{phangorn} has the function \code{read.aa} to read amino
-acid sequence files in FASTA format.
-}
 \value{
-an object of class \code{"AAbin"}, \code{"character"}, \code{"phyDat"},
+an object of class \code{"AAbin"}, \code{"character"},
 \code{"dist"}, or \code{"numeric"}, depending on the function.
 }
 \author{Emmanuel Paradis, Franz Krah}
 \seealso{
-\code{\link{trans}}, \code{\link{alview}}
+\code{\link{read.FASTA}}, \code{\link{trans}}, \code{\link{alview}}
 }
 \examples{
 data(woodmouse)

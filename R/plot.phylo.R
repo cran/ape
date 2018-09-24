@@ -1,8 +1,8 @@
-## plot.phylo.R (2017-12-23)
+## plot.phylo.R (2018-08-09)
 
 ##   Plot Phylogenies
 
-## Copyright 2002-2017 Emmanuel Paradis
+## Copyright 2002-2018 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -706,7 +706,7 @@ node.height <- function(phy, clado.style = FALSE)
 
     if (clado.style)
         .C(node_height_clado, as.integer(n), as.integer(e1),
-           as.integer(e2), as.integer(N), double(n + m), as.double(yy))[[5]]
+           as.integer(e2), as.integer(N), double(n + m), as.double(yy))[[6]]
     else
         .C(node_height, as.integer(e1), as.integer(e2), as.integer(N),
            as.double(yy))[[4]]

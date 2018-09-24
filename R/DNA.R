@@ -1,4 +1,4 @@
-## DNA.R (2018-03-22)
+## DNA.R (2018-09-22)
 
 ##   Manipulations and Comparisons of DNA and AA Sequences
 
@@ -263,7 +263,14 @@ print.DNAbin <- function(x, printlen = 6, digits = 3, ...)
     if (nTot <= 1e7) {
         cat("Base composition:\n")
         print(round(base.freq(x), digits))
-    } else cat("More than 10 million nucleotides: not printing base composition\n")
+    } else {
+        cat("More than 10 million bases: not printing base composition\n")
+    }
+    if (nTot > 1) {
+        k <- floor(log(nTot, 1000))
+        units <- c("bases", "kb", "Mb", "Gb", "Tb", "Pb", "Eb")
+        cat("(Total: ", round(nTot/1000^k, 2), " ", units[k + 1], ")\n", sep = "")
+    }
 }
 
 as.DNAbin <- function(x, ...) UseMethod("as.DNAbin")
@@ -498,7 +505,7 @@ image.DNAbin <-
         brks <- c(-0.5, brks)
     }
     yaxt <- if (show.labels) "n" else "s"
-    image.default(1:s, 1:n, t(y[n:1, ]), col = co, xlab = xlab,
+    image.default(1:s, 1:n, t(y[n:1, , drop = FALSE]), col = co, xlab = xlab,
                   ylab = ylab, yaxt = yaxt, breaks = brks, ...)
     if (show.labels)
         mtext(rownames(x), side = 2, line = 0.1, at = n:1,
@@ -726,8 +733,11 @@ as.AAbin.character <- function(x, ...)
 
 labels.AAbin <- function(object, ...) labels.DNAbin(object, ...)
 
+## TO BE MOVED TO phangorn LATER
 if (getRversion() >= "2.15.1") utils::globalVariables("phyDat")
 as.phyDat.AAbin <- function(x, ...) phyDat(as.character(x), type = "AA")
+## \alias{as.phyDat.AAbin}
+## \method{as.phyDat}{AAbin}(x, \dots)
 
 dist.aa <- function(x, pairwise.deletion = FALSE, scaled = FALSE)
 {
@@ -1105,4 +1115,25 @@ as.matrix.AAbin <- function(x, ...)
   rownames(y) <- names(x)
   class(y) <- "AAbin"
   y
+}
+
+rDNAbin <- function(n, nrow, ncol, base.freq = rep(0.25, 4), prefix = "Ind_")
+{
+    foo <- function(n, prob) {
+        vec <- as.raw(._bs_[1:4])
+        vec[sample.int(4L, n, TRUE, prob, FALSE)]
+    }
+    base.freq <- if (all(base.freq == 0.25)) NULL else base.freq[c(1, 3, 2, 4)]
+    if (missing(n)) {
+        if (missing(nrow) && missing(ncol))
+            stop("nrow and ncol should be given if n is missing")
+        res <- foo(nrow * ncol, base.freq)
+        dim(res) <- c(nrow, ncol)
+        rownames(res) <- paste0(prefix, 1:nrow)
+    } else {
+        res <- lapply(n, foo, prob = base.freq)
+        names(res) <- paste0(prefix, seq_along(n))
+    }
+    class(res) <- "DNAbin"
+    res
 }

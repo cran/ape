@@ -61,7 +61,8 @@ makeLabel(x, ...)
 \seealso{
   \code{\link{makeNodeLabel}}, \code{\link[base]{make.unique}},
   \code{\link[base]{make.names}}, \code{\link[base]{abbreviate}},
-  \code{\link{mixedFontLabel}}, \code{\link{label2table}}
+  \code{\link{mixedFontLabel}}, \code{\link{label2table}},
+  \code{\link{updateLabel}}
 }
 \examples{
 x <- rep("a", 3)

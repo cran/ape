@@ -2,7 +2,7 @@
 
 ##   Collapse or Resolve Multichotomies
 
-## Copyright 2005-2017 Emmanuel Paradis
+## Copyright 2005-2017 Emmanuel Paradis, 2018 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -110,36 +110,32 @@ multi2di.multiPhylo <- function(phy, random = TRUE, ...)
 
 di2multi <- function(phy, ...) UseMethod("di2multi")
 
-.di2multi_ape <- function(phy, tol = 1e-8, ntips)
+## by Klaus (2018-05-28)
+.di2multi_ape <- function (phy, tol = 1e-08, ntips)
 {
     if (is.null(phy$edge.length)) stop("the tree has no branch length")
-    ## We select only the internal branches which are
-    ## significantly small:
+    phy <- reorder(phy)
+    e1 <- seq_len(max(phy$edge))
     ind <- which(phy$edge.length < tol & phy$edge[, 2] > ntips)
     n <- length(ind)
     if (!n) return(phy)
-    ## recursive function to `propagate' node #'s in case
-    ## there is a series of consecutive edges to remove
-    foo <- function(ancestor, des2del) {
-        wh <- which(phy$edge[, 1] == des2del)
-        for (k in wh) {
-            if (phy$edge[k, 2] %in% node2del) foo(ancestor, phy$edge[k, 2])
-            else phy$edge[k, 1] <<- ancestor
-        }
-    }
+
+    for (i in ind)
+        e1[phy$edge[i,2]] <-  e1[phy$edge[i,1]]
+
+    phy$edge[, 1] <- e1[phy$edge[, 1]]
     node2del <- phy$edge[ind, 2]
-    anc <- phy$edge[ind, 1]
-    for (i in 1:n) {
-        if (anc[i] %in% node2del) next
-        foo(anc[i], node2del[i])
-    }
     phy$edge <- phy$edge[-ind, ]
     phy$edge.length <- phy$edge.length[-ind]
+
     phy$Nnode <- phy$Nnode - n
-    ## Now we renumber the nodes that need to be:
-    sel <- phy$edge > min(node2del)
-    for (i in which(sel))
-      phy$edge[i] <- phy$edge[i] - sum(node2del < phy$edge[i])
+
+    e1 <- sort(unique(phy$edge[, 1]))
+    tmp <- integer(max(phy$edge))
+    tmp[e1] <- ntips + seq_len(phy$Nnode)
+    tmp[1:ntips] <- seq_len(ntips)
+
+    phy$edge[] <- tmp[phy$edge]
     if (!is.null(phy$node.label))
         phy$node.label <- phy$node.label[-(node2del - ntips)]
     phy

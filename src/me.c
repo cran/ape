@@ -1,4 +1,4 @@
-/* me.c    2014-03-04 */
+/* me.c    2018-09-21 */
 
 /* Copyright 2007-2008 Olivier Gascuel, Rick Desper,
    R port by Vincent Lefort and Emmanuel Paradis */
@@ -223,7 +223,7 @@ edge *makeEdge(char *label, node *tail, node *head, double weight)
 {
   edge *newEdge;
   newEdge = (edge *) malloc(sizeof(edge));
-  strncpy(newEdge->label,label,EDGE_LABEL_LENGTH);
+  strncpy(newEdge->label,label,EDGE_LABEL_LENGTH-1);
   newEdge->tail = tail;
   newEdge->head = head;
   newEdge->distance = weight;

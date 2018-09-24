@@ -1,109 +1,11 @@
-## read.tree.R (2017-09-21)
+## read.tree.R (2018-07-23)
 
 ##   Read Tree Files in Parenthetic Format
 
-## Copyright 2002-2017 Emmanuel Paradis, Daniel Lawson and Klaus Schliep
+## Copyright 2002-2018 Emmanuel Paradis, Daniel Lawson and Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
-
-##tree.build <- function(tp)
-##{
-##    add.internal <- function() {
-##        edge[j, 1] <<- current.node
-##        edge[j, 2] <<- current.node <<- node <<- node + 1L
-##        index[node] <<- j # set index
-##        j <<- j + 1L
-##    }
-##    add.terminal <- function() {
-##        edge[j, 1] <<- current.node
-##        edge[j, 2] <<- tip
-##        index[tip] <<- j # set index
-##        X <- unlist(strsplit(tpc[k], ":"))
-##        tip.label[tip] <<- X[1]
-##        edge.length[j] <<- as.numeric(X[2])
-##        k <<- k + 1L
-##        tip <<- tip + 1L
-##        j <<- j + 1L
-##    }
-##    go.down <- function() {
-##        l <- index[current.node]
-##        X <- unlist(strsplit(tpc[k], ":"))
-##        node.label[current.node - nb.tip] <<- X[1]
-##        edge.length[l] <<- as.numeric(X[2])
-##        k <<- k + 1L
-##        current.node <<- edge[l, 1]
-##    }
-##    if (!length(grep(",", tp))) {
-##        obj <- list(edge = matrix(c(2L, 1L), 1, 2))
-##        tp <- unlist(strsplit(tp, "[\\(\\):;]"))
-##        obj$edge.length <- as.numeric(tp[3])
-##        obj$Nnode <- 1L
-##        obj$tip.label <- tp[2]
-##        if (tp[4] != "") obj$node.label <- tp[4]
-##        class(obj) <- "phylo"
-##        return(obj)
-##    }
-##
-##    tpc <- unlist(strsplit(tp, "[\\(\\),;]"))
-##    tpc <- tpc[nzchar(tpc)]
-##    ## the following 2 lines are (slightly) faster than using gsub()
-##    tsp <- unlist(strsplit(tp, NULL))
-##    skeleton <- tsp[tsp %in% c("(", ")", ",", ";")]
-##    nsk <- length(skeleton)
-##    nb.node <- sum(skeleton == ")")
-##    nb.tip <- sum(skeleton == ",") + 1
-##    ## We will assume there is an edge at the root;
-##    ## if so, it will be removed and put into a vector
-##    nb.edge <- nb.node + nb.tip
-##    node.label <- character(nb.node)
-##    tip.label <- character(nb.tip)
-##
-##    edge.length <- numeric(nb.edge)
-##    edge <- matrix(0L, nb.edge, 2)
-##    current.node <- node <- as.integer(nb.tip + 1) # node number
-##    edge[nb.edge, 2] <- node
-##    index <- numeric(nb.edge + 1) # hash index to avoid which
-##    index[node] <- nb.edge
-##
-##    ## j: index of the line number of edge
-##    ## k: index of the line number of tpc
-##    ## tip: tip number
-##    j <- k <- tip <- 1L
-##
-##    for (i in 2:nsk) {
-##        if (skeleton[i] == "(") add.internal() # add an internal branch (on top)
-##        if (skeleton[i] == ",") {
-##            if (skeleton[i - 1] != ")") add.terminal() # add a terminal branch
-##        }
-##        if (skeleton[i] == ")") {
-##            if (skeleton[i - 1] == ",") { # add a terminal branch and go down one level
-##                add.terminal()
-##                go.down()
-##            }
-##            ## added by Klaus to allow singleton nodes (2017-05-26):
-##            if (skeleton[i - 1] == "(") {
-##                add.terminal()
-##                go.down()
-##            }
-##            ## end
-##            if (skeleton[i - 1] == ")") go.down() # go down one level
-##        }
-##    }
-##
-##    edge <- edge[-nb.edge, ]
-##    obj <- list(edge = edge, Nnode = nb.node, tip.label = tip.label)
-##    root.edge <- edge.length[nb.edge]
-##    edge.length <- edge.length[-nb.edge]
-##    if (!all(is.na(edge.length))) # added 2005-08-18
-##        obj$edge.length <- edge.length
-##    if (is.na(node.label[1])) node.label[1] <- ""
-##    if (any(nzchar(node.label))) obj$node.label <- node.label
-##    if (!is.na(root.edge)) obj$root.edge <- root.edge
-##    class(obj) <- "phylo"
-##    attr(obj, "order") <- "cladewise"
-##    obj
-##}
 
 read.tree <- function(file = "", text = NULL, tree.names = NULL, skip = 0,
     comment.char = "", keep.multi = FALSE, ...)
@@ -217,8 +119,10 @@ read.tree <- function(file = "", text = NULL, tree.names = NULL, skip = 0,
             node.label <- obj[[i]]$node.label
             ind <- match(tip.label, names(tmp_lab))
             ind2 <- which(!is.na(ind))
-            tip.label[ind2] <- tmp_lab[ind[ind2]]
-            tmp_lab <- tmp_lab[-ind[ind2]]
+            if (length(ind2)) {
+                tip.label[ind2] <- tmp_lab[ind[ind2]]
+                tmp_lab <- tmp_lab[-ind[ind2]]
+            }
 
             ind <- match(node.label, names(tmp_lab))
             ind2 <- which(!is.na(ind))

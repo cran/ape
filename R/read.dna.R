@@ -1,4 +1,4 @@
-## read.dna.R (2018-03-28)
+## read.dna.R (2018-05-15)
 
 ##   Read DNA Sequences in a File
 
@@ -36,7 +36,7 @@ read.FASTA <- function(file, type = "DNA")
         icr <- which(x == as.raw(0x0d)) # CR
         if (length(icr)) x <- x[-icr]
     }
-    res <- .Call(rawStreamToDNAorAAbin, x, itype)
+    res <- .Call(rawStreamToDNAorAAbin, x, itype - 2L)
     if (identical(res, 0L)) {
         warning("failed to read sequences, returns NULL")
         return(NULL)

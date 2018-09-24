@@ -1,10 +1,10 @@
 Package: ape
-Version: 5.1
-Date: 2018-04-03
+Version: 5.2
+Date: 2018-09-22
 Title: Analyses of Phylogenetics and Evolution
-Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email = "Emmanuel.Paradis@ird.fr"),
-  person("Simon", "Blomberg", role = c("aut", "cph")),
-  person("Ben", "Bolker", role = c("aut", "cph")),
+Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email = "Emmanuel.Paradis@ird.fr", comment = c(ORCID = "0000-0003-3092-2199")),
+  person("Simon", "Blomberg", role = c("aut", "cph"), comment = c(ORCID = "0000-0003-1062-0839")),
+  person("Ben", "Bolker", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-2127-0443")),
   person("Joseph", "Brown", role = c("aut", "cph")),
   person("Julien", "Claude", role = c("aut", "cph")),
   person("Hoa Sien", "Cuong", role = c("aut", "cph")),
@@ -21,8 +21,9 @@ Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email 
   person("Franz", "Krah", role = c("aut", "cph")),
   person("Daniel", "Lawson", role = c("aut", "cph")),
   person("Vincent", "Lefort", role = c("aut", "cph")),
-  person("Pierre", "Legendre", role = c("aut", "cph")),
+  person("Pierre", "Legendre", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-3838-3305")),
   person("Jim", "Lemon", role = c("aut", "cph")),
+  person("Eric", "Marcon", role = c("aut", "cph")),
   person("Rosemary", "McCloskey", role = c("aut", "cph")),
   person("Johan", "Nylander", role = c("aut", "cph")),
   person("Rainer", "Opgen-Rhein", role = c("aut", "cph")),
@@ -41,10 +42,11 @@ Description: Functions for reading, writing, plotting, and manipulating phylogen
 License: GPL (>= 2)
 URL: http://ape-package.ird.fr/
 NeedsCompilation: yes
-Packaged: 2018-04-03 13:27:51 UTC; paradis
-Author: Emmanuel Paradis [aut, cre, cph],
-  Simon Blomberg [aut, cph],
-  Ben Bolker [aut, cph],
+Packaged: 2018-09-24 06:37:40 UTC; paradis
+Author: Emmanuel Paradis [aut, cre, cph]
+    (<https://orcid.org/0000-0003-3092-2199>),
+  Simon Blomberg [aut, cph] (<https://orcid.org/0000-0003-1062-0839>),
+  Ben Bolker [aut, cph] (<https://orcid.org/0000-0002-2127-0443>),
   Joseph Brown [aut, cph],
   Julien Claude [aut, cph],
   Hoa Sien Cuong [aut, cph],
@@ -61,8 +63,9 @@ Author: Emmanuel Paradis [aut, cre, cph],
   Franz Krah [aut, cph],
   Daniel Lawson [aut, cph],
   Vincent Lefort [aut, cph],
-  Pierre Legendre [aut, cph],
+  Pierre Legendre [aut, cph] (<https://orcid.org/0000-0002-3838-3305>),
   Jim Lemon [aut, cph],
+  Eric Marcon [aut, cph],
   Rosemary McCloskey [aut, cph],
   Johan Nylander [aut, cph],
   Rainer Opgen-Rhein [aut, cph],
@@ -73,4 +76,4 @@ Author: Emmanuel Paradis [aut, cre, cph],
   Damien de Vienne [aut, cph]
 Maintainer: Emmanuel Paradis <Emmanuel.Paradis@ird.fr>
 Repository: CRAN
-Date/Publication: 2018-04-04 22:16:00 UTC
+Date/Publication: 2018-09-24 08:00:03 UTC

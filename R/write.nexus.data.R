@@ -1,4 +1,4 @@
-## write.nexus.data.R (2018-02-02)
+## write.nexus.data.R (2018-06-23)
 
 ##   Write Character Data in NEXUS Format
 
@@ -15,6 +15,15 @@ write.nexus.data <-
 ### TODO: Standard data, mixed data, nice indent
 
     format <- match.arg(toupper(format), c("DNA", "PROTEIN", "STANDARD", "CONTINUOUS"))
+
+    if (inherits(x, "DNAbin") && format != "DNA") {
+        format <- "DNA"
+        warning("object 'x' is of class DNAbin: format forced to DNA")
+    }
+    if (inherits(x, "AAbin") && format != "PROTEIN") {
+        format <- "PROTEIN"
+        warning("object 'x' is of class AAbin: format forced to PROTEIN")
+    }
 
     indent          <- "  "  # Two blanks
     maxtax          <- 5     # Max nr of taxon names to be printed on a line
@@ -72,6 +81,8 @@ write.nexus.data <-
             }
         }
     }
+
+    if (inherits(x, "DNAbin") || inherits(x, "AAbin")) x <- as.character(x)
 
     fcat("#NEXUS\n[Data written by write.nexus.data.R, ", date(), "]\n")
 

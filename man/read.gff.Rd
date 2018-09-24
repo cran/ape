@@ -6,12 +6,14 @@
   and returns a data frame.
 }
 \usage{
-read.gff(file, na.strings = c(".", "?"))
+read.gff(file, na.strings = c(".", "?"), GFF3 = TRUE)
 }
 \arguments{
   \item{file}{a file name specified by a character string.}
   \item{na.strings}{the strings in the GFF file that will be converted
     as NA's (missing values).}
+  \item{GFF3}{a logical value specifying whether if the file is
+    formatted according to version 3 of GFF.}
 }
 \details{
   The returned data frame has its (column) names correctly set (see
@@ -20,7 +22,10 @@ read.gff(file, na.strings = c(".", "?"))
 
   This function should be more efficient than using \code{read.delim}.
 
-  GFF2 files can also be read but the field names conform to GFF3.
+  GFF2 (aka GTF) files can also be read: use \code{GFF3 = FALSE} to have
+  the correct field names. Note that GFF2 files and GFF3 files have the
+  same structure, although some fields are slightly different (see
+  reference).
 
   The file can be gz-compressed (see examples), but not zipped.
 }

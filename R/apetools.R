@@ -1,8 +1,8 @@
-## apetools.R (2017-08-31)
+## apetools.R (2018-06-13)
 
 ##   APE Tools
 
-## Copyright 2017 Emmanuel Paradis
+## Copyright 2017-2018 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -82,7 +82,7 @@ bydir <- function(x)
     for (z in unique(top)) foo(1L, z)
 }
 
-Xplor <- function()
+Xplor <- function(from = "HOME")
 {
     ext <- if (exists(".file.extensions", envir = .PlotPhyloEnv))
                get(".file.extensions", envir = .PlotPhyloEnv)
@@ -91,7 +91,7 @@ Xplor <- function()
     OUT <- paste0(tempfile(), ".html")
     mycat <- function(...) cat(..., sep = "", file = OUT, append = TRUE)
 
-    FILES <- Xplorefiles()
+    FILES <- Xplorefiles(from = from)
     filetypes <- names(FILES)
     ## nb of files of each type:
     NR <- sapply(FILES, nrow)
