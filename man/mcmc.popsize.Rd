@@ -12,7 +12,9 @@ mcmc.popsize(tree,nstep, thinning=1, burn.in=0,progress.bar=TRUE,
     prior.height.mean,
     prior.height.var)
 extract.popsize(mcmc.out, credible.interval=0.95, time.points=200, thinning=1, burn.in=0)
-\method{plot}{popsize}(x, show.median=TRUE, show.years=FALSE, subst.rate, present.year, ...)
+\method{plot}{popsize}(x, show.median=TRUE, show.years=FALSE,
+             subst.rate, present.year, xlab = NULL,
+             ylab = "Effective population size", log = "y", ...)
 \method{lines}{popsize}(x, show.median=TRUE,show.years=FALSE, subst.rate, present.year, ...)
 
 }
@@ -60,11 +62,16 @@ extract.popsize(mcmc.out, credible.interval=0.95, time.points=200, thinning=1, b
  \item{show.median}{Plot median rather than mean as point estimate for demographic function (default: TRUE).}
 
   \item{show.years}{Option that determines whether the time is plotted in units of
-        of substitutions (default) or in years (requires specification of substution rate
-	and year of present).}
-\item{subst.rate}{Substitution rate (see option show.years).}
-\item{present.year}{Present year (see option show.years).}
-  \item{\dots}{Further arguments to be passed on  to \code{plot}.}
+    of substitutions (default) or in years (requires specification of substution rate
+    and year of present).}
+  \item{subst.rate}{Substitution rate (see option show.years).}
+  \item{present.year}{Present year (see option show.years).}
+  \item{xlab}{label on the x-axis (depends on the value of
+    \code{show.years}).}
+  \item{ylab}{label on the y-axis.}
+  \item{log}{log-transformation of axes; by default, the y-axis is
+    log-transformed.}
+  \item{\dots}{Further arguments to be passed on  to \code{plot} or \code{lines}.}
 }
 \description{
  These functions implement a reversible jump MCMC framework to infer the demographic history,

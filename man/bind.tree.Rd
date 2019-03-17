@@ -92,6 +92,9 @@ title("x")
 plot(z, show.node.label = TRUE, font = 1, root.edge = TRUE)
 title("z <- bind.tree(x, y, po=.2)")
 
+## make sure the terminal branch length is long enough:
+x$edge.length[x$edge[, 2] == 2] <- 0.2
+
 z <- bind.tree(x, y, 2, .1)
 plot(y, show.node.label = TRUE, font = 1, root.edge = TRUE)
 title("y")

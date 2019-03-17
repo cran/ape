@@ -1,8 +1,8 @@
-## DNA.R (2018-09-22)
+## DNA.R (2019-02-22)
 
 ##   Manipulations and Comparisons of DNA and AA Sequences
 
-## Copyright 2002-2018 Emmanuel Paradis, 2015 Klaus Schliep, 2017 Franz Krah
+## Copyright 2002-2019 Emmanuel Paradis, 2015 Klaus Schliep, 2017 Franz Krah
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -531,7 +531,7 @@ image.DNAbin <-
     }
 }
 
-alview <- function(x, file = "", uppercase = TRUE)
+alview <- function(x, file = "", uppercase = TRUE, showpos = TRUE)
 {
     if (is.list(x)) x <- as.matrix(x)
     taxa <- formatC(labels(x), width = -1)
@@ -546,8 +546,21 @@ alview <- function(x, file = "", uppercase = TRUE)
     x <- apply(x, 1L, paste, collapse = "")
     if (uppercase) x <- toupper(x)
     res <- paste(taxa, x)
-    hdr <- formatC(s, width = nchar(res[1]))
-    cat(hdr, file = file, sep = "\n")
+    if ((is.logical(showpos) && showpos) || is.numeric(showpos)) {
+        if (is.logical(showpos)) {
+            pos <- 1:s
+            digits <- floor(log10(s)) + 1
+        } else {
+            pos <- showpos
+            digits <- floor(log10(max(pos))) + 1
+        }
+        hdr <- sprintf(paste0("%0", digits, "d"), pos)
+        hdr <- unlist(strsplit(hdr, ""))
+        dim(hdr) <- c(digits, length(pos))
+        hdr <- apply(hdr, 1, paste, collapse = "")
+        hdr <- formatC(hdr, width = nchar(res[1]))
+        cat(hdr, file = file, sep = "\n")
+    }
     cat(res, file = file, sep = "\n", append = TRUE)
 }
 
@@ -1135,5 +1148,144 @@ rDNAbin <- function(n, nrow, ncol, base.freq = rep(0.25, 4), prefix = "Ind_")
         names(res) <- paste0(prefix, seq_along(n))
     }
     class(res) <- "DNAbin"
+    res
+}
+
+dnds <- function(x, code = 1, codonstart = 1, quiet = FALSE)
+{
+    if (code > 2)
+        stop("only the standard (code=1) and the vertebrate mitochondrial (code=2) codes are available for now")
+    if (is.list(x)) x <- as.matrix(x)
+    n <- nrow(x)
+    if (nrow(unique.matrix(x)) != n) stop("sequences are not unique")
+    if (codonstart > 1) {
+        del <- -(1:(codonstart - 1))
+        x <- x[, del]
+    }
+    p <- ncol(x)
+    rest <- p %% 3
+    if (rest != 0) {
+        p <- p - rest
+        x <- x[, 1:p]
+        msg <- paste("sequence length not a multiple of 3:",
+                     rest, ifelse(rest == 1,  "nucleotide", "nucleotides"),
+                     "dropped")
+        warning(msg)
+    }
+
+    class(x) <- NULL
+
+    abin <- as.raw(0x88)
+    gbin <- as.raw(0x48)
+    cbin <- as.raw(0x28)
+    tbin <- as.raw(0x18)
+
+    pos1 <- seq(1, by = 3, length.out = p/3)
+    POS1 <- POS2 <- POS3 <- logical(p)
+    POS1[pos1] <- POS2[pos1 + 1L] <- POS3[pos1 + 2L] <- TRUE
+
+    Lcat <- matrix(0L, n, p)
+    Lcat[, POS3] <- 4L # most sites at 3rd positions are fourfold degenerate
+
+    m12 <- -c(1, 2)
+
+    if (code == 1) {
+        for (i in 1:n) {
+            z <- x[i, , drop = TRUE]
+            isA <- z == abin
+            isG <- z == gbin
+            isC <- z == cbin
+            isT <- z == tbin
+            ## 1/ are some bases at 1st positions twofold degenerate?
+            s2 <- isT & POS2
+            if (any(s2)) {
+                s3 <- c(FALSE, s2[-p]) & ((isA | isG) & POS3)
+                if (any(s3)) {
+                    s1 <- ((isT | isC) & POS1) & c(s3[m12], FALSE, FALSE)
+                    if (any(s1)) Lcat[i, which(s1)] <- 2L
+                }
+            }
+            s2 <- isG & POS2
+            if (any(s2)) {
+                s3 <- c(FALSE, s2[-p]) & ((isA | isG) & POS3)
+                if (any(s3)) {
+                    s1 <- ((isA | isC) & POS1) & c(s3[m12], FALSE, FALSE)
+                    if (any(s1)) Lcat[i, which(s1)] <- 2L
+                }
+            }
+            ## 2/ all bases at 2nd positions are nondegenerate: no need to do anything
+            ## 3/ find the bases at 3rd positions that are twofold degenerate
+            s2 <- isA & POS2
+            if (any(s2)) Lcat[i, which(s2) + 1L] <- 2L
+            s2 <- isG & POS2
+            if (any(s2)) {
+                s1 <- ((isT | isA) & POS1) & c(s2[-p], FALSE)
+                if (any(s1)) Lcat[i, which(s1) + 2L] <- 2L
+            }
+        }
+    } else { # if (code == 2)
+        for (i in 1:n) {
+            z <- x[i, , drop = TRUE]
+            isA <- z == abin
+            isG <- z == gbin
+            isC <- z == cbin
+            isT <- z == tbin
+            ## 1/ are some bases at 1st positions twofold degenerate?
+            s2 <- isT & POS2
+            if (any(s2)) {
+                s3 <- c(FALSE, s2[-p]) & ((isA | isG) & POS3)
+                if (any(s3)) {
+                    s1 <- ((isT | isC) & POS1) & c(s3[m12], FALSE, FALSE)
+                    if (any(s1)) Lcat[i, which(s1)] <- 2L
+                }
+            }
+            ## 2/ all bases at 2nd positions are nondegenerate: no need to do anything
+            ## 3/ find the bases at 3rd positions that twofold/fourfold degenerate
+            s1 <- (isA | isT) & POS1
+            if (any(s1)) {
+                s2 <- c(FALSE, s1[-p]) & ((isT | isA | isG) & POS2)
+                if (any(s2)) Lcat[i, which(s2) + 1L] <- 2L
+            }
+            s1 <- (isC | isG) & POS1
+            if (any(s1)) {
+                s2 <- c(FALSE, s1[-p]) & (isA & POS2)
+                if (any(s2)) Lcat[i, which(s2) + 1L] <- 2L
+            }
+        }
+    }
+
+    deg <- c(0, 2, 4) # the 3 levels of degeneracy
+    nout <- n*(n - 1)/2
+    res <- numeric(nout)
+    k <- 1L
+    for (i in 1:(n - 1)) {
+        for (j in (i + 1):n) {
+            if (!quiet) cat("\r", round(100*k/nout), "%")
+            z <- x[c(i, j), ]
+            Lavg <- (Lcat[i, ] + Lcat[j, ])/2
+            ii <- lapply(deg, function(x) which(x == Lavg))
+            L <- lengths(ii)
+            S <- lapply(ii, function(id) dist.dna(z[, id], "TS"))
+            V <- lapply(ii, function(id) dist.dna(z[, id], "TV"))
+            P <- unlist(S, use.names = FALSE)/L
+            Q <- unlist(V, use.names = FALSE)/L
+            a <- 1/(1 - 2*P - Q)
+            b <- 1/(1 - 2*Q)
+            c <- (a - b)/2
+            A <- log(a)/2 - log(b)/4
+            B <- log(b)/2
+            dS <- (L[2]*A[2] + L[3]*A[3])/sum(L[2:3]) + B[3]
+            dN <- A[1] + (L[1]*B[1] + L[2]*B[2])/sum(L[1:2])
+            res[k] <- dN/dS
+            k <- k + 1L
+        }
+    }
+    if (!quiet) cat("... done\n")
+    attr(res, "Size") <- n
+    attr(res, "Labels") <- rownames(x)
+    attr(res, "Diag") <- attr(res, "Upper") <- FALSE
+    attr(res, "call") <- match.call()
+    attr(res, "method") <- "dNdS (Li 1993)"
+    class(res) <- "dist"
     res
 }

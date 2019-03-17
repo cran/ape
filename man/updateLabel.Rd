@@ -39,7 +39,8 @@ If \code{exact = TRUE} (the default), the values in \code{old} are matched exact
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{makeLabel}}, \code{\link{makeNodeLabel}},
-  \code{\link{mixedFontLabel}}, \code{\link{stripLabel}}
+  \code{\link{mixedFontLabel}}, \code{\link{stripLabel}},
+  \code{\link{checkLabel}}
 }
 \examples{
 \dontrun{

@@ -32,7 +32,8 @@ By default, these functions try to guess what is the separator between the genus
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{makeLabel}}, \code{\link{makeNodeLabel}},
-  \code{\link{mixedFontLabel}}, \code{\link{updateLabel}}
+  \code{\link{mixedFontLabel}}, \code{\link{updateLabel}},
+  \code{\link{checkLabel}}
 }
 \examples{
 x <- c("Panthera_leo", "Panthera_pardus", "Panthera_onca", "Panthera_uncia",

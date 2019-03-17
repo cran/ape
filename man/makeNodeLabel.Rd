@@ -51,7 +51,8 @@ makeNodeLabel(phy, method = "number", prefix = "Node", nodeList = list(), ...)
 \author{Emmanuel Paradis}
 \seealso{
   \code{\link{makeLabel}}, \code{\link[base]{grep}},
-  \code{\link{mixedFontLabel}}, \code{\link{label2table}}
+  \code{\link{mixedFontLabel}}, \code{\link{label2table}},
+  \code{\link{checkLabel}}
 }
 \examples{
 tr <-

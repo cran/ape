@@ -38,6 +38,10 @@ Analyses of Phylogenetics and Evolution
 
   Popescu, A.-A., Huber, K. T. and Paradis, E. (2012) ape 3.0: new tools
   for distance based phylogenetics and evolutionary analysis in
-  R. \emph{Bioinformatics}, \bold{28}, 1536-1537.
+  R. \emph{Bioinformatics}, \bold{28}, 1536--1537.
+
+  Paradis, E. and Schliep, K. (2019) ape 5.0: an environment for modern
+  phylogenetics and evolutionary analyses in R. \emph{Bioinformatics},
+  \bold{35}, 526--528.
 }
 \keyword{package}

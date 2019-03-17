@@ -80,7 +80,7 @@ is.rooted(phy)
   clade on the right of \code{node} (when the tree is plotted by
   default) as the ingroup. See a detailed explanation there:
 
-  \url{http://www.mail-archive.com/r-sig-phylo@r-project.org/msg03805.html}.
+  \url{https://www.mail-archive.com/r-sig-phylo@r-project.org/msg03805.html}.
 }
 \value{
   an object of class \code{"phylo"} or \code{"multiPhylo"} for
@@ -89,7 +89,7 @@ is.rooted(phy)
 \references{
   Czech, L., Huerta-Cepas, J. and Stamatakis, A. (2016) A critical
   review on the use of support values in tree viewers and bioinformatics
-  toolkits. \url{http://dx.doi.org/10.1101/035360}
+  toolkits. \url{https://dx.doi.org/10.1101/035360}
 }
 \author{Emmanuel Paradis}
 \seealso{

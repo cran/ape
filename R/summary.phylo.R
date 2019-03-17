@@ -1,8 +1,8 @@
-## summary.phylo.R (2016-11-24)
+## summary.phylo.R (2019-01-30)
 
 ##   Print Summary of a Phylogeny and "multiPhylo" operators
 
-## Copyright 2003-2016 Emmanuel Paradis, 2006 Ben Bolker, and Klaus Schliep 2016
+## Copyright 2003-2019 Emmanuel Paradis, 2006 Ben Bolker, and Klaus Schliep 2016
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -112,7 +112,7 @@ print.phylo <- function(x, printlen = 6,...)
 print.multiPhylo <- function(x, details = FALSE, ...)
 {
     N <- length(x)
-    cat(N, "phylogenetic trees\n")
+    cat(N, "phylogenetic", ifelse(N > 1, "trees\n", "tree\n"))
     if (details)
       for (i in 1:N)
         cat("tree", i, ":", length(x[[i]]$tip.label), "tips\n")

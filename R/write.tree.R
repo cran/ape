@@ -1,8 +1,8 @@
-## write.tree.R (2017-09-08)
+## write.tree.R (2019-03-01)
 
 ##   Write Tree File in Parenthetic Format
 
-## Copyright 2002-2017 Emmanuel Paradis, Daniel Lawson, and Klaus Schliep
+## Copyright 2002-2019 Emmanuel Paradis, Daniel Lawson, and Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -42,19 +42,32 @@ write.tree <-
         } else tree.names <- character(N)
     }
 
+    ## added by KS (2019-03-01):
+    check_tips <- TRUE
+    if (inherits(phy, "multiPhylo")) {
+        if (!is.null(attr(phy, "TipLabel"))) {
+            attr(phy, "TipLabel") <- checkLabel(attr(phy, "TipLabel"))
+            check_tips <- FALSE
+        }
+    }
+
+    ## added by EP (2019-01-23):
+    phy <- .uncompressTipLabel(phy)
+    class(phy) <- NULL
+
     for (i in 1:N)
         res[i] <- .write.tree2(phy[[i]], digits = digits,
-                               tree.prefix = tree.names[i])
+                               tree.prefix = tree.names[i], check_tips)
 
     if (file == "") return(res)
     else cat(res, file = file, append = append, sep = "\n")
 }
 
-.write.tree2 <- function(phy, digits = 10, tree.prefix = "")
+.write.tree2 <- function(phy, digits = 10, tree.prefix = "", check_tips)
 {
     brl <- !is.null(phy$edge.length)
     nodelab <- !is.null(phy$node.label)
-    phy$tip.label <- checkLabel(phy$tip.label)
+    if (check_tips) phy$tip.label <- checkLabel(phy$tip.label)
     if (nodelab) phy$node.label <- checkLabel(phy$node.label)
     f.d <- paste("%.", digits, "g", sep = "")
     cp <- function(x){
