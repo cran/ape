@@ -33,15 +33,16 @@ export(.compressTipLabel, .PlotPhyloEnv, .uncompressTipLabel,
        dyule, edgelabels, edges, editFileExtensions, estimate.dates,
        estimate.mu, evonet, ewLasso, extract.clade, extract.popsize,
        fancyarrows, fastme.bal, fastme.ols, find.skyline.epsilon,
-       floating.pie.asp, Ftab, gammaStat, GC.content, getMRCA,
-       has.singles, howmanytrees, image.AAbin, image.DNAbin,
-       is.binary, is.binary.multiPhylo, is.binary.phylo,
-       is.binary.tree, is.compatible, is.compatible.bitsplits,
-       is.monophyletic, is.rooted, is.rooted.multiPhylo,
-       is.rooted.phylo, is.ultrametric, is.ultrametric.multiPhylo,
-       is.ultrametric.phylo, keep.tip, kronoviz, label2table,
-       labels.DNAbin, ladderize, lmorigin, LTT, ltt.coplot, ltt.lines,
-       ltt.plot, ltt.plot.coords, makeChronosCalib, makeLabel,
+       floating.pie.asp, Ftab, gammaStat, GC.content,
+       getAnnotationsGenBank, getMRCA, has.singles, howmanytrees,
+       image.AAbin, image.DNAbin, is.binary, is.binary.multiPhylo,
+       is.binary.phylo, is.binary.tree, is.compatible,
+       is.compatible.bitsplits, is.monophyletic, is.rooted,
+       is.rooted.multiPhylo, is.rooted.phylo, is.ultrametric,
+       is.ultrametric.multiPhylo, is.ultrametric.phylo, keep.tip,
+       kronoviz, label2table, labels.DNAbin, ladderize, latag2n,
+       lmorigin, LTT, ltt.coplot, ltt.lines, ltt.plot,
+       ltt.plot.coords, makeChronosCalib, makeLabel,
        makeLabel.character, makeNodeLabel, mantel.test, matexpo,
        mcconwaysims.test, mcmc.popsize, mixedFontLabel, mltt.plot,
        Moran.I, MPR, mrca, mst, multi2di, multi2di.multiPhylo,
@@ -71,10 +72,8 @@ export(.compressTipLabel, .PlotPhyloEnv, .uncompressTipLabel,
        weight.taxo, weight.taxo2, where, which.edge, write.dna,
        write.evonet, write.FASTA, write.nexus, write.nexus.data,
        write.tree, Xplor, Xplorefiles, yule, yule.cov, yule.time,
-       zoom,
-       neworder_phylo, neworder_pruningwise,
-       node_depth, node_depth_edgelength, node_height, node_height_clado,
-       seq_root2tip)
+       zoom, node_depth, node_depth_edgelength, node_height,
+       node_height_clado, seq_root2tip)
 
 importFrom(graphics, abline, arrows, axTicks, axis, barplot, boxplot, bxp,
            close.screen, identify, image, image.default, layout, legend,
@@ -82,11 +81,12 @@ importFrom(graphics, abline, arrows, axTicks, axis, barplot, boxplot, bxp,
            rect, screen, segments, split.screen, strheight, strwidth,
            symbols, text, title, xinch, yinch)
 importFrom(grDevices, col2rgb, dev.cur, dev.new, dev.off, dev.set,
-           devAskNewPage, grey, rainbow, rgb, topo.colors)
+           devAskNewPage, deviceIsInteractive, grey, rainbow, rgb,
+           topo.colors)
 importFrom(lattice, xyplot, panel.lines, panel.points)
 importFrom(methods, as, show)
-importFrom(nlme, corMatrix, Dim, getCovariate, getGroups,
-           getGroupsFormula, gls, Initialize)
+importFrom(nlme, corMatrix, Dim, getCovariate, getCovariateFormula,
+           getGroups, getGroupsFormula, gls, Initialize)
 importFrom(stats, AIC, anova, as.dist, as.hclust, biplot, coef, complete.cases,
            cophenetic, cor, cor.test, cov, cov2cor, density, dgamma,
            dpois, drop1, formula, gaussian, glm, hclust, integrate,
@@ -110,9 +110,11 @@ S3method(as.character, AAbin)
 S3method(as.list, AAbin)
 S3method(as.matrix, AAbin)
 S3method(c, AAbin)
+S3method(cbind, AAbin)
 S3method(image, AAbin)
 S3method(labels, AAbin)
 S3method(print, AAbin)
+S3method(rbind, AAbin)
 S3method(updateLabel, AAbin)
 
 S3method(AIC, ace)

@@ -1,8 +1,8 @@
-## drop.tip.R (2018-06-21)
+## drop.tip.R (2019-11-07)
 
 ##   Remove Tips in a Phylogenetic Tree
 
-## Copyright 2003-2017 Emmanuel Paradis, 2017-2018 Klaus Schliep, 2018 Joseph Brown
+## Copyright 2003-2019 Emmanuel Paradis, 2017-2018 Klaus Schliep, 2018 Joseph Brown
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -162,11 +162,12 @@ drop.tip <-
                     i <- which(edge1 == NEWROOT & keep)
                     j <- c(i, j)
                     NEWROOT <- edge2[i]
-                    degree <- tabulate(edge1[keep])
+                    ## degree <- tabulate(edge1[keep]) # utile ?
                     if (degree[NEWROOT] > 1) break
                 }
                 keep[j] <- FALSE
-                if (length(j) > root.edge) j <- 1:root.edge
+                ## if (length(j) > root.edge) j <- 1:root.edge
+                j <- j[1:root.edge]
                 NewRootEdge <- sum(phy$edge.length[j])
                 if (length(j) < root.edge && !is.null(phy$root.edge))
                     NewRootEdge <- NewRootEdge + phy$root.edge

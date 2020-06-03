@@ -2,13 +2,13 @@ pcoa <- function(D, correction="none", rn=NULL)
 #
 # Principal coordinate analysis (PCoA) of a square distance matrix D
 # with correction for negative eigenvalues.
-# 
+#
 # References:
 # Gower, J. C. 1966. Some distance properties of latent root and vector methods
 #    used in multivariate analysis. Biometrika. 53: 325-338.
-# Gower, J. C. and P. Legendre. 1986. Metric and Euclidean properties of 
+# Gower, J. C. and P. Legendre. 1986. Metric and Euclidean properties of
 #    dissimilarity coefficients. J. Classif. 3: 5-48.
-# Legendre, P. and L. Legendre. 1998. Numerical ecology, 2nd English edition. 
+# Legendre, P. and L. Legendre. 1998. Numerical ecology, 2nd English edition.
 #    Elsevier Science BV, Amsterdam. [PCoA: Section 9.2]
 #
 #      Pierre Legendre, October 2007
@@ -51,7 +51,7 @@ bstick.def <- function (n, tot.var = 1, ...)   # 'bstick.default' from vegan
 
 # Eigenvalue decomposition
 	D.eig <- eigen(delta1)
-	
+
 # Negative eigenvalues?
 	min.eig <- min(D.eig$values)
 	zero.eig <- which(abs(D.eig$values) < epsilon)
@@ -63,7 +63,7 @@ bstick.def <- function (n, tot.var = 1, ...)   # 'bstick.default' from vegan
 		eig <- D.eig$values
 		k <- length(which(eig > epsilon))
 		rel.eig <- eig[1:k]/trace
-		cum.eig <- cumsum(rel.eig) 
+		cum.eig <- cumsum(rel.eig)
 		vectors <- sweep(D.eig$vectors[,1:k], 2, sqrt(eig[1:k]), FUN="*")
 		bs <- bstick.def(k)
 		cum.bs <- cumsum(bs)
@@ -79,12 +79,15 @@ bstick.def <- function (n, tot.var = 1, ...)   # 'bstick.default' from vegan
 
 # Negative eigenvalues present
 	} else {   # Curly 1
-		k <- n 
+		k <- n
 		eig <- D.eig$values
 		rel.eig <- eig/trace
 		rel.eig.cor <- (eig - min.eig)/(trace - (n-1)*min.eig) # Eq. 9.27 for a single dimension
-		rel.eig.cor = c(rel.eig.cor[1:(zero.eig[1]-1)], rel.eig.cor[(zero.eig[1]+1):n], 0)
-		cum.eig.cor <- cumsum(rel.eig.cor) 
+                if (length(zero.eig)) # by Jesse Connell
+                    rel.eig.cor <- c(rel.eig.cor[-zero.eig[1]], 0)
+                ## the previous line replaces:
+		## rel.eig.cor = c(rel.eig.cor[1:(zero.eig[1]-1)], rel.eig.cor[(zero.eig[1]+1):n], 0)
+		cum.eig.cor <- cumsum(rel.eig.cor)
 		k2 <- length(which(eig > epsilon))
 		k3 <- length(which(rel.eig.cor > epsilon))
 		vectors <- sweep(D.eig$vectors[,1:k2], 2, sqrt(eig[1:k2]), FUN="*")
@@ -124,7 +127,7 @@ bstick.def <- function (n, tot.var = 1, ...)   # 'bstick.default' from vegan
 	if(min.eig.cor > -epsilon) {   # Curly 4
 		eig.cor <- toto.cor$values
 		rel.eig.cor <- eig.cor[1:k]/trace.cor
-		cum.eig.cor <- cumsum(rel.eig.cor) 
+		cum.eig.cor <- cumsum(rel.eig.cor)
 		k2 <- length(which(eig.cor > epsilon))
 		vectors.cor <- sweep(toto.cor$vectors[,1:k2], 2, sqrt(eig.cor[1:k2]), FUN="*")
 		rownames(vectors.cor) <- names
@@ -135,9 +138,9 @@ bstick.def <- function (n, tot.var = 1, ...)   # 'bstick.default' from vegan
 		cum.bs <- cumsum(bs)
 
 		# Negative eigenvalues still present after correction: incorrect result
-		} else { 
-		if(correct == 2) cat("Problem! Negative eigenvalues are still present after Lingoes",'\n') 
-		if(correct == 3) cat("Problem! Negative eigenvalues are still present after Cailliez",'\n') 
+		} else {
+		if(correct == 2) cat("Problem! Negative eigenvalues are still present after Lingoes",'\n')
+		if(correct == 3) cat("Problem! Negative eigenvalues are still present after Cailliez",'\n')
 		rel.eig.cor <- cum.eig.cor <- bs <- cum.bs <- rep(NA,n)
 		vectors.cor <- matrix(NA,n,2)
 		rownames(vectors.cor) <- names
@@ -153,7 +156,7 @@ bstick.def <- function (n, tot.var = 1, ...)   # 'bstick.default' from vegan
 	out <- (list(correction=c(correction,correct), note=note, values=res, vectors=vectors, trace=trace, vectors.cor=vectors.cor, trace.cor=trace.cor))
 
 	} else {   # Curly 2
-			
+
 	note <- "No correction was applied to the negative eigenvalues"
 	bs <- bstick.def(k3)
 	bs <- c(bs, rep(0,(k-k3)))

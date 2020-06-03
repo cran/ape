@@ -100,7 +100,7 @@ read.nexus.data(file)
   extensible file format for systematic information. \emph{Systematic
     Biology}, \bold{46}, 590--621.
 }
-\author{Johan Nylander \email{nylander@scs.fsu.edu}}
+\author{Johan Nylander and Thomas Guillerme}
 \seealso{
   \code{\link{read.nexus}}, \code{\link{write.nexus}},
   \code{\link{write.nexus.data}}

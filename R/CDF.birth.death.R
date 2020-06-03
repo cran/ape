@@ -1,8 +1,8 @@
-## CDF.birth.death.R (2016-07-06)
+## CDF.birth.death.R (2019-11-07)
 
 ## Functions to Simulate and Fit Time-Dependent Birth-Death Models
 
-## Copyright 2010-2016 Emmanuel Paradis
+## Copyright 2010-2019 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -580,7 +580,7 @@ rphylo <-
             inc <- 10
             x <- t - inc
             while (inc > eps) {
-                if (Foo(t, x) > P) { # fixed by Niko Yasui (2016-07-06)
+                if (Foo(x, t) > P) { # fixed by Niko Yasui (2016-07-06) + fixed 2019-11-07
                     x <- x + inc
                     inc <- inc/10
                 }

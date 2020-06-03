@@ -1,15 +1,19 @@
-## me.R (2012-09-14)
+## me.R (2019-03-26)
 
 ##   Tree Estimation Based on Minimum Evolution Algorithm
 
 ## Copyright 2007 Vincent Lefort with modifications by
-##                Emmanuel Paradis (2008-2012)
+##                Emmanuel Paradis (2008-2019)
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-fastme.bal <- function(X, nni = TRUE, spr = TRUE, tbr = TRUE)
+fastme.bal <- function(X, nni = TRUE, spr = TRUE, tbr = FALSE)
 {
+    if (tbr) {
+        warning("option 'tbr = TRUE' was ignored: see ?fastme.bal")
+        tbr <- FALSE
+    }
     if (is.matrix(X)) X <- as.dist(X)
     N <- as.integer(attr(X, "Size"))
     nedge <- 2L * N - 3L

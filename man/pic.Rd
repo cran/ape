@@ -1,6 +1,10 @@
 \name{pic}
 \alias{pic}
 \title{Phylogenetically Independent Contrasts}
+\description{
+  Compute the phylogenetically independent contrasts using the method
+  described by Felsenstein (1985).
+}
 \usage{
 pic(x, phy, scaled = TRUE, var.contrasts = FALSE,
     rescaled.tree = FALSE)
@@ -15,10 +19,6 @@ pic(x, phy, scaled = TRUE, var.contrasts = FALSE,
     \code{FALSE}).}
   \item{rescaled.tree}{logical, if \code{TRUE} the rescaled tree is
     returned together with the main results.}
-}
-\description{
-  Compute the phylogenetically independent contrasts using the method
-  described by Felsenstein (1985).
 }
 \details{
   If \code{x} has names, its values are matched to the tip labels of

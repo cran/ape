@@ -46,7 +46,7 @@ int SameClade(const std::vector<int>& clade1, const std::vector<int>& clade2)
 // [[Rcpp::export]]
 List prop_part2(SEXP trees, int nTips){
     List tr(trees);
-    int nbtree = tr.size(), KeepPartition=1;
+    int nbtree = tr.size();//, KeepPartition=1; // unused (EP 2020-05-02)
     List M = tr(0);
     IntegerMatrix E = M["edge"];
     std::vector< std::vector<int> > ans = bipartition2(E, nTips);

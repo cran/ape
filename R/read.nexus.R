@@ -204,7 +204,6 @@ read.nexus <- function(file, tree.names = NULL, force.multi = FALSE)
     if (translation) {
         end <- semico[semico > i2][1]
         x <- X[(i2 + 1):end] # assumes there's a 'new line' after "TRANSLATE"
-        ## x <- gsub("TRANSLATE", "", x, ignore.case = TRUE)
         x <- unlist(strsplit(x, "[,; \t]"))
         x <- x[nzchar(x)]
         TRANS <- matrix(x, ncol = 2, byrow = TRUE)

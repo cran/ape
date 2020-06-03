@@ -1,6 +1,6 @@
-/* dist_dna.c       2018-03-26 */
+/* dist_dna.c       2020-05-02 */
 
-/* Copyright 2005-2018 Emmanuel Paradis */
+/* Copyright 2005-2020 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -1077,26 +1077,16 @@ SEXP BaseProportion(SEXP x)
 
 #define SEGCOL seg[j] = 1; done = 1; break
 
-SEXP SegSites(SEXP DNASEQ)
+void seg_sites_a(unsigned char *x, int *seg, int n, int s)
 {
-    int n, s, j, done, *seg;
-    long i, end;
-    unsigned char base, *x;
-    SEXP ans;
-
-    PROTECT(DNASEQ = coerceVector(DNASEQ, RAWSXP));
-    x = RAW(DNASEQ);
-    n = nrows(DNASEQ);
-    s = ncols(DNASEQ);
-
-    PROTECT(ans = allocVector(INTSXP, s));
-    seg = INTEGER(ans);
-    memset(seg, 0, s*sizeof(int));
+    long i, end, done;
+    int j;
+    unsigned char base;
 
     for (j = 0; j < s; j++) {
 
         i = (long) n * j; /* start */
-	end = (long) i + n - 1;
+	end = i + n - 1;
 
         base = x[i];
 	done = 0;
@@ -1143,8 +1133,53 @@ SEXP SegSites(SEXP DNASEQ)
 	    i++;
 	}
     }
+}
 
-    UNPROTECT(2);
+void seg_sites_strict(unsigned char *x, int *seg, int n, int s)
+{
+    long i, end;
+    int j;
+    unsigned char b;
+
+    for (j = 0; j < s; j++) {
+	i = (long) n * j; /* start */
+	end = i + n - 1;
+        b = x[i];
+	i++;
+	while (i <= end) {
+	    if (x[i] != b) {
+		seg[j] = 1;
+		break;
+	    }
+	    i++;
+	}
+    }
+}
+
+SEXP SegSites(SEXP DNASEQ, SEXP STRICT)
+{
+    int n, s, j, done, *seg;
+    long i, end;
+    unsigned char b, *x;
+    SEXP ans;
+
+    PROTECT(STRICT = coerceVector(STRICT, INTSXP));
+    PROTECT(DNASEQ = coerceVector(DNASEQ, RAWSXP));
+    x = RAW(DNASEQ);
+    n = nrows(DNASEQ);
+    s = ncols(DNASEQ);
+
+    PROTECT(ans = allocVector(INTSXP, s));
+    seg = INTEGER(ans);
+    memset(seg, 0, s * sizeof(int));
+
+    if (INTEGER(STRICT)[0]) {
+	seg_sites_strict(x, seg, n, s);
+    } else {
+	seg_sites_a(x, seg, n, s);
+    }
+
+    UNPROTECT(3);
     return ans;
 }
 
@@ -1169,37 +1204,113 @@ void dist_dna(unsigned char *x, int *n, int *s, int *model, double *d,
 	      int *gamma, double *alpha)
 {
     switch (*model) {
-    case 1 : if (pairdel) distDNA_raw_pairdel(x, n, s, d, 1);
-             else distDNA_raw(x, n, s, d, 1); break;
-    case 2 : if (pairdel) distDNA_JC69_pairdel(x, n, s, d, variance, var, gamma, alpha);
-             else distDNA_JC69(x, n, s, d, variance, var, gamma, alpha); break;
-    case 3 : if (pairdel) distDNA_K80_pairdel(x, n, s, d, variance, var, gamma, alpha);
-             else distDNA_K80(x, n, s, d, variance, var, gamma, alpha); break;
-    case 4 : if (pairdel) distDNA_F81_pairdel(x, n, s, d, BF, variance, var, gamma, alpha);
-             else distDNA_F81(x, n, s, d, BF, variance, var, gamma, alpha); break;
-    case 5 : if (pairdel) distDNA_K81_pairdel(x, n, s, d, variance, var);
-             else distDNA_K81(x, n, s, d, variance, var); break;
-    case 6 : if (pairdel) distDNA_F84_pairdel(x, n, s, d, BF, variance, var);
-             else distDNA_F84(x, n, s, d, BF, variance, var); break;
-    case 7 : if (pairdel) distDNA_T92_pairdel(x, n, s, d, BF, variance, var);
-             else distDNA_T92(x, n, s, d, BF, variance, var); break;
-    case 8 : if (pairdel) distDNA_TN93_pairdel(x, n, s, d, BF, variance, var, gamma, alpha);
-             else distDNA_TN93(x, n, s, d, BF, variance, var, gamma, alpha); break;
-    case 9 : if (pairdel) distDNA_GG95_pairdel(x, n, s, d, variance, var);
-             else distDNA_GG95(x, n, s, d, variance, var); break;
-    case 10 : if (pairdel) distDNA_LogDet_pairdel(x, n, s, d, variance, var);
-              else distDNA_LogDet(x, n, s, d, variance, var); break;
-    case 11 : distDNA_BH87(x, n, s, d); break;
-    case 12 : if (pairdel) distDNA_ParaLin_pairdel(x, n, s, d, variance, var);
-              else distDNA_ParaLin(x, n, s, d, variance, var); break;
-    case 13 : if (pairdel) distDNA_raw_pairdel(x, n, s, d, 0);
-             else distDNA_raw(x, n, s, d, 0); break;
-    case 14 : if (pairdel) distDNA_TsTv(x, n, s, d, 1, 1);
-	    else distDNA_TsTv(x, n, s, d, 1, 0); break;
-    case 15 : if (pairdel) distDNA_TsTv(x, n, s, d, 0, 1);
-	    else distDNA_TsTv(x, n, s, d, 0, 0); break;
-    case 16 : distDNA_indel(x, n, s, d); break;
-    case 17 : distDNA_indelblock(x, n, s, d); break;
+    case 1 :
+	if (pairdel) {
+	    distDNA_raw_pairdel(x, n, s, d, 1);
+	} else {
+	    distDNA_raw(x, n, s, d, 1);
+	}
+	break;
+    case 2 :
+	if (pairdel) {
+	    distDNA_JC69_pairdel(x, n, s, d, variance, var, gamma, alpha);
+	} else {
+	    distDNA_JC69(x, n, s, d, variance, var, gamma, alpha);
+	}
+	break;
+    case 3 :
+	if (pairdel) {
+	    distDNA_K80_pairdel(x, n, s, d, variance, var, gamma, alpha);
+	} else {
+	    distDNA_K80(x, n, s, d, variance, var, gamma, alpha);
+	}
+	break;
+    case 4 :
+	if (pairdel) {
+	    distDNA_F81_pairdel(x, n, s, d, BF, variance, var, gamma, alpha);
+	} else {
+	    distDNA_F81(x, n, s, d, BF, variance, var, gamma, alpha);
+	}
+	break;
+    case 5 :
+	if (pairdel) {
+	    distDNA_K81_pairdel(x, n, s, d, variance, var);
+	} else {
+	    distDNA_K81(x, n, s, d, variance, var);
+	}
+	break;
+    case 6 :
+	if (pairdel) {
+	    distDNA_F84_pairdel(x, n, s, d, BF, variance, var);
+	} else {
+	    distDNA_F84(x, n, s, d, BF, variance, var);
+	}
+	break;
+    case 7 :
+	if (pairdel) {
+	    distDNA_T92_pairdel(x, n, s, d, BF, variance, var);
+	} else {
+	    distDNA_T92(x, n, s, d, BF, variance, var);
+	}
+	break;
+    case 8 :
+	if (pairdel) {
+	    distDNA_TN93_pairdel(x, n, s, d, BF, variance, var, gamma, alpha);
+	} else {
+	    distDNA_TN93(x, n, s, d, BF, variance, var, gamma, alpha);
+	}
+	break;
+    case 9 :
+	if (pairdel) {
+	    distDNA_GG95_pairdel(x, n, s, d, variance, var);
+	} else {
+	    distDNA_GG95(x, n, s, d, variance, var);
+	}
+	break;
+    case 10 :
+	if (pairdel) {
+	    distDNA_LogDet_pairdel(x, n, s, d, variance, var);
+	} else {
+	    distDNA_LogDet(x, n, s, d, variance, var);
+	}
+	break;
+    case 11 :
+	distDNA_BH87(x, n, s, d);
+	break;
+    case 12 :
+	if (pairdel) {
+	    distDNA_ParaLin_pairdel(x, n, s, d, variance, var);
+	} else {
+	    distDNA_ParaLin(x, n, s, d, variance, var);
+	}
+	break;
+    case 13 :
+	if (pairdel) {
+	    distDNA_raw_pairdel(x, n, s, d, 0);
+	} else {
+	    distDNA_raw(x, n, s, d, 0);
+	}
+	break;
+    case 14 :
+	if (pairdel) {
+	    distDNA_TsTv(x, n, s, d, 1, 1);
+	} else {
+	    distDNA_TsTv(x, n, s, d, 1, 0);
+	}
+	break;
+    case 15 :
+	if (pairdel) {
+	    distDNA_TsTv(x, n, s, d, 0, 1);
+	} else {
+	    distDNA_TsTv(x, n, s, d, 0, 0);
+	}
+	break;
+    case 16 :
+	distDNA_indel(x, n, s, d);
+	break;
+    case 17 :
+	distDNA_indelblock(x, n, s, d);
+	break;
     }
 }
 
@@ -1439,20 +1550,453 @@ unsigned char codon2aa_Code2(unsigned char x, unsigned char y, unsigned char z)
     return 0x58;
 }
 
+unsigned char codon2aa_Code3(unsigned char x, unsigned char y, unsigned char z)
+{
+    if (KnownBase(x)) {
+	if (IsAdenine(x)) {
+	    if (KnownBase(y)) {
+		if (IsAdenine(y)) {
+		    if (IsPurine(z)) return 0x4b; /* codon is AAR => 'K' */
+		    if (IsPyrimidine(z)) return 0x4e; /* codon is AAY => 'N' */
+		    return 0x58; /* 'X' */
+		}
+		if (IsCytosine(y)) {
+		    if (z > 4) return 0x54; /* codon is ACN => 'T' */
+		    return 0x58;
+		}
+		if (IsGuanine(y)) {
+		    if (IsPurine(z)) return 0x52; /* codon is AGR => 'R' */
+		    if (IsPyrimidine(z)) return 0x53; /* codon is AGY => 'S' */
+		    return 0x58;
+		}
+		if (IsThymine(y)) {
+		    if (IsPurine(z)) return 0x4d; /* codon is ATR => 'M' */
+		    if (IsPyrimidine(z)) return 0x49; /* codon is ATY => 'I' */
+		    return 0x58;
+		}
+	    }
+	    return 0x58;
+	}
+	if (IsCytosine(x)) {
+	    if (IsAdenine(y)) {
+		if (IsPurine(z)) return 0x51; /* codon is CAR => 'Q'*/
+		if (IsPyrimidine(z)) return 0x48; /* codon is CAY => 'H' */
+		return 0x58;
+	    }
+	    if (IsCytosine(y)) {
+		if (z > 4) return 0x50; /* codon is CCN => 'P'*/
+		return 0x58;
+	    }
+	    if (IsGuanine(y)) {
+		if (z > 4) return 0x52; /* codon is CGN => 'R' */
+		return 0x58;
+	    }
+	    if (IsThymine(y)) {
+		if (z > 4) return 0x4c; /* codon is CTN => 'T' */
+		return 0x58;
+	    }
+	    return 0x58;
+	}
+	if (IsGuanine(x)) {
+	    if (IsAdenine(y)) {
+		if (IsPurine(z)) return 0x45; /* codon is GAR => 'E' */
+		if (IsPyrimidine(z)) return 0x44; /* codon is GAY => 'D' */
+		return 0x58;
+	    }
+	    if (IsCytosine(y)) {
+		if (z > 4) return 0x41; /* codon is GCN => 'A' */
+		return 0x58;
+	    }
+	    if (IsGuanine(y)) {
+		if (z > 4) return 0x47; /* codon is GGN => 'G' */
+		return 0x58;
+	    }
+	    if (IsThymine(y)) {
+		if (z > 4) return 0x56; /* codon is GTN => 'V' */
+		return 0x58;
+	    }
+	    return 0x58;
+	}
+	if (IsThymine(x)) {
+	    if (KnownBase(y)) {
+		if (IsAdenine(y)) {
+		    if (IsPurine(z)) return 0x2a; /* codon is TAR => '*' */
+		    if (IsPyrimidine(z)) return 0x59; /* codon is TAY => 'Y' */
+		    return 0x58;
+		}
+		if (IsCytosine(y)) {
+		    if (z > 4) return 0x53; /* codon is TCN => 'S' */
+		    return 0x58;
+		}
+		if (IsGuanine(y)) {
+		    if (IsPurine(z)) return 0x57; /* codon is TGR => 'W' */
+		    if (IsPyrimidine(z)) return 0x43; /* codon is TGY => 'C' */
+		    return 0x58;
+		}
+		if (IsThymine(y)) {
+		    if (IsPurine(z)) return 0x4c; /* codon is TTR => 'L' */
+		    if (IsPyrimidine(z)) return 0x46; /* codon is TTY => 'F' */
+		    return 0x58;
+		}
+	    } else if (IsPurine(y) & IsAdenine(z)) return 0x2a; /* codon is TRA => '*' */
+	    return 0x58;
+	}
+    } else {
+	if ((x == 144) && IsThymine(y) && IsPurine(z)) return 0x52; /* codon is MGR => 'R'*/
+	if ((x == 48) && IsThymine(y) && IsPurine(z)) return 0x4c; /* codon is YTR => 'L'*/
+    }
+    return 0x58;
+}
+
+unsigned char codon2aa_Code4(unsigned char x, unsigned char y, unsigned char z)
+{
+    if (KnownBase(x)) {
+	if (IsAdenine(x)) {
+	    if (KnownBase(y)) {
+		if (IsAdenine(y)) {
+		    if (IsPurine(z)) return 0x4b; /* codon is AAR => 'K' */
+		    if (IsPyrimidine(z)) return 0x4e; /* codon is AAY => 'N' */
+		    return 0x58; /* 'X' */
+		}
+		if (IsCytosine(y)) {
+		    if (z > 4) return 0x54; /* codon is ACN => 'T' */
+		    return 0x58;
+		}
+		if (IsGuanine(y)) {
+		    if (IsPurine(z)) return 0x52; /* codon is AGR => 'R' */
+		    if (IsPyrimidine(z)) return 0x53; /* codon is AGY => 'S' */
+		    return 0x58;
+		}
+		if (IsThymine(y)) {
+		    if (IsGuanine(z)) return 0x4d; /* codon is ATG => 'M' */
+		    if (z & 176) return 0x49; /* codon is ATH => 'I' */
+		    return 0x58;
+		}
+	    }
+	    return 0x58;
+	}
+	if (IsCytosine(x)) {
+	    if (IsAdenine(y)) {
+		if (IsPurine(z)) return 0x51; /* codon is CAR => 'Q'*/
+		if (IsPyrimidine(z)) return 0x48; /* codon is CAY => 'H' */
+		return 0x58;
+	    }
+	    if (IsCytosine(y)) {
+		if (z > 4) return 0x50; /* codon is CCN => 'P'*/
+		return 0x58;
+	    }
+	    if (IsGuanine(y)) {
+		if (z > 4) return 0x52; /* codon is CGN => 'R' */
+		return 0x58;
+	    }
+	    if (IsThymine(y)) {
+		if (z > 4) return 0x4c; /* codon is CTN => 'L' */
+		return 0x58;
+	    }
+	    return 0x58;
+	}
+	if (IsGuanine(x)) {
+	    if (IsAdenine(y)) {
+		if (IsPurine(z)) return 0x45; /* codon is GAR => 'E' */
+		if (IsPyrimidine(z)) return 0x44; /* codon is GAY => 'D' */
+		return 0x58;
+	    }
+	    if (IsCytosine(y)) {
+		if (z > 4) return 0x41; /* codon is GCN => 'A' */
+		return 0x58;
+	    }
+	    if (IsGuanine(y)) {
+		if (z > 4) return 0x47; /* codon is GGN => 'G' */
+		return 0x58;
+	    }
+	    if (IsThymine(y)) {
+		if (z > 4) return 0x56; /* codon is GTN => 'V' */
+		return 0x58;
+	    }
+	    return 0x58;
+	}
+	if (IsThymine(x)) {
+	    if (KnownBase(y)) {
+		if (IsAdenine(y)) {
+		    if (IsPurine(z)) return 0x2a; /* codon is TAR => '*' */
+		    if (IsPyrimidine(z)) return 0x59; /* codon is TAY => 'Y' */
+		    return 0x58;
+		}
+		if (IsCytosine(y)) {
+		    if (z > 4) return 0x53; /* codon is TCN => 'S' */
+		    return 0x58;
+		}
+		if (IsGuanine(y)) {
+		    if (IsPurine(z)) return 0x57; /* codon is TGR => 'W' */
+		    if (IsPyrimidine(z)) return 0x43; /* codon is TGY => 'C' */
+		    return 0x58;
+		}
+		if (IsThymine(y)) {
+		    if (IsPurine(z)) return 0x4c; /* codon is TTR => 'L' */
+		    if (IsPyrimidine(z)) return 0x46; /* codon is TTY => 'F' */
+		    return 0x58;
+		}
+	    } else if (IsPurine(y) & IsAdenine(z)) return 0x2a; /* codon is TRA => '*' */
+	    return 0x58;
+	}
+    } else {
+	if ((x == 144) && IsThymine(y) && IsPurine(z)) return 0x52; /* codon is MGR => 'R'*/
+	if ((x == 48) && IsThymine(y) && IsPurine(z)) return 0x4c; /* codon is YTR => 'L'*/
+    }
+    return 0x58;
+}
+
+unsigned char codon2aa_Code5(unsigned char x, unsigned char y, unsigned char z)
+{
+    if (KnownBase(x)) {
+	if (IsAdenine(x)) {
+	    if (KnownBase(y)) {
+		if (IsAdenine(y)) {
+		    if (IsPurine(z)) return 0x4b; /* codon is AAR => 'K' */
+		    if (IsPyrimidine(z)) return 0x4e; /* codon is AAY => 'N' */
+		    return 0x58; /* 'X' */
+		}
+		if (IsCytosine(y)) {
+		    if (z > 4) return 0x54; /* codon is ACN => 'T' */
+		    return 0x58;
+		}
+		if (IsGuanine(y)) {
+		    if (z > 4) return 0x53; /* codon is AGN => 'S' */
+		    return 0x58;
+		}
+		if (IsThymine(y)) {
+		    if (IsPurine(z)) return 0x4d; /* codon is ATR => 'M' */
+		    if (IsPyrimidine(z)) return 0x49; /* codon is ATY => 'I' */
+		    return 0x58;
+		}
+	    }
+	    return 0x58;
+	}
+	if (IsCytosine(x)) {
+	    if (IsAdenine(y)) {
+		if (IsPurine(z)) return 0x51; /* codon is CAR => 'Q'*/
+		if (IsPyrimidine(z)) return 0x48; /* codon is CAY => 'H' */
+		return 0x58;
+	    }
+	    if (IsCytosine(y)) {
+		if (z > 4) return 0x50; /* codon is CCN => 'P'*/
+		return 0x58;
+	    }
+	    if (IsGuanine(y)) {
+		if (z > 4) return 0x52; /* codon is CGN => 'R' */
+		return 0x58;
+	    }
+	    if (IsThymine(y)) {
+		if (z > 4) return 0x4c; /* codon is CTN => 'L' */
+		return 0x58;
+	    }
+	    return 0x58;
+	}
+	if (IsGuanine(x)) {
+	    if (IsAdenine(y)) {
+		if (IsPurine(z)) return 0x45; /* codon is GAR => 'E' */
+		if (IsPyrimidine(z)) return 0x44; /* codon is GAY => 'D' */
+		return 0x58;
+	    }
+	    if (IsCytosine(y)) {
+		if (z > 4) return 0x41; /* codon is GCN => 'A' */
+		return 0x58;
+	    }
+	    if (IsGuanine(y)) {
+		if (z > 4) return 0x47; /* codon is GGN => 'G' */
+		return 0x58;
+	    }
+	    if (IsThymine(y)) {
+		if (z > 4) return 0x56; /* codon is GTN => 'V' */
+		return 0x58;
+	    }
+	    return 0x58;
+	}
+	if (IsThymine(x)) {
+	    if (KnownBase(y)) {
+		if (IsAdenine(y)) {
+		    if (IsPurine(z)) return 0x2a; /* codon is TAR => '*' */
+		    if (IsPyrimidine(z)) return 0x59; /* codon is TAY => 'Y' */
+		    return 0x58;
+		}
+		if (IsCytosine(y)) {
+		    if (z > 4) return 0x53; /* codon is TCN => 'S' */
+		    return 0x58;
+		}
+		if (IsGuanine(y)) {
+		    if (IsPurine(z)) return 0x57; /* codon is TGR => 'W' */
+		    if (IsPyrimidine(z)) return 0x43; /* codon is TGY => 'C' */
+		    return 0x58;
+		}
+		if (IsThymine(y)) {
+		    if (IsPurine(z)) return 0x4c; /* codon is TTR => 'L' */
+		    if (IsPyrimidine(z)) return 0x46; /* codon is TTY => 'F' */
+		    return 0x58;
+		}
+	    } else if (IsPurine(y) & IsAdenine(z)) return 0x2a; /* codon is TRA => '*' */
+	    return 0x58;
+	}
+    } else {
+	if ((x == 144) && IsThymine(y) && IsPurine(z)) return 0x52; /* codon is MGR => 'R'*/
+	if ((x == 48) && IsThymine(y) && IsPurine(z)) return 0x4c; /* codon is YTR => 'L'*/
+    }
+    return 0x58;
+}
+
+unsigned char codon2aa_Code6(unsigned char x, unsigned char y, unsigned char z)
+{
+    if (KnownBase(x)) {
+	if (IsAdenine(x)) {
+	    if (KnownBase(y)) {
+		if (IsAdenine(y)) {
+		    if (IsPurine(z)) return 0x4b; /* codon is AAR => 'K' */
+		    if (IsPyrimidine(z)) return 0x4e; /* codon is AAY => 'N' */
+		    return 0x58; /* 'X' */
+		}
+		if (IsCytosine(y)) {
+		    if (z > 4) return 0x54; /* codon is ACN => 'T' */
+		    return 0x58;
+		}
+		if (IsGuanine(y)) {
+		    if (IsPurine(z)) return 0x52; /* codon is AGR => 'R' */
+		    if (IsPyrimidine(z)) return 0x53; /* codon is AGY => 'S' */
+		    return 0x58;
+		}
+		if (IsThymine(y)) {
+		    if (IsGuanine(z)) return 0x4d; /* codon is ATG => 'M' */
+		    if (z & 176) return 0x49; /* codon is ATH => 'I' */
+		    return 0x58;
+		}
+	    }
+	    return 0x58;
+	}
+	if (IsCytosine(x)) {
+	    if (IsAdenine(y)) {
+		if (IsPurine(z)) return 0x51; /* codon is CAR => 'Q'*/
+		if (IsPyrimidine(z)) return 0x48; /* codon is CAY => 'H' */
+		return 0x58;
+	    }
+	    if (IsCytosine(y)) {
+		if (z > 4) return 0x50; /* codon is CCN => 'P'*/
+		return 0x58;
+	    }
+	    if (IsGuanine(y)) {
+		if (z > 4) return 0x52; /* codon is CGN => 'R' */
+		return 0x58;
+	    }
+	    if (IsThymine(y)) {
+		if (z > 4) return 0x4c; /* codon is CTN => 'L' */
+		return 0x58;
+	    }
+	    return 0x58;
+	}
+	if (IsGuanine(x)) {
+	    if (IsAdenine(y)) {
+		if (IsPurine(z)) return 0x45; /* codon is GAR => 'E' */
+		if (IsPyrimidine(z)) return 0x44; /* codon is GAY => 'D' */
+		return 0x58;
+	    }
+	    if (IsCytosine(y)) {
+		if (z > 4) return 0x41; /* codon is GCN => 'A' */
+		return 0x58;
+	    }
+	    if (IsGuanine(y)) {
+		if (z > 4) return 0x47; /* codon is GGN => 'G' */
+		return 0x58;
+	    }
+	    if (IsThymine(y)) {
+		if (z > 4) return 0x56; /* codon is GTN => 'V' */
+		return 0x58;
+	    }
+	    return 0x58;
+	}
+	if (IsThymine(x)) {
+	    if (KnownBase(y)) {
+		if (IsAdenine(y)) {
+		    if (IsPurine(z)) return 0x2a; /* codon is TAR => 'Q' */
+		    if (IsPyrimidine(z)) return 0x59; /* codon is TAY => 'Y' */
+		    return 0x58;
+		}
+		if (IsCytosine(y)) {
+		    if (z > 4) return 0x53; /* codon is TCN => 'S' */
+		    return 0x58;
+		}
+		if (IsGuanine(y)) {
+		    if (IsAdenine(z)) return 0x2a; /* codon is TGA => '*' */
+		    if (IsGuanine(z)) return 0x57; /* codon is TGG => 'W' */
+		    if (IsPyrimidine(z)) return 0x43; /* codon is TGY => 'C' */
+		    return 0x58;
+		}
+		if (IsThymine(y)) {
+		    if (IsPurine(z)) return 0x4c; /* codon is TTR => 'L' */
+		    if (IsPyrimidine(z)) return 0x46; /* codon is TTY => 'F' */
+		    return 0x58;
+		}
+	    } else if (IsPurine(y) & IsAdenine(z)) return 0x2a; /* codon is TRA => '*' */
+	    return 0x58;
+	}
+    } else {
+	if ((x == 144) && IsThymine(y) && IsPurine(z)) return 0x52; /* codon is MGR => 'R'*/
+	if ((x == 48) && IsThymine(y) && IsPurine(z)) return 0x4c; /* codon is YTR => 'L'*/
+    }
+    return 0x58;
+}
+
 void trans_DNA2AA(unsigned char *x, int *s, unsigned char *res, int *code)
 {
     int i = 0, j = 0;
     unsigned char (*FUN)(unsigned char x, unsigned char y, unsigned char z);
 
     /* NOTE: using 'switch' provokes a memory leak */
-    if (*code == 1) {
-	FUN = &codon2aa_Code1;
-    } else {
-	FUN = &codon2aa_Code2;
+    while (1) {
+	if (*code == 1) { FUN = &codon2aa_Code1; break; }
+	if (*code == 2) { FUN = &codon2aa_Code2; break; }
+	if (*code == 3) { FUN = &codon2aa_Code3; break; }
+	if (*code == 4) { FUN = &codon2aa_Code4; break; }
+	if (*code == 5) { FUN = &codon2aa_Code5; break; }
+	if (*code == 6) { FUN = &codon2aa_Code6; break; }
     }
 
     while (i < *s) {
 	res[j] = FUN(x[i], x[i + 1], x[i + 2]);
 	j++; i += 3;
     }
+}
+
+SEXP leading_trailing_gaps_to_N(SEXP DNASEQ)
+{
+    int i, n, s;
+    long j, k;
+    unsigned char *x, *z;
+    SEXP ans;
+
+    PROTECT(DNASEQ = coerceVector(DNASEQ, RAWSXP));
+    x = RAW(DNASEQ);
+    n = nrows(DNASEQ);
+    s = ncols(DNASEQ);
+
+    PROTECT(ans = allocVector(RAWSXP, n * s));
+    z = RAW(ans);
+
+    memcpy(z, x, n * s);
+
+    for (i = 0; i < n; i++) { /* leading gaps */
+	j = (long) i; /* start of the seq */
+	k = (long) j + n * (s - 1); /* last site of seq j */
+	while (x[j] == 4 && j <= k) {
+	    z[j] = 240; /* - -> N */
+	    j += n;
+	}
+    }
+    for (i = 0; i < n; i++) { /* trailing gaps */
+	k = (long) i; /* start of the seq */
+	j = (long) k + n * (s - 1); /* the last site of seq j */
+	while (x[j] == 4 && j >= k) {
+		z[j] = 240; /* - -> N */
+		j -= n;
+	}
+    }
+
+    UNPROTECT(2);
+    return ans;
 }

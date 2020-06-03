@@ -1,6 +1,6 @@
-/* ape.c    2018-03-22 */
+/* ape.c    2020-05-02 */
 
-/* Copyright 2011-2018 Emmanuel Paradis, and 2007 R Development Core Team */
+/* Copyright 2011-2020 Emmanuel Paradis, and 2007 R Development Core Team */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -18,21 +18,21 @@ int give_index(int i, int j, int n)
    (not the same than in library/stats/src/nls.c) */
 SEXP getListElement(SEXP list, char *str)
 {
-    SEXP elmt = R_NilValue, names = getAttrib(list, R_NamesSymbol);
-    int i;
+    SEXP res = R_NilValue, names = getAttrib(list, R_NamesSymbol);
 
-    for (i = 0; i < length(list); i++)
-      if(strcmp(CHAR(STRING_ELT(names, i)), str) == 0) {
-	  elmt = VECTOR_ELT(list, i);
-	  break;
-      }
-    return elmt;
+    for (int i = 0; i < length(list); i++) {
+	if (! strcmp(CHAR(STRING_ELT(names, i)), str)) {
+	    res = VECTOR_ELT(list, i);
+	    break;
+	}
+    }
+
+    return res;
 }
 
 /* declare functions here to register them below */
 
 void C_additive(double *dd, int* np, int* mp, double *ret);
-void BaseProportion(unsigned char *x, int *n, double *BF);
 void C_bionj(double *X, int *N, int *edge1, int *edge2, double *el);
 void C_bionjs(double *D, int *N, int *edge1, int *edge2, double *edge_length, int* fsS);
 void delta_plot(double *D, int *size, int *nbins, int *counts, double *deltabar);
@@ -55,26 +55,22 @@ void neworder_pruningwise(int *ntip, int *nnode, int *edge1,
 			  int *edge2, int *nedge, int *neworder);
 void C_nj(double *D, int *N, int *edge1, int *edge2, double *edge_length);
 void C_njs(double *D, int *N, int *edge1, int *edge2, double *edge_length, int *fsS);
-void node_depth(int *ntip, int *nnode, int *e1, int *e2,
+void node_depth(int *ntip, int *e1, int *e2,
 		int *nedge, double *xx, int *method);
-void node_depth_edgelength(int *ntip, int *nnode, int *edge1, int *edge2,
-			   int *nedge, double *edge_length, double *xx);
-void node_height(int *ntip, int *nnode, int *edge1, int *edge2,
-		 int *nedge, double *yy);
-void node_height_clado(int *ntip, int *nnode, int *edge1, int *edge2,
+void node_depth_edgelength(int *edge1, int *edge2, int *nedge,
+			   double *edge_length, double *xx);
+void node_height(int *edge1, int *edge2, int *nedge, double *yy);
+void node_height_clado(int *ntip, int *edge1, int *edge2,
 		       int *nedge, double *xx, double *yy);
-void C_pic(int *ntip, int *nnode, int *edge1, int *edge2,
+void C_pic(int *ntip, int *edge1, int *edge2,
 	   double *edge_len, double *phe, double *contr,
 	   double *var_contr, int *var, int *scaled);
 void C_rTraitCont(int *model, int *Nedge, int *edge1, int *edge2, double *el,
 		  double *sigma, double *alpha, double *theta, double *x);
-void SegSites(unsigned char *x, int *n, int *s, int *seg);
 void C_treePop(int* splits, double* w,int* ncolp,int* np, int* ed1, int* ed2, double* edLen);
 void C_triangMtd(double* d, int* np, int* ed1,int* ed2, double* edLen);
 void C_triangMtds(double* d, int* np, int* ed1,int* ed2, double* edLen);
 void C_ultrametric(double *dd, int* np, int* mp, double *ret);
-void C_where(unsigned char *x, unsigned char *pat, int *s, int *p,
-	   int *ans, int *n);
 void bitsplits_phylo(int *n, int *m, int *e, int *N, int *nr, unsigned char *mat);
 void CountBipartitionsFromTrees(int *n, int *m, int *e, int *N, int *nr, int *nc,
 				unsigned char *mat, double *freq);
@@ -83,6 +79,7 @@ void trans_DNA2AA(unsigned char *x, int *s, unsigned char *res, int *code);
 
 //SEXP bipartition(SEXP edge, SEXP nbtip, SEXP nbnode);
 //SEXP prop_part(SEXP TREES, SEXP nbtree, SEXP keep_partitions);
+SEXP C_where(SEXP DNASEQ, SEXP PAT);
 SEXP rawStreamToDNAorAAbin(SEXP x, SEXP DNA);
 SEXP seq_root2tip(SEXP edge, SEXP nbtip, SEXP nbnode);
 SEXP treeBuildWithTokens(SEXP nwk);
@@ -96,6 +93,9 @@ SEXP _ape_reorderRcpp(SEXP orig, SEXP nTips, SEXP root, SEXP order);
 SEXP writeDNAbinToFASTA(SEXP x, SEXP FILENAME, SEXP n, SEXP s, SEXP labels);
 SEXP writeAAbinToFASTA(SEXP x, SEXP FILENAME, SEXP n, SEXP s, SEXP labels);
 SEXP charVectorToDNAbinVector(SEXP x);
+SEXP leading_trailing_gaps_to_N(SEXP DNASEQ);
+SEXP SegSites(SEXP DNASEQ, SEXP STRICT);
+SEXP BaseProportion(SEXP x);
 
 static R_CMethodDef C_entries[] = {
     {"C_additive", (DL_FUNC) &C_additive, 4},
@@ -143,7 +143,7 @@ static R_CallMethodDef Call_entries[] = {
     {"cladoBuild", (DL_FUNC) &cladoBuild, 1},
     {"bitsplits_multiPhylo", (DL_FUNC) &bitsplits_multiPhylo, 3},
     {"BaseProportion", (DL_FUNC) &BaseProportion, 1},
-    {"SegSites", (DL_FUNC) &SegSites, 1},
+    {"SegSites", (DL_FUNC) &SegSites, 2},
     {"C_where", (DL_FUNC) &C_where, 2},
     {"_ape_bipartition2", (DL_FUNC) &_ape_bipartition2, 2},
     {"_ape_prop_part2", (DL_FUNC) &_ape_prop_part2, 2},
@@ -151,6 +151,7 @@ static R_CallMethodDef Call_entries[] = {
     {"writeDNAbinToFASTA", (DL_FUNC) &writeDNAbinToFASTA, 5},
     {"writeAAbinToFASTA", (DL_FUNC) &writeAAbinToFASTA, 5},
     {"charVectorToDNAbinVector", (DL_FUNC) &charVectorToDNAbinVector, 1},
+    {"leading_trailing_gaps_to_N", (DL_FUNC) &leading_trailing_gaps_to_N, 1},
     {NULL, NULL, 0}
 };
 

@@ -17,6 +17,6 @@
 \value{
   The same as \code{\link[lattice]{xyplot}}.
 }
-\author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
+\author{Julien Dutheil \email{dutheil@evolbio.mpg.de}}
 \seealso{\code{\link{varcomp}}}
 \keyword{hplot}

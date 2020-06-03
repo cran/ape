@@ -1,6 +1,6 @@
-/* tree_build.c    2017-07-28 */
+/* tree_build.c    2020-02-12 */
 
-/* Copyright 2008-2017 Emmanuel Paradis, 2017 Klaus Schliep */
+/* Copyright 2008-2020 Emmanuel Paradis, 2017 Klaus Schliep */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -150,6 +150,7 @@ void decode_terminal_edge_clado(const char *x, int a, int b, char *tip)
 	if (x[i] == '(') {			 \
 	    skeleton[nsk] = i;			 \
 	    nsk++;				 \
+	    nleft++;				 \
 	    continue;				 \
 	}					 \
 	if (x[i] == ',') {			 \
@@ -161,9 +162,11 @@ void decode_terminal_edge_clado(const char *x, int a, int b, char *tip)
 	if (x[i] == ')') {			 \
 	    skeleton[nsk] = i;			 \
 	    nsk++;				 \
+	    nright++;				 \
 	    nnode++;				 \
 	}					 \
     }						 \
+    if (nleft != nright) error("numbers of left and right parentheses in Newick string not equal\n"); \
     nedge = ntip + nnode - 1
 
 /*
@@ -176,7 +179,7 @@ void decode_terminal_edge_clado(const char *x, int a, int b, char *tip)
 SEXP treeBuildWithTokens(SEXP nwk)
 {
 	const char *x;
-	int n, i, ntip = 1, nnode = 0, nedge, *e, curnode, node, j, *skeleton, nsk = 0, ps, pr, pt, tmpi, l, k, stack_internal[10000];
+	int n, i, ntip = 1, nleft = 0, nright = 0, nnode = 0, nedge, *e, curnode, node, j, *skeleton, nsk = 0, ps, pr, pt, tmpi, l, k, stack_internal[10000];
 	double *el, tmpd;
 	char lab[512];
 	SEXP edge, edge_length, Nnode, node_label, phy;
@@ -276,7 +279,7 @@ SEXP treeBuildWithTokens(SEXP nwk)
 SEXP cladoBuildWithTokens(SEXP nwk)
 {
 	const char *x;
-	int n, i, ntip = 1, nnode = 0, nedge, *e, curnode, node, j, *skeleton, nsk = 0, ps, pr, pt, tmpi, l, k, stack_internal[10000];
+	int n, i, ntip = 1, nleft = 0, nright = 0, nnode = 0, nedge, *e, curnode, node, j, *skeleton, nsk = 0, ps, pr, pt, tmpi, l, k, stack_internal[10000];
 	char lab[512];
 	SEXP edge, Nnode, node_label, phy;
 
@@ -345,7 +348,7 @@ SEXP cladoBuildWithTokens(SEXP nwk)
 SEXP treeBuild(SEXP nwk)
 {
 	const char *x;
-	int n, i, ntip = 1, nnode = 0, nedge, *e, curnode, node, j, *skeleton, nsk = 0, ps, pr, pt, l, k, stack_internal[10000], curtip = 1;
+	int n, i, ntip = 1, nleft = 0, nright = 0, nnode = 0, nedge, *e, curnode, node, j, *skeleton, nsk = 0, ps, pr, pt, l, k, stack_internal[10000], curtip = 1;
 	double *el, tmpd;
 	char lab[512], tip[512];
 	SEXP edge, edge_length, Nnode, node_label, tip_label, phy;
@@ -433,7 +436,7 @@ SEXP treeBuild(SEXP nwk)
 SEXP cladoBuild(SEXP nwk)
 {
 	const char *x;
-	int n, i, ntip = 1, nnode = 0, nedge, *e, curnode, node, j, *skeleton, nsk = 0, ps, pr, pt, l, k, stack_internal[10000], curtip = 1;
+	int n, i, ntip = 1, nleft = 0, nright = 0, nnode = 0, nedge, *e, curnode, node, j, *skeleton, nsk = 0, ps, pr, pt, l, k, stack_internal[10000], curtip = 1;
 	char lab[512], tip[512];
 	SEXP edge, Nnode, node_label, tip_label, phy;
 

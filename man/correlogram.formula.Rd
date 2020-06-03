@@ -37,7 +37,7 @@
   objects of class \code{correlogram} if several variables are given as
   response in \code{formula}.
 }
-\author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr} and
+\author{Julien Dutheil \email{dutheil@evolbio.mpg.de} and
   Emmanuel Paradis}
 \seealso{
   \code{\link{plot.correlogram}, \link{Moran.I}}

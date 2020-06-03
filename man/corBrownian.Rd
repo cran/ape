@@ -15,8 +15,8 @@ corBrownian(value=1, phy, form=~1)
   \item{object}{An (initialized) object of class \code{corBrownian}}
   \item{corr}{a logical value. If 'TRUE' the function returns the
     correlation matrix, otherwise it returns the variance/covariance matrix.}
-  \item{form}{ignored for now.}
-  \item{covariate}{ignored for now.}
+  \item{form}{a one sided formula of the form ~ t, or ~ t | g, specifying the taxa covariate t and, optionally, a grouping factor g. A covariate for this correlation structure must be character valued, with entries matching the tip labels in the phylogenetic tree. When a grouping factor is present in form, the correlation structure is assumed to apply only to observations within the same grouping level; observations with different grouping levels are assumed to be uncorrelated. Defaults to ~ 1, which corresponds to using the order of the observations in the data as a covariate, and no groups.}
+  \item{covariate}{an optional covariate vector (matrix), or list of covariate vectors (matrices), at which values the correlation matrix, or list of correlation matrices, are to be evaluated. Defaults to getCovariate(object).}
   \item{unconstrained}{a logical value. If 'TRUE' the coefficients are returned
     in unconstrained form (the same used in the optimization
     algorithm). If 'FALSE' the coefficients are returned in
@@ -39,7 +39,7 @@ corBrownian(value=1, phy, form=~1)
   object of this class (actually sends \code{numeric(0)}), or the
   correlation matrix of an initialized object of this class.
 }
-\author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
+\author{Julien Dutheil \email{dutheil@evolbio.mpg.de}}
 \seealso{
   \code{\link{corClasses}}
 }

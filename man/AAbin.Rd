@@ -14,6 +14,8 @@
 \alias{dist.aa}
 \alias{AAsubst}
 \alias{c.AAbin}
+\alias{cbind.AAbin}
+\alias{rbind.AAbin}
 \alias{as.AAbin.list}
 \alias{as.list.AAbin}
 \alias{as.matrix.AAbin}
@@ -27,6 +29,10 @@
 \method{[}{AAbin}(x, i, j, drop = FALSE)
 
 \method{c}{AAbin}(..., recursive = FALSE)
+
+\method{rbind}{AAbin}(\dots)
+\method{cbind}{AAbin}(\dots, check.names = TRUE, fill.with.Xs = FALSE,
+             quiet = FALSE)
 
 \method{as.character}{AAbin}(x, \dots)
 
@@ -66,6 +72,14 @@ for standard \R objects).}
 lowest possible dimension.}
 \item{recursive}{logical; whether to go down lists and concatenate its
 elements.}
+  \item{check.names}{a logical specifying whether to check the rownames
+    before binding the columns (see details).}
+  \item{fill.with.Xs}{a logical indicating whether to keep all
+    possible individuals as indicating by the rownames, and eventually
+    filling the missing data with insertion gaps (ignored if
+    \code{check.names = FALSE}).}
+  \item{quiet}{a logical to switch off warning messages when some rows
+    are dropped.}
 \item{what}{a vector of characters specifying the amino acids to
 visualize. Currently, the only possible choice is to show the three
 categories hydrophobic, small, and hydrophilic.}
@@ -110,6 +124,11 @@ sequence length. See the function \code{\link[phangorn]{dist.ml}} in
 
 The function \code{AAsubst} returns the indices of the polymorphic sites
 (similar to \code{\link{seg.sites}} for DNA sequences; see examples below).
+
+The two functions \code{cbind.AAbin} and \code{rbind.AAbin} work in the
+same way than the similar methods for the class \code{"DNAbin"}: see
+\code{\link{cbind.DNAbin}} for more explanations about their respective
+behaviours.
 }
 \value{
 an object of class \code{"AAbin"}, \code{"character"},

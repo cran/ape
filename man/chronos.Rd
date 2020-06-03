@@ -81,6 +81,7 @@ chronos.control(...)
       model).}
     \item{dual.iter.max = 20: }{the maximum number of alternative
       iterations between rates and dates.}
+    \item{epsilon = 1e-6: }{the convergence diagnostic criterion.}
   }
 
   The command \code{chronos.control()} returns a list with the default
@@ -112,10 +113,8 @@ chronos.control(...)
   approach. \emph{Molecular Biology and Evolution}, \bold{19},
   101--109.
 }
-\author{Emmanuel Paradis}
-\seealso{
-  \code{\link{chronoMPL}}
-}
+\author{Emmanuel Paradis, Santiago Claramunt, Guillaume Louvel}
+\seealso{\code{\link{chronoMPL}}}
 \examples{
 tr <- rtree(10)
 ### the default is the correlated rate model:

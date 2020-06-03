@@ -1,8 +1,8 @@
-## root.R (2016-11-16)
+## root.R (2019-06-18)
 
 ##   Roots Phylogenetic Trees
 
-## Copyright 2004-2016 Emmanuel Paradis
+## Copyright 2004-2019 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -67,7 +67,6 @@ unroot <- function(phy) UseMethod("unroot")
 ### origin of the tree).
 
         EDGEROOT <- which(phy$edge[, 1L] == ROOT)
-#####        NEWROOT <- ROOT + 1L
         ## make sure EDGEROOT is ordered as described above:
         if (phy$edge[EDGEROOT[1L], 2L] <= n)
             EDGEROOT <- EDGEROOT[2:1]
@@ -96,7 +95,7 @@ unroot <- function(phy) UseMethod("unroot")
         else {
             lbs <- phy$node.label
             tmp <- lbs[NEWROOT - n]
-            lbs <- lbs[-c(1, NEWROOT)]
+            lbs <- lbs[-c(1, NEWROOT - n)] # fix by KS (2019-06-18)
             phy$node.label <- c(tmp, lbs)
         }
     }

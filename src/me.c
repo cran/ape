@@ -1,4 +1,4 @@
-/* me.c    2018-09-21 */
+/* me.c    2019-03-26 */
 
 /* Copyright 2007-2008 Olivier Gascuel, Rick Desper,
    R port by Vincent Lefort and Emmanuel Paradis */
@@ -23,7 +23,7 @@ void NNI(tree *T, double **avgDistArray, int *count, double **D, int numSpecies)
 //functions from SPR.c
 void SPR(tree *T, double **D, double **A, int *count);
 //functions from TBR.c
-void TBR(tree *T, double **D, double **A);
+//void TBR(tree *T, double **D, double **A);
 
 
 void me_b(double *X, int *N, int *labels,
@@ -55,7 +55,7 @@ void me_b(double *X, int *N, int *labels,
   assignBMEWeights(T,A);
 
   if (*spr) SPR(T, D, A, &nniCount);
-  if (*tbr) TBR(T, D, A);
+  if (*tbr) Rprintf("argument tbr was ignored: TBR not performed\n"); //TBR(T, D, A);
 
   tree2phylo(T, edge1, edge2, el, labels, n);
 

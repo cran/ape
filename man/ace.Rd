@@ -7,8 +7,17 @@
 \alias{anova.ace}
 \title{Ancestral Character Estimation}
 \description{
-  This function estimates ancestral character states, and the associated
-  uncertainty, for continuous and discrete characters.
+  \code{ace} estimates ancestral character states, and the associated
+  uncertainty, for continuous and discrete characters. If \code{marginal
+    = TRUE}, a marginal estimation procedure is used. With this method,
+  the likelihood values at a given node are computed using only the
+  information from the tips (and branches) descending from this node.
+
+  The present implementation of marginal reconstruction for discrete
+  characters does not calculate the most likely state for each node,
+  integrating over all the possible states, over all the other nodes in
+  the tree, in proportion to their probability. For more details, see
+  the Note below.
 
   \code{logLik}, \code{deviance}, and \code{AIC} are generic functions
   used to extract the log-likelihood, the deviance, or the Akaike

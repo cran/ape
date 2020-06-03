@@ -31,7 +31,7 @@
 \value{
   an object of class \code{"phylo"}.
 }
-\author{Julien Dutheil \email{Julien.Dutheil@univ-montp2.fr} and Eric
+\author{Julien Dutheil \email{dutheil@evolbio.mpg.de} and Eric
   Marcon}
 \seealso{
   \code{\link{as.phylo}}, \code{\link{read.tree}} for a

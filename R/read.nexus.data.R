@@ -3,7 +3,7 @@
     # Simplified NEXUS data parser.
     #
     # Version: 09/13/2006 01:01:59 PM CEST
-    #          (modified by EP 2011-06-01)
+    #          (modified by EP 2011-06-01 and by TG 2019-06-25)
     #
     # By:      Johan Nylander, nylander @ scs.fsu.edu
     #
@@ -63,6 +63,38 @@
         gsub(";", "", x)
     }
 
+    #TG: Added get polymorphism function
+    "get.polymorphism" <- function (x)
+    {
+        ## Detect polymorphism function
+        is.poly.start <- function(x) {return("(" == x || "{" == x)}
+        is.poly.end   <- function(x) {return(")" == x || "}" == x)}
+        ## Position increment
+        position <- 1
+        ## Check which position contains a polymorphism
+        while(position <= length(x)) {
+            ## Check whether the position is polymorphic
+            if(is.poly.start(x[position])){
+                ## Find the polymorphism end
+                poly_end <- position + 1
+                while(!is.poly.end(x[poly_end])) {
+                    poly_end <- poly_end + 1
+                    if(is.poly.start(x[poly_end]) || poly_end > length(x)) {
+                        stop("missing closing bracket for a polymorphism at position ", position)
+                    }
+                }
+                ## Replace the position by what's in the middle of the polymorphism
+                x[position] <- paste0(x[(position+1):(poly_end-1)], collapse = "/")
+                ## Remove the polymorphism
+                x <- x[-c((position+1):poly_end)]
+            }
+            ## Increment the position
+            position <- position + 1
+        }
+        return(x)
+    }
+
+
     X <- scan(file = file, what = character(), sep = "\n",
               quiet = TRUE, comment.char = "[", strip.white = TRUE)
     ntax <- find.ntax(X)
@@ -96,6 +128,10 @@
         nAME <- paste(c("\\b", Name, "\\b"), collapse = "")
         if (any(l <- grep(nAME, names(Obj)))) {
             tsp <- strsplit(Seq, NULL)[[1]]
+            #TG: Convert polymorphisms
+            if(any("(" %in% tsp || "{" %in% tsp)) {
+                tsp <- get.polymorphism(tsp)
+            }
             for (k in 1:length(tsp)) {
                 p <- k + pos
                 Obj[[l]][p] <- tsp[k]
@@ -105,6 +141,10 @@
         else {
             names(Obj)[i] <- Name
             tsp <- strsplit(Seq, NULL)[[1]]
+            #TG: Convert polymorphisms
+            if(any("(" %in% tsp || "{" %in% tsp)) {
+                tsp <- get.polymorphism(tsp)
+            }
             for (k in 1:length(tsp)) {
                 p <- k + pos
                 Obj[[i]][p] <- tsp[k]

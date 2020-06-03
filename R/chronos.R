@@ -1,15 +1,15 @@
-## chronos.R (2017-11-23)
+## chronos.R (2020-05-08)
 
 ##   Molecular Dating With Penalized and Maximum Likelihood
 
-## Copyright 2013-2017 Emmanuel Paradis
+## Copyright 2013-2017 Emmanuel Paradis, 2018-2020 Santiago Claramunt, 2020 Guillaume Louvel
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 .chronos.ctrl <-
     list(tol = 1e-8, iter.max = 1e4, eval.max = 1e4, nb.rate.cat = 10,
-         dual.iter.max = 20)
+         dual.iter.max = 20, epsilon = 1e-6)
 
 makeChronosCalib <-
     function(phy, node = "root", age.min = 1, age.max = age.min,
@@ -54,6 +54,15 @@ makeChronosCalib <-
     data.frame(node, age.min, age.max, soft.bounds = soft.bounds)
 }
 
+next.calib <- function(y, ini.time) # added by GL (2020-01-29)
+{
+    times <- ini.time[y]
+    runs.na <- rle(is.na(times))
+    next.calib.i <- cumsum(runs.na$lengths)[runs.na$values] + 1
+    ini.time[y[next.calib.i]]
+    ##return(ncal)  #if(length(ncal)){ncal}else{-1})
+}
+
 chronos.control <- function(...)
 {
     dots <- list(...)
@@ -92,6 +101,9 @@ chronos <-
     node <- calibration$node
     age.min <- calibration$age.min
     age.max <- calibration$age.max
+    ## Starting points of node ages to *estimate*. Calibrated nodes can be NA.
+    age.start <- # added by GL (2020-01-29)
+        if (is.null(calibration$age.start)) rep(NA_real_, length(node)) else calibration$age.start
 
     if (model == "correlated") {
 ### `basal' contains the indices of the basal edges
@@ -115,6 +127,8 @@ chronos <-
 
     age <- numeric(n + m)
 
+    lfactorial.el <- lfactorial(el) # Calculate the factorials here once (SC)
+
 ### This bit sets 'ini.time' and should result in no negative branch lengths
 
     if (!quiet) cat("\nSetting initial dates...\n")
@@ -129,16 +143,32 @@ chronos <-
         ini.time <- age
         ini.time[ROOT:(n + m)] <- NA
 
-        ini.time[node] <-
-            if (is.null(age.max)) age.min
-            else runif(length(node), age.min, age.max) # (age.min + age.max) / 2
+        ##ini.time[node] <-
+        ##    if (is.null(age.max)) age.min
+        ##    else runif(length(node), age.min, age.max) # (age.min + age.max) / 2
+        ## added by GL (2020-01-29):
+        ini.time[node] <- ifelse(is.na(age.start),
+                                 if (is.null(age.max)) age.min
+                                 else runif(length(node), age.min, age.max),
+                                 age.start)
 
         ## if no age given for the root, find one approximately:
         if (is.na(ini.time[ROOT]))
             ini.time[ROOT] <- fact.root * max(if (is.null(age.max)) age.min else age.max)
 
-        ISnotNA.ALL <- unlist(lapply(seq.nod, function(x) sum(!is.na(ini.time[x]))))
-        o <- order(ISnotNA.ALL, decreasing = TRUE)
+        ##ISnotNA.ALL <- unlist(lapply(seq.nod, function(x) sum(!is.na(ini.time[x]))))
+        ##o <- order(ISnotNA.ALL, decreasing = TRUE)
+
+        ## added by GL (2020-01-29):
+        ## For each path to the leaves, return the calibrations following the last NA.
+        calibs.after.NA <- lapply(seq.nod, next.calib, ini.time)
+
+        ## This recycles shorter elements, but doesn't matter with the order() function
+        L <- max(sapply(calibs.after.NA, length))
+        calibs.df <-
+            as.data.frame(do.call(rbind, lapply(calibs.after.NA,
+                                                function(r) c(r, rep(-1, L - length(r))))))
+        o <- do.call(order, c(calibs.df, decreasing = TRUE))
 
         for (y in seq.nod[o]) {
             ISNA <- is.na(ini.time[y])
@@ -175,6 +205,10 @@ maybe you need to adjust the calibration dates")
 
     if (model == "discrete") {
         Nb.rates <- control$nb.rate.cat
+        if (Nb.rates > N) {
+            Nb.rates <- N
+            warning("'nb.rate.cat' > number of branches: used nb.rate.cat = # of branches instead", call. = FALSE)
+        }
         minmax <- range(ini.rate)
         if (Nb.rates == 1) {
             ini.rate <- sum(minmax)/2
@@ -201,7 +235,7 @@ maybe you need to adjust the calibration dates")
     upper.age[node - n] <- age.max
 
     ## find nodes known within an interval:
-    ii <- which(age.min != age.max)
+    ii <- which(is.na(age.min) | (age.min != age.max))
     ## drop them from 'node' since they will be estimated:
     if (length(ii)) {
         node <- node[-ii]
@@ -223,7 +257,7 @@ maybe you need to adjust the calibration dates")
 
     ## the bounds for the rates:
     lower.rate <- rep(tol, Nb.rates)
-    upper.rate <- rep(100 - tol, Nb.rates) # needs to be adjusted to higher values?
+    upper.rate <- rep(1e5 - tol, Nb.rates)
 
 ### Gradient
     degree_node <- tabulate(phy$edge)
@@ -305,7 +339,26 @@ maybe you need to adjust the calibration dates")
         real.edge.length <- age[e1] - age[e2]
         if (isTRUE(any(real.edge.length < 0))) return(-1e100)
         B <- rate * real.edge.length
-        sum(el * log(B) - B - lfactorial(el))
+        sum(el * log(B) - B - lfactorial.el)
+    }
+
+    ## New function for incorporating multiple rate categories (by SC).
+    ## This one calculates the conditional probability for each branch
+    ## and rate regime, and then computes a weighted average (using the
+    ## frequencies as weights) before summing logs across branches.
+    log.lik.poisson.discrete <- function(rate, node.time, freq) {
+        Freqs <- c(freq, 1 - sum(freq))
+        age[unknown.ages] <- node.time
+        real.edge.length <- age[e1] - age[e2]
+        if (any(real.edge.length < 0)) return(-1e+100)
+        ## generate a matrix of branch length rates under each rate regime:
+        B <- real.edge.length %*% t(rate)
+        ## generate a matrix of likelihood values
+        PPs <- exp(el * log(B) - B - lfactorial.el)
+        ## matrix multiplication to obtain the weigthed sums for each
+        ## branch (the average likelihoods), then sum the
+        ## log-likelihoods to obtain the tree likelihood:
+        sum(log(PPs %*% Freqs))
     }
 
 ### penalized log-likelihood
@@ -331,9 +384,10 @@ maybe you need to adjust the calibration dates")
                if (Nb.rates == 1)
                    function(rate, node.time) log.lik.poisson(rate, node.time)
                else function(rate, node.time, freq) {
-                   if (isTRUE(sum(freq) > 1)) return(-1e100)
-                   rate.freq <- sum(c(freq, 1 - sum(freq)) * rate)
-                   log.lik.poisson(rate.freq, node.time)
+                   if (sum(freq) > 1) return(-1e100)
+                   ## rate.freq <- sum(c(freq, 1 - sum(freq)) * rate)
+                   ## log.lik.poisson(rate.freq, node.time)
+                   log.lik.poisson.discrete(rate, node.time, freq) # by SC
                })
 
     opt.ctrl <- list(eval.max = control$eval.max, iter.max = control$iter.max)
@@ -398,12 +452,17 @@ maybe you need to adjust the calibration dates")
     if (model == "discrete" && Nb.rates > 1) current.freqs <- out$par[FREQ]
 
     dual.iter.max <- control$dual.iter.max
-    i <- 0L
+    epsilon <- control$epsilon
+    i <- 1L # was 0L (2020-05-08)
 
-    if (!quiet) cat("         Penalised log-lik =", current.ploglik, "\n")
+    if (!quiet) cat("         (Penalised) log-lik =", current.ploglik, "\n")
 
     repeat {
         if (dual.iter.max < 1) break
+        if (i > dual.iter.max) { # added this break here (with a warning) instead of after optimizations (SC)
+            warning("Maximum number of dual iterations reached.", call. = FALSE)
+            break
+        }
         if (!quiet) cat("Optimising rates...")
         out.rates <- nlminb(current.rates, f.rates, g.rates,# h.rates,
                             control = list(eval.max = 1000, iter.max = 1000,
@@ -433,7 +492,7 @@ maybe you need to adjust the calibration dates")
 
         delta.ploglik <- new.ploglik - current.ploglik
         if (is.na(delta.ploglik)) break # fix by Daniel Lang
-        if (delta.ploglik > 1e-6 && i <= dual.iter.max) {
+        if (delta.ploglik > epsilon) {
             current.ploglik <- new.ploglik
             current.rates <- new.rates
             current.ages <- out.ages$par
@@ -443,13 +502,15 @@ maybe you need to adjust the calibration dates")
         } else break
     }
 
-    if (!quiet) cat("\nDone.\n")
+    ## if (!quiet) cat("\nDone.\n")
 
     if (model == "discrete") {
-        rate.freq <-
-            if (Nb.rates == 1) current.rates
-            else mean(c(current.freqs, 1 - sum(current.freqs)) * current.rates)
-        logLik <- log.lik.poisson(rate.freq, current.ages)
+        ## rate.freq <-
+        logLik <-
+            if (Nb.rates == 1) log.lik.poisson(current.rates, current.ages)
+            else log.lik.poisson.discrete(current.rates, current.ages, current.freqs)
+##            else mean(c(current.freqs, 1 - sum(current.freqs)) * current.rates)
+##        logLik <- log.lik.poisson(rate.freq, current.ages)
         PHIIC <- list(logLik = logLik, k = k, PHIIC = - 2 * logLik + 2 * k)
     } else {
         logLik <- log.lik.poisson(current.rates, current.ages)
@@ -464,11 +525,19 @@ maybe you need to adjust the calibration dates")
     attr(phy, "ploglik") <- -out$objective
     attr(phy, "rates") <- current.rates #out$par[EDGES]
     if (model == "discrete" && Nb.rates > 1)
-        attr(phy, "frequencies") <- current.freqs
+        attr(phy, "frequencies") <- c(current.freqs, 1 - sum(current.freqs))
+    attr(phy, "convergence") <- if (out$convergence == 0) TRUE else FALSE
     attr(phy, "message") <- out$message
     attr(phy, "PHIIC") <- PHIIC
+    attr(phy, "niter") <- i
     age[unknown.ages] <- current.ages #out$par[-EDGES]
     phy$edge.length <- age[e1] - age[e2]
+
+    if(!attr(phy, "convergence"))
+        warning(attr(phy, "message"), call. = FALSE)
+    if (!quiet)
+        cat("\nlog-Lik =", logLik, "\nPHIIC =", round(PHIIC$PHIIC, 2),"\n")
+
     class(phy) <- c("chronos", class(phy))
     phy
 }

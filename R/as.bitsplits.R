@@ -1,8 +1,8 @@
-## as.bitsplits.R (2018-03-13)
+## as.bitsplits.R (2019-06-10)
 
 ##   Conversion Among Split Classes
 
-## Copyright 2011-2018 Emmanuel Paradis
+## Copyright 2011-2018 Emmanuel Paradis, 2019 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -129,16 +129,22 @@ countBipartitions <- function(phy, X)
     m <- phy$Nnode
     N <- Nedge(phy)
 
+    ## added by KS (2019-06-10):
+    X <- .compressTipLabel(X, ref = phy$tip.label)
+    X <- .uncompressTipLabel(X)
+    X <- reorder(X)
+
     SPLIT <- bitsplits(phy)
     nr <- nrow(SPLIT$matsplit)
     nc <- ncol(SPLIT$matsplit)
     freq <- rep(0, nc)
     for (tr in X) {
-        tr <- ape::reorder.phylo(tr, "postorder")
+        ## tr <- ape::reorder.phylo(tr, "postorder") # deleted by KS
         e <- tr$edge
-        freq <- .C(CountBipartitionsFromTrees, as.integer(n), as.integer(m),
-                   as.integer(e), as.integer(N), as.integer(nr), as.integer(nc),
-                   as.raw(SPLIT$matsplit), as.double(freq), NAOK = TRUE)[[8]]
+        freq <- .C(CountBipartitionsFromTrees, as.integer(n),
+                   as.integer(m), as.integer(e), as.integer(N), as.integer(nr),
+                   as.integer(nc), as.raw(SPLIT$matsplit), as.double(freq),
+                   NAOK = TRUE)[[8]]
     }
     freq
 }

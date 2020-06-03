@@ -58,7 +58,7 @@
   model for estimating phylogenetic effects. \emph{Systematic Zoology},
   \bold{39}, 227--241.
 }
-\author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr} and
+\author{Julien Dutheil \email{dutheil@evolbio.mpg.de} and
   Emmanuel Paradis}
 \seealso{\code{\link{weight.taxo}}}
 \examples{

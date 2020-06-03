@@ -1,8 +1,8 @@
-## plot.phylo.R (2018-08-09)
+## plot.phylo.R (2019-07-30)
 
 ##   Plot Phylogenies
 
-## Copyright 2002-2018 Emmanuel Paradis
+## Copyright 2002-2019 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -715,7 +715,7 @@ node.height <- function(phy, clado.style = FALSE)
 plot.multiPhylo <- function(x, layout = 1, ...)
 {
     layout(matrix(1:layout, ceiling(sqrt(layout)), byrow = TRUE))
-    if (!devAskNewPage() && !names(dev.cur()) %in% c("pdf", "postscript")) {
+    if (!devAskNewPage() && names(dev.cur()) %in% deviceIsInteractive()) {
         devAskNewPage(TRUE)
         on.exit(devAskNewPage(FALSE))
     }

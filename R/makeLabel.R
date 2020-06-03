@@ -1,8 +1,8 @@
-## makeLabel.R (2018-05-22)
+## makeLabel.R (2019-10-14)
 
 ##   Label Management
 
-## Copyright 2010-2018 Emmanuel Paradis
+## Copyright 2010-2019 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -126,10 +126,14 @@ label2table <- function(x, sep = NULL, as.is = FALSE)
     n <- length(x)
     if (is.null(sep)) sep <- .getSeparatorTaxaLabels(x)
     x <- strsplit(x, sep)
-    x <- unlist(lapply(x, "[", 1:3))
-    x <- matrix(x, n, 3, byrow = TRUE)
+    maxlen <- max(lengths(x))
+    x <- unlist(lapply(x, "[", 1:maxlen))
+    x <- matrix(x, n, maxlen, byrow = TRUE)
     x <- as.data.frame(x, as.is = as.is)
-    names(x) <- c("genus", "species", "subspecies")
+    baselevels <- c("genus", "species", "subspecies")
+    nmx <- if (maxlen <= 3) baselevels[1:maxlen]
+           else c(baselevels, paste0("type", 1:(maxlen - 3)))
+    names(x) <- nmx
     x
 }
 

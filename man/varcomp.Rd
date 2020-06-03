@@ -22,7 +22,7 @@ varcomp(x, scale = FALSE, cum = FALSE)
   Venables, W. N. and Ripley, B. D. (2002) \emph{Modern Applied Statistics
   with S (Fourth Edition)}. New York: Springer-Verlag.
 }
-\author{Julien Dutheil \email{julien.dutheil@univ-montp2.fr}}
+\author{Julien Dutheil \email{dutheil@evolbio.mpg.de}}
 \seealso{\code{\link[nlme]{lme}}}
 \examples{
 data(carnivora)

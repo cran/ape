@@ -53,7 +53,7 @@ mst(X)
 }
 \author{
   Yvonnick Noel \email{noel@univ-lille3.fr},
-  Julien Claude \email{Julien.Claude@univ-montp2.fr} and
+  Julien Claude \email{julien.claude@umontpellier.fr} and
   Emmanuel Paradis
 }
 \seealso{

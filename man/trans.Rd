@@ -13,11 +13,10 @@ complement(x)
 \arguments{
 \item{x}{an object of class \code{"DNAbin"} (vector, matrix or list).}
 \item{code}{an integer value giving the genetic code to be
-  used. Currently only 1 (standard code) and 2 (vertebrate mitochondrial
-  code) are supported.}
+  used. Currently only the genetic codes  1 to 6 are supported.}
 \item{codonstart}{an integer giving where to start the translation. This
   should be 1, 2, or 3, but larger values are accepted and have for
-  effect to start the translation further within the sequence.}
+  effect to start the translation further towards the 3'-end of the sequence.}
 }
 \details{
   With \code{trans}, if the sequence length is not a multiple of three,
@@ -25,6 +24,9 @@ complement(x)
   \code{AG-} returns \code{X} with no special warning or message). Base
   ambiguities are taken into account where relevant: for instance,
   \code{GGN}, \code{GGA}, \code{GGR}, etc, all return \code{G}.
+
+  See the link given in the References for details about the taxonomic
+  coverage and alternative codons of each code.
 }
 \value{
   an object of class \code{"AAbin"} or \code{"DNAbin"}, respectively.

@@ -13,11 +13,11 @@ corPagel(value, phy, form = ~1, fixed = FALSE)
   \item{value}{the (initial) value of the parameter
     \eqn{\lambda}{lambda}.}
   \item{phy}{an object of class \code{"phylo"}.}
-  \item{form}{(ignored).}
+  \item{form}{a one sided formula of the form ~ t, or ~ t | g, specifying the taxa covariate t and, optionally, a grouping factor g. A covariate for this correlation structure must be character valued, with entries matching the tip labels in the phylogenetic tree. When a grouping factor is present in form, the correlation structure is assumed to apply only to observations within the same grouping level; observations with different grouping levels are assumed to be uncorrelated. Defaults to ~ 1, which corresponds to using the order of the observations in the data as a covariate, and no groups.}
   \item{fixed}{a logical specifying whether \code{gls} should
     estimate \eqn{\lambda}{lambda} (the default) or keep it fixed.}
   \item{object}{an (initialized) object of class \code{"corPagel"}.}
-  \item{covariate}{(ignored).}
+  \item{covariate}{an optional covariate vector (matrix), or list of covariate vectors (matrices), at which values the correlation matrix, or list of correlation matrices, are to be evaluated. Defaults to getCovariate(object).}
   \item{corr}{a logical value specifying whether to return the
     correlation matrix (the default) or the variance-covariance matrix.}
   \item{unconstrained}{a logical value. If \code{TRUE} (the default),

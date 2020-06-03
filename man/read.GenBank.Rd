@@ -3,7 +3,7 @@
 \title{Read DNA Sequences from GenBank via Internet}
 \usage{
 read.GenBank(access.nb, seq.names = access.nb, species.names = TRUE,
-             gene.names = FALSE, as.character = FALSE)
+             as.character = FALSE, chunk.size = 400, quiet = TRUE)
 }
 \description{
   This function connects to the GenBank database, and reads nucleotide
@@ -15,9 +15,13 @@ read.GenBank(access.nb, seq.names = access.nb, species.names = TRUE,
     accession numbers are used.}
   \item{species.names}{a logical indicating whether to attribute the
     species names to the returned object.}
-  \item{gene.names}{obsolete (will be removed soon).}
   \item{as.character}{a logical controlling whether to return the
     sequences as an object of class \code{"DNAbin"} (the default).}
+  \item{chunk.size}{the number of sequences downloaded together (see
+    details).}
+  \item{quiet}{a logical value indicating whether to show the progress
+    of the downloads. If \code{TRUE}, will also print the (full) name of
+    the FASTA file containing the downloaded sequences.}
 }
 \details{
   The function uses the site \url{http://www.ncbi.nlm.nih.gov/} from
@@ -27,14 +31,26 @@ read.GenBank(access.nb, seq.names = access.nb, species.names = TRUE,
   \code{"species"} containing the names of the species taken from the
   field ``ORGANISM'' in GenBank.
 
-  Since ape 3.6, this function retrieves the sequences in FASTA format:
-  this is more efficient and more flexible (scaffolds and contigs can be
-  read). The option \code{gene.names} is obsolete and will be removed;
-  this information is also present in the description.
+  Since \pkg{ape} 3.6, this function retrieves the sequences in FASTA
+  format: this is more efficient and more flexible (scaffolds and
+  contigs can be read) than what was done in previous versions. The
+  option \code{gene.names} has been removed in \pkg{ape} 5.4; this
+  information is also present in the description.
 
-  Setting \code{species.names = FALSE} is quite faster (could be useful
+  Setting \code{species.names = FALSE} is much faster (could be useful
   if you read a series of scaffolds or contigs, or if you already have
   the species names).
+
+  The argument \code{chunk.size} is set by default to 400 which is
+  likely to work in many cases. If an error occurs such as ``Cannot open
+  file \dots'' showing the list of the accession numbers, then you may
+  try decreasing \code{chunk.size} to 200 or 300.
+
+  If \code{quiet = FALSE}, the display is done chunk by chunk, so the
+  message ``Downloading sequences: 400 / 400 ...'' means that the
+  download from sequence 1 to sequence 400 is under progress (it is not
+  possible to display a more accurate message because the download
+  method depends on the platform).
 }
 \value{
   A list of DNA sequences made of vectors of class \code{"DNAbin"}, or

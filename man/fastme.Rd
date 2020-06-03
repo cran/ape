@@ -11,14 +11,19 @@
   minimum evolution algorithm of Desper and Gascuel (2002).
 }
 \usage{
-  fastme.bal(X, nni = TRUE, spr = TRUE, tbr = TRUE)
+  fastme.bal(X, nni = TRUE, spr = TRUE, tbr = FALSE)
   fastme.ols(X, nni = TRUE)
 }
 \arguments{
   \item{X}{a distance matrix; may be an object of class \code{"dist"}.}
-  \item{nni}{a boolean value; TRUE to do NNIs (default).}
+  \item{nni}{a logical value; TRUE to perform NNIs (default).}
   \item{spr}{ditto for SPRs.}
-  \item{tbr}{ditto for TBRs.}
+  \item{tbr}{ignored (see details).}
+}
+\details{
+  The code to perform topology searches based on TBR (tree bisection and
+  reconnection) did not run correctly and has been removed after the
+  release of \pkg{ape} 5.3. A warning is issued if \code{tbr = TRUE}.
 }
 \value{
   an object of class \code{"phylo"}.
@@ -26,7 +31,7 @@
 \references{
   Desper, R. and Gascuel, O. (2002) Fast and accurate phylogeny
   reconstruction algorithms based on the minimum-evolution principle.
-  \emph{Journal of Computational Biology}, \bold{9(5)}, 687--705.
+  \emph{Journal of Computational Biology}, \bold{9}, 687--705.
 }
 \author{
   original C code by Richard Desper; adapted and ported to R

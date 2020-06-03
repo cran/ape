@@ -1,8 +1,8 @@
-## DNA.R (2019-02-22)
+## DNA.R (2020-04-27)
 
 ##   Manipulations and Comparisons of DNA and AA Sequences
 
-## Copyright 2002-2019 Emmanuel Paradis, 2015 Klaus Schliep, 2017 Franz Krah
+## Copyright 2002-2020 Emmanuel Paradis, 2015 Klaus Schliep, 2017 Franz Krah
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -135,7 +135,6 @@ as.list.DNAbin <- function(x, ...)
 }
 
 rbind.DNAbin <- function(...)
-### works only with matrices for the moment
 {
     obj <- list(...)
     n <- length(obj)
@@ -146,9 +145,8 @@ rbind.DNAbin <- function(...)
     NC <- unlist(lapply(obj, ncol))
     if (length(unique(NC)) > 1)
         stop("matrices do not have the same number of columns.")
-    for (i in 1:n) class(obj[[i]]) <- NULL
-    for (i in 2:n) obj[[1]] <- rbind(obj[[1]], obj[[i]])
-    structure(obj[[1]], class = "DNAbin")
+    for (i in 1:n) class(obj[[i]]) <- NULL # safe but maybe not really needed
+    structure(do.call(rbind, obj), class = "DNAbin")
 }
 
 cbind.DNAbin <-
@@ -264,7 +262,7 @@ print.DNAbin <- function(x, printlen = 6, digits = 3, ...)
         cat("Base composition:\n")
         print(round(base.freq(x), digits))
     } else {
-        cat("More than 10 million bases: not printing base composition\n")
+        cat("More than 10 million bases: not printing base composition.\n")
     }
     if (nTot > 1) {
         k <- floor(log(nTot, 1000))
@@ -383,15 +381,16 @@ Ftab <- function(x, y = NULL)
 
 GC.content <- function(x) sum(base.freq(x)[2:3])
 
-seg.sites <- function(x)
+seg.sites <- function(x, strict = FALSE, trailingGapsAsN = TRUE)
 {
     if (is.list(x)) x <- as.matrix(x)
     ## is.vector() returns FALSE because of the class,
     ## so we use a different test
     dx <- dim(x)
-    if (is.null(dx)) return(integer(0))
-    if (dx[1] == 1) return(integer(0))
-    ans <- .Call(SegSites, x)
+    if (is.null(dx)) return(integer())
+    if (dx[1] == 1) return(integer())
+    if (trailingGapsAsN) x <- latag2n(x)
+    ans <- .Call(SegSites, x, strict)
     which(as.logical(ans))
 }
 
@@ -657,8 +656,8 @@ trans <- function(x, code = 1, codonstart = 1)
     f <- function(x, s, code)
         .C(trans_DNA2AA, x, as.integer(s), raw(s/3), as.integer(code),
            NAOK = TRUE)[[3]]
-    if (code > 2)
-        stop("only the standard and the vertebrate mitochondrial codes are available for now")
+    if (code > 6)
+        stop("only the genetic codes 1--6 are available for now")
 
     if (codonstart > 1) {
         del <- -(1:(codonstart - 1))
@@ -1091,6 +1090,71 @@ c.AAbin <- function(..., recursive = FALSE)
   structure(NextMethod("c"), class = "AAbin")
 }
 
+rbind.AAbin <- function(...)
+{
+    obj <- list(...)
+    n <- length(obj)
+    if (n == 1) return(obj[[1]])
+    for (i in 1:n)
+        if (!is.matrix(obj[[1]]))
+            stop("the 'rbind' method for \"AAbin\" accepts only matrices")
+    NC <- unlist(lapply(obj, ncol))
+    if (length(unique(NC)) > 1)
+        stop("matrices do not have the same number of columns.")
+    for (i in 1:n) class(obj[[i]]) <- NULL # safe but maybe not really needed
+    structure(do.call(rbind, obj), class = "AAbin")
+}
+
+cbind.AAbin <-
+    function(..., check.names = TRUE, fill.with.Xs = FALSE,
+             quiet = FALSE)
+{
+    obj <- list(...)
+    n <- length(obj)
+    if (n == 1) return(obj[[1]])
+    for (i in 1:n)
+        if (!is.matrix(obj[[1]]))
+            stop("the 'cbind' method for \"AAbin\" accepts only matrices")
+    NR <- unlist(lapply(obj, nrow))
+    for (i in 1:n) class(obj[[i]]) <- NULL
+    if (check.names) {
+        NMS <- lapply(obj, rownames)
+        for (i in 1:n)
+            if (anyDuplicated(NMS[[i]]))
+                stop("Duplicated rownames in matrix ", i, ": see ?cbind.AAbin")
+        nms <- unlist(NMS)
+        if (fill.with.Xs) {
+            NC <- unlist(lapply(obj, ncol))
+            nms <- unique(nms)
+            ans <- matrix(charToRaw("X"), length(nms), sum(NC))
+            rownames(ans) <- nms
+            from <- 1
+            for (i in 1:n) {
+                to <- from + NC[i] - 1
+                k <- match(NMS[[i]], nms)
+                ans[k, from:to] <- obj[[i]]
+                from <- to + 1
+            }
+        } else {
+            tab <- table(nms)
+            ubi <- tab == n
+            nms <- names(tab)[which(ubi)]
+            ans <- obj[[1]][nms, , drop = FALSE]
+            for (i in 2:n)
+                ans <- cbind(ans, obj[[i]][nms, , drop = FALSE])
+            if (!quiet && !all(ubi))
+                warning("some rows were dropped.")
+        }
+    } else {
+        if (length(unique(NR)) > 1)
+            stop("matrices do not have the same number of rows.")
+        ans <- matrix(unlist(obj), NR)
+        rownames(ans) <- rownames(obj[[1]])
+    }
+    class(ans) <- "AAbin"
+    ans
+}
+
 as.AAbin.list <- function(x, ...)
 {
   obj <- lapply(x, as.AAbin)
@@ -1287,5 +1351,15 @@ dnds <- function(x, code = 1, codonstart = 1, quiet = FALSE)
     attr(res, "call") <- match.call()
     attr(res, "method") <- "dNdS (Li 1993)"
     class(res) <- "dist"
+    res
+}
+
+latag2n <- function(x) {
+    if (is.list(x)) x <- as.matrix(x)
+    dx <- dim(x)
+    clx <- class(x)
+    res <- .Call(leading_trailing_gaps_to_N, x)
+    class(res) <- clx
+    dim(res) <- dx
     res
 }

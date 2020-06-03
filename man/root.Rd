@@ -87,9 +87,10 @@ is.rooted(phy)
   \code{root} and \code{unroot}; a logical vector for \code{is.rooted}.
 }
 \references{
-  Czech, L., Huerta-Cepas, J. and Stamatakis, A. (2016) A critical
+  Czech, L., Huerta-Cepas, J. and Stamatakis, A. (2017) A critical
   review on the use of support values in tree viewers and bioinformatics
-  toolkits. \url{https://dx.doi.org/10.1101/035360}
+  toolkits. \emph{Molecular Biology and Evolution}, \bold{34},
+  1535--1542. \url{https://doi.org/10.1093/molbev/msx055}
 }
 \author{Emmanuel Paradis}
 \seealso{

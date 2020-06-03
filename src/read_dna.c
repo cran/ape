@@ -1,6 +1,6 @@
-/* read_dna.c       2018-03-24 */
+/* read_dna.c       2020-05-02 */
 
-/* Copyright 2013-2018 Emmanuel Paradis */
+/* Copyright 2013-2020 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -338,7 +338,7 @@ SEXP charVectorToDNAbinVector(SEXP x)
     PROTECT(res = allocVector(RAWSXP, n));
     rs = RAW(res);
 
-    for (long i = 0; i < n; i++) rs[i] = tab_trans[xr[i]];
+    for (long i = 0; i < n; i++) rs[i] = tab_trans[(unsigned char) xr[i]];
 
     UNPROTECT(2);
     return res;
