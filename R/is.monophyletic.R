@@ -1,4 +1,4 @@
-## is.monophyletic.R (2020-01-10)
+## is.monophyletic.R (2020-07-10)
 
 ##   Test Monophyly
 
@@ -17,12 +17,13 @@ is.monophyletic <-
     if (is.numeric(tips)) {
         if (any(tips > n))
             stop("incorrect tip#: should not be greater than the number of tips")
-        tips <- sort(as.integer(tips))
+        tips <- as.integer(tips)
     }
     if (is.character(tips)) {
         tips <- match(tips, phy$tip.label)
         if (anyNA(tips)) stop("some tip label(s) not found in the tree")
     }
+    tips <- sort(tips) # fix (2020-07-10)
     if (length(tips) == 1L || length(tips) ==  n) return(TRUE)
 
     if (reroot) {

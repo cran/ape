@@ -1,15 +1,15 @@
-## multi2di.R (2017-01-16)
+## multi2di.R (2020-08-11)
 
 ##   Collapse or Resolve Multichotomies
 
-## Copyright 2005-2017 Emmanuel Paradis, 2018 Klaus Schliep
+## Copyright 2005-2020 Emmanuel Paradis, 2018 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 multi2di <- function(phy, ...) UseMethod("multi2di")
 
-.multi2di_ape <- function(phy, random, n)
+.multi2di_ape <- function(phy, random, equiprob, n)
 {
     ## n: number of tips of phy
     degree <- tabulate(phy$edge[, 1])
@@ -34,7 +34,7 @@ multi2di <- function(phy, ...) UseMethod("multi2di")
           ## so we store the result of sample()
             tmp <- sample(length(desc))
             desc <- desc[tmp]
-            res <- rtree(N)$edge
+            res <- rtree(N, equiprob = equiprob)$edge
         } else {
             res <- matrix(0L, 2*N - 2, 2)
             res[, 1] <- N + rep(1:(N - 1), each = 2)
@@ -91,17 +91,17 @@ multi2di <- function(phy, ...) UseMethod("multi2di")
     phy
 }
 
-multi2di.phylo <- function (phy, random = TRUE, ...)
-    .multi2di_ape(phy, random, length(phy$tip.label))
+multi2di.phylo <- function (phy, random = TRUE, equiprob = TRUE, ...)
+    .multi2di_ape(phy, random, equiprob = equiprob, length(phy$tip.label))
 
-multi2di.multiPhylo <- function(phy, random = TRUE, ...)
+multi2di.multiPhylo <- function(phy, random = TRUE, equiprob = TRUE, ...)
 {
     labs <- attr(phy, "TipLabel")
     oc <- oldClass(phy)
     class(phy) <- NULL
-    if (is.null(labs)) phy <- lapply(phy, multi2di.phylo, random = random)
+    if (is.null(labs)) phy <- lapply(phy, multi2di.phylo, random = random, equiprob = equiprob)
     else {
-        phy <- lapply(phy, .multi2di_ape, random = random, n = length(labs))
+        phy <- lapply(phy, .multi2di_ape, random = random, equiprob = equiprob, n = length(labs))
         attr(phy, "TipLabel") <- labs
     }
     class(phy) <- oc

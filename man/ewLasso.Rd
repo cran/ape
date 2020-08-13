@@ -44,5 +44,5 @@ ewLasso(X, phy)
   phylogentic tree I: basic properties, shellings and covers.
   \emph{Journal of Mathematical Biology}, \bold{65(1)}, 77--105.
 }
-\author{Andrei Popescu \email{niteloserpopescu@gmail.com}}
+\author{Andrei Popescu}
 \keyword{multivariate}

@@ -1,16 +1,21 @@
-## rtree.R (2017-12-18)
+## rtree.R (2020-08-12)
 
 ##   Generates Trees
 
-## Copyright 2004-2017 Emmanuel Paradis
+## Copyright 2004-2020 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
-rtree <- function(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
+rtree <- function(n, rooted = TRUE, tip.label = NULL, br = runif,
+                  equiprob = FALSE, ...)
 {
+    bar <- # more efficient than sample.int()
+        if (equiprob) function(n) as.integer(runif(1, 0, floor(n/2))) + 1L
+        else function(n)  sample.int(n - 1L, 1, FALSE, NULL) #as.integer(runif(1, 0, n - 1L)) + 1L
+
     foo <- function(n, pos) {
-        n1 <- sample.int(n - 1L, 1, FALSE, NULL)
+        n1 <- bar(n)
         n2 <- n - n1
         po2 <- pos + 2L * n1 - 1L
         edge[c(pos, po2), 1L] <<- nod
@@ -31,77 +36,71 @@ rtree <- function(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
         }
     }
 
+    if (n < 1) stop("a tree must have at least 1 tip")
+    if (n < 3 && !rooted) stop("an unrooted tree must have at least 3 tips")
     n <- as.integer(n)
 
-    if (n < 2) stop("a tree must have at least 2 tips.")
-    nbr <- 2L * n - 3L + rooted
-    edge <- matrix(NA_integer_, nbr, 2L)
-
-    if (n == 2L) {
-        if (rooted) edge[] <- c(3L, 3L, 1L, 2L)
-        else stop("an unrooted tree must have at least 3 tips.")
-    } else if (n == 3L) {
-        edge[] <-
-          if (rooted) c(4L, 5L, 5L, 4L, 5L, 1:3)
-          else c(4L, 4L, 4L, 1:3)
-    } else if (n == 4L && !rooted) {
-        edge[] <- c(5L, 6L, 6L, 5L, 5L, 6L, 1:4)
+    ## make the tip labels:
+    if (is.null(tip.label)) {
+        tip.label <- paste0("t", 1:n)
     } else {
-        nod <- n + 1L
-        if (rooted) { # n > 3
+        tip.label <- as.character(tip.label)
+        Nlabs <- length(tip.label)
+        if (!Nlabs) {
+            warning("vector 'tip.label' of length zero: generating tip labels")
+            tip.label <- paste0("t", seq_len(n))
+        } else if (Nlabs > n) {
+            warning("vector 'tip.label' longer than 'n': was shorten")
+            tip.label <- tip.label[1:n]
+        } else if (Nlabs < n) {
+            warning("vector 'tip.label' shorter than 'n': was recycled")
+            tip.label <- rep(tip.label, length.out = n)
+        }
+    }
+
+    if (n == 1L) { # rooted case with n = 1
+        nbr <- 1L
+        edge <- matrix(2:1, 1L, 2L)
+    } else { # all other cases
+        nbr <- 2L * n - 3L + rooted
+        edge <- matrix(NA_integer_, nbr, 2L)
+    }
+
+    if (rooted) {
+        if (n == 2L) {
+            edge[] <- c(3L, 3L, 1L, 2L)
+        } else if (n == 3L) {
+            edge[] <- c(4L, 5L, 5L, 4L, 5L, 1:3)
+        } else if (n > 3L) {
+            nod <- n + 1L
             foo(n, 1L)
-            ## The following is slightly more efficient than affecting the
-            ## tip numbers in foo(): the gain is 0.006 s for n = 1000.
-            i <- which(is.na(edge[, 2L]))
-            edge[i, 2L] <- 1:n
-        } else { # n > 4
-            n1 <- sample.int(n - 2L, 1L)
-            if (n1 == n - 2L) {
-                n2 <- n3 <- 1L
-            } else {
-                n2 <- sample.int(n - n1 - 1L, 1L)
-                n3 <- n - n1 - n2
-            }
-            po2 <- 2L * n1
-            po3 <- 2L * (n1 + n2) - 1L
-            edge[c(1L, po2, po3), 1L] <- nod
-            nod <- nod + 1L
-            if (n1 > 2L) {
-                edge[1L, 2L] <- nod
-                foo(n1, 2L)
-            } else if (n1 == 2L) {
-                edge[2:3, 1L] <- edge[1L, 2L] <- nod
-                nod <- nod + 1L
-            }
-            if (n2 > 2L) {
-                edge[po2, 2L] <- nod
-                foo(n2, po2 + 1L)
-            } else if (n2 == 2L) {
-                edge[c(po2 + 1L, po2 + 2), 1L] <- edge[po2, 2L] <- nod
-                nod <- nod + 1L
-            }
-            if (n3 > 2L) {
-                edge[po3, 2L] <- nod
-                foo(n3, po3 + 1L)
-            } else if (n3 == 2L) {
-                edge[c(po3 + 1L, po3 + 2L), 1L] <- edge[po3, 2L] <- nod
-                ## nod <- nod + 1L
-            }
+            ## slightly more efficient than affecting the tip numbers in foo():
             i <- which(is.na(edge[, 2L]))
             edge[i, 2L] <- 1:n
         }
+    } else { # unrooted case
+        if (n == 3L) {
+            edge[] <- c(4L, 4L, 4L, 1:3)
+        } else if (n == 4L) {
+            edge[] <- c(5L, 6L, 6L, 5L, 5L, 6L, 1:4)
+        } else if (n == 5L) {
+            edge[] <- c(6L, 6L, 6L, 7L, 7L, 8L, 8L, 1L, 2L, 7L, 3L, 8L, 4L, 5L)
+        } else { # n > 5
+            ## generate a rooted tree without branch lengths and unroot it
+            phy <- rtree(n, tip.label = tip.label, br = NULL, equiprob = equiprob, ...)
+            phy <- .unroot_ape(phy, n)
+        }
     }
-    phy <- list(edge = edge)
-    phy$tip.label <-
-      if (is.null(tip.label)) paste("t", sample(n), sep = "")
-      else sample(tip.label)
+    if (!exists("phy", inherits = FALSE)) {
+        phy <- list(edge = edge, tip.label = sample(tip.label))
+        phy$Nnode <- if (n == 1L) 1L else n - 2L + as.integer(rooted)
+        class(phy) <- "phylo"
+        attr(phy, "order") <- "cladewise"
+    }
     if (!is.null(br)) {
         phy$edge.length <-
             if (is.function(br)) br(nbr, ...) else rep(br, length.out = nbr)
     }
-    phy$Nnode <- n - 2L + as.integer(rooted)
-    class(phy) <- "phylo"
-    attr(phy, "order") <- "cladewise"
     phy
 }
 
@@ -148,10 +147,11 @@ rcoal <- function(n, tip.label = NULL, br = "coalescent", ...)
     phy
 }
 
-rmtree <- function(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)
+rmtree <- function(N, n, rooted = TRUE, tip.label = NULL, br = runif, equiprob = FALSE, ...)
 {
     a <- replicate(N, rtree(n, rooted = rooted, tip.label =  tip.label,
-                            br = br, ...), simplify = FALSE)
+                            br = br, equiprob = equiprob, ...),
+                   simplify = FALSE)
     class(a) <- "multiPhylo"
     a
 }

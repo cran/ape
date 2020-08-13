@@ -1,4 +1,4 @@
-/* ape.c    2020-05-02 */
+/* ape.c    2020-07-20 */
 
 /* Copyright 2011-2020 Emmanuel Paradis, and 2007 R Development Core Team */
 
@@ -71,9 +71,9 @@ void C_treePop(int* splits, double* w,int* ncolp,int* np, int* ed1, int* ed2, do
 void C_triangMtd(double* d, int* np, int* ed1,int* ed2, double* edLen);
 void C_triangMtds(double* d, int* np, int* ed1,int* ed2, double* edLen);
 void C_ultrametric(double *dd, int* np, int* mp, double *ret);
-void bitsplits_phylo(int *n, int *m, int *e, int *N, int *nr, unsigned char *mat);
-void CountBipartitionsFromTrees(int *n, int *m, int *e, int *N, int *nr, int *nc,
-				unsigned char *mat, double *freq);
+/* void bitsplits_phylo(int *n, int *m, int *e, int *N, int *nr, unsigned char *mat); */
+/* void CountBipartitionsFromTrees(int *n, int *m, int *e, int *N, int *nr, int *nc, */
+/* 				unsigned char *mat, double *freq); */
 void DNAbin2indelblock(unsigned char *x, int *n, int *s, int *y);
 void trans_DNA2AA(unsigned char *x, int *s, unsigned char *res, int *code);
 
@@ -87,6 +87,7 @@ SEXP treeBuild(SEXP nwk);
 SEXP cladoBuildWithTokens(SEXP nwk);
 SEXP cladoBuild(SEXP nwk);
 SEXP bitsplits_multiPhylo(SEXP x, SEXP n, SEXP nr);
+SEXP CountBipartitionsFromSplits(SEXP split, SEXP SPLIT);
 SEXP _ape_prop_part2(SEXP trees, SEXP nTips);
 SEXP _ape_bipartition2(SEXP orig, SEXP nTips);
 SEXP _ape_reorderRcpp(SEXP orig, SEXP nTips, SEXP root, SEXP order);
@@ -125,8 +126,6 @@ static R_CMethodDef C_entries[] = {
     {"C_triangMtd", (DL_FUNC) &C_triangMtd, 5},
     {"C_triangMtds", (DL_FUNC) &C_triangMtds, 5},
     {"C_ultrametric", (DL_FUNC) &C_ultrametric, 4},
-    {"bitsplits_phylo", (DL_FUNC) &bitsplits_phylo, 6},
-    {"CountBipartitionsFromTrees", (DL_FUNC) &CountBipartitionsFromTrees, 8},
     {"DNAbin2indelblock", (DL_FUNC) &DNAbin2indelblock, 4},
     {"trans_DNA2AA", (DL_FUNC) &trans_DNA2AA, 4},
     {NULL, NULL, 0}
@@ -142,6 +141,7 @@ static R_CallMethodDef Call_entries[] = {
     {"cladoBuildWithTokens", (DL_FUNC) &cladoBuildWithTokens, 1},
     {"cladoBuild", (DL_FUNC) &cladoBuild, 1},
     {"bitsplits_multiPhylo", (DL_FUNC) &bitsplits_multiPhylo, 3},
+    {"CountBipartitionsFromSplits", (DL_FUNC) &CountBipartitionsFromSplits, 2},
     {"BaseProportion", (DL_FUNC) &BaseProportion, 1},
     {"SegSites", (DL_FUNC) &SegSites, 2},
     {"C_where", (DL_FUNC) &C_where, 2},

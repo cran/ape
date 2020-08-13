@@ -1,8 +1,8 @@
-## summary.phylo.R (2019-01-30)
+## summary.phylo.R (2020-07-28)
 
 ##   Print Summary of a Phylogeny and "multiPhylo" operators
 
-## Copyright 2003-2019 Emmanuel Paradis, 2006 Ben Bolker, and Klaus Schliep 2016
+## Copyright 2003-2020 Emmanuel Paradis, 2006 Ben Bolker, and Klaus Schliep 2016
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -91,15 +91,17 @@ print.phylo <- function(x, printlen = 6,...)
               "internal nodes.\n\n"))
     cat("Tip labels:\n")
     if (nb.tip > printlen) {
-        cat(paste("\t", paste(x$tip.label[1:printlen],
-                              collapse=", "), ", ...\n", sep = ""))
-    } else print(x$tip.label)
+        cat("  ", paste(x$tip.label[1:printlen], collapse=", "), ", ...\n", sep = "")
+    } else {
+        cat("  ", paste(x$tip.label, collapse=", "), "\n", sep = "")
+    }
     if (!is.null(x$node.label)) {
         cat("Node labels:\n")
         if (nb.node > printlen) {
-            cat(paste("\t", paste(x$node.label[1:printlen],
-                                 collapse=", "), ", ...\n", sep = ""))
-        } else print(x$node.label)
+            cat("  ", paste(x$node.label[1:printlen], collapse=", "), ", ...\n", sep = "")
+        } else {
+            cat("  ", paste(x$node.label, collapse=", "), "\n", sep = "")
+        }
     }
     rlab <- if (is.rooted(x)) "Rooted" else "Unrooted"
     cat("\n", rlab, "; ", sep="")

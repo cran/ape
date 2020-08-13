@@ -1158,9 +1158,8 @@ void seg_sites_strict(unsigned char *x, int *seg, int n, int s)
 
 SEXP SegSites(SEXP DNASEQ, SEXP STRICT)
 {
-    int n, s, j, done, *seg;
-    long i, end;
-    unsigned char b, *x;
+    int n, s, *seg;
+    unsigned char *x;
     SEXP ans;
 
     PROTECT(STRICT = coerceVector(STRICT, INTSXP));

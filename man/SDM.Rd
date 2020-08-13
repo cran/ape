@@ -31,7 +31,7 @@ SDM(...)
   SDM: A fast distance-based approach for (super)tree building in
   phylogenomics. \emph{Systematic Biology}, \bold{55}, 740--755.
 }
-\author{Andrei Popescu \email{niteloserpopescu@gmail.com}}
+\author{Andrei Popescu}
 \seealso{
   \code{\link{bionj}}, \code{\link{fastme}}, \code{\link{njs}},
   \code{\link{mvrs}}, \code{\link{triangMtd}}

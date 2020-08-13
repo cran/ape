@@ -37,7 +37,7 @@ complement(x)
   convert the sequences into character strings.
 }
 \references{
-\url{http://www.ncbi.nlm.nih.gov/Taxonomy/taxonomyhome.html/index.cgi?chapter=cgencodes}
+\url{https://www.ncbi.nlm.nih.gov/Taxonomy/taxonomyhome.html/index.cgi?chapter=cgencodes}
 }
 \author{Emmanuel Paradis}
 \seealso{

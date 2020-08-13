@@ -19,7 +19,7 @@ triangMtds(X)
 \references{
   \url{http://archive.numdam.org/ARCHIVE/RO/RO_2001__35_2/RO_2001__35_2_283_0/RO_2001__35_2_283_0.pdf}
 }
-\author{Andrei Popescu \email{niteloserpopescu@gmail.com}}
+\author{Andrei Popescu}
 \seealso{
   \code{\link{nj}}, \code{\link{bionj}}, \code{\link{fastme}},
   \code{\link{njs}}, \code{\link{mvrs}}, \code{\link{SDM}}

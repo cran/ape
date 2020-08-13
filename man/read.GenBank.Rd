@@ -24,7 +24,7 @@ read.GenBank(access.nb, seq.names = access.nb, species.names = TRUE,
     the FASTA file containing the downloaded sequences.}
 }
 \details{
-  The function uses the site \url{http://www.ncbi.nlm.nih.gov/} from
+  The function uses the site \url{https://www.ncbi.nlm.nih.gov/} from
   where the sequences are retrieved.
 
   If \code{species.names = TRUE}, the returned list has an attribute

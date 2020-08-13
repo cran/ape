@@ -88,13 +88,10 @@ extract.popsize(mcmc.out, credible.interval=0.95, time.points=200, thinning=1, b
  Please refer to Opgen-Rhein et al. (2005) for methodological details, and the help page of
  \code{\link{skyline}} for information on a related approach.
 }
-
-
 \author{
-  Rainer Opgen-Rhein and Korbinian Strimmer
-  (\url{http://strimmerlab.org}). Parts of the rjMCMC sampling procedure
-  are adapted from \R code by Karl Browman (\url{http://kbroman.org/})}
-
+  Rainer Opgen-Rhein and Korbinian Strimmer. Parts of the rjMCMC
+  sampling procedure are adapted from \R code by Karl Broman.
+}
 \seealso{
 \code{\link{skyline}} and \code{\link{skylineplot}}. }
 \references{

@@ -12,8 +12,8 @@
 }
 \usage{
 multi2di(phy, ...)
-\method{multi2di}{phylo}(phy, random = TRUE, ...)
-\method{multi2di}{multiPhylo}(phy, random = TRUE, ...)
+\method{multi2di}{phylo}(phy, random = TRUE, equiprob = TRUE, ...)
+\method{multi2di}{multiPhylo}(phy, random = TRUE, equiprob = TRUE, ...)
 di2multi(phy, ...)
 \method{di2multi}{phylo}(phy, tol = 1e-08, ...)
 \method{di2multi}{multiPhylo}(phy, tol = 1e-08, ...)
@@ -23,6 +23,9 @@ di2multi(phy, ...)
   \item{random}{a logical value specifying whether to resolve the
     multichotomies randomly (the default) or in the order they appear in
     the tree (if \code{random = FALSE}).}
+  \item{equiprob}{a logical value: should topologies generated in equal
+    probabilities; see details in \code{\link{rtree}} (ignored if
+    \code{random = FALSE}).}
   \item{tol}{a numeric value giving the tolerance to consider a branch
     length significantly greater than zero.}
   \item{\dots}{arguments passed among methods.}

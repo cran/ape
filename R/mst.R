@@ -1,4 +1,4 @@
-## mst.R (2006-11-08)
+## mst.R (2020-07-02)
 
 ##   Minimum Spanning Tree
 
@@ -9,7 +9,7 @@
 
 mst <- function(X)
 {
-    if (class(X) == "dist") X <- as.matrix(X)
+    if (inherits(X, "dist")) X <- as.matrix(X)
     n <- dim(X)[1]
     N <- matrix(0, n, n)
     tree <- NULL

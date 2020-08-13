@@ -1,3 +1,21 @@
+## by KS
+replace.single.quotes <- function(x, start = 1L)
+{
+    z <- unlist(gregexpr("'", x))
+    if (length(z) %% 2) {
+        #warning("wrong number of single quotes around labels")
+        warning(paste0("odd number of single quotes (", length(z), "): label(s) unchanged"))
+        return(x)
+    }
+    i <- 1
+    while (i < length(z)) {
+        tmp <- substr(x, z[i], z[i + 1])
+        substr(x, z[i], z[i + 1]) <- gsub("\\s+", "_", tmp)
+        i <- i + 2
+    }
+    gsub("'", "", x)
+}
+
 "read.nexus.data" <- function (file)
 {
     # Simplified NEXUS data parser.
@@ -108,6 +126,15 @@
     tot.nchar <- 0
     tot.ntax <- 0
 
+    ## by KS
+    single.quotes <- grepl("'", X)
+    if (any(single.quotes)) {
+        to.replace <- which(single.quotes)
+        for (j in to.replace) {
+            X[[j]] <- replace.single.quotes(X[[j]])
+        }
+    }
+
     for (j in start.reading:NROW(X)) {
         Xj <- trim.semicolon(X[j])
         if(Xj == "") {
@@ -180,3 +207,29 @@
     Obj
 }
 
+## by KS:
+nexus2DNAbin <- function(x)
+{
+    bs <- as.raw(._bs_)
+    cs <- ._cs_
+    fun <- function(x) {
+        res <- as.raw(0)
+        for (i in x) res <- res | bs[match(i, cs)]
+        res <- res & bs[15] # bs[15] == n
+        if (!(res %in% bs)) return(cs[17]) # return(?)
+        cs[match(res, bs)]
+    }
+    y <- unique(unlist(x))
+    y <- tolower(y)
+    y <- y[is.na(match(y, cs))]
+    if (length(y)) {
+        tmp <- strsplit(y, "/")
+        repl <- sapply(tmp, fun)
+        for (i in seq_along(x)) {
+            for (j in seq_along(y)) {
+                x[[i]] <- gsub(y[j], repl[j], x[[i]])
+            }
+        }
+    }
+    as.DNAbin(x)
+}

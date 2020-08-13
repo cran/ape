@@ -15,5 +15,5 @@ treePop(obj)
   an object of class "phylo" which displays all the splits
   in the input object.
 }
-\author{Andrei Popescu \email{niteloserpopescu@gmail.com}}
+\author{Andrei Popescu}
 \keyword{models}

@@ -153,7 +153,7 @@ length(pp20)
 plot(pp10, pch = "x", col = 2)
 plot(pp20, pch = "x", col = 2)
 
-set.seed(1)
+set.seed(2)
 tr <- rtree(10) # rooted
 ## the following used to return a wrong result with ape <= 3.4:
 prop.clades(tr, tr)

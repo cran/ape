@@ -10,9 +10,10 @@
   coalescent trees. The algorithms are described in Paradis (2012).
 }
 \usage{
-rtree(n, rooted = TRUE, tip.label = NULL, br = runif, ...)
+rtree(n, rooted = TRUE, tip.label = NULL, br = runif, equiprob = FALSE, ...)
 rcoal(n, tip.label = NULL, br = "coalescent", ...)
-rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)
+rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif,
+       equiprob = FALSE, ...)
 }
 \arguments{
   \item{n}{an integer giving the number of tips in the tree.}
@@ -26,6 +27,10 @@ rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif, ...)
     to simulate a genuine coalescent tree for \code{rcoal} (the
     default); or (iii) a numeric vector for the branch lengths or the
     coalescence times.}
+  \item{equiprob}{(new since \pkg{ape} 5.4-1) a logical specifying
+    whether topologies are generated in equal frequencies. If,
+    \code{FALSE}, the unbalanced topologies are generated in higher
+    proportions than the balanced ones.}
   \item{\dots}{further argument(s) to be passed to \code{br}.}
   \item{N}{an integer giving the number of trees to generate.}
 }

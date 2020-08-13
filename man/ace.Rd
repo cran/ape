@@ -209,7 +209,7 @@ ace(x, phy, type = "continuous", method = if (type == "continuous")
   Sinauer Associates.
 
   Lebl, J. (2013) \emph{Notes on Diffy Qs: Differential Equations for
-  Engineers}. \url{http://www.jirka.org/diffyqs/}.
+  Engineers}. \url{https://www.jirka.org/diffyqs/}.
 
   Martins, E. P. and Hansen, T. F. (1997) Phylogenies and the
   comparative method: a general approach to incorporating phylogenetic

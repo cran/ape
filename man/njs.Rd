@@ -27,9 +27,11 @@ bionjs(X, fs = 15)
   an object of class \code{"phylo"}.
 }
 \references{
-  \url{http://www.biomedcentral.com/1471-2105/9/166}
+  Criscuolo, A., Gascuel, O. (2008) Fast NJ-like algorithms to deal with
+  incomplete distance matrices. \emph{BMC Bioinformatics}, \bold{9},
+  166.
 }
-\author{Andrei Popescu \email{niteloserpopescu@gmail.com}}
+\author{Andrei Popescu}
 \seealso{
   \code{\link{nj}}, \code{\link{bionj}}, \code{\link{triangMtds}}
 }

@@ -1,6 +1,6 @@
-/* bitsplits.c    2014-01-02 */
+/* bitsplits.c    2020-07-19 */
 
-/* Copyright 2005-2014 Emmanuel Paradis */
+/* Copyright 2005-2020 Emmanuel Paradis */
 
 /* This file is part of the R-package `ape'. */
 /* See the file ../COPYING for licensing issues. */
@@ -46,85 +46,85 @@ void OneWiseBitsplits(unsigned char *mat, int nr, int nc, int rest)
     }
 }
 
-#define update_L(x)\
-    k = e[i] - *n - 1;\
-    L[k + *m * pos[k]] = x;\
-    pos[k]++
+/* #define update_L(x)\ */
+/*     k = e[i] - *n - 1;\ */
+/*     L[k + *m * pos[k]] = x;\ */
+/*     pos[k]++ */
 
-void bitsplits_phylo(int *n, int *m, int *e, int *N, int *nr, unsigned char *mat)
-/* n: nb of tips, m: nb of nodes, N: nb of edges,
-   nr: number of rows in mat */
-{
-    int ii, i, j, k, d, y, *L, *pos, inod;
+/* void bitsplits_phylo(int *n, int *m, int *e, int *N, int *nr, unsigned char *mat) */
+/* /\* n: nb of tips, m: nb of nodes, N: nb of edges, */
+/*    nr: number of rows in mat *\/ */
+/* { */
+/*     int ii, i, j, k, d, y, *L, *pos, inod; */
 
-    L = (int*)R_alloc(*n * *m, sizeof(int));
-    pos = (int*)R_alloc(*m, sizeof(int));
-    memset(pos, 0, *m * sizeof(int));
+/*     L = (int*)R_alloc(*n * *m, sizeof(int)); */
+/*     pos = (int*)R_alloc(*m, sizeof(int)); */
+/*     memset(pos, 0, *m * sizeof(int)); */
 
-    ii = 0;
-    for (i = 0; i < *N; i++) {
-	d = e[i + *N];
-/* Rprintf("d = %d\n", d); */
-	if (d <= *n) { /* trivial split from a terminal branch */
-	    update_L(d); /* update L */
-	} else {
-	    inod = d - *n - 1;
-	    for (j = 0; j < pos[inod]; j++) {
-		y = L[inod + *m * j];
-/* Rprintf("\ty = %d\n", y); */
-/* Rprintf("\t\ty / 9 + *nr * ii = %d\n", y / 9 + *nr * ii); */
-/* Rprintf("\t\ty % 8 = %d\n", y % 8); */
-		mat[(y -1) / 8 + *nr * ii] |= mask81[y % 8];
-		update_L(y); /* update L */
-	    }
-	    ii++;
-	}
-    }
-    OneWiseBitsplits(mat, *nr, ii, *n % 8);
-}
+/*     ii = 0; */
+/*     for (i = 0; i < *N; i++) { */
+/* 	d = e[i + *N]; */
+/* /\* Rprintf("d = %d\n", d); *\/ */
+/* 	if (d <= *n) { /\* trivial split from a terminal branch *\/ */
+/* 	    update_L(d); /\* update L *\/ */
+/* 	} else { */
+/* 	    inod = d - *n - 1; */
+/* 	    for (j = 0; j < pos[inod]; j++) { */
+/* 		y = L[inod + *m * j]; */
+/* /\* Rprintf("\ty = %d\n", y); *\/ */
+/* /\* Rprintf("\t\ty / 9 + *nr * ii = %d\n", y / 9 + *nr * ii); *\/ */
+/* /\* Rprintf("\t\ty % 8 = %d\n", y % 8); *\/ */
+/* 		mat[(y -1) / 8 + *nr * ii] |= mask81[y % 8]; */
+/* 		update_L(y); /\* update L *\/ */
+/* 	    } */
+/* 	    ii++; */
+/* 	} */
+/*     } */
+/*     OneWiseBitsplits(mat, *nr, ii, *n % 8); */
+/* } */
 
-void CountBipartitionsFromTrees(int *n, int *m, int *e, int *N, int *nr, int *nc, unsigned char *mat, double *freq)
-{
-    int i, j, k, d, y, *L, *pos, inod;
-    unsigned char *split;
+/* void CountBipartitionsFromTrees(int *n, int *m, int *e, int *N, int *nr, int *nc, unsigned char *mat, double *freq) */
+/* { */
+/*     int i, j, k, d, y, *L, *pos, inod; */
+/*     unsigned char *split; */
 
-    L = (int*)R_alloc(*n * *m, sizeof(int));
-    pos = (int*)R_alloc(*m, sizeof(int));
-    memset(pos, 0, *m * sizeof(int));
-    split = (unsigned char*)R_alloc(*nr, sizeof(unsigned char));
+/*     L = (int*)R_alloc(*n * *m, sizeof(int)); */
+/*     pos = (int*)R_alloc(*m, sizeof(int)); */
+/*     memset(pos, 0, *m * sizeof(int)); */
+/*     split = (unsigned char*)R_alloc(*nr, sizeof(unsigned char)); */
 
-    for (i = 0; i < *N; i++) {
-	memset(split, 0, *nr * sizeof(unsigned char));
-	d = e[i + *N];
-	if (d <= *n) { /* trivial split from a terminal branch */
-	    update_L(d);
-	} else {
-	    inod = d - *n - 1;
-	    for (j = 0; j < pos[inod]; j++) {
-		y = L[inod + *m * j];
-		split[(y - 1) / 8] |= mask81[y % 8];
-		update_L(y);
-	    }
-	}
-	OneWiseBitsplits(split, *nr, 1, *n % 8);
-	j = 0; /* column of mat */
-	k = 0; /* row */
-	y = 0; /* number of columns of mat to shift */
-	while (j < *nc) {
-	    if (split[k] != mat[k + y]) { /* the two splits are different so move to the next col of mat */
-		j++;
-		k = 0;
-		y += *nr;
-	    } else k++;
-	    if (k == *nr) { /* the two splits are the same so stop here */
-		freq[j]++;
-		break;
-	    }
-	}
-    }
-}
+/*     for (i = 0; i < *N; i++) { */
+/* 	memset(split, 0, *nr * sizeof(unsigned char)); */
+/* 	d = e[i + *N]; */
+/* 	if (d <= *n) { /\* trivial split from a terminal branch *\/ */
+/* 	    update_L(d); */
+/* 	} else { */
+/* 	    inod = d - *n - 1; */
+/* 	    for (j = 0; j < pos[inod]; j++) { */
+/* 		y = L[inod + *m * j]; */
+/* 		split[(y - 1) / 8] |= mask81[y % 8]; */
+/* 		update_L(y); */
+/* 	    } */
+/* 	} */
+/* 	OneWiseBitsplits(split, *nr, 1, *n % 8); */
+/* 	j = 0; /\* column of mat *\/ */
+/* 	k = 0; /\* row *\/ */
+/* 	y = 0; /\* number of columns of mat to shift *\/ */
+/* 	while (j < *nc) { */
+/* 	    if (split[k] != mat[k + y]) { /\* the two splits are different so move to the next col of mat *\/ */
+/* 		j++; */
+/* 		k = 0; */
+/* 		y += *nr; */
+/* 	    } else k++; */
+/* 	    if (k == *nr) { /\* the two splits are the same so stop here *\/ */
+/* 		freq[j]++; */
+/* 		break; */
+/* 	    } */
+/* 	} */
+/*     } */
+/* } */
 
-#undef update_L
+/* #undef update_L */
 
 static int iii;
 
@@ -264,5 +264,60 @@ SEXP bitsplits_multiPhylo(SEXP x, SEXP n, SEXP nr)
     SET_VECTOR_ELT(ans, 1, freq);
     SET_VECTOR_ELT(ans, 2, final_nc);
     UNPROTECT(7);
+    return ans;
+}
+
+int same_splits(unsigned char *x, unsigned char *y, int i, int j, int nr)
+{
+    int end = i + nr;
+    while (i < end) {
+	if (x[i] != y[j]) return 0;
+	i++;
+	j++;
+    }
+    return 1;
+}
+
+SEXP CountBipartitionsFromSplits(SEXP split, SEXP SPLIT)
+{
+    SEXP FREQ, ans;
+    unsigned char *mat, *MAT;
+    int i, j, nc, NC, nr, *p, *F;
+
+    PROTECT(split = coerceVector(split, VECSXP));
+    PROTECT(SPLIT = coerceVector(SPLIT, VECSXP));
+    mat = RAW(getListElement(split, "matsplit"));
+    MAT = RAW(getListElement(SPLIT, "matsplit"));
+
+    /* the number of splits in the 1st object: */
+    nc = LENGTH(getListElement(split, "freq"));
+
+    /* the split frequencies in the 2nd object: */
+    PROTECT(FREQ = getListElement(SPLIT, "freq"));
+    F = INTEGER(FREQ);
+
+    /* the number of splits in the 2nd object: */
+    NC = LENGTH(FREQ);
+
+    /* the number of rows in the matrix (should be the same in both objects): */
+    nr = nrows(getListElement(split, "matsplit"));
+
+    /* create the output */
+    PROTECT(ans = allocVector(INTSXP, nc));
+    p = INTEGER(ans);
+    memset(p, 0, nc * sizeof(int));
+
+    for (i = 0; i < nc; i++) {
+	j = 0;
+	while (j < NC) {
+	    if (same_splits(mat, MAT, nr * i, nr * j, nr)) {
+		p[i] = F[j];
+		break;
+	    }
+	    j++;
+	}
+    }
+
+    UNPROTECT(4);
     return ans;
 }

@@ -21,5 +21,5 @@ ultrametric(X)
   approach for inferring phylogenies from incomplete distance
   matrices. \emph{Bioinformatics}, \bold{20}, 2113--2121.
 }
-\author{Andrei Popescu \email{niteloserpopescu@gmail.com}}
+\author{Andrei Popescu}
 \keyword{manip}

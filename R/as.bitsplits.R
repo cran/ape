@@ -1,8 +1,8 @@
-## as.bitsplits.R (2019-06-10)
+## as.bitsplits.R (2020-07-20)
 
 ##   Conversion Among Split Classes
 
-## Copyright 2011-2018 Emmanuel Paradis, 2019 Klaus Schliep
+## Copyright 2011-2020 Emmanuel Paradis, 2019 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -92,32 +92,20 @@ as.prop.part.bitsplits <- function(x, include.trivial = FALSE, ...)
 bitsplits <- function(x)
 {
     if (inherits(x, "phylo")) {
-        x <- reorder(x, "postorder")
-        labs <- x$tip.label
-        n <- length(labs)
-        m <- x$Nnode
-        N <- dim(x$edge)[1]
-        nr <- ceiling(n/8)
-        nc <- N - n # number of internal edges
-
-        o <- .C(bitsplits_phylo, as.integer(n), as.integer(m),
-                as.integer(x$edge), as.integer(N), as.integer(nr),
-                raw(nr * nc), NAOK = TRUE)[[6]]
-        freq <- rep(1L, nc)
-
+        x <- list(x)
+        class(x) <- "multiPhylo"
     } else {
         if (!inherits(x, "multiPhylo"))
             stop('x is not of class "phylo" or "multiPhylo"')
-        x <- .compressTipLabel(x)
-        labs <- attr(x, "TipLabel")
-        n <- length(labs)
-        nr <- ceiling(n/8)
-        ans <- .Call(bitsplits_multiPhylo, x, n, nr)
-        nc <- ans[[3]]
-        o <- ans[[1]][1:(nr * nc)]
-        freq <- ans[[2]][1:nc]
     }
-
+    x <- .compressTipLabel(x)
+    labs <- attr(x, "TipLabel")
+    n <- length(labs)
+    nr <- ceiling(n/8)
+    ans <- .Call(bitsplits_multiPhylo, x, n, nr)
+    nc <- ans[[3]]
+    o <- ans[[1]][1:(nr * nc)]
+    freq <- ans[[2]][1:nc]
     dim(o) <- c(nr, nc)
     structure(list(matsplit = o, labels = labs, freq = freq),
               class = "bitsplits")
@@ -125,26 +113,7 @@ bitsplits <- function(x)
 
 countBipartitions <- function(phy, X)
 {
-    n <- Ntip(phy)
-    m <- phy$Nnode
-    N <- Nedge(phy)
-
-    ## added by KS (2019-06-10):
-    X <- .compressTipLabel(X, ref = phy$tip.label)
-    X <- .uncompressTipLabel(X)
-    X <- reorder(X)
-
-    SPLIT <- bitsplits(phy)
-    nr <- nrow(SPLIT$matsplit)
-    nc <- ncol(SPLIT$matsplit)
-    freq <- rep(0, nc)
-    for (tr in X) {
-        ## tr <- ape::reorder.phylo(tr, "postorder") # deleted by KS
-        e <- tr$edge
-        freq <- .C(CountBipartitionsFromTrees, as.integer(n),
-                   as.integer(m), as.integer(e), as.integer(N), as.integer(nr),
-                   as.integer(nc), as.raw(SPLIT$matsplit), as.double(freq),
-                   NAOK = TRUE)[[8]]
-    }
-    freq
+    split <- bitsplits(phy)
+    SPLIT <- bitsplits(X)
+    .Call("CountBipartitionsFromSplits", split, SPLIT)
 }

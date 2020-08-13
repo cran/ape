@@ -30,7 +30,7 @@ mvrs(X, V, fs = 15)
   minimum variance reduction (MVR) method. \emph{Journal of
     Classification}, \bold{17}, 67--99.
 }
-\author{Andrei Popescu \email{niteloserpopescu@gmail.com}}
+\author{Andrei Popescu}
 \seealso{
   \code{\link{bionj}}, \code{\link{fastme}}, \code{\link{njs}},
   \code{\link{SDM}}

@@ -61,7 +61,7 @@ rtt(t, tip.dates, ncpu = 1, objective = correlation,
 }
 \references{
   Rambaut, A. (2009). Path-O-Gen: temporal signal investigation
-  tool. \url{http://tree.bio.ed.ac.uk/software/pathogen/}
+  tool.
 
   Rambaut, A. (2000). Estimating the rate of molecular evolution:
   incorporating non-contemporaneous sequences into maximum likelihood

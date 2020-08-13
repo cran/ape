@@ -71,7 +71,7 @@ If parameter \code{mantel} is TRUE, tables of Mantel statistics and P-values are
 \references{
 Campbell, V., Legendre, P. and Lapointe, F.-J. (2009) Assessing congruence among ultrametric distance matrices. \emph{Journal of Classification}, \bold{26}, 103--117.
 
-Campbell, V., Legendre, P. and Lapointe, F.-J. (2011) The performance of the Congruence Among Distance Matrices (CADM) test in phylogenetic analysis. \emph{BMC Evolutionary Biology}, \bold{11}, 64. \url{http://www.biomedcentral.com/1471-2148/11/64}.
+Campbell, V., Legendre, P. and Lapointe, F.-J. (2011) The performance of the Congruence Among Distance Matrices (CADM) test in phylogenetic analysis. \emph{BMC Evolutionary Biology}, \bold{11}, 64.
 
 Friedman, M. (1937) The use of ranks to avoid the assumption of normality implicit in the analysis of variance. \emph{Journal of the American Statistical Association}, \bold{32}, 675--701.
 

@@ -1,17 +1,22 @@
 \name{read.nexus.data}
 \alias{read.nexus.data}
+\alias{nexus2DNAbin}
 \title{
   Read Character Data In NEXUS Format
 }
 \description{
-  This function reads a file with sequences in the NEXUS format.
+  \code{read.nexus.data} reads a file with sequences in the NEXUS
+  format. \code{nexus2DNAbin} is a helper function to convert the output
+  from the previous function into the class \code{"DNAbin"}.
 }
 \usage{
 read.nexus.data(file)
+nexus2DNAbin(x)
 }
 \arguments{
   \item{file}{a file name specified by either a variable of mode
     character, or a double-quoted string.}
+  \item{x}{an object output by \code{read.nexus.data}.}
 }
 \details{
   This parser tries to read data from a file written in a
@@ -100,7 +105,7 @@ read.nexus.data(file)
   extensible file format for systematic information. \emph{Systematic
     Biology}, \bold{46}, 590--621.
 }
-\author{Johan Nylander and Thomas Guillerme}
+\author{Johan Nylander, Thomas Guillerme, and Klaus Schliep}
 \seealso{
   \code{\link{read.nexus}}, \code{\link{write.nexus}},
   \code{\link{write.nexus.data}}

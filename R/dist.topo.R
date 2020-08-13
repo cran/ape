@@ -1,9 +1,9 @@
-## dist.topo.R (2017-07-28)
+## dist.topo.R (2020-07-20)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
 
-## Copyright 2005-2017 Emmanuel Paradis, 2016-2017 Klaus Schliep
+## Copyright 2005-2020 Emmanuel Paradis, 2016-2017 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -282,7 +282,7 @@ boot.phylo <-
         boot.tree <- .uncompressTipLabel(boot.tree)
         boot.tree <- unclass(boot.tree) # otherwise countBipartitions crashes
     }
-
+    class(boot.tree) <- "multiPhylo"
     if (rooted) {
         pp <- prop.part(boot.tree)
         ans <- prop.clades(phy, part = pp, rooted = rooted)
@@ -295,10 +295,7 @@ boot.phylo <-
 
     if (!quiet) cat(" done.\n")
 
-    if (trees) {
-        class(boot.tree) <- "multiPhylo"
-        ans <- list(BP = ans, trees = boot.tree)
-    }
+    if (trees) ans <- list(BP = ans, trees = boot.tree)
     ans
 }
 
