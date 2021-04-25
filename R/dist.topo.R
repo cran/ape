@@ -1,9 +1,9 @@
-## dist.topo.R (2020-07-20)
+## dist.topo.R (2021-04-18)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
 
-## Copyright 2005-2020 Emmanuel Paradis, 2016-2017 Klaus Schliep
+## Copyright 2005-2021 Emmanuel Paradis, 2016-2021 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -35,7 +35,9 @@ dist.topo <- function(x, y = NULL, method = "PH85")
 
         foo <- function(phy, ntip) {
             phy <- reorder(phy, "postorder")
-            ans <- ONEwise(bipartition2(phy$edge, ntip))
+            pp <- bipartition2(phy$edge, ntip)
+            attr(pp, "labels") <- phy$tip.label
+            ans <- SHORTwise(pp)
             sapply(ans, paste, collapse = "\r")
         }
 
@@ -217,8 +219,8 @@ prop.clades <- function(phy, ..., part = NULL, rooted = FALSE)
     bp <- prop.part(phy)
     if (!rooted) {
         ## avoid messing up the order and length if phy is rooted in some cases
-        bp <- ONEwise(bp)
-        part <- postprocess.prop.part(part)
+        bp <- SHORTwise(bp)
+        part <- postprocess.prop.part(part, "SHORTwise")
     }
     pos <- match(bp, part)
     tmp <- which(!is.na(pos))
@@ -242,6 +244,11 @@ boot.phylo <-
     boot.tree <- vector("list", B)
     y <- nc <- ncol(x)
     nr <- nrow(x)
+
+    if (nr < 4 && !trees) {
+        warning("not enough rows in 'x' to compute bootstrap values.\nSet 'trees = TRUE' if you want to get the bootstrap trees")
+        return(integer())
+    }
 
     if (block > 1) {
         a <- seq(1, nc - 1, block)
@@ -274,6 +281,9 @@ boot.phylo <-
         if (!quiet) cat(" done.")
     }
 
+    if (nr < 4 && trees)
+        return(list(BP = integer(), trees = boot.tree))
+
     if (!quiet) cat("\nCalculating bootstrap values...")
 
     ## sort labels after mixed them up
@@ -290,7 +300,7 @@ boot.phylo <-
         phy <- reorder(phy, "postorder")
         ints <- phy$edge[, 2] > Ntip(phy)
         ans <- countBipartitions(phy, boot.tree)
-        ans <- c(B, ans[order(phy$edge[ints, 2])])
+        ans <- c(NA_integer_, ans[order(phy$edge[ints, 2])])
     }
 
     if (!quiet) cat(" done.\n")
@@ -300,18 +310,22 @@ boot.phylo <-
 }
 
 ### The next function transforms an object of class "prop.part" so
-### that the vectors which are identical in terms of split are aggregated.
+### that the vectors which are identical in terms of splits are aggregated.
 ### For instance if n = 5 tips, 1:2 and 3:5 actually represent the same
 ### split though they are different clades. The aggregation is done
-### arbitrarily. The call to ONEwise() insures that all splits include
-### the first tip.
+### arbitrarily.
+### The call to SHORTwise() insures that all splits are the shortest ones.
+### The call to ONEwise() insures that all splits include the first tip.
 ### (rewritten by Klaus)
-postprocess.prop.part <- function(x)
+postprocess.prop.part <- function(x, method = "ONEwise")
 {
     w <- attr(x, "number")
     labels <- attr(x, "labels")
 
-    x <- ONEwise(x)
+    method <- match.arg(toupper(method), c("ONEWISE", "SHORTWISE"))
+    FUN <- switch(method, "ONEWISE" = ONEwise, "SHORTWISE" = SHORTwise)
+
+    x <- FUN(x)
     drop <- duplicated(x)
 
     if (any(drop)) {
@@ -333,10 +347,35 @@ postprocess.prop.part <- function(x)
 ### changed to 1:2.
 ONEwise <- function(x)
 {
-    v <- seq_along(x[[1L]])
-    for (i in 2:length(x)) {
+    nTips <- length(attr(x, "labels"))
+    v <- seq_len(nTips)
+    l <- lengths(x) == 0
+    if (any(l)) x[l] <- list(v)
+    for (i in which(!l)) {
         y <- x[[i]]
         if (y[1] != 1) x[[i]] <- v[-y]
+    }
+    x
+}
+
+### This function changes an object of class "prop.part" so that they
+### all include the shorter part of the partition.
+### For instance if n = 5 tips, 1:3 is changed to 4:5. In case n is even, e.g.
+### n = 6 similar to ONEwise.
+SHORTwise <- function(x) {
+    ## ensures the next line should also work for splits objects from phangorn
+    nTips <- length(attr(x, "labels"))
+    v <- seq_len(nTips)
+    l <- lengths(x)
+    lv <- nTips / 2
+    for (i in which(l >= lv)) {
+        y <- x[[i]]
+        if (l[i] > lv) {
+            x[[i]] <- v[-y]
+        } else { # (l[i] == lv) only possible alternative
+            if (y[1] != 1)
+                x[[i]] <- v[-y]
+        }
     }
     x
 }

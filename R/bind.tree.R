@@ -1,8 +1,8 @@
-## bind.tree.R (2018-01-26)
+## bind.tree.R (2020-10-25)
 
 ##    Bind Trees
 
-## Copyright 2003-2018 Emmanuel Paradis
+## Copyright 2003-2020 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -213,5 +213,6 @@ bind.tree <- function(x, y, where = "root", position = 0, interactive = FALSE)
     if (!is.null(x$node.label))
         x$node.label <- x$node.label[order(newNb[newNb > 0])]
 
-    x
+    attr(x, "order") <- NULL
+    reorder(x)
 }

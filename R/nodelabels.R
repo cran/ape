@@ -1,8 +1,8 @@
-## nodelabels.R (2018-08-25)
+## nodelabels.R (2020-12-06)
 
 ##   Labelling Trees
 
-## Copyright 2004-2018 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
+## Copyright 2004-2020 Emmanuel Paradis, 2006 Ben Bolker, and 2006 Jim Lemon
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -94,7 +94,7 @@ BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
             height <- if (horiz) height/40 else height/15
         }
 
-        if (is.vector(thermo)) thermo <- cbind(thermo, 1 - thermo)
+        if (is.vector(thermo) || ncol(thermo) == 1) thermo <- cbind(thermo, 1 - thermo)
         thermo <- if (horiz) width * thermo else height * thermo
         if (is.null(piecol)) piecol <- rainbow(ncol(thermo))
 
@@ -130,7 +130,8 @@ BOTHlabels <- function(text, sel, XX, YY, adj, frame, pch, thermo,
     }
     ## from BB:
     if (!is.null(pie)) {
-        if (is.vector(pie)) pie <- cbind(pie, 1 - pie)
+        if (is.data.frame(pie)) pie <- as.matrix(pie)
+        if (is.vector(pie) || ncol(pie) == 1) pie <- cbind(pie, 1 - pie)
         xrad <- CEX * diff(par("usr")[1:2]) / 50
         xrad <- rep(xrad, length(sel))
         XX <- XX + adj[1] - 0.5

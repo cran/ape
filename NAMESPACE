@@ -40,8 +40,8 @@ export(.compressTipLabel, .PlotPhyloEnv, .uncompressTipLabel,
        is.compatible.bitsplits, is.monophyletic, is.rooted,
        is.rooted.multiPhylo, is.rooted.phylo, is.ultrametric,
        is.ultrametric.multiPhylo, is.ultrametric.phylo, keep.tip,
-       kronoviz, label2table, labels.DNAbin, ladderize, latag2n,
-       lmorigin, LTT, ltt.coplot, ltt.lines, ltt.plot,
+       kronoviz, label2table, labels.DNAbin, ladderize, LargeNumber,
+       latag2n, lmorigin, LTT, ltt.coplot, ltt.lines, ltt.plot,
        ltt.plot.coords, makeChronosCalib, makeLabel,
        makeLabel.character, makeNodeLabel, mantel.test, matexpo,
        mcconwaysims.test, mcmc.popsize, mixedFontLabel, mltt.plot,
@@ -50,7 +50,7 @@ export(.compressTipLabel, .PlotPhyloEnv, .uncompressTipLabel,
        Nedge.multiPhylo, Nedge.phylo, new2old.phylo, nexus2DNAbin, nj,
        njs, Nnode, Nnode.multiPhylo, Nnode.phylo, node.depth,
        node.depth.edgelength, node.height, nodelabels, nodepath, Ntip,
-       Ntip.multiPhylo, Ntip.phylo, old2new.phylo, ONEwise, parafit,
+       Ntip.multiPhylo, Ntip.phylo, old2new.phylo, ONEwise, SHORTwise, parafit,
        pcoa, perm.rowscols, phydataplot, phylogram.plot, phymltest,
        pic, pic.ortho, plot.evonet, plot.multiPhylo, plot.phylo,
        plotBreakLongEdges, plotPhyloCoor, plotTreeTime, polar2rect,
@@ -62,6 +62,7 @@ export(.compressTipLabel, .PlotPhyloEnv, .uncompressTipLabel,
        reorder.evonet, reorder.multiPhylo, reorder.phylo, reorderRcpp,
        richness.yule.test, ring, rlineage, rmtree, root,
        root.multiPhylo, root.phylo, rotate, rotateConstr, rphylo,
+       rmtopology, rtopology,
        rTraitCont, rTraitDisc, rTraitMult, rtree, rtt, SDM, seg.sites,
        skyline, skylineplot, skylineplot.deluxe, slowinskiguyer.test,
        speciesTree, stree, stripLabel, subtreeplot, subtrees,
@@ -253,6 +254,7 @@ S3method(print, birthdeath)
 S3method(print, bitsplits)
 S3method(print, chronos)
 S3method(print, comparePhylo)
+S3method(print, LargeNumber)
 S3method(print, lmorigin)
 S3method(print, parafit)
 

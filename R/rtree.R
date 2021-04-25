@@ -1,4 +1,4 @@
-## rtree.R (2020-08-12)
+## rtree.R (2020-11-14)
 
 ##   Generates Trees
 
@@ -7,12 +7,48 @@
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
+.N <- unname(howmanytrees(792, labeled = FALSE, detail = TRUE))
+.lN <- log10(.N)
+.xi <- 2.477993
+.lxi <- log10(.xi)
+.log10sumxipow0to9 <- log10(sum(.xi^(0:9)))
+.getProb4rtree <- function(n) {
+    a <- 1:floor(n/2)
+    b <- n - a
+    x <- .N[a] * .N[b]
+    x <- x / max(x)
+    p <- x / sum(x)
+    if (all(is.finite(p))) return(p)
+    ## use the log10-scale
+    foo <- function(n) 0.3941 * n - 4.153
+    lNa <- .lN[a]
+    lNa[a > 792] <- foo(a[a > 792])
+    lNb <- .lN[b]
+    lNb[b > 792] <- foo(b[b > 792])
+    lx <- lNa + lNb # log10-scale
+    ## we use the first 10 terms of the approximation (see the vignette)
+    sx <- (n - 1) * .lxi + (n - 10) * .lxi + .log10sumxipow0to9
+    p <- lx - sx
+    p <- p - min(p) # rescale
+    p / sum(p)
+}
 rtree <- function(n, rooted = TRUE, tip.label = NULL, br = runif,
                   equiprob = FALSE, ...)
 {
-    bar <- # more efficient than sample.int()
-        if (equiprob) function(n) as.integer(runif(1, 0, floor(n/2))) + 1L
-        else function(n)  sample.int(n - 1L, 1, FALSE, NULL) #as.integer(runif(1, 0, n - 1L)) + 1L
+    ## as.integer(runif()) is more efficient than sample.int() but we
+    ## have to keep the latter for the default of 'equiprob' because
+    ## this is used in other packages with set.seed()
+    if (equiprob) {
+        bar <- function(n) {
+            if (n < 4L) return(1L)
+            p <- .getProb4rtree(n)
+            sample.int(floor(n / 2), 1L, FALSE, p, FALSE)
+            ##if (n < 4L) return(1L)
+            ##as.integer(runif(1L, 0, floor(n / 2))) + 1L
+        }
+    } else {
+        bar <- function(n) sample.int(n - 1L, 1L, FALSE, NULL, FALSE)
+    }
 
     foo <- function(n, pos) {
         n1 <- bar(n)
@@ -211,4 +247,102 @@ stree <- function(n, type = "star", tip.label = NULL)
     class(phy) <- "phylo"
     attr(phy, "order") <- "cladewise"
     phy
+}
+
+.check.tip.label <- function(tip.label, n, prefix = "t")
+{
+    if (is.null(tip.label)) return(paste0(prefix, seq_len(n)))
+    tip.label <- as.character(tip.label)
+    Nlabs <- length(tip.label)
+    if (!Nlabs) {
+        warning("vector 'tip.label' of length zero: generating tip labels",
+                call. = FALSE)
+        return(paste0(prefix, seq_len(n)))
+    }
+    if (Nlabs > n) {
+        warning("vector 'tip.label' longer than 'n': was shorten",
+                call. = FALSE)
+        return(tip.label[1:n])
+    }
+    if (Nlabs < n) {
+        warning("vector 'tip.label' shorter than 'n': was recycled",
+                call. = FALSE)
+        return(rep(tip.label, length.out = n))
+    }
+    tip.label
+}
+
+rtopology <- function(n, rooted = FALSE, tip.label = NULL, br = runif, ...)
+{
+    n <- as.integer(n)
+    if (n < 1)
+        stop("a tree must have at least 1 tip")
+    if (n < 3 && !rooted)
+        stop("an unrooted tree must have at least 3 tips")
+    if (n < 4)
+        return(rtree(n, rooted = rooted, tip.label = tip.label, br = br, ...))
+    nb <- n - 3L
+    x <- as.integer(runif(nb) * seq(3, by = 2, length.out = nb)) + 1L
+
+    tip.label <- .check.tip.label(tip.label, n)
+    Nnode <- n - 2L
+
+    TIPS <- sample.int(n) # permute the tips beforehand
+    N <- 3L * n - 6L
+    edge <- matrix(NA_integer_, N, 2L)
+    alive <- logical(N)
+    alive[1:3] <- TRUE
+    Nalive <- 3L
+    e <- 1:3
+    ROOT <- n + 1L
+    edge[1:3] <- ROOT
+    nextnode <- ROOT + 1L
+    edge[1:3 + N] <- TIPS[1:3]
+    i <- 4L
+
+    while (i <= n) {
+        ## draw a branch among the alive ones
+        k <- which(alive)[x[i - 3L]] # find its location in edge
+        alive[k] <- FALSE # delete 1 branch
+        e <- e + 3L # add 3 new branches
+        alive[e] <- TRUE
+        edge[e[1]] <- edge[k]
+        edge[e[1] + N] <- nextnode
+        edge[e[2:3]] <- nextnode
+        edge[e[2] + N] <- edge[k + N]
+        edge[e[3] + N] <- TIPS[i]
+        nextnode <- nextnode + 1L
+        Nalive <- Nalive + 2L
+        i <- i + 1L
+    }
+
+    edge <- edge[alive, ]
+    phy <- list(edge = edge, tip.label = tip.label, Nnode = Nnode)
+    class(phy) <- "phylo"
+    phy <- reorder(phy)
+
+    if (rooted) {
+        ## exclude the root partition and add the terminal trivial
+        ## partitions
+        og <- sample.int(n + Nnode - 1L, 1L)
+        if (og > n) {
+            pp <- prop.part(phy)[-1L]
+            og <- pp[[og - n]]
+        }
+        phy <- root.phylo(phy, og, resolve.root = TRUE)
+    }
+    nbr <- Nedge.phylo(phy)
+    if (!is.null(br)) {
+        phy$edge.length <- if (is.function(br))
+            br(nbr, ...)
+        else rep(br, length.out = nbr)
+    }
+    phy
+}
+
+rmtopology <- function(N, n, rooted = FALSE, tip.label = NULL, br = runif, ...)
+{
+    a <- replicate(N, rtopology(n, rooted = rooted, tip.label = tip.label, br = br, ...), simplify = FALSE)
+    class(a) <- "multiPhylo"
+    a
 }

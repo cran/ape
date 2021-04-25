@@ -46,7 +46,8 @@ edgelabels(text, edge, adj = c(0.5, 0.5), frame = "rect",
     ignored.}
   \item{thermo}{a numeric vector giving some proportions (values between
     0 and 1) for each node, or a numeric matrix giving some proportions
-    (the rows must sum to one).}
+    (the rows must sum to one). It can be a data frame which is then
+    converted into a matrix.}
   \item{pie}{same than \code{thermo}.}
   \item{piecol}{a list of colours (given as a character vector) to be
     used by \code{thermo} or \code{pie}; if left \code{NULL}, a series

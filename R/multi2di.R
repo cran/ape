@@ -1,4 +1,4 @@
-## multi2di.R (2020-08-11)
+## multi2di.R (2020-12-15)
 
 ##   Collapse or Resolve Multichotomies
 
@@ -34,7 +34,7 @@ multi2di <- function(phy, ...) UseMethod("multi2di")
           ## so we store the result of sample()
             tmp <- sample(length(desc))
             desc <- desc[tmp]
-            res <- rtree(N, equiprob = equiprob)$edge
+            res <- if (equiprob) rtopology(N, rooted = TRUE)$edge else rtree(N)$edge
         } else {
             res <- matrix(0L, 2*N - 2, 2)
             res[, 1] <- N + rep(1:(N - 1), each = 2)
@@ -42,7 +42,7 @@ multi2di <- function(phy, ...) UseMethod("multi2di")
             res[seq(1, by = 2, length.out = N - 1), 2] <- 1:(N - 1)
             res[length(res)] <- N
         }
-       if (wbl) {
+        if (wbl) {
             ## keep the branch lengths coming from `node'
             el <- numeric(dim(res)[1]) # initialized with 0's
             el[res[, 2] <= N] <-

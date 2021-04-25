@@ -1,8 +1,8 @@
-## DNA.R (2020-04-27)
+## DNA.R (2021-04-09)
 
 ##   Manipulations and Comparisons of DNA and AA Sequences
 
-## Copyright 2002-2020 Emmanuel Paradis, 2015 Klaus Schliep, 2017 Franz Krah
+## Copyright 2002-2021 Emmanuel Paradis, 2015 Klaus Schliep, 2017 Franz Krah
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -415,12 +415,7 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     }
     if (is.list(x)) x <- as.matrix(x)
     nms <- dimnames(x)[[1]]
-    n <- dim(x)
-    s <- n[2]
-    n <- n[1]
-
-    if (s * n > 2^31 - 1)
-        stop("dist.dna() cannot handle more than 2^31 - 1 bases")
+    n <- dim(x)[1] # in case nms is NULL
 
     if (imod %in% c(4, 6:8)) {
         BF <- if (is.null(base.freq)) base.freq(x) else base.freq
@@ -429,23 +424,21 @@ dist.dna <- function(x, model = "K80", variance = FALSE, gamma = FALSE,
     if (imod %in% 16:17) pairwise.deletion <- TRUE
 
     if (!pairwise.deletion) {
-        keep <- .C(GlobalDeletionDNA, x, n, s, rep(1L, s))[[4]]
+        keep <- .Call(GlobalDeletionDNA, x)
         x <- x[, as.logical(keep)]
-        s <- dim(x)[2]
     }
-    Ndist <- if (imod == 11) n*n else n*(n - 1)/2
-    var <- if (variance) double(Ndist) else 0
-    if (!gamma) gamma <- alpha <- 0
-    else {
+    if (!gamma) {
+        alpha <- 0
+    } else {
         alpha <- gamma
-        gamma <- 1
+        gamma <- 1L
     }
-    d <- .C(dist_dna, x, as.integer(n), as.integer(s), imod,
-            double(Ndist), BF, as.integer(pairwise.deletion),
-            as.integer(variance), var, as.integer(gamma),
-            as.double(alpha), NAOK = TRUE)
-    if (variance) var <- d[[9]]
-    d <- d[[5]]
+    d <- .Call(dist_dna, x, imod, BF, as.integer(pairwise.deletion),
+               as.integer(variance), as.integer(gamma), alpha)
+    if (variance) {
+        var <- d[[2]]
+        d <- d[[1]]
+    }
     if (imod == 11) {
         dim(d) <- c(n, n)
         dimnames(d) <- list(nms, nms)
@@ -1363,3 +1356,23 @@ latag2n <- function(x) {
     dim(res) <- dx
     res
 }
+
+##distK80 <- function(x, pairwise.deletion = FALSE)
+##{
+##    nms <- dimnames(x)[[1]]
+##    n <- length(nms)
+##    if (!pairwise.deletion) {
+##        keep <- .Call(GlobalDeletionDNA, x)
+##        x <- x[, as.logical(keep)]
+##        d <- .Call(dist_dna_K80_short, x)
+##    } else {
+##        d <- .Call(dist_dna_K80_short_pairdel, x)
+##    }
+##    attr(d, "Size") <- n
+##    attr(d, "Labels") <- nms
+##    attr(d, "Diag") <- attr(d, "Upper") <- FALSE
+##    attr(d, "call") <- match.call()
+##    attr(d, "method") <- "K80"
+##    class(d) <- "dist"
+##    d
+##}

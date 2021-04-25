@@ -89,7 +89,7 @@ write.FASTA(x, file, header = NULL, append = FALSE)
 }
 \author{Emmanuel Paradis}
 \references{
-  Anonymous. FASTA format. \url{http://en.wikipedia.org/wiki/FASTA_format}
+  Anonymous. FASTA format. \url{https://en.wikipedia.org/wiki/FASTA_format}
 
   Felsenstein, J. (1993) Phylip (Phylogeny Inference Package) version
   3.5c. Department of Genetics, University of Washington.

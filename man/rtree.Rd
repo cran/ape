@@ -2,18 +2,23 @@
 \alias{rtree}
 \alias{rcoal}
 \alias{rmtree}
-\title{Generates Random Trees}
+\alias{rtopology}
+\alias{rmtopology}
+\title{Generate Random Trees}
 \description{
   These functions generate trees by splitting randomly the edges
-  (\code{rtree}) or randomly clustering the tips (\code{rcoal}).
-  \code{rtree} generates general trees, and \code{rcoal} generates
-  coalescent trees. The algorithms are described in Paradis (2012).
+  (\code{rtree} and \code{rtopology}) or randomly clustering the tips
+  (\code{rcoal}). \code{rtree} and \code{rtopology} generate general
+  trees, and \code{rcoal} generates coalescent trees. The algorithms are
+  described in Paradis (2012) and in a vignette in this package.
 }
 \usage{
 rtree(n, rooted = TRUE, tip.label = NULL, br = runif, equiprob = FALSE, ...)
+rtopology(n, rooted = FALSE, tip.label = NULL, br = runif, ...)
 rcoal(n, tip.label = NULL, br = "coalescent", ...)
 rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif,
        equiprob = FALSE, ...)
+rmtopology(N, n, rooted = FALSE, tip.label = NULL, br = runif, ...)
 }
 \arguments{
   \item{n}{an integer giving the number of tips in the tree.}
@@ -38,6 +43,10 @@ rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif,
   The trees generated are bifurcating. If \code{rooted = FALSE} in
   (\code{rtree}), the tree is trifurcating at its root.
 
+  The option \code{equiprob = TRUE} generates \emph{unlabelled}
+  topologies in equal frequencies. This is more complicated for the
+  labelled topologies (see the vignette \dQuote{RandomTopologies}).
+
   The default function to generate branch lengths in \code{rtree} is
   \code{runif}. If further arguments are passed to \code{br}, they need
   to be tagged (e.g., \code{min = 0, max = 10}).
@@ -47,7 +56,7 @@ rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif,
 }
 \value{
   An object of class \code{"phylo"} or of class \code{"multiPhylo"} in
-  the case of \code{rmtree}.
+  the case of \code{rmtree} or \code{rmtopology}.
 }
 \references{
   Paradis, E. (2012) \emph{Analysis of Phylogenetics and Evolution with
@@ -55,7 +64,8 @@ rmtree(N, n, rooted = TRUE, tip.label = NULL, br = runif,
 }
 \author{Emmanuel Paradis}
 \seealso{
-  \code{\link{stree}}, \code{\link{rlineage}}
+  \code{\link{stree}}, \code{\link{rlineage}}, vignette
+  \dQuote{RandomTopologies}.
 }
 \examples{
 layout(matrix(1:9, 3, 3))

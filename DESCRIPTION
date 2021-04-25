@@ -1,11 +1,11 @@
 Package: ape
-Version: 5.4-1
-Date: 2020-08-12
+Version: 5.5
+Date: 2021-04-24
 Title: Analyses of Phylogenetics and Evolution
 Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email = "Emmanuel.Paradis@ird.fr", comment = c(ORCID = "0000-0003-3092-2199")),
   person("Simon", "Blomberg", role = c("aut", "cph"), comment = c(ORCID = "0000-0003-1062-0839")),
   person("Ben", "Bolker", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-2127-0443")),
-  person("Joseph", "Brown", role = c("aut", "cph")),
+  person("Joseph", "Brown", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-3835-8062")),
   person("Santiago", "Claramunt", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-8926-5974")),
   person("Julien", "Claude", role = c("aut", "cph"), , comment = c(ORCID = "0000-0002-9267-1228")),
   person("Hoa Sien", "Cuong", role = c("aut", "cph")),
@@ -17,16 +17,16 @@ Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email 
   person("Olivier", "Gascuel", role = c("aut", "cph")),
   person("Thomas", "Guillerme", role = c("aut", "cph"), comment = c(ORCID = "0000-0003-4325-1275")),
   person("Christoph", "Heibl", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-7655-3299")),
-  person("Anthony", "Ives", role = c("aut", "cph")),
+  person("Anthony", "Ives", role = c("aut", "cph"), comment = c(ORCID = "0000-0001-9375-9523")),
   person("Bradley", "Jones", role = c("aut", "cph"), comment = c(ORCID = "0000-0003-4498-1069")),
   person("Franz", "Krah", role = c("aut", "cph"), comment = c(ORCID = "0000-0001-7866-7508")),
   person("Daniel", "Lawson", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-5311-6213")),
   person("Vincent", "Lefort", role = c("aut", "cph")),
   person("Pierre", "Legendre", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-3838-3305")),
   person("Jim", "Lemon", role = c("aut", "cph")),
-  person("Guillaume", "Louvel", role = c("aut", "cph")),
+  person("Guillaume", "Louvel", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-7745-0785")),
   person("Eric", "Marcon", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-5249-321X")),
-  person("Rosemary", "McCloskey", role = c("aut", "cph")),
+  person("Rosemary", "McCloskey", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-9772-8553")),
   person("Johan", "Nylander", role = c("aut", "cph")),
   person("Rainer", "Opgen-Rhein", role = c("aut", "cph")),
   person("Andrei-Alin", "Popescu", role = c("aut", "cph")),
@@ -35,7 +35,7 @@ Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email 
   person("Korbinian", "Strimmer", role = c("aut", "cph"), comment = c(ORCID = "0000-0001-7917-2056")),
   person("Damien", "de Vienne", role = c("aut", "cph"), comment = c(ORCID = "0000-0001-9532-5251")))
 Depends: R (>= 3.2.0)
-Suggests: gee, expm, igraph
+Suggests: gee, expm, igraph, phangorn
 Imports: nlme, lattice, graphics, methods, stats, tools, utils,
         parallel, Rcpp (>= 0.12.0)
 LinkingTo: Rcpp
@@ -44,12 +44,12 @@ Description: Functions for reading, writing, plotting, and manipulating phylogen
 License: GPL-2 | GPL-3
 URL: http://ape-package.ird.fr/
 NeedsCompilation: yes
-Packaged: 2020-08-12 09:57:49 UTC; paradis
+Packaged: 2021-04-24 07:05:37 UTC; paradis
 Author: Emmanuel Paradis [aut, cre, cph]
     (<https://orcid.org/0000-0003-3092-2199>),
   Simon Blomberg [aut, cph] (<https://orcid.org/0000-0003-1062-0839>),
   Ben Bolker [aut, cph] (<https://orcid.org/0000-0002-2127-0443>),
-  Joseph Brown [aut, cph],
+  Joseph Brown [aut, cph] (<https://orcid.org/0000-0002-3835-8062>),
   Santiago Claramunt [aut, cph] (<https://orcid.org/0000-0002-8926-5974>),
   Julien Claude [aut, cph] (<https://orcid.org/0000-0002-9267-1228>),
   Hoa Sien Cuong [aut, cph],
@@ -61,16 +61,16 @@ Author: Emmanuel Paradis [aut, cre, cph]
   Olivier Gascuel [aut, cph],
   Thomas Guillerme [aut, cph] (<https://orcid.org/0000-0003-4325-1275>),
   Christoph Heibl [aut, cph] (<https://orcid.org/0000-0002-7655-3299>),
-  Anthony Ives [aut, cph],
+  Anthony Ives [aut, cph] (<https://orcid.org/0000-0001-9375-9523>),
   Bradley Jones [aut, cph] (<https://orcid.org/0000-0003-4498-1069>),
   Franz Krah [aut, cph] (<https://orcid.org/0000-0001-7866-7508>),
   Daniel Lawson [aut, cph] (<https://orcid.org/0000-0002-5311-6213>),
   Vincent Lefort [aut, cph],
   Pierre Legendre [aut, cph] (<https://orcid.org/0000-0002-3838-3305>),
   Jim Lemon [aut, cph],
-  Guillaume Louvel [aut, cph],
+  Guillaume Louvel [aut, cph] (<https://orcid.org/0000-0002-7745-0785>),
   Eric Marcon [aut, cph] (<https://orcid.org/0000-0002-5249-321X>),
-  Rosemary McCloskey [aut, cph],
+  Rosemary McCloskey [aut, cph] (<https://orcid.org/0000-0002-9772-8553>),
   Johan Nylander [aut, cph],
   Rainer Opgen-Rhein [aut, cph],
   Andrei-Alin Popescu [aut, cph],
@@ -80,4 +80,4 @@ Author: Emmanuel Paradis [aut, cre, cph]
   Damien de Vienne [aut, cph] (<https://orcid.org/0000-0001-9532-5251>)
 Maintainer: Emmanuel Paradis <Emmanuel.Paradis@ird.fr>
 Repository: CRAN
-Date/Publication: 2020-08-13 05:20:14 UTC
+Date/Publication: 2021-04-25 08:20:02 UTC

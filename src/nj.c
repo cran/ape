@@ -34,7 +34,7 @@ j 4  2  6  9
 		/* the expression below CANNOT be factorized
 		   because of the integer operations (it took
 		   me a while to find out...) */
-		start = n*(i - 1) - i*(i - 1)/2;
+		start = n * (i - 1) - i * (i - 1) / 2;
 		end = start + n - i;
 		for (j = start; j < end; j++) sum += D[j];
 	}
@@ -50,102 +50,116 @@ j 4  2  6  9
 	return(sum);
 }
 
-void C_nj(double *D, int *N, int *edge1, int *edge2, double *edge_length)
+SEXP C_nj(SEXP DIST, SEXP N)
 {
-	double *S, Sdist, Ndist, *new_dist, A, B, smallest_S, x, y;
-	int n, i, j, k, ij, smallest, OTU1, OTU2, cur_nod, o_l, *otu_label;
+    double *D, *edge_length, *S, *new_dist, A, B, smallest_S;
+    int n, i, j, k, ij, *edge, cur_nod, *otu_label, smallest, OTU1, OTU2, Nedge;
+    SEXP phy, E, EL;
 
-	S = &Sdist;
-	new_dist = &Ndist;
-	otu_label = &o_l;
+    PROTECT(DIST = coerceVector(DIST, REALSXP));
+    PROTECT(N = coerceVector(N, INTSXP));
+    D = REAL(DIST);
+    n = INTEGER(N)[0];
 
-	n = *N;
-	cur_nod = 2*n - 2;
+    Nedge = 2 * n - 3;
 
-	S = (double*)R_alloc(n + 1, sizeof(double));
-	new_dist = (double*)R_alloc(n*(n - 1)/2, sizeof(double));
-	otu_label = (int*)R_alloc(n + 1, sizeof(int));
+    PROTECT(phy = allocVector(VECSXP, 2));
+    PROTECT(E = allocVector(INTSXP, 2 * Nedge));
+    PROTECT(EL = allocVector(REALSXP, Nedge));
+    edge = INTEGER(E);
+    edge_length = REAL(EL);
 
-	for (i = 1; i <= n; i++) otu_label[i] = i; /* otu_label[0] is not used */
+    cur_nod = 2 * n - 2;
 
-	k = 0;
+    S = (double*)R_alloc(n + 1, sizeof(double));
+    new_dist = (double*)R_alloc(n * (n - 1) / 2, sizeof(double));
+    otu_label = (int*)R_alloc(n + 1, sizeof(int));
 
-	while (n > 3) {
+    for (i = 1; i <= n; i++) otu_label[i] = i; /* otu_label[0] is not used */
 
-		for (i = 1; i <= n; i++)
-			S[i] = sum_dist_to_i(n, D, i); /* S[0] is not used */
+    k = 0;
 
-		ij = 0;
-		smallest_S = 1e50;
-		B = n - 2;
-		for (i = 1; i < n; i++) {
-			for (j = i + 1; j <= n; j++) {
-				A = B*D[ij] - S[i] - S[j];
-				if (A < smallest_S) {
-					OTU1 = i;
-					OTU2 = j;
-					smallest_S = A;
-					smallest = ij;
-				}
-				ij++;
-			}
+    while (n > 3) {
+	for (i = 1; i <= n; i++) /* S[0] is not used */
+	    S[i] = sum_dist_to_i(n, D, i);
+
+	ij = 0;
+	smallest_S = 1e50;
+	B = n - 2;
+	for (i = 1; i < n; i++) {
+	    for (j = i + 1; j <= n; j++) {
+		A = B * D[ij] - S[i] - S[j];
+		if (A < smallest_S) {
+		    OTU1 = i;
+		    OTU2 = j;
+		    smallest_S = A;
+		    smallest = ij;
 		}
-
-		edge2[k] = otu_label[OTU1];
-		edge2[k + 1] = otu_label[OTU2];
-		edge1[k] = edge1[k + 1] = cur_nod;
-
-		/* get the distances between all OTUs but the 2 selected ones
-		   and the latter:
-		   a) get the sum for both
-		   b) compute the distances for the new OTU */
-
-		A = D[smallest];
-		ij = 0;
-		for (i = 1; i <= n; i++) {
-			if (i == OTU1 || i == OTU2) continue;
-			x = D[give_index(i, OTU1, n)]; /* dist between OTU1 and i */
- 			y = D[give_index(i, OTU2, n)]; /* dist between OTU2 and i */
-			new_dist[ij] = (x + y - A)/2;
-			ij++;
-		}
-		/* compute the branch lengths */
-		B = (S[OTU1] - S[OTU2])/B; /* don't need B anymore */
-		edge_length[k] = (A + B)/2;
-		edge_length[k + 1] = (A - B)/2;
-
-		/* update before the next loop
-		   (we are sure that OTU1 < OTU2) */
-		if (OTU1 != 1)
-			for (i = OTU1; i > 1; i--)
-				otu_label[i] = otu_label[i - 1];
-		if (OTU2 != n)
-			for (i = OTU2; i < n; i++)
-				otu_label[i] = otu_label[i + 1];
-		otu_label[1] = cur_nod;
-
-		for (i = 1; i < n; i++) {
-			if (i == OTU1 || i == OTU2) continue;
-			for (j = i + 1; j <= n; j++) {
-				if (j == OTU1 || j == OTU2) continue;
-				new_dist[ij] = D[DINDEX(i, j)];
-				ij++;
-			}
-		}
-
-		n--;
-		for (i = 0; i < n*(n - 1)/2; i++) D[i] = new_dist[i];
-
-		cur_nod--;
-		k = k + 2;
+		ij++;
+	    }
 	}
 
-	for (i = 0; i < 3; i++) {
-		edge1[*N*2 - 4 - i] = cur_nod;
-		edge2[*N*2 - 4 - i] = otu_label[i + 1];
+	edge[k + Nedge] = otu_label[OTU1];
+	edge[k + 1 + Nedge] = otu_label[OTU2];
+	edge[k] = edge[k + 1] = cur_nod;
+
+	/* get the distances between all OTUs but the 2 selected ones
+	   and the latter:
+	   a) get the sum for both
+	   b) compute the distances for the new OTU */
+
+	A = D[smallest];
+	ij = 0;
+	for (i = 1; i <= n; i++) {
+	    if (i == OTU1 || i == OTU2) continue;
+	    new_dist[ij] = (D[give_index(i, OTU1, n)] + /* dist(i, OTU1) */
+			    D[give_index(i, OTU2, n)] - /* dist(i, OTU2) */
+			    A) / 2;
+	    ij++;
+	}
+	/* compute the branch lengths */
+	B = (S[OTU1] - S[OTU2])/B; /* don't need B anymore */
+	edge_length[k] = (A + B)/2;
+	edge_length[k + 1] = (A - B)/2;
+
+	/* update before the next loop (we are sure that OTU1 < OTU2) */
+	if (OTU1 != 1)
+	    for (i = OTU1; i > 1; i--) otu_label[i] = otu_label[i - 1];
+	if (OTU2 != n)
+	    for (i = OTU2; i < n; i++) otu_label[i] = otu_label[i + 1];
+	otu_label[1] = cur_nod;
+
+	for (i = 1; i < n; i++) {
+	    if (i == OTU1 || i == OTU2) continue;
+	    for (j = i + 1; j <= n; j++) {
+		if (j == OTU1 || j == OTU2) continue;
+		new_dist[ij] = D[DINDEX(i, j)];
+		ij++;
+	    }
 	}
 
-	edge_length[*N*2 - 4] = (D[0] + D[1] - D[2])/2;
-	edge_length[*N*2 - 5] = (D[0] + D[2] - D[1])/2;
-	edge_length[*N*2 - 6] = (D[2] + D[1] - D[0])/2;
+	n--;
+	for (i = 0; i < n * (n - 1) / 2; i++) D[i] = new_dist[i];
+
+	cur_nod--;
+	k += 2;
+    }
+
+    k = 2 * INTEGER(N)[0] - 4; /* 2N - 4 */
+    for (i = 0; i < 3; i++) {
+	edge[k - i] = cur_nod;
+	edge[k - i + Nedge] = otu_label[i + 1];
+    }
+
+    edge_length[k] = (D[0] + D[1] - D[2]) / 2;
+    k--; /* 2N - 5 */
+    edge_length[k] = (D[0] + D[2] - D[1]) / 2;
+    k--; /* 2N - 6 */
+    edge_length[k] = (D[2] + D[1] - D[0]) / 2;
+
+    SET_VECTOR_ELT(phy, 0, E);
+    SET_VECTOR_ELT(phy, 1, EL);
+
+    UNPROTECT(5);
+    return phy;
 }

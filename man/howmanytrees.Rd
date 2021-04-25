@@ -1,9 +1,20 @@
 \name{howmanytrees}
 \alias{howmanytrees}
+\alias{LargeNumber}
+\alias{print.LargeNumber}
 \title{Calculate Numbers of Phylogenetic Trees}
+\description{
+  \code{howmanytrees} calculates the number of possible phylogenetic
+  trees for a given number of tips.
+
+  \code{LargeNumber} is a utility function to compute (approximately)
+  large numbers from the power \eqn{a^b}.
+}
 \usage{
 howmanytrees(n, rooted = TRUE, binary = TRUE,
              labeled = TRUE, detail = FALSE)
+LargeNumber(a, b)
+\method{print}{LargeNumber}(x, ...)
 }
 \arguments{
   \item{n}{a positive numeric integer giving the number of tips.}
@@ -17,14 +28,14 @@ howmanytrees(n, rooted = TRUE, binary = TRUE,
     calculations should be returned (default is \code{FALSE}). This
     applies only for the multifurcating trees, and the bifurcating,
     rooted, unlabeled trees (aka tree shapes).}
-}
-\description{
-  This function calculates the number of possible phylogenetic trees for
-  a given number of tips.
+  \item{a, b}{two numbers.}
+  \item{x}{an object of class \code{"LargeNumber"}.}
+  \item{\dots}{(unused).}
 }
 \details{
   In the cases of labeled binary trees, the calculation is done directly
-  and a single numeric value is returned.
+  and a single numeric value is returned (or an object of class
+  \code{"LargeNumber"}).
 
   For multifurcating trees, and bifurcating, rooted, unlabeled trees,
   the calculation is done iteratively for 1 to \code{n} tips. Thus the
@@ -44,11 +55,14 @@ howmanytrees(n, rooted = TRUE, binary = TRUE,
   Note that if an infinite value (\code{Inf}) is returned this does not
   mean that there is an infinite number of trees (this cannot be if the
   number of tips is finite), but that the calculation is beyond the
-  limits of the computer.
+  limits of the computer. Only for the cases of rooted, binary, labeled
+  topologies an approximate number is returned in the form a
+  \code{"LargeNumber"} object.
 }
 \value{
-  a single numeric value, or in the case where \code{detail = TRUE} is
-  used, a named vector or matrix.
+  a single numeric value, an object of class \code{"LargeNumber"}, or in
+  the case where \code{detail = TRUE} is used, a named vector or
+  matrix.
 }
 \references{
   Felsenstein, J. (2004) \emph{Inferring Phylogenies}. Sunderland:

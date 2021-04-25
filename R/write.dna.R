@@ -1,8 +1,8 @@
-## write.dna.R (2018-03-26)
+## write.dna.R (2020-11-08)
 
 ##   Write DNA Sequences in a File
 
-## Copyright 2003-2018 Emmanuel Paradis
+## Copyright 2003-2020 Emmanuel Paradis
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -145,7 +145,7 @@ write.FASTA <- function(x, file, header = NULL, append = FALSE)
     labs <- labels(x)
     if (is.matrix(x)) {
         s <- ncol(x) # always integer
-        n <- nrow(x)
+        n <- nrow(x) #
     } else {
         s <- -1L
         n <- length(x)
@@ -155,9 +155,13 @@ write.FASTA <- function(x, file, header = NULL, append = FALSE)
     if (!is.null(header)) {
         cat(header, sep = "\n", file = file, append = append)
     } else {
-        if (!append) {
-            if (file.exists(file)) file.remove(file)
-            file.create(file)
+        fileExists <- file.exists(file)
+        if (append) {
+            if (!fileExists) stop(paste("cannot access FASTA file", file))
+        } else {
+            if (fileExists) file.remove(file)
+            o <- file.create(file)
+            if (!o) stop(paste("cannot create FASTA file", file))
         }
     }
     ## 'file' should always exist now
@@ -166,4 +170,3 @@ write.FASTA <- function(x, file, header = NULL, append = FALSE)
     else .Call(writeAAbinToFASTA, x, file, n, s, labs)
     invisible(NULL)
 }
-
