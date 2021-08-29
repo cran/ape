@@ -1,8 +1,6 @@
-## chronos.R (2020-05-08)
-
 ##   Molecular Dating With Penalized and Maximum Likelihood
 
-## Copyright 2013-2017 Emmanuel Paradis, 2018-2020 Santiago Claramunt, 2020 Guillaume Louvel
+## Copyright 2013-2017 Emmanuel Paradis, 2018-2021 Santiago Claramunt, 2020 Guillaume Louvel
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -383,7 +381,7 @@ maybe you need to adjust the calibration dates")
        # vector of probabilities for obtaining the median rates of each category (Yang 1994)
        grp <- (2*1:Nb.rates-1)/(2*Nb.rates)
        # obtain the median rate of each rate category
-       rate <- qgamma(grp, shape=LNparams[1], scale=LNparams[2])
+       rate <- qlnorm(grp, meanlog=LNparams[1], sdlog=LNparams[2])
        age[unknown.ages] <- node.time
        real.edge.length <- age[e1] - age[e2]      
        if (isTRUE(any(real.edge.length < 0))) return(-1e+100)
@@ -480,6 +478,11 @@ maybe you need to adjust the calibration dates")
         }
         g.rates <- NULL
         g.ages <- NULL
+    } else if(model == "lognormal") {
+        f.lnorm <- function(p) -log.lik.poisson.lnorm(p, current.ages)
+        f.ages <- function(p) -log.lik.poisson.lnorm(current.lnorm, p)
+        g.rates <- NULL
+        g.ages <- NULL
     } else {
         f.rates <- function(p) -penal.loglik(p, current.ages)
         g.rates <- function(p) -gradient(p, current.ages)[RATE]
@@ -505,12 +508,12 @@ maybe you need to adjust the calibration dates")
             warning("Maximum number of dual iterations reached.", call. = FALSE)
             break
         }
-        if(model == "gamma" || model == "lognormal") {
+        if(model == "lognormal") {
              if (!quiet) cat("Optimising lognormal parameters...")
-             out.Gamma <- nlminb(current.lnorm, f.lnorm,
+             out.lnorm <- nlminb(current.lnorm, f.lnorm,
                  control = list(eval.max=control$eval.max, iter.max=control$iter.max, step.min = 1e-08, step.max = 1),
                  lower = lower.lnorm, upper = upper.lnorm)
-             new.Gamma <- out.Gamma$par
+             new.lnorm <- out.lnorm$par
         } else {
         if (!quiet) cat("Optimising rates...")
         out.rates <- nlminb(current.rates, f.rates, g.rates,# h.rates,
