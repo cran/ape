@@ -83,7 +83,7 @@ chronos <-
              calibration = makeChronosCalib(phy),
              control = chronos.control())
 {
-    model <- match.arg(tolower(model), c("correlated", "relaxed", "discrete"))
+    model <- match.arg(tolower(model), c("correlated", "relaxed", "discrete", "lognormal"))
     
     require(matrixStats)
         
@@ -366,6 +366,7 @@ maybe you need to adjust the calibration dates")
         real.edge.length <- age[e1] - age[e2]
         if (any(real.edge.length < 0)) return(-1e+100)
         ## generate a matrix of branch length rates under each rate regime:
+        B <- real.edge.length %*% t(rate)
         # generate a matrix of log-likelihood values (branches by regimes)
         Lls <- el * log(B) - B - lfactorial.el
         # Obtain the Log-lik of the tree under each regime by summing the rows
@@ -378,7 +379,7 @@ maybe you need to adjust the calibration dates")
      ## first compute the probabilities corresponding
      ## to the median rates (Yang 1994). Then use the same method as in 
      ##log.lik.poisson.discrete
-     log.lik.poisson.lognormal <- function(LNparams, node.time) {
+     log.lik.poisson.lnorm <- function(LNparams, node.time) {
        # vector of probabilities for obtaining the median rates of each category (Yang 1994)
        grp <- (2*1:Nb.rates-1)/(2*Nb.rates)
        # obtain the median rate of each rate category
@@ -445,10 +446,14 @@ maybe you need to adjust the calibration dates")
             UP <- c(upper.rate, upper.age, upper.freq)
         }
     } else if(model == "lognormal") {
-        f.lnorm <- function(p) -log.lik.poisson.lnorm(p, current.ages)
-        f.ages <- function(p) -log.lik.poisson.lnorm(current.lnorm, p)
- 
-    } else {
+            LNP <- 1:2
+            AGE <- 2 + 1:length(unknown.ages)
+            start.para <- c(ini.Gamma, ini.time[unknown.ages])
+            f <- function(p) -log.lik.poisson.lnorm(p[LNP], p[AGE])
+            g <- NULL
+            LOW <- c(lower.lnorm, lower.age)
+            UP <- c(upper.lnorm, upper.age)
+     } else {
         start.para <- c(ini.rate, ini.time[unknown.ages])
         f <- function(p) -penal.loglik(p[RATE], p[AGE])
         g <- function(p) -gradient(p[RATE], p[AGE])
