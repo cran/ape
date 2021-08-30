@@ -1,14 +1,12 @@
-## chronos.R (2020-05-08)
-
 ##   Molecular Dating With Penalized and Maximum Likelihood
 
-## Copyright 2013-2017 Emmanuel Paradis, 2018-2020 Santiago Claramunt, 2020 Guillaume Louvel
+## Copyright 2013-2017 Emmanuel Paradis, 2018-2021 Santiago Claramunt, 2020 Guillaume Louvel
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 .chronos.ctrl <-
-    list(tol = 1e-8, iter.max = 1e4, eval.max = 1e4, nb.rate.cat = 10,
+    list(tol = 0, iter.max = 1e4, eval.max = 1e4, nb.rate.cat = 10,
          dual.iter.max = 20, epsilon = 1e-6)
 
 makeChronosCalib <-
@@ -83,7 +81,10 @@ chronos <-
              calibration = makeChronosCalib(phy),
              control = chronos.control())
 {
-    model <- match.arg(tolower(model), c("correlated", "relaxed", "discrete"))
+    model <- match.arg(tolower(model), c("correlated", "relaxed", "discrete", "lognormal"))
+    
+    require(matrixStats)
+        
     n <- Ntip(phy)
     ROOT <- n + 1L
     m <- phy$Nnode
@@ -203,7 +204,9 @@ maybe you need to adjust the calibration dates")
 ### Setting 'ini.rate'
     ini.rate <- el/(ini.time[e1] - ini.time[e2])
 
-    if (model == "discrete") {
+    if (model == "correlated" || model == "relaxed") { Nb.rates <- N
+
+    } else if (model == "discrete") {
         Nb.rates <- control$nb.rate.cat
         if (Nb.rates > N) {
             Nb.rates <- N
@@ -214,12 +217,20 @@ maybe you need to adjust the calibration dates")
             ini.rate <- sum(minmax)/2
         } else {
             inc <- diff(minmax)/Nb.rates
-            ini.rate <- seq(minmax[1] + inc/2, minmax[2] - inc/2, inc)
+            #ini.rate <- seq(minmax[1] + inc/2, minmax[2] - inc/2, inc)
+            ini.rate <- runif(Nb.rates, min=min(ini.rate), max=max(ini.rate))
             ini.freq <- rep(1/Nb.rates, Nb.rates - 1)
             lower.freq <- rep(0, Nb.rates - 1)
             upper.freq <- rep(1, Nb.rates - 1)
         }
-    } else Nb.rates <- N
+    } else if(model == "lognormal") { 
+             Nb.rates <- control$nb.rate.cat    
+             ini.Gamma <- c(log(runif(1, min=min(ini.rate), max=max(ini.rate))), 1) # meanlog and sdlog of the lnorm distribution
+             lower.lnorm <- c(-Inf, 0)
+             upper.lnorm <- c(Inf, Inf)
+    }
+        
+        
 ## 'ini.rate' set
 
 ### Setting bounds for the node ages
@@ -342,10 +353,11 @@ maybe you need to adjust the calibration dates")
         sum(el * log(B) - B - lfactorial.el)
     }
 
-    ## New function for incorporating multiple rate categories (by SC).
+    ## New function for the mixture model (by SC).
     ## This one calculates the conditional probability for each branch
     ## and rate regime, and then computes a weighted average (using the
     ## frequencies as weights) before summing logs across branches.
+    ## Uses function logSumExp to sum likelihoods                                               
     log.lik.poisson.discrete <- function(rate, node.time, freq) {
         Freqs <- c(freq, 1 - sum(freq))
         age[unknown.ages] <- node.time
@@ -353,13 +365,32 @@ maybe you need to adjust the calibration dates")
         if (any(real.edge.length < 0)) return(-1e+100)
         ## generate a matrix of branch length rates under each rate regime:
         B <- real.edge.length %*% t(rate)
-        ## generate a matrix of likelihood values
-        PPs <- exp(el * log(B) - B - lfactorial.el)
-        ## matrix multiplication to obtain the weigthed sums for each
-        ## branch (the average likelihoods), then sum the
-        ## log-likelihoods to obtain the tree likelihood:
-        sum(log(PPs %*% Freqs))
+        # generate a matrix of log-likelihood values (branches by regimes)
+        Lls <- el * log(B) - B - lfactorial.el
+        # Obtain the Log-lik of the tree under each regime by summing the rows
+        TLls <- colSums(Lls)
+        # Obtain weighted log-likelihoods by summing the log-frequencies (Llik + log(f) = log(Lik*f)) and use logSumExp to obtain the log of the sum of the exponentials of the weighted log-likelihoods 
+        logSumExp(TLls + log(Freqs))
     }
+
+     ## NEW: Lognormal relaxed mixture model clock model
+     ## first compute the probabilities corresponding
+     ## to the median rates (Yang 1994). Then use the same method as in 
+     ##log.lik.poisson.discrete
+     log.lik.poisson.lnorm <- function(LNparams, node.time) {
+       # vector of probabilities for obtaining the median rates of each category (Yang 1994)
+       grp <- (2*1:Nb.rates-1)/(2*Nb.rates)
+       # obtain the median rate of each rate category
+       rate <- qlnorm(grp, meanlog=LNparams[1], sdlog=LNparams[2])
+       age[unknown.ages] <- node.time
+       real.edge.length <- age[e1] - age[e2]      
+       if (isTRUE(any(real.edge.length < 0))) return(-1e+100)
+       B <- real.edge.length %*% t(rate)
+       # generate a matrix of log-likelihood values (branches by rate regimes)
+       Lls <- el * log(B) - B - lfactorial.el
+      # Obtain the Log-lik of the tree under each regime by summing the columns (colSums) and then compute the average using the logSumExp function to avoid small number problems
+      logSumExp(colSums(Lls) - log(Nb.rates))
+     }
 
 ### penalized log-likelihood
     penal.loglik <-
@@ -412,7 +443,15 @@ maybe you need to adjust the calibration dates")
             LOW <- c(lower.rate, lower.age, lower.freq)
             UP <- c(upper.rate, upper.age, upper.freq)
         }
-    } else {
+    } else if(model == "lognormal") {
+            LNP <- 1:2
+            AGE <- 2 + 1:length(unknown.ages)
+            start.para <- c(ini.Gamma, ini.time[unknown.ages])
+            f <- function(p) -log.lik.poisson.lnorm(p[LNP], p[AGE])
+            g <- NULL
+            LOW <- c(lower.lnorm, lower.age)
+            UP <- c(upper.lnorm, upper.age)
+     } else {
         start.para <- c(ini.rate, ini.time[unknown.ages])
         f <- function(p) -penal.loglik(p[RATE], p[AGE])
         g <- function(p) -gradient(p[RATE], p[AGE])
@@ -439,6 +478,11 @@ maybe you need to adjust the calibration dates")
         }
         g.rates <- NULL
         g.ages <- NULL
+    } else if(model == "lognormal") {
+        f.lnorm <- function(p) -log.lik.poisson.lnorm(p, current.ages)
+        f.ages <- function(p) -log.lik.poisson.lnorm(current.lnorm, p)
+        g.rates <- NULL
+        g.ages <- NULL
     } else {
         f.rates <- function(p) -penal.loglik(p, current.ages)
         g.rates <- function(p) -gradient(p, current.ages)[RATE]
@@ -450,6 +494,7 @@ maybe you need to adjust the calibration dates")
     current.rates <- out$par[RATE]
     current.ages <- out$par[AGE]
     if (model == "discrete" && Nb.rates > 1) current.freqs <- out$par[FREQ]
+    if (model == "lognormal") current.lnorm <- out$par[LNP]
 
     dual.iter.max <- control$dual.iter.max
     epsilon <- control$epsilon
@@ -463,6 +508,13 @@ maybe you need to adjust the calibration dates")
             warning("Maximum number of dual iterations reached.", call. = FALSE)
             break
         }
+        if(model == "lognormal") {
+             if (!quiet) cat("Optimising lognormal parameters...")
+             out.lnorm <- nlminb(current.lnorm, f.lnorm,
+                 control = list(eval.max=control$eval.max, iter.max=control$iter.max, step.min = 1e-08, step.max = 1),
+                 lower = lower.lnorm, upper = upper.lnorm)
+             new.lnorm <- out.lnorm$par
+        } else {
         if (!quiet) cat("Optimising rates...")
         out.rates <- nlminb(current.rates, f.rates, g.rates,# h.rates,
                             control = list(eval.max = 1000, iter.max = 1000,
@@ -479,7 +531,7 @@ maybe you need to adjust the calibration dates")
                                                step.min = .001, step.max = .5),
                                 lower = lower.freq, upper = upper.freq)
             new.freqs <- out.freqs$par
-        }
+        }}
 
         if (!quiet) cat(" dates...")
         out.ages <- nlminb(current.ages, f.ages, g.ages,# h.ages,
@@ -512,13 +564,16 @@ maybe you need to adjust the calibration dates")
 ##            else mean(c(current.freqs, 1 - sum(current.freqs)) * current.rates)
 ##        logLik <- log.lik.poisson(rate.freq, current.ages)
         PHIIC <- list(logLik = logLik, k = k, PHIIC = - 2 * logLik + 2 * k)
-    } else {
+    } else if(model == "correlated" || model == "relaxed") {
         logLik <- log.lik.poisson(current.rates, current.ages)
         PHI <- switch(model,
                       "correlated" = (current.rates[ind1] - current.rates[ind2])^2 + var(current.rates[basal]),
                       "relaxed" = (1:N/N - pgamma(sort(current.rates), mean(current.rates)))^2) # avec loi Gamma
         PHIIC <- list(logLik = logLik, k = k, lambda = lambda,
                       PHIIC = - 2 * logLik + 2 * k + lambda * svd(PHI)$d)
+    } else if(model == "lognormal") {
+        logLik  <- current.ploglik
+    	PHIIC <- list(logLik = logLik, k = k, PHIIC = - 2 * logLik + 2 * k)
     }
 
     attr(phy, "call") <- match.call()
@@ -526,6 +581,10 @@ maybe you need to adjust the calibration dates")
     attr(phy, "rates") <- current.rates #out$par[EDGES]
     if (model == "discrete" && Nb.rates > 1)
         attr(phy, "frequencies") <- c(current.freqs, 1 - sum(current.freqs))
+    if (model == "lognormal") {
+        attr(phy, "Lognormal") <- c(meanlog=current.lnorm[1], sdlog=current.lnorm[2])
+        attr(phy, "rates") <- qlnorm((2*1:Nb.rates-1)/(2*Nb.rates), meanlog = current.lnorm[1], sdlog =current.lnorm[2])
+        }
     attr(phy, "convergence") <- if (out$convergence == 0) TRUE else FALSE
     attr(phy, "message") <- out$message
     attr(phy, "PHIIC") <- PHIIC
