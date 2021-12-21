@@ -8,7 +8,8 @@
 }
 \usage{
 comparePhylo(x, y, plot = FALSE, force.rooted = FALSE,
-             use.edge.length = FALSE)
+             use.edge.length = FALSE, commons = TRUE,
+             location = "bottomleft", ...)
 \method{print}{comparePhylo}(x, ...)
 }
 \arguments{
@@ -19,7 +20,11 @@ comparePhylo(x, y, plot = FALSE, force.rooted = FALSE,
     considered rooted even if \code{is.rooted} returns \code{FALSE}.}
   \item{use.edge.length}{a logical value passed to
     \code{\link{plot.phylo}} (see below).}
-  \item{\dots}{unused.}
+  \item{commons}{whether to show the splits (the default), or the splits
+    specific to each tree (applies only for unrooted trees).}
+  \item{location}{location of where to position the \code{\link{legend}}.}
+  \item{\dots}{further parameters used by \code{\link{plot.phylo}}, in function
+  \code{print.comparePhylo} unused.}
 }
 \details{
   In all cases, the numbers of tips and of nodes and the tip labels are
@@ -41,7 +46,7 @@ comparePhylo(x, y, plot = FALSE, force.rooted = FALSE,
   an object of class \code{"comparePhylo"} which is a list with messages
   from the comparison and, optionally, tables comparing branching times.
 }
-\author{Emmanuel Paradis}
+\author{Emmanuel Paradis, Klaus Schliep}
 \seealso{\code{\link{all.equal.phylo}}}
 \examples{
 ## two unrooted trees but force comparison as rooted:

@@ -1,8 +1,8 @@
-## chronos.R (2020-05-08)
+## chronos.R (2021-09-23)
 
 ##   Molecular Dating With Penalized and Maximum Likelihood
 
-## Copyright 2013-2017 Emmanuel Paradis, 2018-2020 Santiago Claramunt, 2020 Guillaume Louvel
+## Copyright 2013-2021 Emmanuel Paradis, 2018-2020 Santiago Claramunt, 2020 Guillaume Louvel
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -83,7 +83,11 @@ chronos <-
              calibration = makeChronosCalib(phy),
              control = chronos.control())
 {
-    model <- match.arg(tolower(model), c("correlated", "relaxed", "discrete"))
+    model <- match.arg(tolower(model), c("correlated", "relaxed", "discrete", "clock"))
+    if (model == "clock") {
+        model <- "discrete"
+        control$nb.rate.cat <- 1
+    }
     n <- Ntip(phy)
     ROOT <- n + 1L
     m <- phy$Nnode
@@ -213,8 +217,10 @@ maybe you need to adjust the calibration dates")
         if (Nb.rates == 1) {
             ini.rate <- sum(minmax)/2
         } else {
-            inc <- diff(minmax)/Nb.rates
-            ini.rate <- seq(minmax[1] + inc/2, minmax[2] - inc/2, inc)
+            ##inc <- diff(minmax)/Nb.rates
+            ##ini.rate <- seq(minmax[1] + inc/2, minmax[2] - inc/2, inc)
+            ini.rate <- quantile(ini.rate, seq(1/(2 * Nb.rates), by = 1/Nb.rates, length.out = Nb.rates))
+            names(ini.rate) <- NULL
             ini.freq <- rep(1/Nb.rates, Nb.rates - 1)
             lower.freq <- rep(0, Nb.rates - 1)
             upper.freq <- rep(1, Nb.rates - 1)
@@ -308,16 +314,20 @@ maybe you need to adjust the calibration dates")
                    ## contribution of the penalty for the rates:
                    gr[RATE] <- gr[RATE] - lambda * 2 * (eta_i * rate - sapply(X, function(x) sum(rate[x])))
                    ## the contribution of the root variance term:
+                   if (Nbasal == 1) {
+                       return(gr)
+                   }
                    if (Nbasal == 2) { # the simpler formulae if there's a basal dichotomy
                        i <- basal[1]
                        j <- basal[2]
                        gr[i] <- gr[i] - lambda * (rate[i] - rate[j])
                        gr[j] <- gr[j] - lambda * (rate[j] - rate[i])
-                   } else { # the general case
-                       for (i in 1:Nbasal)
-                           j <- basal[i]
-                           gr[j] <- gr[j] -
-                               lambda*2*(rate[j]*(1 - 1/Nbasal) - sum(rate[basal[-i]])/Nbasal)/(Nbasal - 1)
+                       return(gr)
+                   }
+                   ## Nbasal > 2 -- the general case
+                   for (i in 1:Nbasal) {
+                       j <- basal[i]
+                       gr[j] <- gr[j] - lambda*2*(rate[j]*(1 - 1/Nbasal) - sum(rate[basal[-i]])/Nbasal)/(Nbasal - 1)
                    }
                    gr
                },
@@ -368,8 +378,9 @@ maybe you need to adjust the calibration dates")
                function(rate, node.time) {
                    loglik <- log.lik.poisson(rate, node.time)
                    if (!is.finite(loglik)) return(-1e100)
-                   loglik - lambda * (sum((rate[ind1] - rate[ind2])^2)
-                                      + var(rate[basal]))
+                   res <- loglik - lambda * sum((rate[ind1] - rate[ind2])^2)
+                   if (Nbasal > 1) res <- res + lambda * var(rate[basal])
+                   res
                },
                "relaxed" =
                function(rate, node.time) {
@@ -511,14 +522,14 @@ maybe you need to adjust the calibration dates")
             else log.lik.poisson.discrete(current.rates, current.ages, current.freqs)
 ##            else mean(c(current.freqs, 1 - sum(current.freqs)) * current.rates)
 ##        logLik <- log.lik.poisson(rate.freq, current.ages)
-        PHIIC <- list(logLik = logLik, k = k, PHIIC = - 2 * logLik + 2 * k)
+        PHIIC <- list(logLik = logLik, k = k, PHIIC = -2 * logLik + 2 * k)
     } else {
         logLik <- log.lik.poisson(current.rates, current.ages)
         PHI <- switch(model,
-                      "correlated" = (current.rates[ind1] - current.rates[ind2])^2 + var(current.rates[basal]),
+                      "correlated" = (current.rates[ind1] - current.rates[ind2])^2 + ifelse(Nbasal == 1, 0, var(current.rates[basal])),
                       "relaxed" = (1:N/N - pgamma(sort(current.rates), mean(current.rates)))^2) # avec loi Gamma
         PHIIC <- list(logLik = logLik, k = k, lambda = lambda,
-                      PHIIC = - 2 * logLik + 2 * k + lambda * svd(PHI)$d)
+                      PHIIC = -2 * logLik + 2 * k + lambda * svd(PHI)$d)
     }
 
     attr(phy, "call") <- match.call()

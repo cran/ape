@@ -1,8 +1,8 @@
-## summary.phylo.R (2020-07-28)
+## summary.phylo.R (2021-11-27)
 
-##   Print Summary of a Phylogeny and "multiPhylo" operators
+##   Print Summary of a Phylogeny, "multiPhylo" operators, node degrees
 
-## Copyright 2003-2020 Emmanuel Paradis, 2006 Ben Bolker, and Klaus Schliep 2016
+## Copyright 2003-2021 Emmanuel Paradis, 2006 Ben Bolker, and Klaus Schliep 2016
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -176,32 +176,19 @@ c.phylo <- function(..., recursive = TRUE)
 {
     n <- length(obj)
     N <- lengths(obj, FALSE)
-    cs <- c(0, cumsum(N))
-    x <- vector("list", cs[length(cs)])
+    x <- vector("list", sum(N))
+    a <- b <- 0L
     for (i in 1:n) {
-        a <- cs[i] + 1L
-        b <- cs[i + 1L]
-        x[a:b] <- obj[[i]]
+        a <- b + 1L
+        b <- b + N[i]
+        z <- obj[[i]]
+        x[a:b] <- z
+        if (inherits(z, "multiPhylo") && !is.null(nms <- names(z)))
+            names(x)[a:b] <- nms # see issue #37 on GH
     }
     class(x) <- "multiPhylo"
     x
 }
-## the original code:
-##.makeMultiPhyloFromObj <- function(obj)
-##{
-##    n <- length(obj)
-##    x <- obj[[1L]]
-##    N <- length(x)
-##    i <- 2L
-##    while (i <= n) {
-##        a <- N + 1L
-##        N <- N + length(obj[[i]])
-##        ## x is of class "multiPhylo", so this uses the operator below:
-##        x[a:N] <- obj[[i]]
-##        i <- i + 1L
-##    }
-##    x
-##}
 
 c.multiPhylo <- function(..., recursive = TRUE)
 {
@@ -233,7 +220,9 @@ c.multiPhylo <- function(..., recursive = TRUE)
 
 `[<-.multiPhylo` <- function(x, ..., value)
 {
-    ## recycling is allowed so no need to check: length(value) != length(..1)
+###    ## recycling is allowed so no need to check: length(value) != length(..1)
+###    dots <- list(...)
+###    dots <- if (length(dots)) dots[[1]] else seq_along(x) # see issue #36 on GH
 
     ## check that all elements in 'value' inherit class "phylo"
     test <- unlist(lapply(value, function(xx) !inherits(xx, "phylo")))
@@ -245,14 +234,17 @@ c.multiPhylo <- function(..., recursive = TRUE)
 
     if (is.null(attr(x, "TipLabel"))) {
         x[..1] <- value
+###        x[dots] <- value
         class(x) <- oc
         return(x)
     }
 
     x[..1] <- 0L # in case x needs to be elongated
+###    x[dots] <- 0L # in case x needs to be elongated
     class(x) <- oc
     j <- 1L
     for (i in ..1) {
+###    for (i in dots) {
         ## x is of class "multiPhylo", so this uses the operator below:
         x[[i]] <- value[[j]]
         j <- j + 1L
@@ -292,4 +284,26 @@ c.multiPhylo <- function(..., recursive = TRUE)
 {
     x[[..1]] <- value
     x
+}
+
+degree <- function(x, ...) UseMethod("degree")
+
+degree.phylo <- function(x, details = FALSE, ...)
+{
+    N <- length(x$tip.label) + x$Nnode
+    res <- tabulate(x$edge, N)
+    if (details) return(res)
+    tab <- tabulate(res)
+    DF <- data.frame(Degree = seq_along(tab), Number = tab)
+    DF[tab > 0, ]
+}
+
+degree.evonet <- function(x, details = FALSE, ...)
+{
+    N <- length(x$tip.label) + x$Nnode
+    res <- tabulate(x$edge, N) + tabulate(x$reticulation, N)
+    if (details) return(res)
+    tab <- tabulate(res)
+    DF <- data.frame(Degree = seq_along(tab), Number = tab)
+    DF[tab > 0, ]
 }

@@ -1,14 +1,15 @@
-## comparePhylo.R (2018-03-13)
+## comparePhylo.R (2021-12-12)
 
 ##   Compare Two "phylo" Objects
 
-## Copyright 2018 Emmanuel Paradis
+## Copyright 2018-2021 Emmanuel Paradis, 2021 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 comparePhylo <- function(x, y, plot = FALSE, force.rooted = FALSE,
-                         use.edge.length = FALSE)
+                         use.edge.length = FALSE, commons = TRUE,
+                         location = "bottomleft", ...)
 {
     tree1 <- deparse(substitute(x))
     tree2 <- deparse(substitute(y))
@@ -76,18 +77,18 @@ comparePhylo <- function(x, y, plot = FALSE, force.rooted = FALSE,
         }
         if (plot) {
             layout(matrix(1:2, 1, 2))
-            plot(x, use.edge.length = use.edge.length, main = tree1)
+            plot(x, use.edge.length = use.edge.length, main = tree1, ...)
             nodelabels(node = which(tmp) + n1, pch = 19, col = "blue", cex = 2)
-            legend("topleft", legend = paste("Clade absent in", tree2), pch = 19, col = "blue")
+            legend(location, legend = paste("Clade absent in", tree2), pch = 19, col = "blue")
         }
         if (any(tmp <- is.na(mk21))) {
             nk <- sum(tmp)
             msg <- c(msg, paste(nk, if (nk == 1) "clade" else "clades", "in", tree2, "not in", tree1))
         }
         if (plot) {
-            plot(y, use.edge.length = use.edge.length, main = tree2)
+            plot(y, use.edge.length = use.edge.length, main = tree2, ...)
             nodelabels(node = which(tmp) + n2, pch = 19, col = "red", cex = 2)
-            legend("topleft", legend = paste("Clade absent in", tree1), pch = 19, col = "red")
+            legend(location, legend = paste("Clade absent in", tree1), pch = 19, col = "red")
         }
         nodes1 <- which(!is.na(mk12))
         nodes2 <- mk12[!is.na(mk12)]
@@ -110,9 +111,9 @@ comparePhylo <- function(x, y, plot = FALSE, force.rooted = FALSE,
 (node number in parentheses)")
         }
     }
-    if (!force.rooted && !rooted1 && !rooted2 && sameTips && m1 == m2) {
+    if (sameTips) {
         TR <- .compressTipLabel(c(x, y))
-        bs <- bitsplits(TR)
+        bs <- bitsplits(unroot(TR))
         common.splits <- which(bs$freq == 2L)
         ncs <- length(common.splits)
         tmp <-
@@ -128,35 +129,26 @@ comparePhylo <- function(x, y, plot = FALSE, force.rooted = FALSE,
             edgecol2 <- rep("black", Nedge(y))
             edgew2 <- rep(1, Nedge(y))
             if (ncs) {
-                f <- function(x)
-                    unlist(lapply(ONEwise(x), paste, collapse = "\r"))
-                ##pp <-  f(as.prop.part(bs, include.trivial = TRUE))
-                pp <-  as.prop.part(bs)
-                pp1 <- f(prop.part(TR[[1]]))
-                pp2 <- f(prop.part(TR[[2]]))
-                one2n <- 1:n1
-                for (i in common.splits) {
-                    p <- pp[[i]]
-                    split <- paste(p, collapse = "\r")
-                    k1 <- match(split, pp1)
-                    k2 <- match(split, pp2)
-                    if (!length(k1)) {
-                        split <- paste(one2n[-p], collapse = "\r")
-                        k1 <- match(split, pp1)
-                        if (!length(k2)) k2 <- match(split, pp2)
-                    }
-                    e1 <- match(k1 + n1, TR[[1]]$edge[, 2])
-                    e2 <- match(k2 + n2, TR[[2]]$edge[, 2])
-                    edgecol1[e1] <- edgecol2[e2] <- co
-                    edgew1[e1] <- edgew2[e2] <- 5
+                pp1 <- SHORTwise(prop.part(TR[[1]]))
+                pp2 <- SHORTwise(prop.part(TR[[2]]))
+                if (commons) {
+                    k1 <- which(!is.na(match(pp1, pp2)) & lengths(pp1) > 1)
+                    k2 <- which(!is.na(match(pp2, pp1)) & lengths(pp2) > 1)
+                } else {
+                    k1 <- which(is.na(match(pp1, pp2)) & lengths(pp1) > 1)
+                    k2 <- which(is.na(match(pp2, pp1)) & lengths(pp2) > 1)
                 }
+                e1 <- match(k1 + n1, TR[[1]]$edge[, 2])
+                e2 <- match(k2 + n2, TR[[2]]$edge[, 2])
+                edgecol1[e1] <- edgecol2[e2] <- co
+                edgew1[e1] <- edgew2[e2] <- 5
             }
+            text4leg <- if (commons) "Split present in both trees" else "Split specific to each tree"
             plot(TR[[1]], "u", use.edge.length = use.edge.length,
-                 edge.color = edgecol1, edge.width = edgew1, main = tree1, cex = 1.3, font =1)
-            legend("bottomright", legend = "Split present in both trees",
-                   lty = 1, col = "black", lwd = 5)
+                 edge.color = edgecol1, edge.width = edgew1, main = tree1, ...)
+            legend(location, legend = text4leg, lty = 1, col = "black", lwd = 5, xpd = NA)
             plot(TR[[2]], "u", use.edge.length = use.edge.length,
-                 edge.color = edgecol2, edge.width = edgew2, main = tree2, cex = 1.3, font =1)
+                 edge.color = edgecol2, edge.width = edgew2, main = tree2, ...)
         }
     }
     res$messages <- paste0(msg, ".")

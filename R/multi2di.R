@@ -1,8 +1,8 @@
-## multi2di.R (2020-12-15)
+## multi2di.R (2021-12-21)
 
 ##   Collapse or Resolve Multichotomies
 
-## Copyright 2005-2020 Emmanuel Paradis, 2018 Klaus Schliep
+## Copyright 2005-2021 Emmanuel Paradis, 2018-2021 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -15,6 +15,8 @@ multi2di <- function(phy, ...) UseMethod("multi2di")
     degree <- tabulate(phy$edge[, 1])
     target <- which(degree > 2)
     if (!length(target)) return(phy)
+    phy <- reorder(phy, "postorder")
+    pos <- match(target, phy$edge[,1])
     nb.edge <- dim(phy$edge)[1]
     nextnode <- n + phy$Nnode + 1L
     new.edge <- edge2delete <- NULL
@@ -24,9 +26,23 @@ multi2di <- function(phy, ...) UseMethod("multi2di")
         new.edge.length <- NULL
     }
 
-    for (node in target) {
-        ind <- which(phy$edge[, 1] == node)
-        N <- length(ind)
+    if (random) {
+        if (equiprob) {
+            FUN <- function(N) {
+                x <- rtopology(N, rooted = TRUE)$edge
+                desc <- x[, 2L]
+                x[desc <= N, 2L] <- seq_len(N)
+                x
+            }
+        } else {
+            FUN <- function(N) rtree(N)$edge
+        }
+    }
+
+    for (i in seq_along(target)) {
+        node <- target[i]
+        N <- degree[node]
+        ind <- pos[i] : (pos[i]+N-1L)
         desc <- phy$edge[ind, 2]
         if (random) {
           ## if we shuffle the descendants, we need to eventually
@@ -34,7 +50,7 @@ multi2di <- function(phy, ...) UseMethod("multi2di")
           ## so we store the result of sample()
             tmp <- sample(length(desc))
             desc <- desc[tmp]
-            res <- if (equiprob) rtopology(N, rooted = TRUE)$edge else rtree(N)$edge
+            res <- FUN(N)
         } else {
             res <- matrix(0L, 2*N - 2, 2)
             res[, 1] <- N + rep(1:(N - 1), each = 2)

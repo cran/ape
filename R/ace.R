@@ -1,8 +1,8 @@
-## ace.R (2018-06-25)
+## ace.R (2021-12-15)
 
 ##   Ancestral Character Estimation
 
-## Copyright 2005-2018 Emmanuel Paradis and Ben Bolker
+## Copyright 2005-2021 Emmanuel Paradis and 2005 Ben Bolker
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -137,12 +137,13 @@ ace <-
                 M <- dis[as.character(nb.tip + 1), MRCA]
                 dim(M) <- rep(sqrt(length(M)), 2)
             }
-            varAY <- M[-(1:nb.tip), 1:nb.tip]
-            varA <- M[-(1:nb.tip), -(1:nb.tip)]
-            V <- corMatrix(Initialize(corStruct, data.frame(x)),
-                           corr = FALSE)
+            one2n <- 1:nb.tip
+            varAY <- M[-one2n, one2n]
+            varA <- M[-one2n, -one2n]
+            DF <- data.frame(x)
+            V <- corMatrix(Initialize(corStruct, DF), corr = FALSE)
             invV <- solve(V)
-            o <- gls(x ~ 1, data.frame(x), correlation = corStruct)
+            o <- gls(x ~ 1, DF, correlation = corStruct)
             GM <- o$coefficients
             obj$ace <- drop(varAY %*% invV %*% (x - GM) + GM)
             names(obj$ace) <- (nb.tip + 1):(nb.tip + nb.node)
@@ -155,8 +156,7 @@ ace <-
     } else { # type == "discrete"
         if (method != "ML")
             stop("only ML estimation is possible for discrete characters.")
-        if (any(phy$edge.length <= 0))
-            stop("some branches have length zero or negative")
+        if (any(phy$edge.length < 0)) stop("some branches have negative length")
         if (!is.factor(x)) x <- factor(x)
         nl <- nlevels(x)
         lvls <- levels(x)
@@ -223,7 +223,7 @@ ace <-
                     comp[anc] <- sum(v)
                     liks[anc, ] <- v/comp[anc]
                 }
-                if (output.liks) return(liks[-TIPS, ])
+                if (output.liks) return(liks[-TIPS, , drop = FALSE])
                 dev <- -2 * sum(log(comp[-TIPS]))
                 if (is.na(dev)) Inf else dev
             }
@@ -250,7 +250,7 @@ ace <-
                     comp[anc] <- sum(v)
                     liks[anc, ] <- v/comp[anc]
                 }
-                if (output.liks) return(liks[-TIPS, ])
+                if (output.liks) return(liks[-TIPS, , drop = FALSE])
                 dev <- -2 * sum(log(comp[-TIPS]))
                 if (is.na(dev)) Inf else dev
             }
@@ -293,6 +293,7 @@ ace <-
                     lik.anc <- lik.anc / rowSums(lik.anc)
                 }
             }
+            rownames(lik.anc) <- nb.tip + 1:nb.node
             colnames(lik.anc) <- lvls
             obj$lik.anc <- lik.anc
         }
