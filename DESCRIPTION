@@ -1,6 +1,6 @@
 Package: ape
-Version: 5.6-1
-Date: 2021-12-27
+Version: 5.6-2
+Date: 2022-03-02
 Title: Analyses of Phylogenetics and Evolution
 Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email = "Emmanuel.Paradis@ird.fr", comment = c(ORCID = "0000-0003-3092-2199")),
   person("Simon", "Blomberg", role = c("aut", "cph"), comment = c(ORCID = "0000-0003-1062-0839")),
@@ -45,7 +45,7 @@ License: GPL-2 | GPL-3
 URL: http://ape-package.ird.fr/
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2022-01-03 08:20:07 UTC; paradis
+Packaged: 2022-03-02 10:45:23 UTC; paradis
 Author: Emmanuel Paradis [aut, cre, cph]
     (<https://orcid.org/0000-0003-3092-2199>),
   Simon Blomberg [aut, cph] (<https://orcid.org/0000-0003-1062-0839>),
@@ -81,4 +81,4 @@ Author: Emmanuel Paradis [aut, cre, cph]
   Damien de Vienne [aut, cph] (<https://orcid.org/0000-0001-9532-5251>)
 Maintainer: Emmanuel Paradis <Emmanuel.Paradis@ird.fr>
 Repository: CRAN
-Date/Publication: 2022-01-07 14:32:42 UTC
+Date/Publication: 2022-03-02 12:30:07 UTC
