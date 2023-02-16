@@ -1,9 +1,9 @@
-## dist.topo.R (2022-03-01)
+## dist.topo.R (2023-02-06)
 
 ##      Topological Distances, Tree Bipartitions,
 ##   Consensus Trees, and Bootstrapping Phylogenies
 
-## Copyright 2005-2022 Emmanuel Paradis, 2016-2021 Klaus Schliep
+## Copyright 2005-2023 Emmanuel Paradis, 2016-2021 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -420,13 +420,23 @@ consensus <- function(..., p = 1, check.labels = TRUE, rooted = FALSE)
     ntree <- length(obj)
     ## Get all observed partitions and their frequencies:
     pp <- prop.part(obj, check.labels = FALSE)
+    if (!rooted) {
+        pp <- postprocess.prop.part(pp, "SHORTwise")
+        pp[[1]] <- seq_along(labels)
+    }
     ## Drop the partitions whose frequency is less than 'p':
     if (p == 0.5) p <- 0.5000001 # avoid incompatible splits
     bs <- attr(pp, "number")
-    pp <- pp[bs >= p * ntree]
-    bs <- bs[bs >= p * ntree]
+    sel <- bs >= p * ntree
+    pp <- pp[sel]
+    bs <- bs[sel]
+    lens <- lengths(pp)
+    if (length(drop <- which(lens == 1))) {
+        pp <- pp[-drop]
+        lens <- lens[-drop]
+    }
     ## Get the order of the remaining partitions by decreasing size:
-    ind <- order(lengths(pp), decreasing = TRUE)
+    ind <- order(lens, decreasing = TRUE)
     pp <- pp[ind]
     bs <- bs[ind]
     n <- length(labels)
@@ -440,6 +450,10 @@ consensus <- function(..., p = 1, check.labels = TRUE, rooted = FALSE)
         pos <- 1L
         foo(1, nextnode)
     }
-    structure(list(edge = edge, tip.label = labels, node.label = bs/ntree,
-              Nnode = m), class = "phylo")
+    res <- structure(list(edge = edge, tip.label = labels,
+                          Nnode = m), class = "phylo")
+    res <- reorder(res)
+    node.label <- prop.clades(res, obj, rooted=rooted)/ntree
+    res$node.label <- node.label
+    res
 }

@@ -1,42 +1,63 @@
-## ladderize.R (2017-04-25)
+## ladderize.R (2023-02-09)
 
 ##   Ladderize a Tree
 
-## Copyright 2007-2017 Emmanuel Paradis
+## Copyright 2007-2023 Emmanuel Paradis, 2022 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
 
 ladderize <- function(phy, right = TRUE)
 {
-    foo <- function(node, END, where) {
-        start <- which(phy$edge[, 1] == node)
-        end <- c(start[-1] - 1, END)
-        size <- end - start + 1
-        desc <- phy$edge[start, 2]
-        Nclade <- length(desc)
-        n <- N[desc]
-        o <- order(n, decreasing = right)
-        newpos <- c(0, cumsum(size[o][-Nclade])) + where
-        desc <- desc[o]
-        end <- end[o]
-        start <- start[o]
-        neworder[newpos] <<- start
-        for (i in 1:Nclade)
-            if (desc[i] > nb.tip) foo(desc[i], end[i], newpos[i] + 1)
+    desc_fun <- function(x) {
+        parent <- x[, 1]
+        children <- x[, 2]
+        res <- vector("list", max(x))
+        for (i in seq_along(parent))
+            res[[parent[i]]] <- c(res[[parent[i]]], children[i])
+        res
     }
-    phy <- reorder(phy) # fix by Klaus (2015-10-04)
+
+    if (!is.null(phy$edge.length)) {
+        el <- numeric(max(phy$edge))
+        el[phy$edge[, 2]] <- phy$edge.length
+    }
+
     nb.tip <- length(phy$tip.label)
     nb.node <- phy$Nnode
     nb.edge <- dim(phy$edge)[1]
-    tmp <- reorder(phy, "postorder")
+
+    phy <- reorder(phy, "postorder")
     N <- .C(node_depth, as.integer(nb.tip),
-            as.integer(tmp$edge[, 1]), as.integer(tmp$edge[, 2]),
+            as.integer(phy$edge[, 1]), as.integer(phy$edge[, 2]),
             as.integer(nb.edge), double(nb.tip + nb.node), 1L)[[5]]
-    neworder <- integer(nb.edge)
-    foo(nb.tip + 1, nb.edge, 1)
-    phy$edge <- phy$edge[neworder, ]
-    if (!is.null(phy$edge.length))
-        phy$edge.length <- phy$edge.length[neworder]
-    phy
+
+    ii <- order(x <- phy$edge[, 1], y <- N[phy$edge[, 2]], decreasing = right)
+    desc <- desc_fun(phy$edge[ii, ])
+
+    tmp <- integer(nb.node)
+    new_anc <- integer(nb.node)
+    new_anc[1] <- tmp[1] <- nb.tip + 1L
+    k <- nb.node
+    pos <- 1L
+
+    while (pos > 0L && k > 0) {
+        current <- tmp[pos]
+        new_anc[k] <- current
+        k <- k - 1L
+        dc <- desc[[current]]
+        ind <- dc > nb.tip
+        if (any(ind)) {
+            l <- sum(ind)
+            tmp[pos -1L + seq_len(l)] <-  dc[ind]
+            pos <- pos + l - 1L
+        } else {
+            pos <- pos - 1L
+        }
+    }
+    edge <- cbind(rep(new_anc, lengths(desc[new_anc])), unlist(desc[new_anc]))
+    phy$edge <- edge
+    if (!is.null(phy$edge.length)) phy$edge.length <- el[edge[, 2L]]
+    attr(phy, "order") <- "postorder"
+    reorder(phy)
 }
