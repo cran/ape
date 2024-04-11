@@ -1,8 +1,8 @@
-## comparePhylo.R (2021-12-12)
+## comparePhylo.R (2024-02-13)
 
 ##   Compare Two "phylo" Objects
 
-## Copyright 2018-2021 Emmanuel Paradis, 2021 Klaus Schliep
+## Copyright 2018-2024 Emmanuel Paradis, 2021-2024 Klaus Schliep
 
 ## This file is part of the R-package `ape'.
 ## See the file ../COPYING for licensing issues.
@@ -76,6 +76,7 @@ comparePhylo <- function(x, y, plot = FALSE, force.rooted = FALSE,
             msg <- c(msg, paste(nk, if (nk == 1) "clade" else "clades", "in", tree1, "not in", tree2))
         }
         if (plot) {
+            def.par <- par(no.readonly = TRUE)
             layout(matrix(1:2, 1, 2))
             plot(x, use.edge.length = use.edge.length, main = tree1, ...)
             nodelabels(node = which(tmp) + n1, pch = 19, col = "blue", cex = 2)
@@ -89,6 +90,7 @@ comparePhylo <- function(x, y, plot = FALSE, force.rooted = FALSE,
             plot(y, use.edge.length = use.edge.length, main = tree2, ...)
             nodelabels(node = which(tmp) + n2, pch = 19, col = "red", cex = 2)
             legend(location, legend = paste("Clade absent in", tree1), pch = 19, col = "red")
+            par(def.par)
         }
         nodes1 <- which(!is.na(mk12))
         nodes2 <- mk12[!is.na(mk12)]
@@ -113,8 +115,9 @@ comparePhylo <- function(x, y, plot = FALSE, force.rooted = FALSE,
     }
     if (sameTips) {
         TR <- .compressTipLabel(c(x, y))
-        bs <- bitsplits(unroot(TR))
-        common.splits <- which(bs$freq == 2L)
+        TR <- root(TR, attr(TR, "TipLabel")[1])
+        pp <- prop.part(TR)
+        common.splits <- which(attr(pp, "number") == 2L)
         ncs <- length(common.splits)
         tmp <-
             if (ncs)
@@ -122,6 +125,7 @@ comparePhylo <- function(x, y, plot = FALSE, force.rooted = FALSE,
             else "No split in common"
         msg <- c(msg, tmp)
         if (plot) {
+            def.par <- par(no.readonly = TRUE)
             co <- "black"#rgb(0, 0, 1, 0.7)
             layout(matrix(1:2, 1, 2))
             edgecol1 <- rep("black", Nedge(x))
@@ -149,6 +153,7 @@ comparePhylo <- function(x, y, plot = FALSE, force.rooted = FALSE,
             legend(location, legend = text4leg, lty = 1, col = "black", lwd = 5, xpd = NA)
             plot(TR[[2]], "u", use.edge.length = use.edge.length,
                  edge.color = edgecol2, edge.width = edgew2, main = tree2, ...)
+            par(def.par)
         }
     }
     res$messages <- paste0(msg, ".")
