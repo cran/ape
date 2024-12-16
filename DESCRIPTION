@@ -1,6 +1,6 @@
 Package: ape
-Version: 5.8
-Date: 2024-04-09
+Version: 5.8-1
+Date: 2024-12-10
 Title: Analyses of Phylogenetics and Evolution
 Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email = "Emmanuel.Paradis@ird.fr", comment = c(ORCID = "0000-0003-3092-2199")),
   person("Simon", "Blomberg", role = c("aut", "cph"), comment = c(ORCID = "0000-0003-1062-0839")),
@@ -25,6 +25,7 @@ Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email 
   person("Pierre", "Legendre", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-3838-3305")),
   person("Jim", "Lemon", role = c("aut", "cph")),
   person("Guillaume", "Louvel", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-7745-0785")),
+  person("Federico", "Marotta", role = c("aut", "cph")),
   person("Eric", "Marcon", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-5249-321X")),
   person("Rosemary", "McCloskey", role = c("aut", "cph"), comment = c(ORCID = "0000-0002-9772-8553")),
   person("Johan", "Nylander", role = c("aut", "cph")),
@@ -35,7 +36,7 @@ Authors@R: c(person("Emmanuel", "Paradis", role = c("aut", "cre", "cph"), email 
   person("Korbinian", "Strimmer", role = c("aut", "cph"), comment = c(ORCID = "0000-0001-7917-2056")),
   person("Damien", "de Vienne", role = c("aut", "cph"), comment = c(ORCID = "0000-0001-9532-5251")))
 Depends: R (>= 3.2.0)
-Suggests: gee, expm, igraph, phangorn
+Suggests: gee, expm, igraph, phangorn, xml2
 Imports: nlme, lattice, graphics, methods, stats, utils, parallel, Rcpp
         (>= 0.12.0), digest
 LinkingTo: Rcpp
@@ -46,7 +47,7 @@ URL: https://github.com/emmanuelparadis/ape
 BugReports: https://github.com/emmanuelparadis/ape/issues
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2024-04-09 06:21:27 UTC; paradis
+Packaged: 2024-12-10 17:29:50 UTC; paradis
 Author: Emmanuel Paradis [aut, cre, cph]
     (<https://orcid.org/0000-0003-3092-2199>),
   Simon Blomberg [aut, cph] (<https://orcid.org/0000-0003-1062-0839>),
@@ -71,6 +72,7 @@ Author: Emmanuel Paradis [aut, cre, cph]
   Pierre Legendre [aut, cph] (<https://orcid.org/0000-0002-3838-3305>),
   Jim Lemon [aut, cph],
   Guillaume Louvel [aut, cph] (<https://orcid.org/0000-0002-7745-0785>),
+  Federico Marotta [aut, cph],
   Eric Marcon [aut, cph] (<https://orcid.org/0000-0002-5249-321X>),
   Rosemary McCloskey [aut, cph] (<https://orcid.org/0000-0002-9772-8553>),
   Johan Nylander [aut, cph],
@@ -82,4 +84,4 @@ Author: Emmanuel Paradis [aut, cre, cph]
   Damien de Vienne [aut, cph] (<https://orcid.org/0000-0001-9532-5251>)
 Maintainer: Emmanuel Paradis <Emmanuel.Paradis@ird.fr>
 Repository: CRAN
-Date/Publication: 2024-04-11 12:30:02 UTC
+Date/Publication: 2024-12-16 00:00:02 UTC

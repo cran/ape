@@ -1,8 +1,8 @@
-## plot.phylo.R (2022-01-17)
+## plot.phylo.R (2024-11-23)
 
 ##   Plot Phylogenies
 
-## Copyright 2002-2021 Emmanuel Paradis, 2021 Martin Smith, 2022 Damien de Vienne
+## Copyright 2002-2024 Emmanuel Paradis, 2021 Martin Smith, 2022 Damien de Vienne, 2024 Klaus Schliep
 ## colouring of segments by MS
 ## tidy trees by DdV
 
@@ -250,8 +250,7 @@ plot.phylo <-
 
     if (show.tip.label) nchar.tip.label <- nchar(x$tip.label)
     max.yy <- max(yy)
-
-    if (is.null(x.lim)) {
+#    if (is.null(x.lim)) {
         if (phyloORclado) {
             if (horizontal) {
                 ## 1.04 comes from that we are using a regular axis system
@@ -263,29 +262,33 @@ plot.phylo <-
                     tmp <- getLimit(xx.tips, x$tip.label, pin1, cex)
                     tmp <- tmp + label.offset
                 } else tmp <- max(xx.tips)
-                x.lim <- c(0, tmp)
+                x_lim <- c(0, tmp)
+                if (direction == "leftwards") x_lim <- x_lim - (tmp - max(xx.tips))
             } else {
                 ### TIDY
                 ## x.lim <- c(1, Ntip) # Not true anymore with tidy trees
-                x.lim <- c(1, max(xx[1:Ntip])) # add offset?
+                x_lim <- c(1, max(xx[1:Ntip])) # add offset?
                 ### END TIDY
             }
         } else switch(type, "fan" = {
             if (show.tip.label) {
                 offset <- max(nchar.tip.label * 0.018 * max.yy * cex)
-                x.lim <- range(xx) + c(-offset, offset)
-            } else x.lim <- range(xx)
+                x_lim <- range(xx) + c(-offset, offset)
+            } else x_lim <- range(xx)
         }, "unrooted" = {
             if (show.tip.label) {
                 offset <- max(nchar.tip.label * 0.018 * max.yy * cex)
-                x.lim <- c(0 - offset, max(xx) + offset)
-            } else x.lim <- c(0, max(xx))
+                x_lim <- c(0 - offset, max(xx) + offset)
+            } else x_lim <- c(0, max(xx))
         }, "radial" = {
             if (show.tip.label) {
                 offset <- max(nchar.tip.label * 0.03 * cex)
-                x.lim <- c(-1 - offset, 1 + offset)
-            } else x.lim <- c(-1, 1)
+                x_lim <- c(-1 - offset, 1 + offset)
+            } else x_lim <- c(-1, 1)
         })
+#    }
+    if (is.null(x.lim)){
+        x.lim <- x_lim
     } else if (length(x.lim) == 1) {
         x.lim <- c(0, x.lim)
         if (phyloORclado && !horizontal) x.lim[1] <- 1
@@ -297,13 +300,13 @@ plot.phylo <-
                 else -1
     }
     ## mirror the xx:
-    if (phyloORclado && direction == "leftwards") xx <- x.lim[2] - xx
-    if (is.null(y.lim)) {
+    if (phyloORclado && direction == "leftwards") xx <- x_lim[2] - xx
+#    if (is.null(y.lim)) {
         if (phyloORclado) {
             if (horizontal) {
                 ### TIDY
                 ## y.lim <- c(1, Ntip) # Not true anymore with tidy trees
-                y.lim <- c(1, max(yy[1:Ntip]))
+                y_lim <- c(1, max(yy[1:Ntip]))
                 ### END TIDY
             } else {
                 pin2 <- par("pin")[2] # height of the device in inches
@@ -315,24 +318,27 @@ plot.phylo <-
                     tmp <- getLimit(yy.tips, x$tip.label, pin2, cex)
                     tmp <- tmp + label.offset
                 } else tmp <- max(yy.tips)
-                y.lim <- c(0, tmp)
+                y_lim <- c(0, tmp)
+                if (direction == "downwards") y_lim <- y_lim - (tmp - max(yy.tips))
             }
         } else switch(type, "fan" = {
             if (show.tip.label) {
                 offset <- max(nchar.tip.label * 0.018 * max.yy * cex)
-                y.lim <- c(min(yy) - offset, max.yy + offset)
-            } else y.lim <- c(min(yy), max.yy)
+                y_lim <- c(min(yy) - offset, max.yy + offset)
+            } else y_lim <- c(min(yy), max.yy)
         }, "unrooted" = {
             if (show.tip.label) {
                 offset <- max(nchar.tip.label * 0.018 * max.yy * cex)
-                y.lim <- c(0 - offset, max.yy + offset)
-            } else y.lim <- c(0, max.yy)
+                y_lim <- c(0 - offset, max.yy + offset)
+            } else y_lim <- c(0, max.yy)
         }, "radial" = {
             if (show.tip.label) {
                 offset <- max(nchar.tip.label * 0.03 * cex)
-                y.lim <- c(-1 - offset, 1 + offset)
-            } else y.lim <- c(-1, 1)
+                y_lim <- c(-1 - offset, 1 + offset)
+            } else y_lim <- c(-1, 1)
         })
+    if (is.null(y.lim)) {
+        y.lim <- y_lim
     } else if (length(y.lim) == 1) {
         y.lim <- c(0, y.lim)
         if (phyloORclado && horizontal) y.lim[1] <- 1
@@ -342,7 +348,7 @@ plot.phylo <-
             y.lim[1] <- if (show.tip.label) -1 - max(nchar.tip.label * 0.018 * max.yy * cex) else -1
     }
     ## mirror the yy:
-    if (phyloORclado && direction == "downwards") yy <- y.lim[2] - yy # fix by Klaus
+    if (phyloORclado && direction == "downwards") yy <- y_lim[2] - yy # fix by Klaus
     if (phyloORclado && root.edge) {
         if (direction == "leftwards") x.lim[2] <- x.lim[2] + x$root.edge
         if (direction == "downwards") y.lim[2] <- y.lim[2] + x$root.edge
@@ -746,10 +752,12 @@ circular.plot <- function(edge, Ntip, Nnode, xx, yy, theta,
     for (k in 1:Nnode) {
         i <- start[k]
         j <- end[k]
-        X <- rep(r[edge[i, 1]], 100)
-        Y <- seq(theta[edge[i, 2]], theta[edge[j, 2]], length.out = 100)
+        # make number of segments dependent on the angle
+        n_segments <- abs(as.integer(2 + abs(theta[edge[j, 2]] - theta[edge[i, 2]]) / 0.03))
+        X <- rep(r[edge[i, 1]], n_segments)
+        Y <- seq(theta[edge[i, 2]], theta[edge[j, 2]], length.out = n_segments)
         x <- X * cos(Y); y <- X * sin(Y)
-        x0 <- x[-100]; y0 <- y[-100]; x1 <- x[-1]; y1 <- y[-1]
+        x0 <- x[-n_segments]; y0 <- y[-n_segments]; x1 <- x[-1]; y1 <- y[-1]
         segments(x0, y0, x1, y1, col = co[[k]], lwd = lw[[k]], lty = ly[[k]])
     }
 }
@@ -885,12 +893,26 @@ trex <- function(phy, title = TRUE, subbg = "lightyellow3",
     }
 }
 
-kronoviz <- function(x, layout = length(x), horiz = TRUE, ...)
+kronoviz <- function(x, layout = length(x), horiz = TRUE, ...,
+                     direction = ifelse(horiz, "rightwards", "upwards"), side=2)
 {
+    op <- par(no.readonly = TRUE)
+    on.exit({
+      par(op)
+      devAskNewPage(FALSE)
+    })
     par(mar = rep(0.5, 4), oma = rep(2, 4))
+    direction <- match.arg(direction, c("rightwards", "leftwards",
+                                          "upwards", "downwards"))
+    horiz <- ifelse(direction %in% c("rightwards", "leftwards"), TRUE, FALSE)
+
     rts <- sapply(x, function(x) branching.times(x)[1])
     maxrts <- max(rts)
     lim <- cbind(rts - maxrts, rts)
+    if (direction %in% c("leftwards", "downwards")) {
+        lim[,1] <- 0
+        lim[,2] <- maxrts
+    }
     Ntree <- length(x)
     Ntips <- sapply(x, Ntip)
     if (horiz) {
@@ -905,16 +927,20 @@ kronoviz <- function(x, layout = length(x), horiz = TRUE, ...)
     layout(matrix(1:layout, nrow), widths = w, heights = h)
     if (layout < Ntree && !devAskNewPage() && interactive()) {
         devAskNewPage(TRUE)
-        on.exit(devAskNewPage(FALSE))
     }
     if (horiz) {
-        for (i in 1:Ntree)
-            plot(x[[i]], x.lim = lim[i, ], ...)
+        for (i in 1:Ntree){
+            plot(x[[i]], x.lim = lim[i, ], direction = direction, ...)
+            if(i == 1 && 1 %in% side) axisPhylo(side=3)
+        }
     } else {
-        for (i in 1:Ntree)
-            plot(x[[i]], y.lim = lim[i, ], direction = "u", ...)
+        for (i in 1:Ntree){
+            plot(x[[i]], y.lim = lim[i, ], direction = direction, ...)
+            if(i == 1 && 1 %in% side) axisPhylo(side=2)
+        }
     }
-    axisPhylo(if (horiz) 1 else 4) # better if the deepest tree is last ;)
+    if (2 %in% side) axisPhylo(if (horiz) 1 else 4)
+    invisible(x)
 }
 
 tidy.xy <- function(edge, Ntip, Nnode, xx, yy)
